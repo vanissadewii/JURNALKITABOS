@@ -3,14 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class MasterKelasController extends Controller
 {
     /**
      * Tampilkan daftar semua kelas.
      */
-    public function index()
+    public function index(): View
     {
         $kelas = Kelas::all();
 
@@ -18,17 +20,9 @@ class MasterKelasController extends Controller
     }
 
     /**
-     * Tampilkan form tambah kelas baru.
-     */
-    public function create()
-    {
-        return view('master-kelas.create');
-    }
-
-    /**
      * Simpan kelas baru ke database.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'nama_kelas' => 'required|string|max:20',
@@ -42,29 +36,9 @@ class MasterKelasController extends Controller
     }
 
     /**
-     * Tampilkan detail 1 kelas (opsional, jarang dipakai kalau cuma CRUD sederhana).
-     */
-    public function show(string $id)
-    {
-        $kelas = Kelas::findOrFail($id);
-
-        return view('master-kelas.show', compact('kelas'));
-    }
-
-    /**
-     * Tampilkan form edit kelas.
-     */
-    public function edit(string $id)
-    {
-        $kelas = Kelas::findOrFail($id);
-
-        return view('master-kelas.edit', compact('kelas'));
-    }
-
-    /**
      * Update data kelas di database.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id): RedirectResponse
     {
         $validated = $request->validate([
             'nama_kelas' => 'required|string|max:20',
@@ -81,7 +55,7 @@ class MasterKelasController extends Controller
     /**
      * Hapus kelas dari database.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): RedirectResponse
     {
         $kelas = Kelas::findOrFail($id);
         $kelas->delete();

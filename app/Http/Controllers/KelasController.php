@@ -3,27 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use Illuminate\View\View;
 
 class KelasController extends Controller
 {
-    public function beranda()
+    public function beranda(): View
     {
         $kelas = Kelas::where('nama_kelas', 'XI RPL 2')->first();
 
         return view('kelas.beranda', compact('kelas'));
     }
 
-    public function scan()
+    public function scan(): View
     {
         return view('kelas.scan');
     }
 
-    public function kirimJurnal()
-    {
-        return view('kelas.kirim-jurnal');
-    }
-
-    public function profile()
+    public function profile(): View
     {
         return view('kelas.profile');
     }
