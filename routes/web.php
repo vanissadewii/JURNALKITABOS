@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MasterKelasController;
+use Illuminate\Support\Facades\Route;
 
 // Route ke profil-guru
 Route::get('/profil-guru', function () {
@@ -32,6 +32,7 @@ Route::get('/mulai-sesi', function () {
 // Preview beranda kelas
 Route::get('/preview-beranda', function () {
     $kelas = (object) ['nama_kelas' => 'XI RPL 2'];
+
     return view('kelas.beranda', compact('kelas'));
 });
 
@@ -55,7 +56,7 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', fn() => view('home'))->name('home');
+    Route::get('/home', fn () => view('home'))->name('home');
 
     Route::resource('admin/kelas', MasterKelasController::class)
         ->names('admin.kelas');
