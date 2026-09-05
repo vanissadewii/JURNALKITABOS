@@ -1,22 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SiswaController;
-
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\MasterKelasController;
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/home', fn() => view('home'))->name('home');
 
-     // Route untuk sisi siswa/akun kelas
-    Route::prefix('siswa')->name('siswa.')->group(function () {
-        Route::get('/beranda', [SiswaController::class, 'beranda'])->name('beranda');
-        Route::get('/scan', [SiswaController::class, 'scan'])->name('scan');
-        Route::get('/riwayat', [SiswaController::class, 'riwayat'])->name('riwayat');
-        Route::get('/akun', [SiswaController::class, 'akun'])->name('akun');
+    // Role: akun Kelas
+    Route::prefix('kelas')->name('kelas.')->group(function () {
+        Route::get('/beranda', [KelasController::class, 'beranda'])->name('beranda');
+        Route::get('/scan', [KelasController::class, 'scan'])->name('scan');
+        Route::get('/profile', [KelasController::class, 'profile'])->name('profile');
     });
+
+    // Role: admin — kelola data master kelas
+    Route::resource('admin/kelas', MasterKelasController::class)->names('admin.kelas');
 });
