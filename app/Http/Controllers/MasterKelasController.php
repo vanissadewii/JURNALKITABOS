@@ -13,6 +13,7 @@ class MasterKelasController extends Controller
     public function index()
     {
         $kelas = Kelas::all();
+
         return view('master-kelas.index', compact('kelas'));
     }
 
@@ -31,7 +32,7 @@ class MasterKelasController extends Controller
     {
         $validated = $request->validate([
             'nama_kelas' => 'required|string|max:20',
-            'tingkat'    => 'required|in:10,11,12',
+            'tingkat' => 'required|in:10,11,12',
         ]);
 
         Kelas::create($validated);
@@ -46,6 +47,7 @@ class MasterKelasController extends Controller
     public function show(string $id)
     {
         $kelas = Kelas::findOrFail($id);
+
         return view('master-kelas.show', compact('kelas'));
     }
 
@@ -55,6 +57,7 @@ class MasterKelasController extends Controller
     public function edit(string $id)
     {
         $kelas = Kelas::findOrFail($id);
+
         return view('master-kelas.edit', compact('kelas'));
     }
 
@@ -65,7 +68,7 @@ class MasterKelasController extends Controller
     {
         $validated = $request->validate([
             'nama_kelas' => 'required|string|max:20',
-            'tingkat'    => 'required|in:10,11,12',
+            'tingkat' => 'required|in:10,11,12',
         ]);
 
         $kelas = Kelas::findOrFail($id);
