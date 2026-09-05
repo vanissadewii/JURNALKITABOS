@@ -16,8 +16,3 @@ Route::get('/dashboard-guru', function () {
 Route::get('/mulai-sesi', function () {
     return view('guru.mulai_sesi');
 });
-
-// Route ke Jurnal Guru
-Route::get('/jurnal-guru', function () {
-    return view('guru.jurnal_guru');
-});
