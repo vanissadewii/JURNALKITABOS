@@ -2,12 +2,22 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Saat buka localhost langsung tampilkan halaman Login
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('auth.login');
+})->name('login');
+
+// Route ke Dashboard Guru
+Route::get('/dashboard-guru', function () {
+    return view('guru.dashboard_guru');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
+// Route ke Mulai Sesi
+Route::get('/mulai-sesi', function () {
+    return view('guru.mulai_sesi');
+});
+
+// Route ke Jurnal Guru
+Route::get('/jurnal-guru', function () {
+    return view('guru.jurnal_guru');
 });
