@@ -65,4 +65,31 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
 
     Route::resource('admin/kelas', MasterKelasController::class)
         ->names('admin.kelas');
+
     });
+    
+
+// Route Tampilkan QR Guru
+Route::get('/tampilkan-qr-guru', function () {
+    return view('guru.tampilkan_qr_guru');
+});
+
+Route::get('/verifikasi-qr-guru', function () {
+    return view('guru.verifikasi_qr_guru');
+});
+
+Route::get('/selesai-mengajar', function () {
+    return view('guru.selesai_mengajar');
+});
+
+Route::get('/ringkasan-sesi', function () {
+    return view('guru.ringkasan_sesi');
+});
+
+Route::get('/form-jurnal', function () {
+    return view('guru.form_jurnal');
+});
+
+Route::get('/jurnal-list', function () {
+    return view('guru.jurnal_list');
+});
