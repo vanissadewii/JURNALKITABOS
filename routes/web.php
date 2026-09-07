@@ -14,6 +14,21 @@ Route::get('/editprofil-guru', function () {
     return view('guru.editprofil_guru');
 });
 
+// route ke scan-qr
+Route::get('/scan-qr', function () {
+    return view('guru.scan_qr');
+});
+
+// route ke qr-valid
+Route::get('/qr-valid', function () {
+    return view('guru.qr_valid');
+});
+
+// route ke rekap jurnal
+Route::get('/rekap-jurnal', function () {
+    return view('guru.rekap_jurnal');
+});
+
 // Saat buka localhost langsung tampilkan halaman Login
 Route::get('/', function () {
     return view('auth.login');
