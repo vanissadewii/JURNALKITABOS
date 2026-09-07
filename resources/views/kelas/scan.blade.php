@@ -1,380 +1,176 @@
-@extends('layouts.kelas')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Sesi Mengajar</title>
 
-@section('title', 'Scan Sesi Mengajar')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-@section('content')
+    @vite('resources/css/app.css')
+</head>
 
-<style>
-    * {
-        box-sizing: border-box;
-    }
+<body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
 
-    .scan-page {
-        width: 100%;
-        min-height: 100vh;
-        background: #F5EFE8;
-        color: #3E3028;
-        font-family: 'Inter', sans-serif;
-    }
+    <div class="md:flex">
 
-    /* HEADER */
-    .scan-header {
-        width: 100%;
-        height: 64px;
-        background: #5C4033;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 20px;
-        color: #FFFFFF;
-    }
+        {{-- SIDEBAR (desktop) --}}
+        <aside class="hidden md:flex md:flex-col md:w-64 md:h-screen md:sticky md:top-0
+                       bg-white border-r border-[#E5D8CC] py-6 px-4">
 
-    .scan-back {
-        width: 36px;
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #FFFFFF;
-        text-decoration: none;
-        font-size: 25px;
-        flex-shrink: 0;
-    }
-
-    .scan-header h1 {
-        margin: 0;
-        font-family: 'Poppins', sans-serif;
-        font-size: 17px;
-        font-weight: 600;
-        text-align: center;
-    }
-
-    .header-space {
-        width: 36px;
-        flex-shrink: 0;
-    }
-
-    /* CONTENT */
-    .scan-content {
-        width: 100%;
-        max-width: 500px;
-        margin: 0 auto;
-        padding: 28px 20px 40px;
-    }
-
-    .scan-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .scan-title {
-        margin: 0 0 6px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 20px;
-        font-weight: 700;
-        text-align: center;
-        color: #3E3028;
-    }
-
-    .scan-subtitle {
-        margin: 0 0 24px;
-        font-size: 13px;
-        line-height: 1.5;
-        text-align: center;
-        color: #7A6A60;
-    }
-
-    /* QR */
-    .qr-container {
-        width: 220px;
-        height: 220px;
-        background: #FFFFFF;
-        border: 1px solid #E5D8CC;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 18px;
-        box-shadow: 0 4px 15px rgba(62, 48, 40, 0.06);
-    }
-
-    .qr-placeholder {
-        width: 180px;
-        height: 180px;
-        background:
-            linear-gradient(90deg, #3E3028 10px, transparent 10px) 0 0 / 30px 30px,
-            linear-gradient(#3E3028 10px, transparent 10px) 0 0 / 30px 30px,
-            linear-gradient(90deg, transparent 20px, #3E3028 20px 30px) 0 0 / 30px 30px,
-            linear-gradient(transparent 20px, #3E3028 20px 30px) 0 0 / 30px 30px;
-        position: relative;
-    }
-
-    .qr-placeholder::before,
-    .qr-placeholder::after {
-        content: "";
-        position: absolute;
-        width: 38px;
-        height: 38px;
-        border: 8px solid #3E3028;
-        background: #FFFFFF;
-    }
-
-    .qr-placeholder::before {
-        top: 0;
-        left: 0;
-    }
-
-    .qr-placeholder::after {
-        right: 0;
-        bottom: 0;
-    }
-
-    /* INFO CARD */
-    .info-card {
-        width: 100%;
-        background: #FFFFFF;
-        border: 1px solid #E5D8CC;
-        border-radius: 10px;
-        padding: 16px;
-        margin-top: 24px;
-        box-shadow: 0 4px 12px rgba(62, 48, 40, 0.04);
-    }
-
-    .info-title {
-        margin-bottom: 12px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-        font-weight: 700;
-        color: #3E3028;
-    }
-
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 9px 0;
-        border-bottom: 1px solid #E5D8CC;
-        font-size: 13px;
-    }
-
-    .info-row:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    .info-label {
-        color: #7A6A60;
-    }
-
-    .info-value {
-        color: #3E3028;
-        font-weight: 600;
-        text-align: right;
-    }
-
-    /* WARNING */
-    .warning-box {
-        width: 100%;
-        margin-top: 16px;
-        padding: 13px 14px;
-        background: #EAF4FF;
-        border: 1px solid #B8D8F5;
-        border-radius: 8px;
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .warning-icon {
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-        border-radius: 50%;
-        background: #4A90C2;
-        color: #FFFFFF;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 700;
-    }
-
-    .warning-text {
-        margin: 0;
-        font-size: 12px;
-        line-height: 1.5;
-        color: #245A7A;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 430px) {
-
-        .scan-header {
-            height: 56px;
-            padding: 0 16px;
-        }
-
-        .scan-header h1 {
-            font-size: 16px;
-        }
-
-        .scan-content {
-            padding: 24px 16px 32px;
-        }
-
-        .scan-title {
-            font-size: 19px;
-        }
-
-        .qr-container {
-            width: 210px;
-            height: 210px;
-        }
-
-        .qr-placeholder {
-            width: 170px;
-            height: 170px;
-        }
-    }
-
-    @media (max-width: 360px) {
-
-        .scan-content {
-            padding-left: 14px;
-            padding-right: 14px;
-        }
-
-        .scan-title {
-            font-size: 18px;
-        }
-
-        .scan-subtitle {
-            font-size: 12px;
-        }
-
-        .qr-container {
-            width: 190px;
-            height: 190px;
-        }
-
-        .qr-placeholder {
-            width: 150px;
-            height: 150px;
-        }
-
-        .info-card {
-            padding: 14px;
-        }
-
-        .info-row {
-            font-size: 12px;
-        }
-
-        .warning-text {
-            font-size: 11px;
-        }
-    }
-
-    @media (min-width: 768px) {
-
-        .scan-content {
-            padding-top: 40px;
-        }
-
-        .scan-title {
-            font-size: 22px;
-        }
-    }
-</style>
-
-
-<div class="scan-page">
-
-    {{-- HEADER --}}
-    <div class="scan-header">
-
-        <a href="{{ url()->previous() }}" class="scan-back">
-            ←
-        </a>
-
-        <h1>Scan Sesi Mengajar</h1>
-
-        <div class="header-space"></div>
-
-    </div>
-
-
-    <div class="scan-content">
-
-        <div class="scan-section">
-
-            <h2 class="scan-title">
-                QR Code Siswa
-            </h2>
-
-            <p class="scan-subtitle">
-                Tunjukkan QR Code ini kepada guru Anda
-                untuk memulai verifikasi sesi.
-            </p>
-
-
-            <div class="qr-container">
-                <div class="qr-placeholder"></div>
+            <div class="mb-8 px-2">
+                <h1 class="font-['Poppins'] font-bold text-xl text-[#5C4033]">JURNAL GURU</h1>
+                <p class="text-md text-[#7A6A60] mt-1">Akun Kelas</p>
             </div>
 
+            <nav class="flex flex-col gap-1">
+                <a href="{{ route('kelas.beranda') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>
+                    </svg>
+                    Dasbor
+                </a>
+                <a href="{{ route('kelas.scan') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    Scan
+                </a>
+                <a href="{{ route('kelas.kirim-jurnal') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    Kirim Jurnal
+                </a>
+                <a href="{{ route('kelas.profile') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                    </svg>
+                    Profil
+                </a>
+            </nav>
+        </aside>
 
-            <div class="info-card">
+        {{-- KONTEN UTAMA --}}
+        <main class="flex-1 w-full pb-24 md:pb-8">
 
-                <div class="info-title">
-                    Detail Sesi Mengajar
-                </div>
+            {{-- HEADER SCAN (back button + judul) --}}
+            <div class="w-full bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex items-center justify-center text-white">
 
-                <div class="info-row">
-                    <span class="info-label">Guru Pengajar</span>
-                    <span class="info-value">Kurnila Putri, S.Pd.</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Mata Pelajaran</span>
-                    <span class="info-value">PPLG</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Kelas</span>
-                    <span class="info-value">XI RPL 1</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Jam</span>
-                    <span class="info-value">07:00 - 09:40</span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Status</span>
-                    <span class="info-value">Sesi Aktif</span>
-                </div>
+            <h1 class="m-0 font-['Poppins'] text-[15px] sm:text-[17px] font-semibold text-center">
+                Scan Sesi Mengajar
+            </h1>
 
             </div>
 
+            {{-- ISI KONTEN --}}
+            <div class="w-full max-w-[500px] mx-auto px-4 py-6 sm:px-5 md:pt-10 pb-10 flex flex-col items-center">
 
-            <div class="warning-box">
+                <h2 class="m-0 mb-1.5 font-['Poppins'] text-lg sm:text-xl md:text-2xl font-bold text-center text-[#3E3028]">
+                    QR Code Siswa
+                </h2>
 
-                <div class="warning-icon">
-                    !
-                </div>
-
-                <p class="warning-text">
-                    Pastikan Anda berada di kelas dan guru tersebut
-                    benar sedang mengajar sebelum melakukan konfirmasi.
+                <p class="m-0 mb-6 text-xs leading-relaxed text-center text-[#7A6A60]">
+                    Tunjukkan QR Code ini kepada guru Anda
+                    untuk memulai verifikasi sesi.
                 </p>
 
-            </div>
+                {{-- QR PLACEHOLDER — nanti diganti komponen QR asli --}}
+                <div class="w-[190px] h-[190px] sm:w-[210px] sm:h-[210px] md:w-[220px] md:h-[220px]
+                            bg-white border border-[#E5D8CC] rounded-2xl flex items-center justify-center
+                            p-[18px] shadow-[0_4px_15px_rgba(62,48,40,0.06)]">
 
-        </div>
+                    <div class="relative w-[150px] h-[150px] sm:w-[170px] sm:h-[170px] md:w-[180px] md:h-[180px]
+                                bg-[linear-gradient(90deg,#3E3028_10px,transparent_10px),linear-gradient(#3E3028_10px,transparent_10px),linear-gradient(90deg,transparent_20px,#3E3028_20px_30px),linear-gradient(transparent_20px,#3E3028_20px_30px)]
+                                bg-[length:30px_30px] bg-[position:0_0]">
+
+                        <div class="absolute top-0 left-0 w-[38px] h-[38px] border-[8px] border-[#3E3028] bg-white"></div>
+                        <div class="absolute right-0 bottom-0 w-[38px] h-[38px] border-[8px] border-[#3E3028] bg-white"></div>
+
+                    </div>
+
+                </div>
+
+                {{-- INFO SESI --}}
+                <div class="w-full bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[14px] mt-6
+                            shadow-[0_4px_12px_rgba(62,48,40,0.04)]">
+
+                    <div class="mb-3 font-['Poppins'] text-sm font-bold text-[#3E3028]">
+                        Detail Sesi Mengajar
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Guru Pengajar</span>
+                        <span class="text-[#3E3028] font-semibold text-right">Kurnila Putri, S.Pd.</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Mata Pelajaran</span>
+                        <span class="text-[#3E3028] font-semibold text-right">PPLG</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Kelas</span>
+                        <span class="text-[#3E3028] font-semibold text-right">XI RPL 2</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Jam</span>
+                        <span class="text-[#3E3028] font-semibold text-right">07:00 - 09:40</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 pt-2.5 text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Status</span>
+                        <span class="text-[#3E3028] font-semibold text-right">Sesi Aktif</span>
+                    </div>
+
+                </div>
+
+                {{-- PERINGATAN --}}
+                <div class="w-full mt-4 p-[13px] bg-[#EAF4FF] border border-[#B8D8F5] rounded-lg
+                            flex items-start gap-2.5">
+
+                    <div class="w-5 h-5 shrink-0 rounded-full bg-[#4A90C2] text-white
+                                flex items-center justify-center text-xs font-bold">
+                        !
+                    </div>
+
+                    <p class="m-0 text-xs leading-relaxed text-[#245A7A]">
+                        Pastikan Anda berada di kelas dan guru tersebut
+                        benar sedang mengajar sebelum melakukan konfirmasi.
+                    </p>
+
+                </div>
+
+            </div>
+        </main>
 
     </div>
 
-</div>
+    {{-- BOTTOM NAV (mobile) --}}
+    <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
+        <a href="{{ route('kelas.beranda') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+            Dasbor
+        </a>
+        <a href="{{ route('kelas.scan') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Scan
+        </a>
+        <a href="{{ route('kelas.kirim-jurnal') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Kirim Jurnal
+        </a>
+        <a href="{{ route('kelas.profile') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            Profil
+        </a>
+    </nav>
 
-@endsection
+</body>
+</html>

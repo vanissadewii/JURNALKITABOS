@@ -38,9 +38,12 @@ Route::get('/preview-beranda', function () {
 
 // SEMENTARA - buat ngerjain & ngecek tampilan kelas
 Route::prefix('kelas')->name('kelas.')->group(function () {
-    Route::get('/beranda', [KelasController::class, 'beranda'])->name('beranda');
 
-    Route::get('/scan', [KelasController::class, 'scan'])->name('scan');
+    Route::get('/beranda', [KelasController::class, 'beranda'])
+        ->name('beranda');
+
+    Route::get('/scan', [KelasController::class, 'scan'])
+        ->name('scan');
 
     Route::get('/verifikasiguru', function () {
         return view('kelas.verifikasiguru');
@@ -50,14 +53,16 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
         return view('kelas.verifikasisukses');
     })->name('verifikasisukses');
 
-    Route::get('/kirim-jurnal', [KelasController::class, 'kirimJurnal'])->name('kirim-jurnal');
+    Route::view('/kirim-jurnal', 'kelas.kirim-jurnal')
+        ->name('kirim-jurnal');
 
-    Route::get('/profile', [KelasController::class, 'profile'])->name('profile');
+    Route::get('/profile', [KelasController::class, 'profile'])
+        ->name('profile');
 });
 
-Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
     Route::get('/home', fn () => view('home'))->name('home');
 
     Route::resource('admin/kelas', MasterKelasController::class)
         ->names('admin.kelas');
-});
+    });
