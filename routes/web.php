@@ -38,9 +38,12 @@ Route::get('/preview-beranda', function () {
 
 // SEMENTARA - buat ngerjain & ngecek tampilan kelas
 Route::prefix('kelas')->name('kelas.')->group(function () {
-    Route::get('/beranda', [KelasController::class, 'beranda'])->name('beranda');
 
-    Route::get('/scan', [KelasController::class, 'scan'])->name('scan');
+    Route::get('/beranda', [KelasController::class, 'beranda'])
+        ->name('beranda');
+
+    Route::get('/scan', [KelasController::class, 'scan'])
+        ->name('scan');
 
     Route::get('/verifikasiguru', function () {
         return view('kelas.verifikasiguru');
@@ -50,9 +53,11 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
         return view('kelas.verifikasisukses');
     })->name('verifikasisukses');
 
-    Route::get('/kirim-jurnal', [KelasController::class, 'kirimJurnal'])->name('kirim-jurnal');
+    Route::view('/kirim-jurnal', 'kelas.kirim-jurnal')
+        ->name('kirim-jurnal');
 
-    Route::get('/profile', [KelasController::class, 'profile'])->name('profile');
+    Route::get('/profile', [KelasController::class, 'profile'])
+        ->name('profile');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -60,4 +65,30 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('admin/kelas', MasterKelasController::class)
         ->names('admin.kelas');
+
+});
+
+// Route Tampilkan QR Guru
+Route::get('/tampilkan-qr-guru', function () {
+    return view('guru.tampilkan_qr_guru');
+});
+
+Route::get('/verifikasi-qr-guru', function () {
+    return view('guru.verifikasi_qr_guru');
+});
+
+Route::get('/selesai-mengajar', function () {
+    return view('guru.selesai_mengajar');
+});
+
+Route::get('/ringkasan-sesi', function () {
+    return view('guru.ringkasan_sesi');
+});
+
+Route::get('/form-jurnal', function () {
+    return view('guru.form_jurnal');
+});
+
+Route::get('/jurnal-list', function () {
+    return view('guru.jurnal_list');
 });
