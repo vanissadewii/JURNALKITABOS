@@ -1,363 +1,191 @@
-@extends('layouts.kelas')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Guru</title>
 
-@section('title', 'Verifikasi Guru')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-@section('content')
+    @vite('resources/css/app.css')
+</head>
 
-<style>
-    .verifikasi-page {
-        min-height: 100vh;
-        background: #F5EFE8;
-        padding-bottom: 30px;
-    }
+<body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
 
-    .verifikasi-header {
-        background: #5C4033;
-        height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 16px;
-        color: white;
-    }
+    <div class="md:flex">
 
-    .verifikasi-back {
-        color: white;
-        text-decoration: none;
-        font-size: 26px;
-        width: 40px;
-    }
+        {{-- SIDEBAR (desktop) --}}
+        <aside class="hidden md:flex md:flex-col md:w-64 md:h-screen md:sticky md:top-0
+                       bg-white border-r border-[#E5D8CC] py-6 px-4">
 
-    .verifikasi-header h1 {
-        font-family: 'Poppins', sans-serif;
-        font-size: 18px;
-        font-weight: 600;
-        margin: 0;
-        text-align: center;
-        flex: 1;
-    }
+            <div class="mb-8 px-2">
+                <h1 class="font-['Poppins'] font-bold text-xl text-[#5C4033]">JURNAL GURU</h1>
+                <p class="text-md text-[#7A6A60] mt-1">Akun Kelas</p>
+            </div>
 
-    .header-space {
-        width: 40px;
-    }
+            <nav class="flex flex-col gap-1">
+                <a href="{{ route('kelas.beranda') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>
+                    </svg>
+                    Dasbor
+                </a>
+                <a href="{{ route('kelas.scan') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    Scan
+                </a>
+                <a href="{{ route('kelas.kirim-jurnal') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    Kirim Jurnal
+                </a>
+                <a href="{{ route('kelas.profile') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                    </svg>
+                    Profil
+                </a>
+            </nav>
+        </aside>
 
-    .verifikasi-content {
-        padding: 24px 16px;
-        max-width: 500px;
-        margin: 0 auto;
-    }
+        {{-- KONTEN UTAMA --}}
+        <main class="flex-1 w-full pb-24 md:pb-8">
 
-    .verifikasi-title {
-        text-align: center;
-        font-family: 'Poppins', sans-serif;
-        font-size: 20px;
-        font-weight: 600;
-        color: #3E3028;
-        margin: 0 0 8px;
-    }
+            {{-- HEADER --}}
+            <div class="w-full bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex items-center justify-between text-white">
 
-    .verifikasi-subtitle {
-        text-align: center;
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        line-height: 1.5;
-        color: #7A6A60;
-        margin: 0 auto 22px;
-        max-width: 330px;
-    }
+            <a href="{{ route('kelas.scan') }}"
+            class="w-9 h-9 flex items-center justify-center text-2xl shrink-0">
+                 ←
+            </a>
 
-    /* AREA SCAN */
-    .scanner-box {
-        width: 220px;
-        height: 220px;
-        margin: 0 auto 16px;
-        background: #2D221C;
-        border: 4px dashed #D7B899;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-    }
+            <h1 class="m-0 font-['Poppins'] text-[15px] sm:text-[17px] font-semibold text-center">
+                 Verifikasi Guru
+            </h1>
 
-    .scanner-camera {
-        width: 70px;
-        height: 70px;
-        border: 2px solid #D7B899;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #D7B899;
-        font-size: 28px;
-    }
+            <div class="w-9 shrink-0"></div>
 
-    .scan-line {
-        position: absolute;
-        width: 170px;
-        height: 2px;
-        background: #D7B899;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
+            </div>
 
-    .scan-instruction {
-        text-align: center;
-        color: #3E3028;
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        line-height: 1.5;
-        margin: 0 0 20px;
-    }
+            {{-- ISI KONTEN --}}
+            <div class="w-full max-w-[500px] mx-auto px-4 py-6">
 
-    /* INFO CARD */
-    .info-card {
-        width: 100%;
-        background: white;
-        border: 1px solid #E5D8CC;
-        border-radius: 10px;
-        padding: 16px;
-        box-sizing: border-box;
-        margin-bottom: 16px;
-    }
+                <h2 class="text-center font-['Poppins'] text-lg sm:text-xl font-semibold text-[#3E3028] m-0 mb-2">
+                    Scan QR Guru
+                </h2>
 
-    .info-title {
-        font-family: 'Poppins', sans-serif;
-        font-size: 15px;
-        font-weight: 600;
-        color: #3E3028;
-        margin-bottom: 10px;
-    }
+                <p class="text-center text-xs leading-relaxed text-[#7A6A60] max-w-[330px] mx-auto mb-5">
+                    Arahkan kamera ke QR Code yang ditampilkan
+                    oleh guru Anda untuk memverifikasi sesi mengajar.
+                </p>
 
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 10px 0;
-        border-bottom: 1px solid #E5D8CC;
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-    }
+                {{-- SCANNER --}}
+                <div class="relative w-[200px] h-[200px] sm:w-[220px] sm:h-[220px] mx-auto mb-4
+                            bg-[#2D221C] border-4 border-dashed border-[#D7B899] rounded-2xl
+                            flex items-center justify-center">
 
-    .info-row:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
+                    <div class="w-[70px] h-[70px] rounded-full border-2 border-[#D7B899]
+                                flex items-center justify-center text-[#D7B899] text-[28px]">
+                        ⌾
+                    </div>
 
-    .info-label {
-        color: #7A6A60;
-    }
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+                                w-[155px] sm:w-[170px] h-0.5 bg-[#D7B899]"></div>
 
-    .info-value {
-        color: #3E3028;
-        font-weight: 500;
-        text-align: right;
-    }
+                </div>
 
-    /* WARNING */
-    .warning-box {
-        width: 100%;
-        box-sizing: border-box;
-        margin-bottom: 20px;
-        padding: 13px 14px;
-        background: #EAF4FF;
-        border: 1px solid #B8D8F5;
-        border-radius: 8px;
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-    }
+                <p class="text-center text-[#3E3028] text-xs leading-relaxed mb-5">
+                    Arahkan kamera ke QR Code guru
+                </p>
 
-    .warning-icon {
-        width: 20px;
-        height: 20px;
-        min-width: 20px;
-        border-radius: 50%;
-        background: #5C4033;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: bold;
-    }
+                {{-- DETAIL SESI --}}
+                <div class="w-full bg-white border border-[#E5D8CC] rounded-[10px] p-4 mb-4">
 
-    .warning-text {
-        margin: 0;
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        line-height: 1.5;
-        color: #3E3028;
-    }
+                    <div class="font-['Poppins'] text-[15px] font-semibold text-[#3E3028] mb-2.5">
+                        Detail Sesi Mengajar
+                    </div>
 
-    /* BUTTON */
-    .confirm-button {
-        width: 100%;
-        height: 45px;
-        border: none;
-        border-radius: 8px;
-        background: #5C4033;
-        color: white;
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-    }
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
+                        <span class="text-[#7A6A60]">Guru Pengajar</span>
+                        <span class="text-[#3E3028] font-medium text-right">Kurnila Putri, S.Pd.</span>
+                    </div>
 
-    .confirm-button:hover {
-        background: #4B3329;
-    }
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
+                        <span class="text-[#7A6A60]">Mata Pelajaran</span>
+                        <span class="text-[#3E3028] font-medium text-right">PPLG</span>
+                    </div>
 
-    @media (max-width: 400px) {
-        .verifikasi-content {
-            padding: 20px 16px;
-        }
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
+                        <span class="text-[#7A6A60]">Kelas</span>
+                        <span class="text-[#3E3028] font-medium text-right">XI RPL 2</span>
+                    </div>
 
-        .scanner-box {
-            width: 200px;
-            height: 200px;
-        }
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
+                        <span class="text-[#7A6A60]">Jam</span>
+                        <span class="text-[#3E3028] font-medium text-right">07:00 - 09:40</span>
+                    </div>
 
-        .scan-line {
-            width: 155px;
-        }
+                    <div class="flex justify-between gap-4 pt-2.5 text-[13px]">
+                        <span class="text-[#7A6A60]">Status</span>
+                        <span class="text-[#3E3028] font-medium text-right">Sesi Aktif</span>
+                    </div>
 
-        .verifikasi-title {
-            font-size: 18px;
-        }
-    }
-</style>
+                </div>
 
+                {{-- PERINGATAN --}}
+                <div class="w-full mb-5 p-[13px] bg-[#EAF4FF] border border-[#B8D8F5] rounded-lg
+                            flex items-start gap-2.5">
 
-<div class="verifikasi-page">
+                    <div class="w-5 h-5 min-w-5 rounded-full bg-[#5C4033] text-white
+                                flex items-center justify-center text-xs font-bold">
+                        !
+                    </div>
 
-    {{-- HEADER --}}
-    <div class="verifikasi-header">
+                    <p class="m-0 text-xs leading-relaxed text-[#3E3028]">
+                        Pastikan QR Code berasal dari guru yang
+                        sedang mengajar di kelas Anda.
+                    </p>
 
-        <a href="{{ url()->previous() }}" class="verifikasi-back">
-            ←
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    {{-- BOTTOM NAV (mobile) --}}
+    <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
+        <a href="{{ route('kelas.beranda') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+            Dasbor
         </a>
+        <a href="{{ route('kelas.scan') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Scan
+        </a>
+        <a href="{{ route('kelas.kirim-jurnal') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Kirim Jurnal
+        </a>
+        <a href="{{ route('kelas.profile') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            Profil
+        </a>
+    </nav>
 
-        <h1>Verifikasi Guru</h1>
+    <script>
+        function konfirmasiSesi() {
+            alert('Sesi mengajar berhasil dikonfirmasi.');
+        }
+    </script>
 
-        <div class="header-space"></div>
-
-    </div>
-
-
-    <div class="verifikasi-content">
-
-        {{-- JUDUL --}}
-        <h2 class="verifikasi-title">
-            Scan QR Guru
-        </h2>
-
-        <p class="verifikasi-subtitle">
-            Arahkan kamera ke QR Code yang ditampilkan
-            oleh guru Anda untuk memverifikasi sesi mengajar.
-        </p>
-
-
-        {{-- SCANNER --}}
-        <div class="scanner-box">
-
-            <div class="scanner-camera">
-                ⌾
-            </div>
-
-            <div class="scan-line"></div>
-
-        </div>
-
-        <p class="scan-instruction">
-            Arahkan kamera ke QR Code guru
-        </p>
-
-
-        {{-- DETAIL SESI --}}
-        <div class="info-card">
-
-            <div class="info-title">
-                Detail Sesi Mengajar
-            </div>
-
-            <div class="info-row">
-                <span class="info-label">
-                    Guru Pengajar
-                </span>
-
-                <span class="info-value">
-                    Kurnila Putri, S.Pd.
-                </span>
-            </div>
-
-            <div class="info-row">
-                <span class="info-label">
-                    Mata Pelajaran
-                </span>
-
-                <span class="info-value">
-                    PPLG
-                </span>
-            </div>
-
-            <div class="info-row">
-                <span class="info-label">
-                    Kelas
-                </span>
-
-                <span class="info-value">
-                    XI RPL 1
-                </span>
-            </div>
-
-            <div class="info-row">
-                <span class="info-label">
-                    Jam
-                </span>
-
-                <span class="info-value">
-                    07:00 - 09:40
-                </span>
-            </div>
-
-            <div class="info-row">
-                <span class="info-label">
-                    Status
-                </span>
-
-                <span class="info-value">
-                    Sesi Aktif
-                </span>
-            </div>
-
-        </div>
-
-
-        {{-- PERINGATAN --}}
-        <div class="warning-box">
-
-            <div class="warning-icon">
-                !
-            </div>
-
-            <p class="warning-text">
-                Pastikan QR Code berasal dari guru yang
-                sedang mengajar di kelas Anda.
-            </p>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<script>
-    function konfirmasiSesi() {
-        alert('Sesi mengajar berhasil dikonfirmasi.');
-    }
-</script>
-
-@endsection
+</body>
+</html>

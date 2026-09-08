@@ -109,6 +109,10 @@
             {{-- HEADER --}}
             <div class="bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
 
+                <span class="text-[#D7B899] text-[20px] font-medium">
+                    Profil
+                </span>
+
                 <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
                     Profil Kelas
                 </span>
@@ -129,7 +133,7 @@
                 </span>
 
 
-                {{-- KARTU INFORMASI KELAS --}}
+                {{-- KARTU INFORMASI --}}
                 <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
                             flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
 
@@ -140,7 +144,7 @@
                         </span>
 
                         <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
-                            Winartin, S.Pd.
+                            Badrus Sulaiman, S.Pd., Gr.
                         </span>
                     </div>
 
@@ -154,7 +158,7 @@
                         </span>
 
                         <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
-                            36 Siswa
+                            32 Siswa
                         </span>
                     </div>
 
@@ -168,7 +172,35 @@
                         </span>
 
                         <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
-                            Fitr
+                            Andi Pratama
+                        </span>
+                    </div>
+
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+
+
+                    {{-- RUANG KELAS --}}
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs sm:text-sm text-[#7A6A60]">
+                            Ruang Kelas
+                        </span>
+
+                        <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
+                            RPL 2
+                        </span>
+                    </div>
+
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+
+
+                    {{-- TAHUN AJARAN --}}
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs sm:text-sm text-[#7A6A60]">
+                            Tahun Ajaran
+                        </span>
+
+                        <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
+                            2026/2027
                         </span>
                     </div>
 
@@ -181,7 +213,7 @@
                             shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
 
                     <div>
-                        <div class="font-['Inter'] font-semibold text-sm text-[#3E3028]">
+                        <div class="font-semibold text-sm text-[#3E3028]">
                             Butuh bantuan?
                         </div>
 
@@ -193,9 +225,7 @@
                     <button type="button"
                             class="shrink-0 px-3 py-2 rounded-lg bg-[#F5EFE8] text-[#5C4033]
                                    text-xs sm:text-sm font-semibold hover:bg-[#EDE3D9]">
-
                         Hubungi
-
                     </button>
 
                 </div>
@@ -232,22 +262,18 @@
     </div>
 
 
-    {{-- ================================================= --}}
-    {{-- POPUP EDIT PROFIL --}}
-    {{-- ================================================= --}}
+    {{-- ========================================================= --}}
+    {{-- POPUP / MODAL EDIT PROFIL --}}
+    {{-- ========================================================= --}}
 
     <div id="editProfileModal"
-         class="hidden fixed inset-0 z-[100]
-                bg-black/40
+         class="hidden fixed inset-0 z-[100] bg-black/40
                 flex items-center justify-center
                 px-4 py-6">
 
         {{-- KOTAK POPUP --}}
-        <div class="bg-white w-full max-w-[500px]
-                    max-h-[90vh] overflow-y-auto
-                    rounded-[12px]
-                    shadow-[0_10px_35px_rgba(0,0,0,0.15)]">
-
+        <div class="bg-white w-full max-w-[500px] max-h-[90vh] overflow-y-auto
+                    rounded-[12px] shadow-[0_10px_35px_rgba(0,0,0,0.15)]">
 
             {{-- HEADER POPUP --}}
             <div class="px-5 py-4 sm:px-6 sm:py-5
@@ -264,14 +290,12 @@
                     </p>
                 </div>
 
-
                 {{-- TOMBOL X --}}
                 <button type="button"
                         onclick="closeEditProfile()"
                         class="w-8 h-8 flex items-center justify-center
                                rounded-lg text-[#7A6A60]
-                               hover:bg-[#F5EFE8]
-                               text-xl">
+                               hover:bg-[#F5EFE8] text-xl">
 
                     &times;
 
@@ -288,61 +312,52 @@
 
                     {{-- WALI KELAS --}}
                     <div>
-
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
                             Wali Kelas
                         </label>
 
                         <input type="text"
-                               value="Winartin, S.Pd."
+                               value="Badrus Sulaiman, S.Pd., Gr."
                                class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
-                                      bg-white
-                                      text-sm text-[#3E3028]
+                                      bg-white text-sm text-[#3E3028]
                                       outline-none
                                       focus:border-[#5C4033]
                                       focus:ring-1 focus:ring-[#5C4033]">
-
                     </div>
 
 
                     {{-- JUMLAH SISWA --}}
                     <div>
-
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
                             Jumlah Siswa
                         </label>
 
                         <input type="number"
-                               value="36"
+                               value="32"
                                class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
-                                      bg-white
-                                      text-sm text-[#3E3028]
+                                      bg-white text-sm text-[#3E3028]
                                       outline-none
                                       focus:border-[#5C4033]
                                       focus:ring-1 focus:ring-[#5C4033]">
-
                     </div>
 
 
                     {{-- KETUA KELAS --}}
                     <div>
-
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
                             Ketua Kelas
                         </label>
 
                         <input type="text"
-                               value="Fitr"
+                               value="Andi Pratama"
                                class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
-                                      bg-white
-                                      text-sm text-[#3E3028]
+                                      bg-white text-sm text-[#3E3028]
                                       outline-none
                                       focus:border-[#5C4033]
                                       focus:ring-1 focus:ring-[#5C4033]">
-
                     </div>
 
 
@@ -352,7 +367,6 @@
 
                     {{-- PASSWORD LAMA --}}
                     <div>
-
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
                             Password Lama
                         </label>
@@ -364,21 +378,19 @@
                                    placeholder="Masukkan password lama"
                                    class="w-full px-3.5 py-3 pr-11 rounded-lg
                                           border border-[#E5D8CC]
-                                          bg-white
-                                          text-sm text-[#3E3028]
+                                          bg-white text-sm text-[#3E3028]
                                           outline-none
                                           focus:border-[#5C4033]
                                           focus:ring-1 focus:ring-[#5C4033]">
 
-
-                            {{-- ICON MATA --}}
+                            {{-- MATA --}}
                             <button type="button"
-                                    onclick="togglePassword('oldPassword')"
+                                    onclick="togglePassword('oldPassword', 'oldEye')"
                                     class="absolute right-3 top-1/2 -translate-y-1/2
-                                           text-[#7A6A60]
-                                           hover:text-[#5C4033]">
+                                           text-[#7A6A60] hover:text-[#5C4033]">
 
-                                <svg class="w-5 h-5"
+                                <svg id="oldEye"
+                                     class="w-5 h-5"
                                      viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor"
@@ -392,13 +404,11 @@
                             </button>
 
                         </div>
-
                     </div>
 
 
                     {{-- PASSWORD BARU --}}
                     <div>
-
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
                             Password Baru
                         </label>
@@ -410,21 +420,19 @@
                                    placeholder="Masukkan password baru"
                                    class="w-full px-3.5 py-3 pr-11 rounded-lg
                                           border border-[#E5D8CC]
-                                          bg-white
-                                          text-sm text-[#3E3028]
+                                          bg-white text-sm text-[#3E3028]
                                           outline-none
                                           focus:border-[#5C4033]
                                           focus:ring-1 focus:ring-[#5C4033]">
 
-
-                            {{-- ICON MATA --}}
+                            {{-- MATA --}}
                             <button type="button"
-                                    onclick="togglePassword('newPassword')"
+                                    onclick="togglePassword('newPassword', 'newEye')"
                                     class="absolute right-3 top-1/2 -translate-y-1/2
-                                           text-[#7A6A60]
-                                           hover:text-[#5C4033]">
+                                           text-[#7A6A60] hover:text-[#5C4033]">
 
-                                <svg class="w-5 h-5"
+                                <svg id="newEye"
+                                     class="w-5 h-5"
                                      viewBox="0 0 24 24"
                                      fill="none"
                                      stroke="currentColor"
@@ -438,13 +446,13 @@
                             </button>
 
                         </div>
-
                     </div>
+
 
                 </div>
 
 
-                {{-- TOMBOL BATAL & SIMPAN --}}
+                {{-- TOMBOL --}}
                 <div class="flex gap-3 mt-6">
 
                     {{-- BATAL --}}
@@ -453,8 +461,7 @@
                             class="flex-1 px-4 py-3
                                    rounded-lg
                                    border border-[#E5D8CC]
-                                   bg-white
-                                   text-[#5C4033]
+                                   bg-white text-[#5C4033]
                                    text-sm font-semibold
                                    hover:bg-[#F5EFE8]">
 
@@ -468,8 +475,7 @@
                             onclick="saveProfile()"
                             class="flex-1 px-4 py-3
                                    rounded-lg
-                                   bg-[#5C4033]
-                                   text-white
+                                   bg-[#5C4033] text-white
                                    text-sm font-semibold
                                    hover:bg-[#4B3329]">
 
@@ -486,9 +492,9 @@
     </div>
 
 
-    {{-- ================================================= --}}
+    {{-- ========================================================= --}}
     {{-- BOTTOM NAV MOBILE --}}
-    {{-- ================================================= --}}
+    {{-- ========================================================= --}}
 
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px]
                 bg-white border-t border-[#E5D8CC]
@@ -504,10 +510,8 @@
                  fill="none"
                  stroke="currentColor"
                  stroke-width="2">
-
                 <path d="M3 12l9-9 9 9"/>
                 <path d="M5 10v10h14V10"/>
-
             </svg>
 
             Dasbor
@@ -524,11 +528,9 @@
                  fill="none"
                  stroke="currentColor"
                  stroke-width="2">
-
                 <rect x="3" y="3" width="7" height="7"/>
                 <rect x="14" y="3" width="7" height="7"/>
                 <rect x="3" y="14" width="7" height="7"/>
-
             </svg>
 
             Scan
@@ -545,10 +547,8 @@
                  fill="none"
                  stroke="currentColor"
                  stroke-width="2">
-
                 <path d="M22 2L11 13"/>
                 <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-
             </svg>
 
             Kirim Jurnal
@@ -565,10 +565,8 @@
                  fill="none"
                  stroke="currentColor"
                  stroke-width="2">
-
                 <circle cx="12" cy="8" r="4"/>
                 <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
-
             </svg>
 
             Profil
@@ -577,58 +575,49 @@
     </nav>
 
 
-    {{-- ================================================= --}}
-    {{-- JAVASCRIPT --}}
-    {{-- ================================================= --}}
+    {{-- ========================================================= --}}
+    {{-- JAVASCRIPT POPUP --}}
+    {{-- ========================================================= --}}
 
     <script>
 
-        // BUKA POPUP EDIT PROFIL
+        // BUKA POPUP
         function openEditProfile() {
-
             const modal = document.getElementById('editProfileModal');
 
             modal.classList.remove('hidden');
 
             document.body.classList.add('overflow-hidden');
-
         }
 
 
-        // TUTUP POPUP EDIT PROFIL
+        // TUTUP POPUP
         function closeEditProfile() {
-
             const modal = document.getElementById('editProfileModal');
 
             modal.classList.add('hidden');
 
             document.body.classList.remove('overflow-hidden');
-
         }
 
 
-        // LIHAT / SEMBUNYIKAN PASSWORD
-        function togglePassword(inputId) {
+        // TAMPILKAN / SEMBUNYIKAN PASSWORD
+        function togglePassword(inputId, eyeId) {
 
             const input = document.getElementById(inputId);
 
             if (input.type === 'password') {
-
                 input.type = 'text';
-
             } else {
-
                 input.type = 'password';
-
             }
-
         }
 
 
         // TOMBOL SIMPAN
-        // Sementara hanya menutup popup karena belum terhubung database
         function saveProfile() {
 
+            // sementara frontend saja
             closeEditProfile();
 
         }
@@ -638,9 +627,7 @@
         document.getElementById('editProfileModal').addEventListener('click', function(event) {
 
             if (event.target === this) {
-
                 closeEditProfile();
-
             }
 
         });
