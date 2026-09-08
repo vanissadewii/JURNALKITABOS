@@ -352,32 +352,6 @@
 
             </div>
 
-
-            <!-- =========================
-                 LOG OUT
-            ========================== -->
-
-            <div
-                class="w-full max-w-[600px]
-                       min-[800px]:max-w-[700px]"
-            >
-
-                <a
-                    href="/"
-                    class="w-full h-[45px] rounded-lg
-                           flex items-center justify-center
-                           text-[14px] font-semibold
-                           no-underline
-                           bg-[#5C4033] text-white
-                           hover:bg-[#4A3329]
-                           min-[800px]:h-[52px]
-                           min-[800px]:text-[16px]"
-                >
-                    Log Out
-                </a>
-
-            </div>
-
         </main>
 
 
@@ -473,7 +447,6 @@
                         stroke-linecap="round"
                         stroke-linejoin="round"
                     >
-                        <!-- Kotak kalender -->
                         <rect
                             x="4"
                             y="5"
@@ -482,10 +455,8 @@
                             rx="2"
                         ></rect>
 
-                        <!-- Garis atas -->
                         <path d="M4 9h16"></path>
 
-                        <!-- Dua kait kalender -->
                         <path d="M8 3v4"></path>
                         <path d="M16 3v4"></path>
 
