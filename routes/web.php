@@ -60,14 +60,13 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
         ->name('profile');
 });
 
-    Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/home', fn () => view('home'))->name('home');
 
     Route::resource('admin/kelas', MasterKelasController::class)
         ->names('admin.kelas');
 
-    });
-    
+});
 
 // Route Tampilkan QR Guru
 Route::get('/tampilkan-qr-guru', function () {
