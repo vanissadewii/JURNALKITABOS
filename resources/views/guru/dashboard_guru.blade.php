@@ -162,7 +162,7 @@
         <span>Jurnal</span>
       </a>
 
-      <a href="{{ url('/dashboard-guru') }}" class="flex flex-col md:flex-row items-center gap-1.5 md:gap-3 text-xs md:text-sm font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      <a href="{{ url('/profil-guru') }}" class="flex flex-col md:flex-row items-center gap-1.5 md:gap-3 text-xs md:text-sm font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
           <circle cx="10" cy="6.5" r="3.5"/>

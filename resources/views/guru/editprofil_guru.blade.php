@@ -665,26 +665,27 @@
     <!-- NAVIGASI BAWAH -->
     <div class="bottom-navigation">
 
-        <div class="nav-item">
-            <div class="nav-icon">⌂</div>
-            <span>Dashboard</span>
-        </div>
+            <a href="{{ url('/dashboard-guru') }}" class="nav-item" style="text-decoration: none;">
+                <div class="nav-icon">⌂</div>
+                <span>Dashboard</span>
+            </a>
 
-        <div class="nav-item">
-            <div class="nav-icon">▣</div>
-            <span>Jurnal</span>
-        </div>
+            <a href="{{ url('/mulai-sesi') }}" class="nav-item" style="text-decoration: none;">
+                <div class="nav-icon">▣</div>
+                <span>Jurnal</span>
+            </a>
 
-        <div class="nav-item">
-            <div class="nav-icon">▤</div>
-            <span>Rekap</span>
-        </div>
+            <a href="{{ url('/rekap-jurnal') }}" class="nav-item" style="text-decoration: none;">
+                <div class="nav-icon">▤</div>
+                <span>Rekap</span>
+            </a>
 
-            <div class="nav-item active">
-            <div class="nav-icon">○</div>
-            <span>Profil</span>
+            <a href="{{ url('/profil-guru') }}" class="nav-item active" style="text-decoration: none;">
+                <div class="nav-icon">○</div>
+                <span>Profil</span>
+            </a>
+
         </div>
-    </div>
 
 </div>
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -465,121 +466,126 @@
                 font-size: 28px;
             }
         }
-
     </style>
 </head>
 
 <body>
 
-<div class="guru-profil">
+    <div class="guru-profil">
 
-    <!-- HEADER -->
-    <div class="screen-header">
+        <!-- HEADER -->
+        <div class="screen-header">
 
-        <div class="header-space"></div>
+            <div class="header-space"></div>
 
-        <h1>Profil Saya</h1>
+            <h1>Profil Saya</h1>
 
-        <div class="header-space"></div>
+            <div class="header-space"></div>
 
+        </div>
+
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- PROFIL -->
+            <div class="profile">
+
+                <div class="avatar">
+                    ♙
+                </div>
+
+                <div class="profile-info">
+                    <h2>Budi Santoso, S.Pd.</h2>
+                </div>
+
+            </div>
+
+
+            <!-- DATA GURU -->
+            <div class="data-card">
+
+                <div class="data-row">
+                    <span class="data-label">NIP</span>
+                    <span class="data-value">
+                        198501012010011001
+                    </span>
+                </div>
+
+                <div class="line"></div>
+
+                <div class="data-row">
+                    <span class="data-label">No. Handphone</span>
+                    <span class="data-value">
+                        081234560001
+                    </span>
+                </div>
+
+                <div class="line"></div>
+
+                <div class="data-row">
+                    <span class="data-label">Unit Kerja</span>
+                    <span class="data-value">
+                        SMK Negeri 1 Jakarta
+                    </span>
+                </div>
+
+                <div class="line"></div>
+
+                <div class="data-row">
+                    <span class="data-label">Mata Pelajaran</span>
+                    <span class="data-value">
+                        Matematika
+                    </span>
+                </div>
+
+            </div>
+
+
+            <!-- TOMBOL -->
+            <div class="buttons">
+
+                <a href="{{ url('/editprofil-guru') }}" class="btn btn-edit" style="text-decoration: none;">
+                    Edit Profil
+                </a>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn" style="width: 100%; background: #DC2626; color: white; border: none;">
+                        Log Out
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+
+        <!-- NAVIGASI BAWAH -->
+        <div class="bottom-navigation">
+
+            <a href="{{ url('/dashboard-guru') }}" class="nav-item" style="text-decoration: none;">
+                <div class="nav-icon">⌂</div>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url('/mulai-sesi') }}" class="nav-item" style="text-decoration: none;">
+                <div class="nav-icon">▣</div>
+                <span>Jurnal</span>
+            </a>
+
+            <a href="{{ url('/rekap-jurnal') }}" class="nav-item" style="text-decoration: none;">
+                <div class="nav-icon">▤</div>
+                <span>Rekap</span>
+            </a>
+
+            <a href="{{ url('/profil-guru') }}" class="nav-item active" style="text-decoration: none;">
+                <div class="nav-icon">○</div>
+                <span>Profil</span>
+            </a>
+
+        </div>
     </div>
-
-
-    <!-- CONTENT -->
-    <div class="content">
-
-        <!-- PROFIL -->
-        <div class="profile">
-
-            <div class="avatar">
-                ♙
-            </div>
-
-            <div class="profile-info">
-                <h2>Budi Santoso, S.Pd.</h2>
-            </div>
-
-        </div>
-
-
-        <!-- DATA GURU -->
-        <div class="data-card">
-
-            <div class="data-row">
-                <span class="data-label">NIP</span>
-                <span class="data-value">
-                    198501012010011001
-                </span>
-            </div>
-
-            <div class="line"></div>
-
-            <div class="data-row">
-                <span class="data-label">No. Handphone</span>
-                <span class="data-value">
-                    081234560001
-                </span>
-            </div>
-
-            <div class="line"></div>
-
-            <div class="data-row">
-                <span class="data-label">Unit Kerja</span>
-                <span class="data-value">
-                    SMK Negeri 1 Jakarta
-                </span>
-            </div>
-
-            <div class="line"></div>
-
-            <div class="data-row">
-                <span class="data-label">Mata Pelajaran</span>
-                <span class="data-value">
-                    Matematika
-                </span>
-            </div>
-
-        </div>
-
-
-        <!-- TOMBOL -->
-        <div class="buttons">
-
-            <div class="btn btn-edit">
-                Edit Profil
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- NAVIGASI BAWAH -->
-    <div class="bottom-navigation">
-
-        <div class="nav-item">
-            <div class="nav-icon">⌂</div>
-            <span>Dashboard</span>
-        </div>
-
-        <div class="nav-item">
-            <div class="nav-icon">▣</div>
-            <span>Jurnal</span>
-        </div>
-
-        <div class="nav-item">
-            <div class="nav-icon">▤</div>
-            <span>Rekap</span>
-        </div>
-
-        <div class="nav-item active">
-            <div class="nav-icon">○</div>
-            <span>Profil</span>
-        </div>
-
-    </div>
-
-</div>
 
 </body>
+
 </html>
