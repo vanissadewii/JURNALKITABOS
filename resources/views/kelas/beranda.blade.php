@@ -1,505 +1,212 @@
-@extends('layouts.kelas')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dasbor</title>
 
-@section('title', 'Dasbor')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-@section('content')
+    @vite('resources/css/app.css')
+</head>
 
-<style>
-    .header-kelas {
-        background: #5C4033;
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
+<body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
 
-    .sapaan {
-        color: #D7B899;
-        font-size: 13px;
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
-    }
+    <div class="md:flex">
 
-    .nama-kelas {
-        color: #FFFFFF;
-        font-size: 22px;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-    }
+        {{-- SIDEBAR (desktop) --}}
+        <aside class="hidden md:flex md:flex-col md:w-64 md:h-screen md:sticky md:top-0
+                       bg-white border-r border-[#E5D8CC] py-6 px-4">
 
-    .tanggal {
-        color: #D7B899;
-        font-size: 12px;
-        font-family: 'Inter', sans-serif;
-        font-weight: 500;
-        margin-top: 2px;
-    }
-
-    .content-kelas {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .section-title {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-        font-size: 14px;
-        text-transform: uppercase;
-        color: #3E3028;
-        margin-top: 4px;
-    }
-
-    .session-card {
-        background: #FFFFFF;
-        border: 1px solid #E5D8CC;
-        border-radius: 10px;
-        padding: 16px;
-
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-
-        box-shadow: 0 4px 12px rgba(62, 48, 40, 0.03);
-    }
-
-    .session-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .mapel {
-        font-family: 'Poppins', sans-serif;
-        font-weight: 700;
-        font-size: 18px;
-        color: #3E3028;
-    }
-
-    .guru {
-        font-family: 'Inter', sans-serif;
-        font-weight: 600;
-        font-size: 14px;
-        color: #7A6A60;
-        margin-top: 2px;
-    }
-
-    .status {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 6px;
-        white-space: nowrap;
-    }
-
-    /* STATUS SESI */
-    .status-berjalan {
-        background: #FFFDE7;
-        color: #F57F17;
-    }
-
-    .status-belum {
-        background: #F5F5F5;
-        color: #7A6A60;
-    }
-
-    .status-selesai {
-        background: #E8F5E9;
-        color: #2E7D32;
-    }
-
-    .session-card hr {
-        border: none;
-        border-top: 1px solid #E5D8CC;
-        width: 100%;
-        margin: 0;
-    }
-
-    .jam {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-
-        font-size: 13px;
-        color: #7A6A60;
-        font-family: 'Inter', sans-serif;
-    }
-
-    .jam svg {
-        flex-shrink: 0;
-    }
-
-    .btn-scan {
-        background: #5C4033;
-        color: #FFFFFF;
-
-        border: none;
-        border-radius: 8px;
-
-        padding: 12px;
-
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 14px;
-
-        cursor: pointer;
-        width: 100%;
-
-        transition: 0.2s ease;
-    }
-
-    .btn-scan:hover {
-        opacity: 0.9;
-    }
-
-    /* CHECK SUDAH SCAN */
-    .scan-selesai {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        font-weight: 600;
-        color: #2E7D32;
-    }
-
-    .check-box {
-        width: 20px;
-        height: 20px;
-        border-radius: 5px;
-        background: #4CAF50;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .check-box svg {
-        width: 13px;
-        height: 13px;
-    }
-
-    .status-tidak-hadir {
-    background: #F5F5F5;
-    color: #757575;
-    }
-
-    .guru-tidak-hadir {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: #757575;
-    }
-
-    .icon-tidak-hadir {
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    background: #9E9E9E;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    color: #FFFFFF;
-    font-size: 13px;
-    font-weight: bold;
-    }
-
-    @media (min-width: 600px) {
-
-        .header-kelas {
-            padding: 26px;
-        }
-
-        .content-kelas {
-            padding: 24px;
-        }
-
-        .session-card {
-            padding: 18px;
-        }
-    }
-
-    @media (min-width: 900px) {
-
-        .header-kelas {
-            padding: 28px;
-        }
-
-        .nama-kelas {
-            font-size: 24px;
-        }
-
-        .content-kelas {
-            padding: 28px;
-        }
-
-        .session-card {
-            padding: 20px;
-        }
-    }
-
-    @media (max-width: 430px) {
-
-        .header-kelas {
-            padding: 20px 16px;
-        }
-
-        .nama-kelas {
-            font-size: 20px;
-        }
-
-        .content-kelas {
-            padding: 16px;
-        }
-
-        .session-card {
-            padding: 14px;
-        }
-
-        .mapel {
-            font-size: 17px;
-        }
-
-        .guru {
-            font-size: 13px;
-        }
-    }
-
-    @media (max-width: 380px) {
-
-        .session-header {
-            align-items: flex-start;
-        }
-
-        .mapel {
-            font-size: 16px;
-        }
-
-        .guru {
-            font-size: 12px;
-        }
-
-        .status {
-            font-size: 10px;
-            padding: 4px 8px;
-        }
-
-        .btn-scan {
-            font-size: 13px;
-        }
-    }
-
-</style>
-
-
-<!-- =========================
-     HEADER
-========================= -->
-
-<div class="header-kelas">
-
-    <span class="sapaan">
-        Hai 👋
-    </span>
-
-    <span class="nama-kelas">
-        {{ $kelas->nama_kelas ?? 'XI RPL 2' }}
-    </span>
-
-    <span class="tanggal">
-        {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
-    </span>
-
-</div>
-
-
-<div class="content-kelas">
-
-    <!-- SESI MENGAJAR -->
-    <span class="section-title">
-        Sesi Mengajar Aktif
-    </span>
-
-    <div class="session-card">
-
-        <div class="session-header">
-
-            <div>
-                <div class="mapel">
-                    Matematika
-                </div>
-
-                <div class="guru">
-                    Badrus Sulaiman, S.Pd., Gr.
-                </div>
+            <div class="mb-8 px-2">
+                <h1 class="font-['Poppins'] font-bold text-xl text-[#5C4033]">JURNAL GURU</h1>
+                <p class="text-md text-[#7A6A60] mt-1">Akun Kelas</p>
             </div>
 
-            <span class="status status-berjalan">
-                Sedang Berjalan
-            </span>
+            <nav class="flex flex-col gap-1">
+                <a href="{{ route('kelas.beranda') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>
+                    </svg>
+                    Dasbor
+                </a>
+                <a href="{{ route('kelas.scan') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    Scan
+                </a>
+                <a href="{{ route('kelas.kirim-jurnal') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    Kirim Jurnal
+                </a>
+                <a href="{{ route('kelas.profile') }}"
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                    </svg>
+                    Profil
+                </a>
+            </nav>
+        </aside>
 
-        </div>
+        {{-- KONTEN UTAMA --}}
+        <main class="flex-1 w-full pb-24 md:pb-8">
 
-        <hr>
-
-        <div class="jam">
-
-            <svg width="14"
-                 height="14"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="#7A6A60"
-                 stroke-width="2">
-
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 7v5l3 3"/>
-
-            </svg>
-
-            <span>
-                10:00 – 13:50 (Jam ke-5 sampai ke-8)
-            </span>
-
-        </div>
-
-        <div class="scan-selesai">
-
-            <div class="check-box">
-
-                <svg viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="#FFFFFF"
-                     stroke-width="3">
-
-                    <path d="M5 12l4 4L19 6"/>
-
-                </svg>
-
+            {{-- HEADER (full-bleed, nggak ada padding samping) --}}
+            <div class="bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
+                <span class="text-[#FFFFFF] text-[20px] font-['Poppins']">Hai 👋</span>
+                <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
+                    {{ $kelas->nama_kelas ?? 'XI RPL 2' }}
+                </span>
+                <span class="text-[#D7B899] text-xs font-medium mt-0.8">
+                    {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
+                </span>
             </div>
 
-            <span>
-                Kehadiran terverifikasi
-            </span>
+            {{-- KARTU-KARTU (ada padding) --}}
+            <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-3.5">
 
-        </div>
+                <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028] mt-1">
+                    Sesi Mengajar Aktif
+                </span>
+
+                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
+                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                    <div class="flex justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Matematika</div>
+                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Badrus Sulaiman, S.Pd., Gr.</div>
+                        </div>
+                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#FFFDE7] text-[#F57F17]">
+                            Sedang Berjalan
+                        </span>
+                    </div>
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
+                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                        </svg>
+                        <span>10:00 – 13:50 (Jam ke-5 sampai ke-8)</span>
+                    </div>
+                    <div class="flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-[#2E7D32]">
+                        <div class="w-5 h-5 rounded-[5px] bg-[#4CAF50] flex items-center justify-center">
+                            <svg class="w-[13px] h-[13px]" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3">
+                                <path d="M5 12l4 4L19 6"/>
+                            </svg>
+                        </div>
+                        <span>Kehadiran terverifikasi</span>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
+                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                    <div class="flex justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Inggris</div>
+                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Siti Aminah, S.Pd.</div>
+                        </div>
+                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#F5F5F5] text-[#7A6A60]">
+                            Belum Dimulai
+                        </span>
+                    </div>
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
+                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                        </svg>
+                        <span>13:00 – 15:00 (Jam ke-9 sampai ke-10)</span>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
+                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                    <div class="flex justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Jepang</div>
+                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Sulistyowati, SS.</div>
+                        </div>
+                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#E3F2FD] text-[#1976D2]">
+                            Izin (Pending)
+                        </span>
+                    </div>
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
+                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                        </svg>
+                        <span>15:00 – 16:00 (Jam ke-10 sampai ke-11)</span>
+                    </div>
+                    <!-- TUGAS -->
+                    <div class="bg-[#FDFBF7] border border-[#E5D8CC] rounded-[8px] p-3 sm:p-4">
+                    <div class="font-['Inter'] font-semibold text-[13px] sm:text-sm text-[#3E3028] mb-1">
+                        Tugas:
+                    </div>
+
+                    <div class="font-['Inter'] text-[13px] sm:text-sm text-[#7A6A60]">
+                        Mengerjakan latihan Bahasa Jepang halaman 25
+                    </div>
+                    </div>
+                </div>
+
+                <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028] mt-1">
+                    Sesi Mengajar Selesai
+                </span>
+
+                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
+                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                    <div class="flex justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">PJOK</div>
+                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Zainul Arifin, S.Pd.</div>
+                        </div>
+                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#FFEBEE] text-[#D32F2F]">
+                            Tidak Hadir
+                        </span>
+                    </div>
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
+                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                        </svg>
+                        <span>07:00 – 09:40 (Jam ke-1 sampai ke-4)</span>
+                    </div>
+                    <div class="flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-[#757575]">
+                        <div class="w-5 h-5 rounded-[5px] bg-[#D32F2F] flex items-center justify-center text-white text-[13px] font-bold">✕</div>
+                        <span>Guru tidak hadir</span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
 
     </div>
 
-    <!-- BAHASA INGGRIS -->
-    <div class="session-card">
+    {{-- BOTTOM NAV (mobile) --}}
+    <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
+        <a href="{{ route('kelas.beranda') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+            Dasbor
+        </a>
+        <a href="{{ route('kelas.scan') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Scan
+        </a>
+        <a href="{{ route('kelas.kirim-jurnal') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            Kirim Jurnal
+        </a>
+        <a href="{{ route('kelas.profile') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+            Profil
+        </a>
+    </nav>
 
-        <div class="session-header">
-
-            <div>
-                <div class="mapel">
-                    Bahasa Inggris
-                </div>
-
-                <div class="guru">
-                    Siti Aminah, S.Pd.
-                </div>
-            </div>
-
-            <span class="status status-belum">
-                Belum Dimulai
-            </span>
-
-        </div>
-
-        <hr>
-
-        <div class="jam">
-
-            <svg width="14"
-                 height="14"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="#7A6A60"
-                 stroke-width="2">
-
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 7v5l3 3"/>
-
-            </svg>
-
-            <span>
-                13:00 – 15:00 (Jam ke-9 sampai ke-10)
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <span class="section-title">
-        Sesi Mengajar Selesai
-    </span>
-
-    <div class="session-card">
-
-        <div class="session-header">
-
-            <div>
-                <div class="mapel">
-                    PJOK
-                </div>
-
-                <div class="guru">
-                    Zainul Arifin, S.Pd.
-                </div>
-            </div>
-
-            <span class="status status-tidak-hadir">
-                Tidak Hadir
-            </span>
-
-        </div>
-
-        <hr>
-
-        <div class="jam">
-
-            <svg width="14"
-                 height="14"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="#7A6A60"
-                 stroke-width="2">
-
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 7v5l3 3"/>
-
-            </svg>
-
-            <span>
-                07:00 – 09:40 (Jam ke-1 sampai ke-4)
-            </span>
-
-        </div>
-
-        <div class="guru-tidak-hadir">
-
-        <div class="icon-tidak-hadir">
-             ✕
-        </div>
-
-        <span>
-        Guru tidak hadir
-        </span>
-
-        </div>
-
-    </div>
-
-</div>
-
-@endsection
+</body>
+</html>
