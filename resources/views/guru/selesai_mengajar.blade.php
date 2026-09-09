@@ -22,9 +22,10 @@
           },
           colors: {
             brand: {
-              50: '#F5EFE8',
-              100: '#E5D8CC',
+              50: '#F9F6F0',
+              100: '#EFE6DD',
               200: '#E2C7B0',
+              300: '#D7B899',
               600: '#7A6A60',
               700: '#6D5C52',
               800: '#5C4033',
@@ -36,78 +37,78 @@
     }
   </script>
 </head>
-<body class="bg-[#F5EFE8] font-sans min-h-screen relative overflow-x-hidden text-[#3E3028]">
+<body class="bg-brand-50 font-sans min-h-screen relative overflow-x-hidden text-[#3E3028] flex">
 
-  <!-- Background Content (Latar Belakang Sesi Berjalan) -->
-  <div class="w-full min-h-screen opacity-40 pointer-events-none flex flex-col justify-between">
+  <!-- BACKGROUND BACKDROP CONTENT (Latar Belakang Sesi Berjalan) -->
+  <div class="w-full min-h-screen opacity-30 pointer-events-none flex flex-col justify-between flex-1 md:ml-64">
     
-    <!-- Screen Header Backdrop -->
-    <header class="w-full bg-white border-b border-[#E5D8CC] h-12 flex items-center justify-between px-4">
-      <div class="w-8 h-8"></div>
-      <h1 class="font-poppins font-semibold text-base text-[#3E3028]">Sesi Berjalan</h1>
-      <div class="w-8 h-8"></div>
+    <!-- Header Backdrop -->
+    <header class="w-full bg-[#5C4033] h-16 flex items-center justify-between px-6">
+      <div class="w-9 h-9"></div>
+      <h1 class="font-poppins font-bold text-base text-white">Sesi Berjalan</h1>
+      <div class="w-9 h-9"></div>
     </header>
 
     <!-- Main Content Background Placeholder -->
-    <main class="max-w-md mx-auto w-full p-5 flex flex-col gap-4">
-      <div class="bg-white rounded-xl p-4 flex flex-col gap-2">
-        <h3 class="font-bold text-lg text-[#3E3028]">Matematika - X RPL 1</h3>
-        <span class="text-sm text-[#7A6A60]">07:00 – 07:45 (Jam ke-1)</span>
+    <main class="max-w-xl mx-auto w-full p-6 flex flex-col gap-4">
+      <div class="bg-white rounded-2xl p-6 flex flex-col gap-2 border border-brand-100">
+        <h3 class="font-bold text-xl text-[#3E3028]">Matematika - X RPL 1</h3>
+        <span class="text-sm text-brand-600">07:00 – 07:45 (Jam ke-1)</span>
       </div>
     </main>
 
     <div></div>
   </div>
 
-  <!-- Modal Backdrop Overlay (Dialog Box Utama) -->
-  <div class="fixed inset-0 bg-[#3E3028]/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+  <!-- MODAL DIALOG OVERLAY UTAMA -->
+  <div class="fixed inset-0 bg-[#3E3028]/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
     
-    <!-- Dialog Box Card (342px Width Sesuai Figma) -->
-    <div class="bg-white w-full max-w-[342px] rounded-xl p-6 shadow-[0_8px_24px_rgba(62,48,40,0.15)] flex flex-col gap-6 border border-[#E5D8CC]/50 animate-in fade-in zoom-in-95 duration-200">
+    <!-- Dialog Box Card -->
+    <div class="bg-white w-full max-w-[342px] rounded-2xl p-6 shadow-xl flex flex-col gap-6 border border-brand-100 animate-in fade-in zoom-in-95 duration-200">
       
       <!-- Dialog Header Text -->
-      <div class="flex flex-col gap-2">
-        <h2 class="font-poppins font-bold text-[20px] leading-[30px] text-[#3E3028]">
+      <div class="flex flex-col gap-1.5">
+        <h2 class="font-poppins font-bold text-xl leading-tight text-[#3E3028]">
           Selesai Mengajar?
         </h2>
-        <p class="text-[14px] leading-[17px] text-[#7A6A60]">
+        <p class="text-xs leading-relaxed text-brand-600">
           Konfirmasi penyelesaian sesi untuk memproses jurnal mengajar.
         </p>
       </div>
 
       <!-- Sesi Ringkasan Box -->
-      <div class="bg-[#F5EFE8] rounded-lg p-4 flex flex-col gap-2.5">
+      <div class="bg-brand-50/80 rounded-xl p-4 flex flex-col gap-2.5 border border-brand-100/60">
         
-        <div class="flex justify-between items-center text-[13px] leading-[16px]">
-          <span class="text-[#7A6A60]">Kelas</span>
-          <span class="font-semibold text-[#3E3028] text-right">X RPL 1</span>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-brand-600 font-medium">Kelas</span>
+          <span class="font-bold text-[#3E3028]">X RPL 1</span>
         </div>
 
-        <div class="w-full h-px bg-[#E5D8CC]"></div>
+        <div class="w-full h-px bg-brand-100"></div>
 
-        <div class="flex justify-between items-center text-[13px] leading-[16px]">
-          <span class="text-[#7A6A60]">Mulai</span>
-          <span class="font-semibold text-[#3E3028] text-right">07:03 WIB</span>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-brand-600 font-medium">Mulai</span>
+          <span class="font-bold text-[#3E3028]">07:03 WIB</span>
         </div>
 
-        <div class="w-full h-px bg-[#E5D8CC]"></div>
+        <div class="w-full h-px bg-brand-100"></div>
 
-        <div class="flex justify-between items-center text-[13px] leading-[16px]">
-          <span class="text-[#7A6A60]">Waktu Sekarang</span>
-          <span class="font-semibold text-[#3E3028] text-right">07:43 WIB</span>
+        <div class="flex justify-between items-center text-xs">
+          <span class="text-brand-600 font-medium">Waktu Sekarang</span>
+          <span class="font-bold text-[#3E3028]">07:43 WIB</span>
         </div>
 
       </div>
 
       <!-- Action Button Group -->
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-2.5">
         <!-- Tombol Konfirmasi 'Ya, Selesai' -->
-        <a href="{{ url('/dashboard-guru') }}" class="w-full h-[45px] bg-[#5C4033] hover:bg-[#4A3329] text-white font-poppins font-semibold text-[14px] leading-[21px] rounded-lg flex items-center justify-center shadow-md active:scale-[0.98] transition-all">
+        <a href="{{ url('/dashboard-guru') }}" class="w-full h-11 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-xs rounded-xl flex items-center justify-center shadow-md active:scale-[0.98] transition-all">
           Ya, Selesai
         </a>
 
         <!-- Tombol Batal -->
-        <a href="{{ url('/sesi-terverifikasi') }}" class="w-full h-[45px] bg-white border-[1.5px] border-[#5C4033] text-[#5C4033] hover:bg-[#F5EFE8] font-poppins font-semibold text-[14px] leading-[21px] rounded-lg flex items-center justify-center active:scale-[0.98] transition-all">
+        <a href="{{ url('/sesi-terverifikasi') }}" class="w-full h-11 bg-white border border-[#5C4033] text-[#5C4033] hover:bg-brand-50 font-poppins font-semibold text-xs rounded-xl flex items-center justify-center active:scale-[0.98] transition-all">
           Batal
         </a>
       </div>
