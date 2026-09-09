@@ -68,11 +68,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Relasi ke tabel Kelas (Setiap User role 'kelas' terhubung ke 1 Kelas).
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Kelas, $this>
      */
     public function kelas(): BelongsTo
     {
-        return $this->belongsTo(Kelas::class, 'id_kelas', 'id_kelas');
+        return $this->belongsTo(Kelas::class);
     }
 
     /**
