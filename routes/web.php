@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MasterKelasController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // Route ke profil-guru
@@ -86,7 +87,7 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', function () {
-        $role_user = Illuminate\Support\Facades\Auth::user()->role;
+        $role_user = Auth::user()->role;
 
         if ($role_user == 'admin') {
             return view('admin.dashboard_admin');
