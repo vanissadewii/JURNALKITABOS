@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Kelas;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -22,19 +22,19 @@ class UserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'username'   => 'required|string|max:50|unique:users,username',
-            'password'   => 'required|min:8',
-            'role'       => 'required|in:kelas,guru,guru_piket,admin',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:50|unique:users,username',
+            'password' => 'required|min:8',
+            'role' => 'required|in:kelas,guru,guru_piket,admin',
             'no_telepon' => 'nullable|string|max:20',
-            'status'     => 'required|in:aktif,nonaktif,pending',
-            'id_kelas'   => 'nullable|exists:kelas,id_kelas',
+            'status' => 'required|in:aktif,nonaktif,pending',
+            'id_kelas' => 'nullable|exists:kelas,id_kelas',
         ]);
 
         $validated['password'] = bcrypt($validated['password']);
-        
+
         // Buatkan email dummy otomatis agar tidak kena error NULL di database
-        $validated['email'] = strtolower(trim($validated['username'])) . '@jurnalkitabos.local';
+        $validated['email'] = strtolower(trim($validated['username'])).'@jurnalkitabos.local';
 
         User::create($validated);
 

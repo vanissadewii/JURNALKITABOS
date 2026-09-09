@@ -7,16 +7,16 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('username', 50)->unique()->after('name');
-    });
-}
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('username', 50)->unique()->after('name');
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('users', function (Blueprint $table) {
-        $table->dropColumn('username');
-    });
-}
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('username');
+        });
+    }
 };
