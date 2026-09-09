@@ -52,9 +52,7 @@ Route::get('/edit-profil', function () {
 
 // Fitur & Preview Tampilan Kelas / Siswa
 Route::get('/preview-beranda', function () {
-    return view('kelas.beranda', [
-        'kelas' => (object) ['nama_kelas' => 'XI RPL 2'],
-    ]);
+    return view('kelas.beranda');
 });
 
 Route::prefix('kelas')->name('kelas.')->group(function () {
