@@ -1,585 +1,198 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Guru</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Saya - Guru</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#F9F6F0',
+              100: '#EFE6DD',
+              200: '#E2C7B0',
+              300: '#D7B899',
+              600: '#7A6A60',
+              700: '#6D5C52',
+              800: '#5C4033',
+              900: '#3E2B22',
+            }
+          }
         }
-
-        html,
-        body {
-            width: 100%;
-            min-height: 100%;
-            font-family: Arial, sans-serif;
-            background: #F5EFE8;
-        }
-
-        /* =========================================
-           HALAMAN UTAMA
-        ========================================= */
-
-        .guru-profil {
-            width: 100%;
-            min-height: 100vh;
-            background: #F5EFE8;
-            display: flex;
-            flex-direction: column;
-            color: #3E3028;
-        }
-
-
-        /* =========================================
-           HEADER
-        ========================================= */
-
-        .screen-header {
-            width: 100%;
-            height: 48px;
-            padding: 0 16px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            border-bottom: 1px solid #E5D8CC;
-        }
-
-        .header-space {
-            width: 32px;
-            height: 32px;
-        }
-
-        .screen-header h1 {
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-
-        /* =========================================
-           CONTENT
-        ========================================= */
-
-        .content {
-            width: 100%;
-            flex: 1;
-
-            padding: 24px;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            gap: 24px;
-        }
-
-
-        /* =========================================
-           PROFILE
-        ========================================= */
-
-        .profile {
-            width: 100%;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 80px;
-            height: 80px;
-
-            border-radius: 50%;
-            background: #D7B899;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-size: 28px;
-        }
-
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .profile-info h2 {
-            font-size: 18px;
-            font-weight: 700;
-            text-align: center;
-        }
-
-
-        /* =========================================
-           DATA GURU
-        ========================================= */
-
-        .data-card {
-            width: 100%;
-
-            padding: 16px;
-
-            background: #FFFFFF;
-            border: 1px solid #E5D8CC;
-            border-radius: 10px;
-        }
-
-        .data-row {
-            min-height: 16px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            gap: 10px;
-
-            font-size: 11px;
-        }
-
-        .data-label {
-            color: #7A6A60;
-        }
-
-        .data-value {
-            color: #3E3028;
-            font-weight: 600;
-            text-align: right;
-
-            max-width: 65%;
-            word-break: break-word;
-        }
-
-        .line {
-            height: 1px;
-
-            background: #E5D8CC;
-
-            margin: 12px 0;
-        }
-
-
-        /* =========================================
-           BUTTON
-        ========================================= */
-
-        .buttons {
-            width: 100%;
-
-            display: flex;
-            flex-direction: column;
-
-            gap: 10px;
-        }
-
-        .btn {
-            width: 100%;
-            height: 45px;
-
-            border-radius: 8px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-size: 14px;
-            font-weight: 600;
-
-            cursor: pointer;
-        }
-
-        .btn-edit {
-            background: #5C4033;
-            color: white;
-        }
-
-
-        /* =========================================
-           NAVIGASI BAWAH
-        ========================================= */
-
-        .bottom-navigation {
-            width: 100%;
-            height: 64px;
-
-            padding: 8px 0;
-
-            background: white;
-            border-top: 1px solid #E5D8CC;
-
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-
-            flex-shrink: 0;
-        }
-
-        .nav-item {
-            flex: 1;
-
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            gap: 4px;
-
-            font-size: 11px;
-            color: #7A6A60;
-        }
-
-        .nav-icon {
-            font-size: 18px;
-            height: 20px;
-        }
-
-        .nav-item.active {
-            color: #5C4033;
-            font-weight: 600;
-        }
-
-
-        /* =========================================
-           HP KECIL
-        ========================================= */
-
-        @media (max-width: 390px) {
-
-            .screen-header {
-                height: 48px;
-                padding: 0 16px;
-            }
-
-            .content {
-                padding: 24px 16px;
-                gap: 24px;
-            }
-
-            .data-card {
-                width: 100%;
-            }
-
-            .buttons {
-                width: 100%;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-
-
-        /* =========================================
-           HP SANGAT KECIL
-        ========================================= */
-
-        @media (max-width: 350px) {
-
-            .content {
-                padding: 20px 12px;
-                gap: 20px;
-            }
-
-            .avatar {
-                width: 70px;
-                height: 70px;
-
-                font-size: 24px;
-            }
-
-            .profile-info h2 {
-                font-size: 16px;
-            }
-
-            .data-card {
-                padding: 12px;
-            }
-
-            .data-row {
-                font-size: 10px;
-            }
-
-            .btn {
-                height: 43px;
-                font-size: 13px;
-            }
-
-            .nav-item {
-                font-size: 10px;
-            }
-
-            .nav-icon {
-                font-size: 16px;
-            }
-        }
-
-
-        /* =========================================
-           LAYAR BESAR
-        ========================================= */
-
-        @media (min-width: 600px) {
-
-            .screen-header {
-                height: 70px;
-                padding: 0 4%;
-            }
-
-            .screen-header h1 {
-                font-size: 24px;
-            }
-
-            .header-space {
-                width: 48px;
-                height: 48px;
-            }
-
-            .content {
-                padding: 5% 8%;
-                gap: 5%;
-            }
-
-            .avatar {
-                width: 120px;
-                height: 120px;
-                font-size: 42px;
-            }
-
-            .profile {
-                gap: 18px;
-            }
-
-            .profile-info h2 {
-                font-size: 28px;
-            }
-
-            .data-card {
-                width: 80%;
-                padding: 28px;
-                border-radius: 14px;
-            }
-
-            .data-row {
-                min-height: 28px;
-                font-size: 16px;
-            }
-
-            .line {
-                margin: 18px 0;
-            }
-
-            .buttons {
-                width: 80%;
-            }
-
-            .btn {
-                height: 58px;
-                font-size: 18px;
-                border-radius: 10px;
-            }
-
-            .bottom-navigation {
-                height: 80px;
-                padding: 10px 5%;
-            }
-
-            .nav-item {
-                font-size: 15px;
-                gap: 6px;
-            }
-
-            .nav-icon {
-                font-size: 24px;
-                height: 26px;
-            }
-        }
-
-
-        /* =========================================
-           LAYAR SANGAT BESAR
-        ========================================= */
-
-        @media (min-width: 1000px) {
-
-            .screen-header {
-                height: 80px;
-            }
-
-            .screen-header h1 {
-                font-size: 28px;
-            }
-
-            .content {
-                padding: 50px 12%;
-                gap: 35px;
-            }
-
-            .avatar {
-                width: 140px;
-                height: 140px;
-                font-size: 48px;
-            }
-
-            .profile-info h2 {
-                font-size: 32px;
-            }
-
-            .data-card {
-                width: 70%;
-                max-width: 900px;
-                padding: 32px;
-            }
-
-            .data-row {
-                font-size: 18px;
-                min-height: 32px;
-            }
-
-            .buttons {
-                width: 70%;
-                max-width: 900px;
-            }
-
-            .btn {
-                height: 64px;
-                font-size: 20px;
-            }
-
-            .bottom-navigation {
-                height: 90px;
-            }
-
-            .nav-item {
-                font-size: 17px;
-            }
-
-            .nav-icon {
-                font-size: 28px;
-            }
-        }
-
-    </style>
+      }
+    }
+  </script>
 </head>
+<body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
-<body>
+  <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
+  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="p-6 flex flex-col gap-8">
+      
+      <!-- Brand Logo / Title -->
+      <div class="flex flex-col gap-0.5">
+        <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
+        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+      </div>
 
-<div class="guru-profil">
+      <!-- Navigation Links -->
+      <nav class="flex flex-col gap-1.5">
+        
+        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          </svg>
+          <span>Beranda</span>
+        </a>
 
-    <!-- HEADER -->
-    <div class="screen-header">
+        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
+            <path d="M7 3v14"/>
+          </svg>
+          <span>isi Jurnal</span>
+        </a>
 
-        <div class="header-space"></div>
+        <!-- Menu Riwayat Jurnal -->
+        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          </svg>
+          <span>Riwayat Jurnal</span>
+        </a>
 
-        <h1>Profil Saya</h1>
+        <!-- Active Link (Profil Guru) -->
+        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
+            <circle cx="10" cy="6.5" r="3.5"/>
+          </svg>
+          <span>Profil</span>
+        </a>
 
-        <div class="header-space"></div>
-
-    </div>
-
-
-    <!-- CONTENT -->
-    <div class="content">
-
-        <!-- PROFIL -->
-        <div class="profile">
-
-            <div class="avatar">
-                ♙
-            </div>
-
-            <div class="profile-info">
-                <h2>Budi Santoso, S.Pd.</h2>
-            </div>
-
-        </div>
-
-
-        <!-- DATA GURU -->
-        <div class="data-card">
-
-            <div class="data-row">
-                <span class="data-label">NIP</span>
-                <span class="data-value">
-                    198501012010011001
-                </span>
-            </div>
-
-            <div class="line"></div>
-
-            <div class="data-row">
-                <span class="data-label">No. Handphone</span>
-                <span class="data-value">
-                    081234560001
-                </span>
-            </div>
-
-            <div class="line"></div>
-
-            <div class="data-row">
-                <span class="data-label">Unit Kerja</span>
-                <span class="data-value">
-                    SMK Negeri 1 Jakarta
-                </span>
-            </div>
-
-            <div class="line"></div>
-
-            <div class="data-row">
-                <span class="data-label">Mata Pelajaran</span>
-                <span class="data-value">
-                    Matematika
-                </span>
-            </div>
-
-        </div>
-
-
-        <!-- TOMBOL -->
-        <div class="buttons">
-
-            <div class="btn btn-edit">
-                Edit Profil
-            </div>
-
-        </div>
+      </nav>
 
     </div>
+  </aside>
 
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+    
+    <!-- Top Header Bar -->
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
+      <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
+        <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </a>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Profil Saya</h1>
+        <div class="w-9"></div>
+      </div>
+    </header>
 
-    <!-- NAVIGASI BAWAH -->
-    <div class="bottom-navigation">
+    <!-- Main Content Container -->
+    <main class="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 flex-1 flex flex-col items-center gap-6">
+      
+      <!-- Avatar & Nama -->
+      <div class="flex flex-col items-center text-center gap-3">
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-brand-300 text-brand-900 border-4 border-white shadow-md flex items-center justify-center font-poppins font-bold text-3xl sm:text-4xl">
+          BS
+        </div>
+        <div class="flex flex-col items-center gap-0.5">
+          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028]">Budi Santoso, S.Pd.</h2>
+          <span class="text-xs sm:text-sm text-brand-600 font-medium">Guru Pengajar Matematika</span>
+        </div>
+      </div>
 
-        <div class="nav-item">
-            <div class="nav-icon">⌂</div>
-            <span>Dashboard</span>
+      <!-- Card Data Detail Guru -->
+      <div class="w-full bg-white border border-brand-100 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col divide-y divide-brand-100/80 text-xs sm:text-sm">
+        
+        <div class="flex justify-between items-center py-3">
+          <span class="text-brand-600 font-medium">NIP</span>
+          <span class="font-bold text-[#3E3028]">198501012010011001</span>
         </div>
 
-        <div class="nav-item">
-            <div class="nav-icon">▣</div>
-            <span>Jurnal</span>
+        <div class="flex justify-between items-center py-3">
+          <span class="text-brand-600 font-medium">No. Handphone</span>
+          <span class="font-bold text-[#3E3028]">081234560001</span>
         </div>
 
-        <div class="nav-item">
-            <div class="nav-icon">▤</div>
-            <span>Rekap</span>
+        <div class="flex justify-between items-center py-3">
+          <span class="text-brand-600 font-medium">Unit Kerja</span>
+          <span class="font-bold text-[#3E3028] text-right">SMK Negeri 1 Jakarta</span>
         </div>
 
-        <div class="nav-item active">
-            <div class="nav-icon">○</div>
-            <span>Profil</span>
+        <div class="flex justify-between items-center py-3">
+          <span class="text-brand-600 font-medium">Mata Pelajaran</span>
+          <span class="font-bold text-[#3E3028]">Matematika</span>
         </div>
+
+      </div>
+
+      <!-- Action Button Group (Elemen Link Menuju Form Edit Profil) -->
+      <div class="w-full flex flex-col gap-3">
+        <a href="{{ url('/edit-profil') }}" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
+          Edit Profil
+        </a>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Bottom Navigation Bar (Mobile) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
+    <div class="flex justify-between items-center">
+      
+      <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+        </svg>
+        <span>Beranda</span>
+      </a>
+
+      <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
+          <path d="M7 3v14"/>
+        </svg>
+        <span>isi Jurnal</span>
+      </a>
+
+      <!-- Mobile Link Riwayat Jurnal -->
+      <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+        </svg>
+        <span>Riwayat</span>
+      </a>
+
+      <!-- Active Mobile Link (Profil Guru) -->
+      <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
+          <circle cx="10" cy="6.5" r="3.5"/>
+        </svg>
+        <span>Profil</span>
+      </a>
 
     </div>
-
-</div>
+  </nav>
 
 </body>
 </html>

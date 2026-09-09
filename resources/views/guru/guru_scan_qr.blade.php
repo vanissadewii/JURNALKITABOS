@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Verifikasi Jurnal</title>
+  <title>Scan QR Presensi Siswa</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,6 +36,18 @@
       }
     }
   </script>
+  
+  <style>
+    /* Animasi Laser Scanner */
+    @keyframes scanAnimation {
+      0% { top: 5%; }
+      50% { top: 90%; }
+      100% { top: 5%; }
+    }
+    .scanner-laser {
+      animation: scanAnimation 2.2s infinite ease-in-out;
+    }
+  </style>
 </head>
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
@@ -59,7 +71,7 @@
           <span>Beranda</span>
         </a>
 
-        <!-- Active Link (isi Jurnal) -->
+        <!-- Active Link (Isi Jurnal) -->
         <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
@@ -95,64 +107,55 @@
     <!-- Top Header Bar (Warna Cokelat Dashboard) -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
-        <a href="{{ url('/form-jurnal') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
+        <a href="{{ url('/tampilkan-qr-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
           </svg>
         </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">QR Code Verifikasi Sesi</h1>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Scan QR Siswa</h1>
         <div class="w-9"></div>
       </div>
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full max-w-lg mx-auto px-4 sm:px-6 py-8 flex-1 flex flex-col items-center justify-center gap-6">
+    <main class="w-full max-w-md mx-auto px-4 sm:px-6 py-6 flex-1 flex flex-col items-center justify-center gap-6">
       
-      <!-- Card Display QR Code -->
-      <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-6 shadow-xs text-center">
+      <!-- Card Camera Viewfinder -->
+      <div class="w-full bg-white border border-brand-100 rounded-3xl p-5 sm:p-6 flex flex-col items-center gap-5 shadow-xs text-center">
         
         <div class="flex flex-col gap-1">
-          <span class="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-full border border-emerald-200 w-fit mx-auto flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Jurnal Berhasil Disimpan</span>
-          </span>
-          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028] mt-2">Matematika — X RPL 1</h2>
-          <p class="text-xs text-brand-600">Tunjukkan QR ini ke siswa/ketua kelas untuk diverifikasi.</p>
+          <h2 class="font-poppins font-bold text-lg sm:text-xl text-[#3E3028]">Pindai Kode QR Siswa</h2>
+          <p class="text-xs text-brand-600">Arahkan kamera ke QR Code milik siswa untuk melakukan verifikasi akhir.</p>
         </div>
 
-        <!-- Box Display Timer Masa Berlaku QR -->
-        <div class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl text-amber-800 text-xs sm:text-sm font-semibold">
-          <svg class="w-4 h-4 text-amber-600 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
-          <span>Masa berlaku QR: <strong id="timer-count" class="font-poppins font-bold text-amber-900">05:00</strong></span>
-        </div>
-
-        <!-- Box Gambar QR Code -->
-        <div id="qr-container" class="p-4 bg-brand-50 border-2 border-dashed border-brand-200 rounded-2xl flex flex-col items-center justify-center gap-2 relative transition-all">
+        <!-- Box Frame Kamera -->
+        <div class="w-full aspect-square bg-gray-900 rounded-2xl relative overflow-hidden flex items-center justify-center shadow-inner border-4 border-brand-100">
           
-          <!-- Ilustrasi QR Code SVG -->
-          <svg id="qr-svg" class="w-48 h-48 text-[#3E3028] transition-opacity duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM10 3h1v1h-1zM10 6h1v1h-1zM6 10h1v1H6zM9 10h1v1H9zM12 10h1v1h-1zM14 10h1v1h-1zM17 10h1v1h-1zM3 12h1v1H3zM6 12h1v1H6zM11 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM18 14h1v1h-1zM10 17h1v1h-1zM13 17h1v1h-1zM15 17h1v1h-1zM18 17h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM10 20h1v1h-1zM13 20h1v1h-1zM17 20h1v1h-1z"/>
-          </svg>
-          <span class="text-[11px] font-mono text-brand-600">ID Sesi: JG-20260721-001</span>
+          <!-- Element Video Preview Kamera -->
+          <video id="webcam-preview" autoplay playsinline class="w-full h-full object-cover opacity-80"></video>
 
-          <!-- Overlay Kadaluarsa (Muncul jika waktu habis) -->
-          <div id="qr-expired-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-xs rounded-2xl flex-col items-center justify-center p-4 gap-2">
-            <span class="text-xs font-bold text-rose-600 uppercase tracking-wide">QR Kadaluarsa</span>
-            <button onclick="resetTimer()" class="px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white text-xs font-poppins font-semibold rounded-xl shadow-sm active:scale-95 transition-all">
-              Generate Ulang QR
-            </button>
+          <!-- Frame Pemindai Area Target -->
+          <div class="absolute w-56 h-56 border-2 border-white/50 rounded-2xl flex flex-col justify-between p-2 pointer-events-none">
+            <div class="flex justify-between">
+              <div class="w-6 h-6 border-t-4 border-l-4 border-amber-400 rounded-tl-lg"></div>
+              <div class="w-6 h-6 border-t-4 border-r-4 border-amber-400 rounded-tr-lg"></div>
+            </div>
+            
+            <!-- Garis Laser Merah Pemindai -->
+            <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-rose-500 to-transparent shadow-[0_0_12px_#f43f5e] relative scanner-laser"></div>
+
+            <div class="flex justify-between">
+              <div class="w-6 h-6 border-b-4 border-l-4 border-amber-400 rounded-bl-lg"></div>
+              <div class="w-6 h-6 border-b-4 border-r-4 border-amber-400 rounded-br-lg"></div>
+            </div>
           </div>
 
-        </div>
+          <!-- Indikator Status Kamera -->
+          <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-[11px] font-medium text-white">Kamera Aktif</span>
+          </div>
 
-        <!-- Tombol Kembali / Selesai -->
-        <div class="w-full pt-2">
-          <a href="{{ url('/dashboard-guru') }}" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
-            Kembali ke Beranda
-          </a>
         </div>
 
       </div>
@@ -172,7 +175,7 @@
         <span>Beranda</span>
       </a>
 
-      <!-- Active Mobile Link (isi Jurnal) -->
+      <!-- Active Mobile Link (Isi Jurnal) -->
       <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
@@ -200,52 +203,18 @@
     </div>
   </nav>
 
-  <!-- Script Timer Hitung Mundur & Redirect Kamera Guru -->
+  <!-- Script Penanganan Hasil Scan QR Kamera -->
   <script>
-    let durasiDetik = 300; // 5 Menit
-    let timerInterval;
-
-    function startTimer() {
-      const display = document.getElementById('timer-count');
-      const overlay = document.getElementById('qr-expired-overlay');
-      const svg = document.getElementById('qr-svg');
-
-      timerInterval = setInterval(() => {
-        let menit = Math.floor(durasiDetik / 60);
-        let detik = durasiDetik % 60;
-
-        menit = menit < 10 ? '0' + menit : menit;
-        detik = detik < 10 ? '0' + detik : detik;
-
-        display.textContent = `${menit}:${detik}`;
-
-        if (--durasiDetik < 0) {
-          clearInterval(timerInterval);
-          display.textContent = "00:00";
-          svg.classList.add('opacity-10');
-          overlay.classList.remove('hidden');
-          overlay.classList.add('flex');
-        }
-      }, 1000);
+    // Fungsi ini dipanggil saat kamera berhasil membaca QR milik siswa
+    function onScanSuccess(qrCodeMessage) {
+      // Langsung redirect ke halaman sesi terverifikasi
+      window.location.href = "{{ url('/sesi-terverifikasi') }}";
     }
 
-    function resetTimer() {
-      durasiDetik = 300;
-      document.getElementById('qr-expired-overlay').classList.add('hidden');
-      document.getElementById('qr-expired-overlay').classList.remove('flex');
-      document.getElementById('qr-svg').classList.remove('opacity-10');
-      startTimer();
-    }
-
-    // Jalankan timer saat halaman terbuka
-    window.onload = startTimer;
-
-    // Listener otomatis: saat siswa berhasil scan QR guru, halaman otomatis pindah ke kamera guru
-    /* 
-    window.addEventListener('qr-scanned-by-student', function() {
-      window.location.href = "{{ url('/guru-scan-qr') }}";
-    });
-    */
+    // Simulasi otomatis redirect setelah kamera scan QR (contoh 3 detik)
+    setTimeout(() => {
+      onScanSuccess("QR_STUDENT_VALIDATED");
+    }, 3000);
   </script>
 
 </body>
