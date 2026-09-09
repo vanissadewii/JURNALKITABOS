@@ -125,36 +125,6 @@
                     </div>
                 </div>
 
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
-                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-                    <div class="flex justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Jepang</div>
-                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Sulistyowati, SS.</div>
-                        </div>
-                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#E3F2FD] text-[#1976D2]">
-                            Izin (Pending)
-                        </span>
-                    </div>
-                    <hr class="border-t border-[#E5D8CC] w-full m-0">
-                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
-                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-                        </svg>
-                        <span>15:00 – 16:00 (Jam ke-10 sampai ke-11)</span>
-                    </div>
-                    <!-- TUGAS -->
-                    <div class="bg-[#FDFBF7] border border-[#E5D8CC] rounded-[8px] p-3 sm:p-4">
-                    <div class="font-['Inter'] font-semibold text-[13px] sm:text-sm text-[#3E3028] mb-1">
-                        Tugas:
-                    </div>
-
-                    <div class="font-['Inter'] text-[13px] sm:text-sm text-[#7A6A60]">
-                        Mengerjakan latihan Bahasa Jepang halaman 25
-                    </div>
-                    </div>
-                </div>
-
                 <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028] mt-1">
                     Sesi Mengajar Selesai
                 </span>
@@ -175,11 +145,41 @@
                         <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
                             <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
                         </svg>
-                        <span>07:00 – 09:40 (Jam ke-1 sampai ke-4)</span>
+                        <span>07:40 – 09:40 (Jam ke-2 sampai ke-4)</span>
                     </div>
                     <div class="flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-[#757575]">
                         <div class="w-5 h-5 rounded-[5px] bg-[#D32F2F] flex items-center justify-center text-white text-[13px] font-bold">✕</div>
                         <span>Guru tidak hadir</span>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
+                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                    <div class="flex justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Jepang</div>
+                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Sulistyowati, SS.</div>
+                        </div>
+                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#E3F2FD] text-[#1976D2]">
+                            Izin (Pending)
+                        </span>
+                    </div>
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
+                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                        </svg>
+                        <span>07:00 – 07:40 (Jam ke-1)</span>
+                    </div>
+                    <!-- TUGAS -->
+                    <div class="bg-[#FDFBF7] border border-[#E5D8CC] rounded-[8px] p-3 sm:p-4">
+                    <div class="font-['Inter'] font-semibold text-[13px] sm:text-sm text-[#3E3028] mb-1">
+                        Tugas:
+                    </div>
+
+                    <div class="font-['Inter'] text-[13px] sm:text-sm text-[#7A6A60]">
+                        Mengerjakan latihan Bahasa Jepang halaman 25
+                    </div>
                     </div>
                 </div>
 

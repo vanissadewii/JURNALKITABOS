@@ -11,13 +11,13 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
+<body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen overflow-x-hidden">
 
-    <div class="md:flex">
+    <div class="md:flex md:min-h-screen">
 
         {{-- SIDEBAR DESKTOP --}}
-        <aside class="hidden md:flex md:flex-col md:w-64 md:h-screen md:sticky md:top-0
-                       bg-white border-r border-[#E5D8CC] py-6 px-4">
+        <aside class="hidden md:flex md:flex-col md:w-64 md:min-h-screen md:h-auto md:sticky md:top-0
+               bg-white border-r border-[#E5D8CC] py-6 px-4">
 
             <div class="mb-8 px-2">
                 <h1 class="font-['Poppins'] font-bold text-xl text-[#5C4033]">
@@ -66,7 +66,7 @@
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24"
                          fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 2L11 13"/>
-                        <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                        <path d="M22 2l-7 20-4-9-20-7z"/>
                     </svg>
 
                     Kirim Jurnal
@@ -91,20 +91,21 @@
 
 
         {{-- KONTEN UTAMA --}}
-        <main class="flex-1 w-full pb-24 md:pb-8">
+        <main class="flex-1 w-full min-w-0 pb-24 md:pb-8">
 
             {{-- HEADER --}}
-            <div class="bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
+            <div class="bg-[#5C4033] px-4 py-4 sm:px-6 sm:py-5 md:px-7 md:py-5 flex flex-col gap-1">
 
-            <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
-            Kirim Jurnal
-            </span>
+                <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
+                    Kirim Jurnal
+                </span>
 
-            <span class="text-[#D7B899] text-xs font-medium mt-0.8">
-            {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
-            </span>
+                <span class="text-[#D7B899] text-xs font-medium mt-0.8">
+                    {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
+                </span>
 
             </div>
+
 
             {{-- ISI --}}
             <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-4">
@@ -115,257 +116,245 @@
                     <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028]">
                         Rekap Jurnal Mengajar Hari Ini
                     </span>
-                    
-                </div>
-
-
-                {{-- JURNAL 1 --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-5
-                            flex flex-col gap-3 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-
-                    <div class="flex justify-between items-start gap-3">
-
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base text-[#3E3028]">
-                                Matematika
-                            </div>
-
-                            <div class="font-semibold text-xs text-[#7A6A60] mt-0.5">
-                                Badrus Sulaiman, S.Pd., Gr.
-                            </div>
-                        </div>
-
-                        <span class="text-[10px] font-semibold px-2.5 py-1 rounded-md
-                                     bg-[#E8F5E9] text-[#2E7D32] whitespace-nowrap">
-                            Selesai
-                        </span>
-
-                    </div>
-
-                    <hr class="border-t border-[#E5D8CC]">
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px] text-[#7A6A60]">
-
-                        <div class="flex items-center gap-2">
-                            <span>🕐</span>
-                            <span>10:00 – 13:50</span>
-                        </div>
-
-                    </div>
-
-                    <div class="text-[13px] text-[#7A6A60]">
-                        <span class="font-semibold text-[#3E3028]">
-                            Materi:
-                        </span>
-                        Persamaan dan Pertidaksamaan
-                    </div>
-
-                    <div class="flex items-center gap-2 text-[13px] font-semibold text-[#2E7D32]">
-
-                        <div class="w-5 h-5 rounded-[5px] bg-[#4CAF50] flex items-center justify-center">
-
-                            <svg class="w-[13px] h-[13px]"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="white"
-                                 stroke-width="3">
-
-                                <path d="M5 12l4 4L19 6"/>
-
-                            </svg>
-
-                        </div>
-
-                        <span>
-                            Jurnal sudah diisi
-                        </span>
-
-                    </div>
 
                 </div>
 
 
-                {{-- JURNAL 2 --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-5
-                            flex flex-col gap-3 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                {{-- TABEL REKAP JURNAL (BISA DIGESER KE SAMPING) --}}
+                <div class="w-full max-w-full bg-white border border-[#E5D8CC] rounded-[10px]
+                            shadow-[0_4px_12px_rgba(62,48,40,0.03)]
+                            overflow-x-auto">
 
-                    <div class="flex justify-between items-start gap-3">
+                    <table class="min-w-[1200px] w-full text-left border-collapse">
 
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base text-[#3E3028]">
-                                Bahasa Inggris
-                            </div>
+                        <thead>
+                            <tr class="bg-[#F5EFE8]">
 
-                            <div class="font-semibold text-xs text-[#7A6A60] mt-0.5">
-                                Siti Aminah, S.Pd.
-                            </div>
-                        </div>
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC]">
+                                    Jam Ke-
+                                </th>
 
-                        <span class="text-[10px] font-semibold px-2.5 py-1 rounded-md
-                                     bg-[#E8F5E9] text-[#2E7D32] whitespace-nowrap">
-                            Selesai
-                        </span>
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC]">
+                                    Nama Pengajar
+                                </th>
 
-                    </div>
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC]">
+                                    Mata Pelajaran
+                                </th>
 
-                    <hr class="border-t border-[#E5D8CC]">
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
+                                    Hadir
+                                </th>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px] text-[#7A6A60]">
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
+                                    Tidak Hadir<br>
+                                    <span class="normal-case font-medium">(Tugas)</span>
+                                </th>
 
-                        <div class="flex items-center gap-2">
-                            <span>🕐</span>
-                            <span>13:00 – 15:00</span>
-                        </div>
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] min-w-[260px]">
+                                    Materi
+                                </th>
 
-                    </div>
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
+                                    Jumlah Hadir Siswa
+                                </th>
 
-                    <div class="text-[13px] text-[#7A6A60]">
-                        <span class="font-semibold text-[#3E3028]">
-                            Materi:
-                        </span>
-                        Asking and Giving Opinion
-                    </div>
+                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-[#E5D8CC]">
+                                    Siswa Tidak Hadir<br>
+                                    <span class="normal-case font-medium">(Nama - S/I/A)</span>
+                                </th>
 
-                    <div class="flex items-center gap-2 text-[13px] font-semibold text-[#2E7D32]">
+                            </tr>
+                        </thead>
 
-                        <div class="w-5 h-5 rounded-[5px] bg-[#4CAF50] flex items-center justify-center">
 
-                            <svg class="w-[13px] h-[13px]"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="white"
-                                 stroke-width="3">
+                        <tbody>
 
-                                <path d="M5 12l4 4L19 6"/>
+                            {{-- BARIS 1 (Jam 1-2, paling awal) --}}
+                            <tr class="border-b border-[#E5D8CC] align-top">
 
-                            </svg>
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    1 - 4
+                                </td>
 
-                        </div>
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    Zainul Arifin, S.Pd.
+                                </td>
 
-                        <span>
-                            Jurnal sudah diisi
-                        </span>
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    PJOK
+                                </td>
 
-                    </div>
+                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                    <span class="text-[#C62828] font-bold">✕</span>
+                                </td>
+
+                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                    <span class="text-[#2E7D32] font-bold">✓</span>
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
+                                    Kebugaran Jasmani (tugas mandiri) — siswa mengerjakan lembar kerja mandiri di rumah karena guru berhalangan hadir, dikumpulkan minggu depan
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
+                                    35
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap">
+
+                                    <div class="flex items-center gap-2">
+                                        <span>Rizki</span>
+
+                                        <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9] font-bold text-[11px]">
+                                            I
+                                        </span>
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            {{-- BARIS 2 (Jam 3-4) --}}
+                            <tr class="border-b border-[#E5D8CC] align-top">
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    5 - 8
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    Badrus Sulaiman, S.Pd., Gr.
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    Matematika
+                                </td>
+
+                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                    <span class="text-[#2E7D32] font-bold">✓</span>
+                                </td>
+
+                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                    <span class="text-[#C62828] font-bold">✕</span>
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
+                                    Persamaan dan Pertidaksamaan
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
+                                    35
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap">
+
+                                    <div class="flex items-center gap-2">
+                                        <span>Nadia</span>
+
+                                        <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9] font-bold text-[11px]">
+                                            S
+                                        </span>
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                            {{-- BARIS 3 (Jam 5-6, paling akhir) --}}
+                            <tr class="align-top">
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    9 - 10
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    Siti Aminah, S.Pd.
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    Bahasa Inggris
+                                </td>
+
+                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                    <span class="text-[#2E7D32] font-bold">✓</span>
+                                </td>
+
+                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                    <span class="text-[#C62828] font-bold">✕</span>
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
+                                    Asking and Giving Opinion
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
+                                    36
+                                </td>
+
+                                <td class="px-5 py-4 text-[13px] text-[#7A6A60] whitespace-nowrap">
+                                    -
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
 
-                {{-- JURNAL 3 --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-5
-                            flex flex-col gap-3 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-
-                    <div class="flex justify-between items-start gap-3">
-
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base text-[#3E3028]">
-                                PJOK
-                            </div>
-
-                            <div class="font-semibold text-xs text-[#7A6A60] mt-0.5">
-                                Zainul Arifin, S.Pd.
-                            </div>
-                        </div>
-
-                        <span class="text-[10px] font-semibold px-2.5 py-1 rounded-md
-                                     bg-[#E8F5E9] text-[#2E7D32] whitespace-nowrap">
-                            Selesai
-                        </span>
-
-                    </div>
-
-                    <hr class="border-t border-[#E5D8CC]">
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px] text-[#7A6A60]">
-
-                        <div class="flex items-center gap-2">
-                            <span>🕐</span>
-                            <span>07:00 – 09:40</span>
-                        </div>
-
-                    </div>
-
-                    <div class="text-[13px] text-[#7A6A60]">
-                        <span class="font-semibold text-[#3E3028]">
-                            Materi:
-                        </span>
-                        Kebugaran Jasmani
-                    </div>
-
-                    <div class="flex items-center gap-2 text-[13px] font-semibold text-[#757575]">
-
-                        <div class="w-5 h-5 rounded-[5px] bg-[#9E9E9E] flex items-center justify-center text-white text-xs font-bold">
-                            ✕
-                        </div>
-
-                        <span>
-                            Guru tidak hadir
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                {{-- STATUS SEMUA SELESAI --}}
-                <div class="bg-[#E8F5E9] border border-[#C8E6C9] rounded-[10px] p-4 mt-2">
+                {{-- STATUS SEMUA SELESAI (bisa diklik) --}}
+                <button
+                    type="button"
+                    id="btnStatusSelesai"
+                    onclick="toggleStatusSelesai()"
+                    class="w-full text-left bg-[#F0EBE6] border border-[#D9CDC3] rounded-[10px] p-4 mt-2
+                           transition-all duration-200 hover:bg-[#E8E0D8] active:scale-[0.99]
+                           cursor-pointer select-none">
 
                     <div class="flex items-start gap-3">
 
-                        <div class="w-8 h-8 rounded-lg bg-[#4CAF50] flex items-center justify-center shrink-0">
+                        {{-- Icon --}}
+                        <div id="iconStatus"
+                             class="w-8 h-8 rounded-lg bg-[#B0A59B] flex items-center justify-center shrink-0 transition-colors duration-200">
 
-                            <svg class="w-5 h-5"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="white"
-                                 stroke-width="3">
-
+                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
                                 <path d="M5 12l4 4L19 6"/>
-
                             </svg>
-
                         </div>
 
                         <div>
-                            <p class="font-['Poppins'] font-bold text-sm text-[#2E7D32]">
+                            <p id="judulStatus" class="font-['Poppins'] font-bold text-sm text-[#7A6A60] transition-colors duration-200">
                                 Semua sesi hari ini sudah selesai
                             </p>
-
-                            <p class="text-xs text-[#4E6B50] mt-1">
-                                Jurnal hari ini sudah lengkap dan siap dikirim.
+                            <p id="subStatus" class="text-xs text-[#9C8B80] mt-1 transition-colors duration-200">
+                                Klik untuk konfirmasi bahwa jurnal sudah lengkap.
                             </p>
                         </div>
-
                     </div>
+                </button>
 
-                </div>
 
-
-                {{-- TOMBOL KIRIM --}}
+                {{-- TOMBOL KIRIM (disabled dulu) --}}
                 <button
                     type="button"
-                    class="w-full bg-[#5C4033] hover:bg-[#432D23] text-white
-                           py-3.5 rounded-lg font-semibold text-sm
-                           transition duration-200 mt-1">
+                    id="btnKirimJurnal"
+                    disabled
+                    class="w-full bg-[#A89B90] text-white py-3.5 rounded-lg font-semibold text-sm
+                           transition duration-200 mt-1 cursor-not-allowed opacity-70">
 
                     <span class="inline-flex items-center justify-center gap-2">
-
-                        <svg class="w-5 h-5"
-                             viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor"
-                             stroke-width="2">
-
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M22 2L11 13"/>
-                            <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-
+                            <path d="M22 2l-7 20-4-9-20-7z"/>
                         </svg>
-
                         Kirim Jurnal Hari Ini
-
                     </span>
-
                 </button>
+
 
                 <p class="text-center text-[11px] text-[#7A6A60]">
                     Pastikan seluruh jurnal hari ini sudah benar sebelum dikirim.
@@ -426,7 +415,7 @@
                  fill="none" stroke="currentColor" stroke-width="2">
 
                 <path d="M22 2L11 13"/>
-                <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                <path d="M22 2l-7 20-4-9-20-7z"/>
 
             </svg>
 
@@ -451,6 +440,53 @@
         </a>
 
     </nav>
+
+
+    <script>
+        let isStatusSelesai = false;
+
+        function toggleStatusSelesai() {
+            isStatusSelesai = !isStatusSelesai;
+
+            const btnStatus   = document.getElementById('btnStatusSelesai');
+            const iconStatus  = document.getElementById('iconStatus');
+            const judulStatus = document.getElementById('judulStatus');
+            const subStatus   = document.getElementById('subStatus');
+            const btnKirim    = document.getElementById('btnKirimJurnal');
+
+            if (isStatusSelesai) {
+                // === AKTIF (hijau) ===
+                btnStatus.className = "w-full text-left bg-[#E8F5E9] border border-[#C8E6C9] rounded-[10px] p-4 mt-2 transition-all duration-200 hover:bg-[#DFF0E0] active:scale-[0.99] cursor-pointer select-none";
+                
+                iconStatus.className = "w-8 h-8 rounded-lg bg-[#4CAF50] flex items-center justify-center shrink-0 transition-colors duration-200";
+                
+                judulStatus.className = "font-['Poppins'] font-bold text-sm text-[#2E7D32] transition-colors duration-200";
+                judulStatus.textContent = "Semua sesi hari ini sudah selesai";
+                
+                subStatus.className = "text-xs text-[#4E6B50] mt-1 transition-colors duration-200";
+                subStatus.textContent = "Jurnal hari ini sudah lengkap dan siap dikirim.";
+
+                // Aktifkan tombol kirim
+                btnKirim.disabled = false;
+                btnKirim.className = "w-full bg-[#5C4033] hover:bg-[#432D23] text-white py-3.5 rounded-lg font-semibold text-sm transition duration-200 mt-1 cursor-pointer";
+            } else {
+                // === BELUM AKTIF (abu-abu) ===
+                btnStatus.className = "w-full text-left bg-[#F0EBE6] border border-[#D9CDC3] rounded-[10px] p-4 mt-2 transition-all duration-200 hover:bg-[#E8E0D8] active:scale-[0.99] cursor-pointer select-none";
+                
+                iconStatus.className = "w-8 h-8 rounded-lg bg-[#B0A59B] flex items-center justify-center shrink-0 transition-colors duration-200";
+                
+                judulStatus.className = "font-['Poppins'] font-bold text-sm text-[#7A6A60] transition-colors duration-200";
+                judulStatus.textContent = "Semua sesi hari ini sudah selesai";
+                
+                subStatus.className = "text-xs text-[#9C8B80] mt-1 transition-colors duration-200";
+                subStatus.textContent = "Klik untuk konfirmasi bahwa jurnal sudah lengkap.";
+
+                // Disable tombol kirim
+                btnKirim.disabled = true;
+                btnKirim.className = "w-full bg-[#A89B90] text-white py-3.5 rounded-lg font-semibold text-sm transition duration-200 mt-1 cursor-not-allowed opacity-70";
+            }
+        }
+    </script>
 
 </body>
 </html>
