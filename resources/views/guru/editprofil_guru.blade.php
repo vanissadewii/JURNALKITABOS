@@ -377,7 +377,6 @@
                 <div class="text-[18px] h-5">
                     ⌂
                 </div>
-
                 <span>
                     Dashboard
                 </span>
@@ -419,7 +418,7 @@
                 </div>
 
                 <span class="text-[13px]">
-                    Jurnalis
+                    Jurnal
                 </span>
 
             </a>
