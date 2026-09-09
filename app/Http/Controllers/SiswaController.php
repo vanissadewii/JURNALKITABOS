@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Imports\SiswaImport;
 use App\Models\Kelas;
 use App\Models\Siswa;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $siswas = Siswa::with('kelas')->get();
         $kelases = Kelas::all();
@@ -18,7 +20,7 @@ class SiswaController extends Controller
         return view('admin.tambah_siswa', compact('siswas', 'kelases'));
     }
 
-    public function create()
+    public function create(): View
     {
         $siswas = Siswa::with('kelas')->get();
         $kelases = Kelas::all();
@@ -26,7 +28,7 @@ class SiswaController extends Controller
         return view('admin.tambah_siswa', compact('siswas', 'kelases'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'nisn' => ['required', 'string', 'max:20', 'unique:siswa,nisn'],
@@ -43,7 +45,7 @@ class SiswaController extends Controller
         return redirect()->route('admin.siswa.index')->with('success', 'Siswa berhasil ditambahkan!');
     }
 
-    public function import(Request $request)
+    public function import(Request $request): RedirectResponse
     {
         $request->validate([
             'file_excel' => ['required', 'mimes:xlsx,xls,csv'],

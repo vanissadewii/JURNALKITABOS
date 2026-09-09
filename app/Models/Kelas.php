@@ -14,7 +14,7 @@ class Kelas extends Model
 
     protected $appends = ['nama_kelas'];
 
-    public function getNamaKelasAttribute()
+    public function getNamaKelasAttribute(): string
     {
         $romawi = ['10' => 'X', '11' => 'XI', '12' => 'XII'];
 

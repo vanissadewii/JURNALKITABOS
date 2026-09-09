@@ -3,26 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class MasterKelasController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $kelases = Kelas::all();
 
         return view('admin.tambah_kelas', compact('kelases'));
     }
 
-    public function create()
+    public function create(): View
     {
         $kelases = Kelas::all();
 
         return view('admin.tambah_kelas', compact('kelases'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'tingkat' => ['required', 'integer', Rule::in([10, 11, 12])],
