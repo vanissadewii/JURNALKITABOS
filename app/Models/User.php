@@ -68,7 +68,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\Kelas, $this>
+     * @return BelongsTo<Kelas, $this>
      */
     public function kelas(): BelongsTo
     {
