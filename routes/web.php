@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MasterKelasController;
+use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Route;
 
 // Route ke profil-guru
@@ -58,6 +59,12 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/home', fn () => view('home'))->name('home');
 
-    Route::resource('admin/kelas', MasterKelasController::class)
-        ->names('admin.kelas');
 });
+
+Route::resource('admin/kelas', MasterKelasController::class)
+    ->names('admin.kelas');
+
+Route::resource('admin/siswa', SiswaController::class)
+    ->names('admin.siswa');
+
+Route::post('admin/siswa/import', [SiswaController::class, 'import'])->name('admin.siswa.import');
