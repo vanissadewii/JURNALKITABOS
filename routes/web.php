@@ -5,6 +5,7 @@ use App\Http\Controllers\MasterKelasController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 // Route ke profil-guru
 Route::get('/profil-guru', function () {
@@ -110,6 +111,9 @@ Route::resource('admin/kelas', MasterKelasController::class)
 
 Route::resource('admin/siswa', SiswaController::class)
     ->names('admin.siswa');
+
+Route::resource('admin/user', UserController::class)
+    ->names('admin.user');
 
 Route::post('admin/siswa/import', [SiswaController::class, 'import'])->name('admin.siswa.import');
 // Route Tampilkan QR Guru
