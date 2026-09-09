@@ -82,7 +82,9 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
 
 // Admin & Auth Group
 Route::middleware(['auth'])->group(function () {
-    Route::get('/home', fn () => view('home'))->name('home');
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
 
     Route::resource('admin/kelas', MasterKelasController::class)
         ->names('admin.kelas');
