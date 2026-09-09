@@ -5,62 +5,45 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class MasterKelasController extends Controller
 {
-    /**
-     * Tampilkan daftar semua kelas.
-     */
     public function index(): View
     {
-        $kelas = Kelas::all();
+        $kelases = Kelas::all();
 
-        return view('master-kelas.index', compact('kelas'));
+        return view('admin.tambah_kelas', compact('kelases'));
     }
 
-    /**
-     * Simpan kelas baru ke database.
-     */
+    public function create(): View
+    {
+        $kelases = Kelas::all();
+
+        return view('admin.tambah_kelas', compact('kelases'));
+    }
+
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'nama_kelas' => 'required|string|max:20',
-            'tingkat' => 'required|in:10,11,12',
+        $request->validate([
+            'tingkat' => ['required', 'integer', Rule::in([10, 11, 12])],
+            'jurusan' => ['required', 'string', 'max:50'],
+            'rombel' => [
+                'required', 'integer', 'min:1',
+                Rule::unique('kelas')->where(function ($query) use ($request) {
+                    return $query->where('tingkat', $request->tingkat)
+                        ->where('jurusan', $request->jurusan);
+                }),
+            ],
         ]);
 
-        Kelas::create($validated);
-
-        return redirect()->route('admin.kelas.index')
-            ->with('success', 'Kelas berhasil ditambahkan.');
-    }
-
-    /**
-     * Update data kelas di database.
-     */
-    public function update(Request $request, string $id): RedirectResponse
-    {
-        $validated = $request->validate([
-            'nama_kelas' => 'required|string|max:20',
-            'tingkat' => 'required|in:10,11,12',
+        Kelas::create([
+            'tingkat' => $request->tingkat,
+            'jurusan' => $request->jurusan,
+            'rombel' => $request->rombel,
         ]);
 
-        $kelas = Kelas::findOrFail($id);
-        $kelas->update($validated);
-
-        return redirect()->route('admin.kelas.index')
-            ->with('success', 'Kelas berhasil diperbarui.');
-    }
-
-    /**
-     * Hapus kelas dari database.
-     */
-    public function destroy(string $id): RedirectResponse
-    {
-        $kelas = Kelas::findOrFail($id);
-        $kelas->delete();
-
-        return redirect()->route('admin.kelas.index')
-            ->with('success', 'Kelas berhasil dihapus.');
+        return redirect()->route('admin.kelas.index')->with('success', 'Kelas berhasil ditambahkan!');
     }
 }
