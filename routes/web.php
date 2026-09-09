@@ -73,8 +73,8 @@ Route::get('/tampilkan-qr-guru', function () {
     return view('guru.tampilkan_qr_guru');
 });
 
-Route::get('/verifikasi-qr-guru', function () {
-    return view('guru.verifikasi_qr_guru');
+Route::get('/sesi-terverifikasi', function () {
+    return view('guru.sesi_terverifikasi');
 });
 
 Route::get('/selesai-mengajar', function () {
@@ -89,6 +89,10 @@ Route::get('/form-jurnal', function () {
     return view('guru.form_jurnal');
 });
 
-Route::get('/jurnal-list', function () {
-    return view('guru.jurnal_list');
+Route::get('/riwayat-jurnal', function () {
+    return view('guru.riwayat_jurnal');
+});
+
+Route::get('/guru-scan-qr', function () {
+    return view('guru.guru_scan_qr');
 });

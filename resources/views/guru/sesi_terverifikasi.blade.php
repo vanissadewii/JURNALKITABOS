@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Verifikasi Jurnal</title>
+  <title>Sesi Terverifikasi</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,70 +89,84 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT AREA (Digeser ke kanan untuk layar laptop) -->
+  <!-- MAIN CONTENT AREA -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
     
-    <!-- Top Header Bar (Warna Cokelat Dashboard) -->
+    <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
-        <a href="{{ url('/form-jurnal') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
+        <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali ke Dashboard">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
           </svg>
         </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">QR Code Verifikasi Sesi</h1>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Sesi Berjalan</h1>
         <div class="w-9"></div>
       </div>
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full max-w-lg mx-auto px-4 sm:px-6 py-8 flex-1 flex flex-col items-center justify-center gap-6">
+    <main class="w-full max-w-3xl mx-auto px-4 sm:px-6 py-8 flex-1 flex flex-col items-center justify-center">
       
-      <!-- Card Display QR Code -->
-      <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-6 shadow-xs text-center">
+      <div class="w-full bg-white border border-brand-100 rounded-3xl p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-6 items-center shadow-xs">
         
-        <div class="flex flex-col gap-1">
-          <span class="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-full border border-emerald-200 w-fit mx-auto flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Jurnal Berhasil Disimpan</span>
-          </span>
-          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028] mt-2">Matematika — X RPL 1</h2>
-          <p class="text-xs text-brand-600">Tunjukkan QR ini ke siswa/ketua kelas untuk diverifikasi.</p>
-        </div>
-
-        <!-- Box Display Timer Masa Berlaku QR -->
-        <div class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl text-amber-800 text-xs sm:text-sm font-semibold">
-          <svg class="w-4 h-4 text-amber-600 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
-          <span>Masa berlaku QR: <strong id="timer-count" class="font-poppins font-bold text-amber-900">05:00</strong></span>
-        </div>
-
-        <!-- Box Gambar QR Code -->
-        <div id="qr-container" class="p-4 bg-brand-50 border-2 border-dashed border-brand-200 rounded-2xl flex flex-col items-center justify-center gap-2 relative transition-all">
-          
-          <!-- Ilustrasi QR Code SVG -->
-          <svg id="qr-svg" class="w-48 h-48 text-[#3E3028] transition-opacity duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM10 3h1v1h-1zM10 6h1v1h-1zM6 10h1v1H6zM9 10h1v1H9zM12 10h1v1h-1zM14 10h1v1h-1zM17 10h1v1h-1zM3 12h1v1H3zM6 12h1v1H6zM11 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM18 14h1v1h-1zM10 17h1v1h-1zM13 17h1v1h-1zM15 17h1v1h-1zM18 17h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM10 20h1v1h-1zM13 20h1v1h-1zM17 20h1v1h-1z"/>
-          </svg>
-          <span class="text-[11px] font-mono text-brand-600">ID Sesi: JG-20260721-001</span>
-
-          <!-- Overlay Kadaluarsa (Muncul jika waktu habis) -->
-          <div id="qr-expired-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-xs rounded-2xl flex-col items-center justify-center p-4 gap-2">
-            <span class="text-xs font-bold text-rose-600 uppercase tracking-wide">QR Kadaluarsa</span>
-            <button onclick="resetTimer()" class="px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white text-xs font-poppins font-semibold rounded-xl shadow-sm active:scale-95 transition-all">
-              Generate Ulang QR
-            </button>
+        <!-- KOLOM KIRI: Indikator Sukses -->
+        <div class="flex flex-col items-center text-center gap-3">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-emerald-100 flex items-center justify-center shadow-xs">
+            <svg class="w-8 h-8 sm:w-10 sm:h-10 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
           </div>
 
+          <div class="flex flex-col items-center gap-1.5">
+            <h2 class="font-poppins font-bold text-xl sm:text-2xl text-emerald-800">✓ Sesi Terverifikasi</h2>
+            <span class="px-3.5 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full font-bold text-xs tracking-wide uppercase">
+              Sedang Mengajar
+            </span>
+          </div>
         </div>
 
-        <!-- Tombol Kembali / Selesai -->
-        <div class="w-full pt-2">
-          <a href="{{ url('/dashboard-guru') }}" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
-            Kembali ke Beranda
-          </a>
+        <!-- KOLOM KANAN: Detail Informasi Sesi -->
+        <div class="flex flex-col gap-5 w-full">
+          
+          <div class="bg-brand-50/60 border border-brand-100 rounded-2xl p-4 sm:p-5 flex flex-col divide-y divide-brand-100/80 text-xs sm:text-sm">
+            <div class="flex justify-between items-center py-2.5">
+              <span class="text-brand-600 font-medium">Pengajar</span>
+              <span class="font-bold text-[#3E3028]">Budi Santoso</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5">
+              <span class="text-brand-600 font-medium">Kelas</span>
+              <span class="font-bold text-[#3E3028]">X RPL 1</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5">
+              <span class="text-brand-600 font-medium">Mata Pelajaran</span>
+              <span class="font-bold text-[#3E3028]">Matematika</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5">
+              <span class="text-brand-600 font-medium">Check-in Sesi</span>
+              <span class="font-bold text-[#3E3028]">07:03 WIB</span>
+            </div>
+
+            <div class="flex justify-between items-center py-2.5">
+              <span class="text-brand-600 font-medium">Siswa Terverifikasi</span>
+              <span class="font-bold text-emerald-700">Perwakilan (Kehadiran Sah)</span>
+            </div>
+          </div>
+
+          <!-- Aksi Menuju Halaman Dialog Konfirmasi Selesai -->
+          <div class="flex flex-col items-center gap-3 w-full">
+            <p class="text-xs text-brand-600 text-center leading-relaxed">
+              Tekan tombol di bawah ini untuk menutup sesi ketika jam pelajaran berakhir.
+            </p>
+
+            <a href="{{ url('/selesai-mengajar') }}" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
+              Selesai Mengajar
+            </a>
+          </div>
+
         </div>
 
       </div>
@@ -161,7 +175,7 @@
 
   </div>
 
-  <!-- Bottom Navigation Bar (Hanya muncul di Mobile/HP) -->
+  <!-- Bottom Navigation Bar (Mobile) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
     <div class="flex justify-between items-center">
       
@@ -199,54 +213,6 @@
 
     </div>
   </nav>
-
-  <!-- Script Timer Hitung Mundur & Redirect Kamera Guru -->
-  <script>
-    let durasiDetik = 300; // 5 Menit
-    let timerInterval;
-
-    function startTimer() {
-      const display = document.getElementById('timer-count');
-      const overlay = document.getElementById('qr-expired-overlay');
-      const svg = document.getElementById('qr-svg');
-
-      timerInterval = setInterval(() => {
-        let menit = Math.floor(durasiDetik / 60);
-        let detik = durasiDetik % 60;
-
-        menit = menit < 10 ? '0' + menit : menit;
-        detik = detik < 10 ? '0' + detik : detik;
-
-        display.textContent = `${menit}:${detik}`;
-
-        if (--durasiDetik < 0) {
-          clearInterval(timerInterval);
-          display.textContent = "00:00";
-          svg.classList.add('opacity-10');
-          overlay.classList.remove('hidden');
-          overlay.classList.add('flex');
-        }
-      }, 1000);
-    }
-
-    function resetTimer() {
-      durasiDetik = 300;
-      document.getElementById('qr-expired-overlay').classList.add('hidden');
-      document.getElementById('qr-expired-overlay').classList.remove('flex');
-      document.getElementById('qr-svg').classList.remove('opacity-10');
-      startTimer();
-    }
-
-    // Jalankan timer saat halaman terbuka
-    window.onload = startTimer;
-
-    // Listener otomatis: saat siswa berhasil scan QR guru, halaman otomatis pindah ke kamera guru
-    /* 
-    window.addEventListener('qr-scanned-by-student', function() {
-      window.location.href = "{{ url('/guru-scan-qr') }}";
-    });
-    */
-  </script>
 
 </body>
 </html>
