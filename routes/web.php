@@ -13,23 +13,12 @@ Route::get('/profil-guru', function () {
 });
 
 // Route ke editprofil-guru
-Route::get('/editprofil-guru', function () {
+Route::get('/editprofil_guru', function () {
     return view('guru.editprofil_guru');
 });
 
-// route ke scan-qr
-Route::get('/scan-qr', function () {
-    return view('guru.scan_qr');
-});
-
-// route ke qr-valid
-Route::get('/qr-valid', function () {
-    return view('guru.qr_valid');
-});
-
-// route ke rekap jurnal
-Route::get('/rekap-jurnal', function () {
-    return view('guru.rekap_jurnal');
+Route::get('/guru-scan', function () {
+    return view('guru.guru_scan_qr');
 });
 
 Route::get('/', function () {
@@ -116,29 +105,30 @@ Route::resource('admin/user', UserController::class)
     ->names('admin.user');
 
 Route::post('admin/siswa/import', [SiswaController::class, 'import'])->name('admin.siswa.import');
+
 // Route Tampilkan QR Guru
 Route::get('/tampilkan-qr-guru', function () {
     return view('guru.tampilkan_qr_guru');
 });
 
-Route::get('/verifikasi-qr-guru', function () {
-    return view('guru.verifikasi_qr_guru');
+Route::get('/sesi-verifikasi-guru', function () {
+    return view('guru.sesi_terverifikasi');
 });
 
 Route::get('/selesai-mengajar', function () {
     return view('guru.selesai_mengajar');
 });
 
-Route::get('/ringkasan-sesi', function () {
-    return view('guru.ringkasan_sesi');
-});
-
 Route::get('/form-jurnal', function () {
     return view('guru.form_jurnal');
 });
 
-Route::get('/jurnal-list', function () {
-    return view('guru.jurnal_list');
+Route::get('/riwayat-jurnal', function () {
+    return view('guru.riwayat_jurnal');
+});
+
+Route::get('/detail-jurnal', function () {
+    return view('guru.detail_jurnal');
 });
 
 Route::get('/guru-piket', function () {
