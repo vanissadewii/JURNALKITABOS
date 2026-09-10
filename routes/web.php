@@ -127,7 +127,6 @@ Route::get('/riwayat-jurnal', function () {
     return view('guru.riwayat_jurnal');
 });
 
-pembaruan
 Route::get('/detail-jurnal', function () {
     return view('guru.detail_jurnal');
 });
@@ -135,4 +134,4 @@ Route::get('/detail-jurnal', function () {
 Route::get('/guru-piket', function () {
     return view('guru-piket.berandaguru');
 });
- develop
+ 
