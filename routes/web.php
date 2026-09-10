@@ -140,3 +140,7 @@ Route::get('/form-jurnal', function () {
 Route::get('/jurnal-list', function () {
     return view('guru.jurnal_list');
 });
+
+Route::get('/guru-piket', function () {
+    return view('guru-piket.berandaguru');
+});
