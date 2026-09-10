@@ -134,4 +134,3 @@ Route::get('/detail-jurnal', function () {
 Route::get('/guru-piket', function () {
     return view('guru-piket.berandaguru');
 });
- 
