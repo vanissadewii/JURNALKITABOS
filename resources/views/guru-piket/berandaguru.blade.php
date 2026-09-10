@@ -1850,8 +1850,8 @@
                             <select class="mt-1 w-full rounded-md border border-[#E4DDD8] px-3 py-2 text-[9px] outline-none focus:border-[#258A3E]">
 
                                 <option>Semua Kelas</option>
-                                <option>XII IPA 1</option>
-                                <option>XII IPA 2</option>
+                                <option>XII RPL 1</option>
+                                <option>XII RPL 2</option>
                                 <option>XII IPS 1</option>
 
                             </select>
@@ -1879,7 +1879,7 @@
                             Total Hadir
                         </p>
                         <p class="mt-2 text-2xl font-bold text-[#258A3E]">
-                            342
+                            200
                         </p>
                     </div>
 
@@ -1888,7 +1888,7 @@
                             Total Terlambat
                         </p>
                         <p class="mt-2 text-2xl font-bold text-[#F57C00]">
-                            12
+                            6
                         </p>
                     </div>
 
