@@ -1,548 +1,344 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profil Guru</title>
 
-    <title>Edit Profil Guru</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Tailwind tanpa Vite -->
-    <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#F9F6F0',
+              100: '#EFE6DD',
+              200: '#E2C7B0',
+              300: '#D7B899',
+              600: '#7A6A60',
+              700: '#6D5C52',
+              800: '#5C4033',
+              900: '#3E2B22',
+            }
+          }
+        }
+      }
+    }
+  </script>
 </head>
-
-<body class="w-full min-h-screen bg-[#F5EFE8] text-[#3E3028]">
-
-    <div class="w-full min-h-screen bg-[#F5EFE8] flex flex-col">
-
-        <!-- =========================
-             HEADER
-        ========================== -->
-
-        <header
-            class="w-full h-12 px-4 bg-white border-b border-[#E5D8CC]
-                   flex items-center justify-center shrink-0"
-        >
-            <h1 class="text-[16px] leading-6 font-bold text-center">
-                Edit Profil
-            </h1>
-        </header>
-
-
-        <!-- =========================
-             CONTENT
-        ========================== -->
-
-        <main
-            class="w-full flex-1 px-4 py-6 flex flex-col items-center gap-5
-                   max-[600px]:px-4 max-[600px]:py-5 max-[600px]:gap-[18px]
-                   min-[800px]:px-[8%] min-[800px]:py-10 min-[800px]:gap-[25px]"
-        >
-
-            <!-- =========================
-                 DATA PROFIL
-            ========================== -->
-
-            <div
-                class="w-full max-w-[600px] p-5 bg-white
-                       border border-[#E5D8CC] rounded-[10px]
-                       max-[600px]:p-4
-                       max-[350px]:p-3
-                       min-[800px]:max-w-[700px] min-[800px]:p-7"
-            >
-
-                <!-- Nama Lengkap -->
-
-                <div class="w-full mb-4 max-[350px]:mb-[13px]">
-
-                    <label
-                        class="block mb-[7px] text-[12px] font-semibold text-[#7A6A60]
-                               min-[800px]:text-[14px]"
-                    >
-                        Nama Lengkap
-                    </label>
-
-                    <input
-                        type="text"
-                        value="Budi Santoso, S.Pd."
-                        class="w-full h-[42px] px-3
-                               border border-[#D9C9BA] rounded-[7px]
-                               bg-white text-[#3E3028] text-[13px]
-                               outline-none focus:border-[#5C4033]
-                               max-[350px]:h-10 max-[350px]:text-[12px]
-                               min-[800px]:h-12 min-[800px]:text-[15px]"
-                    >
-
-                </div>
-
-
-                <!-- Email -->
-
-                <div class="w-full mb-4 max-[350px]:mb-[13px]">
-
-                    <label
-                        class="block mb-[7px] text-[12px] font-semibold text-[#7A6A60]
-                               min-[800px]:text-[14px]"
-                    >
-                        Email
-                    </label>
-
-                    <input
-                        type="email"
-                        value="budi.santoso@email.com"
-                        class="w-full h-[42px] px-3
-                               border border-[#D9C9BA] rounded-[7px]
-                               bg-white text-[#3E3028] text-[13px]
-                               outline-none focus:border-[#5C4033]
-                               max-[350px]:h-10 max-[350px]:text-[12px]
-                               min-[800px]:h-12 min-[800px]:text-[15px]"
-                    >
-
-                </div>
-
-
-                <!-- Unit Kerja -->
-
-                <div class="w-full mb-4 max-[350px]:mb-[13px]">
-
-                    <label
-                        class="block mb-[7px] text-[12px] font-semibold text-[#7A6A60]
-                               min-[800px]:text-[14px]"
-                    >
-                        Unit Kerja
-                    </label>
-
-                    <input
-                        type="text"
-                        value="SMK Negeri 1 Jakarta"
-                        class="w-full h-[42px] px-3
-                               border border-[#D9C9BA] rounded-[7px]
-                               bg-white text-[#3E3028] text-[13px]
-                               outline-none focus:border-[#5C4033]
-                               max-[350px]:h-10 max-[350px]:text-[12px]
-                               min-[800px]:h-12 min-[800px]:text-[15px]"
-                    >
-
-                </div>
-
-
-                <!-- Mata Pelajaran -->
-
-                <div class="w-full">
-
-                    <label
-                        class="block mb-[7px] text-[12px] font-semibold text-[#7A6A60]
-                               min-[800px]:text-[14px]"
-                    >
-                        Mata Pelajaran
-                    </label>
-
-                    <input
-                        type="text"
-                        value="Matematika"
-                        class="w-full h-[42px] px-3
-                               border border-[#D9C9BA] rounded-[7px]
-                               bg-white text-[#3E3028] text-[13px]
-                               outline-none focus:border-[#5C4033]
-                               max-[350px]:h-10 max-[350px]:text-[12px]
-                               min-[800px]:h-12 min-[800px]:text-[15px]"
-                    >
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================
-                 UBAH PASSWORD
-            ========================== -->
-
-            <div
-                class="w-full max-w-[600px] p-5 bg-white
-                       border border-[#E5D8CC] rounded-[10px]
-                       max-[600px]:p-4
-                       max-[350px]:p-3
-                       min-[800px]:max-w-[700px] min-[800px]:p-7"
-            >
-
-                <h2
-                    class="mb-4 text-[15px] font-bold text-[#3E3028]
-                           max-[350px]:text-[14px]
-                           min-[800px]:text-[18px]"
-                >
-                    Ubah Password
-                </h2>
-
-
-                <!-- Password Lama -->
-
-                <div class="w-full mb-4 max-[350px]:mb-[13px]">
-
-                    <label
-                        class="block mb-[7px] text-[12px] font-semibold text-[#7A6A60]
-                               min-[800px]:text-[14px]"
-                    >
-                        Password Lama
-                    </label>
-
-                    <div class="relative w-full">
-
-                        <input
-                            type="password"
-                            id="passwordLama"
-                            placeholder="Masukkan password lama"
-                            class="w-full h-[42px] pl-3 pr-[45px]
-                                   border border-[#D9C9BA] rounded-[7px]
-                                   bg-white text-[#3E3028] text-[13px]
-                                   outline-none focus:border-[#5C4033]
-                                   max-[350px]:h-10 max-[350px]:text-[12px]
-                                   min-[800px]:h-12 min-[800px]:text-[15px]"
-                        >
-
-                        <button
-                            type="button"
-                            onclick="togglePassword('passwordLama', this)"
-                            class="absolute right-[10px] top-1/2 -translate-y-1/2
-                                   w-6 h-6 border-0 bg-transparent p-0
-                                   flex items-center justify-center cursor-pointer"
-                        >
-                            <span
-                                class="eye-icon relative block w-5 h-[13px]
-                                       border-2 border-[#3E3028]
-                                       rounded-[50%]"
-                            ></span>
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Password Baru -->
-
-                <div class="w-full mb-4 max-[350px]:mb-[13px]">
-
-                    <label
-                        class="block mb-[7px] text-[12px] font-semibold text-[#7A6A60]
-                               min-[800px]:text-[14px]"
-                    >
-                        Password Baru
-                    </label>
-
-                    <div class="relative w-full">
-
-                        <input
-                            type="password"
-                            id="passwordBaru"
-                            placeholder="Masukkan password baru"
-                            class="w-full h-[42px] pl-3 pr-[45px]
-                                   border border-[#D9C9BA] rounded-[7px]
-                                   bg-white text-[#3E3028] text-[13px]
-                                   outline-none focus:border-[#5C4033]
-                                   max-[350px]:h-10 max-[350px]:text-[12px]
-                                   min-[800px]:h-12 min-[800px]:text-[15px]"
-                        >
-
-                        <button
-                            type="button"
-                            onclick="togglePassword('passwordBaru', this)"
-                            class="absolute right-[10px] top-1/2 -translate-y-1/2
-                                   w-6 h-6 border-0 bg-transparent p-0
-                                   flex items-center justify-center cursor-pointer"
-                        >
-                            <span
-                                class="eye-icon relative block w-5 h-[13px]
-                                       border-2 border-[#3E3028]
-                                       rounded-[50%]"
-                            ></span>
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Konfirmasi Password -->
-
-                <div class="w-full">
-
-                    <label
-                        class="block mb-[7px] text-[12px] font-semibold text-[#7A6A60]
-                               min-[800px]:text-[14px]"
-                    >
-                        Konfirmasi Password Baru
-                    </label>
-
-                    <div class="relative w-full">
-
-                        <input
-                            type="password"
-                            id="konfirmasiPassword"
-                            placeholder="Ulangi password baru"
-                            class="w-full h-[42px] pl-3 pr-[45px]
-                                   border border-[#D9C9BA] rounded-[7px]
-                                   bg-white text-[#3E3028] text-[13px]
-                                   outline-none focus:border-[#5C4033]
-                                   max-[350px]:h-10 max-[350px]:text-[12px]
-                                   min-[800px]:h-12 min-[800px]:text-[15px]"
-                        >
-
-                        <button
-                            type="button"
-                            onclick="togglePassword('konfirmasiPassword', this)"
-                            class="absolute right-[10px] top-1/2 -translate-y-1/2
-                                   w-6 h-6 border-0 bg-transparent p-0
-                                   flex items-center justify-center cursor-pointer"
-                        >
-                            <span
-                                class="eye-icon relative block w-5 h-[13px]
-                                       border-2 border-[#3E3028]
-                                       rounded-[50%]"
-                            ></span>
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================
-                 BUTTON
-            ========================== -->
-
-            <div
-                class="w-full max-w-[600px] flex gap-[10px]
-                       min-[800px]:max-w-[700px]"
-            >
-
-                <!-- Simpan -->
-
-                <button
-                    type="button"
-                    class="w-full h-[45px]
-                           rounded-lg
-                           flex items-center justify-center
-                           text-[14px] font-semibold
-                           cursor-pointer
-                           bg-[#5C4033] text-white
-                           max-[350px]:h-[42px] max-[350px]:text-[13px]
-                           min-[800px]:h-[52px] min-[800px]:text-[16px]"
-                >
-                    Simpan Perubahan
-                </button>
-
-
-                <!-- Batal -->
-
-                <a
-                    href="/profil-guru"
-                    class="w-full h-[45px]
-                           rounded-lg
-                           flex items-center justify-center
-                           text-[14px] font-semibold
-                           cursor-pointer no-underline
-                           bg-white text-[#5C4033]
-                           border border-[#5C4033]
-                           max-[350px]:h-[42px] max-[350px]:text-[13px]
-                           min-[800px]:h-[52px] min-[800px]:text-[16px]"
-                >
-                    Batal
-                </a>
-
-            </div>
-
-        </main>
-
-
-        <!-- =========================
-             NAVIGASI BAWAH
-        ========================== -->
-
-        <nav
-            class="w-full h-16 py-2 bg-white
-                   border-t border-[#E5D8CC]
-                   flex justify-around items-center shrink-0
-                   min-[800px]:h-[75px]"
-        >
-
-            <!-- Dashboard -->
-
-            <a
-                href="/dashboard-guru"
-                class="flex-1 flex flex-col items-center gap-1
-                       text-[11px] text-[#7A6A60] no-underline
-                       min-[800px]:text-[13px]"
-            >
-                <div class="text-[18px] h-5">
-                    ⌂
-                </div>
-                <span>
-                    Dashboard
-                </span>
-            </a>
-
-
-            <!-- Jurnal -->
-
-            <a
-                href="/mulai-sesi"
-                class="flex-1 h-full flex flex-col items-center justify-center
-                       gap-1 no-underline
-                       text-[#9A8A80]"
-            >
-
-                <div class="w-6 h-6 flex items-center justify-center">
-
-                    <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <rect
-                            x="5"
-                            y="3"
-                            width="14"
-                            height="18"
-                            rx="2"
-                        ></rect>
-
-                        <path d="M9 3v18"></path>
-                    </svg>
-
-                </div>
-
-                <span class="text-[13px]">
-                    Jurnal
-                </span>
-
-            </a>
-
-
-            <!-- Rekap -->
-
-            <a
-                href="/rekap-jurnal"
-                class="flex-1 h-full flex flex-col items-center justify-center
-                       gap-1 no-underline
-                       text-[#7A6A60]
-                       min-[800px]:text-[13px]"
-            >
-
-                <div class="w-6 h-6 flex items-center justify-center">
-
-                    <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <rect
-                            x="4"
-                            y="5"
-                            width="16"
-                            height="15"
-                            rx="2"
-                        ></rect>
-
-                        <path d="M4 9h16"></path>
-
-                        <path d="M8 3v4"></path>
-                        <path d="M16 3v4"></path>
-
-                    </svg>
-
-                </div>
-
-                <span class="text-[13px]">
-                    Rekap
-                </span>
-
-            </a>
-
-
-            <!-- Profil -->
-
-            <a
-                href="/profil-guru"
-                class="flex-1 h-full flex flex-col items-center justify-center
-                       gap-1 no-underline
-                       text-[#9A8A80]"
-            >
-
-                <div class="w-6 h-6 flex items-center justify-center">
-
-                    <svg
-                        width="22"
-                        height="22"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <circle
-                            cx="12"
-                            cy="8"
-                            r="3"
-                        ></circle>
-
-                        <path
-                            d="M5 21c0-3.5 3-6 7-6s7 2.5 7 6"
-                        ></path>
-                    </svg>
-
-                </div>
-
-                <span class="text-[13px]">
-                    Profil
-                </span>
-
-            </a>
-
-        </nav>
+<body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
+
+  <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
+  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="p-6 flex flex-col gap-8">
+      
+      <!-- Brand Logo / Title -->
+      <div class="flex flex-col gap-0.5">
+        <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
+        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex flex-col gap-1.5">
+        
+        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          </svg>
+          <span>Beranda</span>
+        </a>
+
+        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
+            <path d="M7 3v14"/>
+          </svg>
+          <span>isi Jurnal</span>
+        </a>
+
+        <!-- Menu Riwayat Jurnal -->
+        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          </svg>
+          <span>Riwayat Jurnal</span>
+        </a>
+
+        <!-- Active Link (Profil Guru) -->
+        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
+          <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
+            <circle cx="10" cy="6.5" r="3.5"/>
+          </svg>
+          <span>Profil</span>
+        </a>
+
+      </nav>
 
     </div>
+  </aside>
 
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+    
+    <!-- Top Header Bar -->
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
+      <div class="max-w-xl w-full mx-auto flex items-center justify-between">
+        <a href="{{ url('/profil-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali ke Profil">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </a>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Edit Profil</h1>
+        <div class="w-9"></div>
+      </div>
+    </header>
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+    <!-- Main Content Container -->
+    <main class="w-full max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
+      
+      <!-- Ubah Foto Profil -->
+      <div class="flex flex-col items-center gap-3">
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-brand-300 text-brand-900 border-4 border-white shadow-md flex items-center justify-center font-poppins font-bold text-3xl sm:text-4xl">
+          BS
+        </div>
+        <button type="button" class="text-xs sm:text-sm font-semibold text-brand-800 hover:text-brand-900 transition-colors">
+          Ubah Foto Profil
+        </button>
+      </div>
 
-    <script>
+      <!-- Form Data Profil -->
+      <form action="{{ url('/profil-guru') }}" method="POST" class="w-full flex flex-col gap-6">
+        @csrf
+        
+        <!-- Form Card Info Guru -->
+        <div class="bg-white border border-brand-100 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+          
+          <div class="flex flex-col gap-1.5">
+            <label for="nama" class="text-xs font-semibold text-brand-600">Nama Lengkap</label>
+            <input 
+              type="text" 
+              id="nama" 
+              name="nama" 
+              value="Budi Santoso, S.Pd." 
+              required 
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+            >
+          </div>
 
-        function togglePassword(inputId, button) {
+          <div class="flex flex-col gap-1.5">
+            <label for="nip" class="text-xs font-semibold text-brand-600">NIP</label>
+            <input 
+              type="text" 
+              id="nip" 
+              name="nip" 
+              value="198501012010011001" 
+              required 
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+            >
+          </div>
 
-            const input = document.getElementById(inputId);
-            const icon = button.querySelector(".eye-icon");
+          <div class="flex flex-col gap-1.5">
+            <label for="no_hp" class="text-xs font-semibold text-brand-600">No. Handphone</label>
+            <input 
+              type="text" 
+              id="no_hp" 
+              name="no_hp" 
+              value="081234560001" 
+              required 
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+            >
+          </div>
 
-            if (input.type === "password") {
+          <div class="flex flex-col gap-1.5">
+            <label for="unit_kerja" class="text-xs font-semibold text-brand-600">Unit Kerja</label>
+            <input 
+              type="text" 
+              id="unit_kerja" 
+              name="unit_kerja" 
+              value="SMK Negeri 1 Jakarta" 
+              required 
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+            >
+          </div>
 
-                input.type = "text";
+          <div class="flex flex-col gap-1.5">
+            <label for="mapel" class="text-xs font-semibold text-brand-600">Mata Pelajaran</label>
+            <input 
+              type="text" 
+              id="mapel" 
+              name="mapel" 
+              value="Matematika" 
+              required 
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+            >
+          </div>
 
-                icon.classList.add("hidden");
+        </div>
 
-            } else {
+        <!-- Password Card -->
+        <div class="bg-white border border-brand-100 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+          
+          <h2 class="font-poppins font-bold text-sm sm:text-base text-[#3E3028]">Ubah Password</h2>
 
-                input.type = "password";
+          <!-- Password Lama -->
+          <div class="flex flex-col gap-1.5">
+            <label for="passwordLama" class="text-xs font-semibold text-brand-600">Password Lama</label>
+            <div class="relative w-full">
+              <input 
+                type="password" 
+                id="passwordLama" 
+                placeholder="Masukkan password lama"
+                class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              >
+              <button 
+                type="button" 
+                onclick="togglePassword('passwordLama', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
+              >
+                <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
 
-                icon.classList.remove("hidden");
+          <!-- Password Baru -->
+          <div class="flex flex-col gap-1.5">
+            <label for="passwordBaru" class="text-xs font-semibold text-brand-600">Password Baru</label>
+            <div class="relative w-full">
+              <input 
+                type="password" 
+                id="passwordBaru" 
+                placeholder="Masukkan password baru"
+                class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              >
+              <button 
+                type="button" 
+                onclick="togglePassword('passwordBaru', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
+              >
+                <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
 
-            }
+          <!-- Konfirmasi Password Baru -->
+          <div class="flex flex-col gap-1.5">
+            <label for="konfirmasiPassword" class="text-xs font-semibold text-brand-600">Konfirmasi Password Baru</label>
+            <div class="relative w-full">
+              <input 
+                type="password" 
+                id="konfirmasiPassword" 
+                placeholder="Ulangi password baru"
+                class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              >
+              <button 
+                type="button" 
+                onclick="togglePassword('konfirmasiPassword', this)" 
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
+              >
+                <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
 
-        }
+        </div>
 
-    </script>
+        <!-- Tombol Aksi -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full">
+          <button type="submit" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
+            Simpan Perubahan
+          </button>
+          <a href="{{ url('/profil-guru') }}" class="w-full h-12 bg-white border border-[#5C4033] text-[#5C4033] hover:bg-brand-50 font-poppins font-semibold text-sm rounded-xl flex items-center justify-center active:scale-[0.99] transition-all">
+            Batal
+          </a>
+        </div>
+
+      </form>
+
+    </main>
+
+  </div>
+
+  <!-- Bottom Navigation Bar (Mobile) -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
+    <div class="flex justify-between items-center">
+      
+      <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+        </svg>
+        <span>Beranda</span>
+      </a>
+
+      <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
+          <path d="M7 3v14"/>
+        </svg>
+        <span>isi Jurnal</span>
+      </a>
+
+      <!-- Mobile Link Riwayat Jurnal -->
+      <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+        </svg>
+        <span>Riwayat</span>
+      </a>
+
+      <!-- Active Mobile Link (Profil Guru) -->
+      <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
+          <circle cx="10" cy="6.5" r="3.5"/>
+        </svg>
+        <span>Profil</span>
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- Script Toggle Password -->
+  <script>
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      const svg = button.querySelector('svg');
+
+      if (input.type === "password") {
+        input.type = "text";
+        svg.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        `;
+      } else {
+        input.type = "password";
+        svg.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        `;
+      }
+    }
+  </script>
 
 </body>
 </html>
