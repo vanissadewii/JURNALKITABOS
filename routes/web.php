@@ -45,11 +45,6 @@ Route::get('/dashboard-guru', function () {
     return view('guru.dashboard_guru');
 });
 
-// Route ke Mulai Sesi
-Route::get('/mulai-sesi', function () {
-    return view('guru.mulai_sesi');
-});
-
 // Preview beranda kelas
 Route::get('/preview-beranda', function () {
     $kelas = (object) ['nama_kelas' => 'XI RPL 2'];
@@ -114,10 +109,6 @@ Route::get('/tampilkan-qr-guru', function () {
 
 Route::get('/sesi-verifikasi-guru', function () {
     return view('guru.sesi_terverifikasi');
-});
-
-Route::get('/selesai-mengajar', function () {
-    return view('guru.selesai_mengajar');
 });
 
 Route::get('/form-jurnal', function () {

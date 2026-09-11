@@ -94,7 +94,7 @@
     
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
-      <div class="max-w-xl w-full mx-auto flex items-center justify-between">
+      <div class="max-w-7xl w-full mx-auto flex items-center justify-between">
         <a href="{{ url('/profil-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali ke Profil">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
@@ -106,7 +106,7 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full max-w-xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
+    <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
       
       <!-- Ubah Foto Profil -->
       <div class="flex flex-col items-center gap-3">
@@ -123,154 +123,147 @@
         @csrf
         
         <!-- Form Card Info Guru -->
-        <div class="bg-white border border-brand-100 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+        <div class="bg-white border border-brand-100 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col gap-5 w-full">
+          <h2 class="font-poppins font-bold text-base sm:text-lg text-[#3E3028] border-b border-brand-100 pb-3">Informasi Pribadi</h2>
           
-          <div class="flex flex-col gap-1.5">
-            <label for="nama" class="text-xs font-semibold text-brand-600">Nama Lengkap</label>
-            <input 
-              type="text" 
-              id="nama" 
-              name="nama" 
-              value="Budi Santoso, S.Pd." 
-              required 
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-            >
-          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div class="flex flex-col gap-1.5">
+              <label for="nama" class="text-xs font-semibold text-brand-600">Nama Lengkap</label>
+              <input 
+                type="text" 
+                id="nama" 
+                name="nama" 
+                value="Budi Santoso, S.Pd." 
+                required 
+                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              >
+            </div>
 
-          <div class="flex flex-col gap-1.5">
-            <label for="nip" class="text-xs font-semibold text-brand-600">NIP</label>
-            <input 
-              type="text" 
-              id="nip" 
-              name="nip" 
-              value="198501012010011001" 
-              required 
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-            >
-          </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="no_hp" class="text-xs font-semibold text-brand-600">No. Handphone</label>
+              <input 
+                type="text" 
+                id="no_hp" 
+                name="no_hp" 
+                value="081234560001" 
+                required 
+                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              >
+            </div>
 
-          <div class="flex flex-col gap-1.5">
-            <label for="no_hp" class="text-xs font-semibold text-brand-600">No. Handphone</label>
-            <input 
-              type="text" 
-              id="no_hp" 
-              name="no_hp" 
-              value="081234560001" 
-              required 
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-            >
-          </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="unit_kerja" class="text-xs font-semibold text-brand-600">Unit Kerja</label>
+              <input 
+                type="text" 
+                id="unit_kerja" 
+                name="unit_kerja" 
+                value="SMK Negeri 1 Jakarta" 
+                required 
+                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              >
+            </div>
 
-          <div class="flex flex-col gap-1.5">
-            <label for="unit_kerja" class="text-xs font-semibold text-brand-600">Unit Kerja</label>
-            <input 
-              type="text" 
-              id="unit_kerja" 
-              name="unit_kerja" 
-              value="SMK Negeri 1 Jakarta" 
-              required 
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-            >
-          </div>
-
-          <div class="flex flex-col gap-1.5">
-            <label for="mapel" class="text-xs font-semibold text-brand-600">Mata Pelajaran</label>
-            <input 
-              type="text" 
-              id="mapel" 
-              name="mapel" 
-              value="Matematika" 
-              required 
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-            >
+            <div class="flex flex-col gap-1.5">
+              <label for="mapel" class="text-xs font-semibold text-brand-600">Mata Pelajaran</label>
+              <input 
+                type="text" 
+                id="mapel" 
+                name="mapel" 
+                value="Matematika" 
+                required 
+                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              >
+            </div>
           </div>
 
         </div>
 
         <!-- Password Card -->
-        <div class="bg-white border border-brand-100 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+        <div class="bg-white border border-brand-100 rounded-2xl p-6 sm:p-8 shadow-xs flex flex-col gap-5 w-full">
           
-          <h2 class="font-poppins font-bold text-sm sm:text-base text-[#3E3028]">Ubah Password</h2>
+          <h2 class="font-poppins font-bold text-base sm:text-lg text-[#3E3028] border-b border-brand-100 pb-3">Ubah Password</h2>
 
-          <!-- Password Lama -->
-          <div class="flex flex-col gap-1.5">
-            <label for="passwordLama" class="text-xs font-semibold text-brand-600">Password Lama</label>
-            <div class="relative w-full">
-              <input 
-                type="password" 
-                id="passwordLama" 
-                placeholder="Masukkan password lama"
-                class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-              >
-              <button 
-                type="button" 
-                onclick="togglePassword('passwordLama', this)" 
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
-              >
-                <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            <!-- Password Lama -->
+            <div class="flex flex-col gap-1.5">
+              <label for="passwordLama" class="text-xs font-semibold text-brand-600">Password Lama</label>
+              <div class="relative w-full">
+                <input 
+                  type="password" 
+                  id="passwordLama" 
+                  placeholder="Masukkan password lama"
+                  class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+                >
+                <button 
+                  type="button" 
+                  onclick="togglePassword('passwordLama', this)" 
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
+                >
+                  <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Password Baru -->
-          <div class="flex flex-col gap-1.5">
-            <label for="passwordBaru" class="text-xs font-semibold text-brand-600">Password Baru</label>
-            <div class="relative w-full">
-              <input 
-                type="password" 
-                id="passwordBaru" 
-                placeholder="Masukkan password baru"
-                class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-              >
-              <button 
-                type="button" 
-                onclick="togglePassword('passwordBaru', this)" 
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
-              >
-                <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
+            <!-- Password Baru -->
+            <div class="flex flex-col gap-1.5">
+              <label for="passwordBaru" class="text-xs font-semibold text-brand-600">Password Baru</label>
+              <div class="relative w-full">
+                <input 
+                  type="password" 
+                  id="passwordBaru" 
+                  placeholder="Masukkan password baru"
+                  class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+                >
+                <button 
+                  type="button" 
+                  onclick="togglePassword('passwordBaru', this)" 
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
+                >
+                  <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Konfirmasi Password Baru -->
-          <div class="flex flex-col gap-1.5">
-            <label for="konfirmasiPassword" class="text-xs font-semibold text-brand-600">Konfirmasi Password Baru</label>
-            <div class="relative w-full">
-              <input 
-                type="password" 
-                id="konfirmasiPassword" 
-                placeholder="Ulangi password baru"
-                class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
-              >
-              <button 
-                type="button" 
-                onclick="togglePassword('konfirmasiPassword', this)" 
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
-              >
-                <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-              </button>
+            <!-- Konfirmasi Password Baru -->
+            <div class="flex flex-col gap-1.5">
+              <label for="konfirmasiPassword" class="text-xs font-semibold text-brand-600">Konfirmasi Password Baru</label>
+              <div class="relative w-full">
+                <input 
+                  type="password" 
+                  id="konfirmasiPassword" 
+                  placeholder="Ulangi password baru"
+                  class="w-full h-11 pl-3.5 pr-10 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+                >
+                <button 
+                  type="button" 
+                  onclick="togglePassword('konfirmasiPassword', this)" 
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-brand-600 hover:text-brand-800 focus:outline-none p-1"
+                >
+                  <svg class="w-5 h-5 eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
+              </div>
             </div>
           </div>
 
         </div>
 
         <!-- Tombol Aksi -->
-        <div class="flex flex-col sm:flex-row gap-3 w-full">
-          <button type="submit" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
-            Simpan Perubahan
-          </button>
-          <a href="{{ url('/profil-guru') }}" class="w-full h-12 bg-white border border-[#5C4033] text-[#5C4033] hover:bg-brand-50 font-poppins font-semibold text-sm rounded-xl flex items-center justify-center active:scale-[0.99] transition-all">
+        <div class="flex flex-col sm:flex-row justify-end gap-3 w-full">
+          <a href="{{ url('/profil-guru') }}" class="w-full sm:w-48 h-12 bg-white border border-[#5C4033] text-[#5C4033] hover:bg-brand-50 font-poppins font-semibold text-sm rounded-xl flex items-center justify-center active:scale-[0.99] transition-all">
             Batal
           </a>
+          <button type="submit" class="w-full sm:w-48 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
+            Simpan Perubahan
+          </button>
         </div>
 
       </form>

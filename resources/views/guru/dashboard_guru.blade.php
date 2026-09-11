@@ -66,7 +66,7 @@
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
             <path d="M7 3v14"/>
           </svg>
-          <span>isi Jurnal</span>
+          <span>Isi Jurnal</span>
         </a>
 
         <!-- MENU LIST/RIWAYAT JURNAL -->
@@ -91,17 +91,17 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT AREA (Pushed to right on desktop) -->
-  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+  <!-- MAIN CONTENT AREA (Full Width Desktop) -->
+  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
     
-    <!-- Top Header Bar (Cokelat) -->
+    <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md px-6 md:px-10 py-6 sm:py-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       
       <div class="flex items-center justify-between w-full md:w-auto gap-4">
         <div class="flex flex-col gap-1">
           <span class="text-xs sm:text-sm font-medium tracking-wide text-brand-200">Selamat Datang,</span>
           <h1 class="font-poppins text-2xl sm:text-3xl font-bold text-white tracking-tight">Budi Santoso</h1>
-          <span class="text-xs sm:text-sm text-brand-300">Guru Matematika • NIP. 19850101...</span>
+          <span class="text-xs sm:text-sm text-brand-300">Guru Matematika • </span>
         </div>
 
         <!-- Logo Mobile -->
@@ -146,54 +146,58 @@
 
     </header>
 
-    <!-- Main Content Container -->
-    <main class="w-full max-w-6xl px-6 md:px-10 py-8 flex flex-col gap-8 flex-1">
+    <!-- Main Content Container (Penuh Lebar Layar) -->
+    <main class="w-full px-6 md:px-10 py-8 flex flex-col gap-8 flex-1">
       
       <!-- SEKSI 1: Jadwal Mengajar Saat Ini -->
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 w-full">
         <div class="flex items-center justify-between">
           <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">Jadwal Mengajar Saat Ini</h2>
         </div>
 
-        <!-- Card Memanjang Jadwal Mengajar -->
-        <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 md:p-8 flex flex-col gap-6 shadow-sm relative overflow-hidden before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:bg-amber-500">
+        <!-- Card Banner Utama (Full Width & Grid Responsif) -->
+        <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 md:p-8 flex flex-col justify-between gap-6 shadow-sm relative overflow-hidden before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:bg-amber-500">
           
-          <!-- Baris Atas -->
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="flex flex-col gap-1">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            
+            <!-- Info Kelas & Mata Pelajaran -->
+            <div class="lg:col-span-7 flex flex-col gap-3">
+              <div class="flex items-center gap-3">
+                <span class="px-3.5 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-semibold text-amber-800">
+                  Belum Dimulai
+                </span>
+                <span class="text-xs font-semibold text-brand-600 border-l border-brand-200 pl-3">
+                  Sesi Aktif
+                </span>
+              </div>
               <h3 class="font-poppins font-bold text-2xl md:text-3xl text-[#3E3028]">Matematika</h3>
-              <span class="font-semibold text-base text-[#8C7B70]">Kelas X RPL 1</span>
-            </div>
-            
-            <span class="px-4 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-xs md:text-sm font-semibold text-amber-800">
-              Belum Dimulai
-            </span>
-          </div>
-
-          <div class="w-full h-px bg-[#F2E9E1]"></div>
-
-          <!-- Baris Bawah -->
-          <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-            
-            <div class="flex items-center gap-3 text-sm md:text-base font-medium text-brand-700 bg-brand-50 px-4 py-3 rounded-xl border border-brand-100/60 md:w-auto">
-              <svg class="w-5 h-5 text-brand-800 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
-                <circle cx="8" cy="8" r="6"/>
-                <path d="M8 4.5v4.25l2.5 1.5"/>
-              </svg>
-              <span>Jam ke-1 (07:00 – 07:45)</span>
+              <p class="font-semibold text-base text-[#8C7B70]">Kelas X RPL 1</p>
             </div>
 
-            <a href="{{ url('/form-jurnal') }}" class="w-full md:w-auto px-8 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm md:text-base rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
-              Mulai Sesi Mengajar
-            </a>
+            <!-- Jam & Action Button -->
+            <div class="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch sm:items-center lg:items-stretch xl:items-center justify-end gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-brand-100">
+              
+              <div class="flex items-center gap-3 text-sm font-medium text-brand-700 bg-brand-50 px-4 py-3 rounded-xl border border-brand-100/60 justify-center">
+                <svg class="w-5 h-5 text-brand-800 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+                  <circle cx="8" cy="8" r="6"/>
+                  <path d="M8 4.5v4.25l2.5 1.5"/>
+                </svg>
+                <span class="whitespace-nowrap">Jam ke-1 (07:00 – 07:45)</span>
+              </div>
+
+              <a href="{{ url('/form-jurnal') }}" class="px-6 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all whitespace-nowrap">
+                Mulai Sesi Mengajar
+              </a>
+
+            </div>
 
           </div>
 
         </div>
       </div>
 
-      <!-- SEKSI 2: Jadwal Hari Ini (BARU) -->
-      <div class="flex flex-col gap-4">
+      <!-- SEKSI 2: Jadwal Hari Ini (Grid Layout di Desktop) -->
+      <div class="flex flex-col gap-4 w-full">
         <div class="flex items-center justify-between">
           <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">
             Jadwal Mengajar Hari Ini
@@ -203,73 +207,84 @@
           </span>
         </div>
 
-        <div class="bg-white border border-brand-100 rounded-2xl shadow-sm overflow-hidden">
-          <div class="divide-y divide-brand-100/60">
-            
-            <!-- Item Jadwal 1 -->
-            <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-brand-50/50 transition-colors">
-              <div class="flex items-start gap-4">
+        <!-- Grid 1 Kolom (Mobile) / 2-3 Kolom (Desktop) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+          
+          <!-- Item Jadwal 1 -->
+          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
                   01
                 </div>
                 <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika — X RPL 1</h4>
-                  <p class="text-xs sm:text-sm text-brand-600">Jam ke-1 • 07:00 – 07:45</p>
+                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
+                  <p class="text-xs font-semibold text-[#8C7B70]">X RPL 1</p>
                 </div>
               </div>
-              <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-brand-50">
-                <span class="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full font-semibold text-xs">
-                  Akan Datang
-                </span>
-                <a href="{{ url('/form-jurnal') }}" class="text-xs font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                  Isi Jurnal
-                </a>
-              </div>
+              <span class="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full font-semibold text-xs whitespace-nowrap">
+                Akan Datang
+              </span>
             </div>
 
-            <!-- Item Jadwal 2 -->
-            <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-brand-50/50 transition-colors">
-              <div class="flex items-start gap-4">
+            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
+              <span class="text-brand-600 font-medium">Jam ke-1 • 07:00 – 07:45</span>
+              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
+                Isi Jurnal
+              </a>
+            </div>
+          </div>
+
+          <!-- Item Jadwal 2 -->
+          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
                   02
                 </div>
                 <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika — X RPL 2</h4>
-                  <p class="text-xs sm:text-sm text-brand-600">Jam ke-2 • 08:00 – 08:45</p>
+                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
+                  <p class="text-xs font-semibold text-[#8C7B70]">X RPL 2</p>
                 </div>
               </div>
-              <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-brand-50">
-                <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs">
-                  Belum Dimulai
-                </span>
-                <a href="{{ url('/form-jurnal') }}" class="text-xs font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                  Isi Jurnal
-                </a>
-              </div>
+              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs whitespace-nowrap">
+                Belum Dimulai
+              </span>
             </div>
 
-            <!-- Item Jadwal 3 -->
-            <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-brand-50/50 transition-colors">
-              <div class="flex items-start gap-4">
+            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
+              <span class="text-brand-600 font-medium">Jam ke-2 • 08:00 – 08:45</span>
+              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
+                Isi Jurnal
+              </a>
+            </div>
+          </div>
+
+          <!-- Item Jadwal 3 -->
+          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
                   03
                 </div>
                 <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika — XI RPL 1</h4>
-                  <p class="text-xs sm:text-sm text-brand-600">Jam ke-3 • 09:00 – 09:45</p>
+                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
+                  <p class="text-xs font-semibold text-[#8C7B70]">XI RPL 1</p>
                 </div>
               </div>
-              <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-3 sm:pt-0 border-brand-50">
-                <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs">
-                  Belum Dimulai
-                </span>
-                <a href="{{ url('/form-jurnal') }}" class="text-xs font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                  Isi Jurnal
-                </a>
-              </div>
+              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs whitespace-nowrap">
+                Belum Dimulai
+              </span>
             </div>
 
+            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
+              <span class="text-brand-600 font-medium">Jam ke-3 • 09:00 – 09:45</span>
+              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
+                Isi Jurnal
+              </a>
+            </div>
           </div>
+
         </div>
       </div>
 
@@ -277,11 +292,11 @@
 
   </div>
 
-  <!-- Bottom Navigation Bar (Muncul Khusus Tampilan Mobile HP) -->
+  <!-- Bottom Navigation Bar (Mobile HP) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
     <div class="flex justify-between items-center">
       
-      <!-- Active Mobile Link (Dashboard) -->
+      <!-- Active Mobile Link -->
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -295,7 +310,7 @@
           <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
           <path d="M7 3v14"/>
         </svg>
-        <span>isi Jurnal</span>
+        <span>Isi Jurnal</span>
       </a>
 
       <!-- LIST RIWAYAT JURNAL MOBILE -->
