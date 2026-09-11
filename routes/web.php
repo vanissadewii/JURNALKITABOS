@@ -72,7 +72,7 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
     })->name('verifikasisukses');
 
     Route::view('/kirim-jurnal', 'kelas.kirim-jurnal')
-    ->name('kirim-jurnal');
+        ->name('kirim-jurnal');
 
     Route::get('/profile', [KelasController::class, 'profile'])->name('profile');
 });
