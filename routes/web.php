@@ -71,7 +71,8 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
         return view('kelas.verifikasisukses');
     })->name('verifikasisukses');
 
-    Route::get('/kirim-jurnal', [KelasController::class, 'kirimJurnal'])->name('kirim-jurnal');
+    Route::view('/kirim-jurnal', 'kelas.kirim-jurnal')
+        ->name('kirim-jurnal');
 
     Route::get('/profile', [KelasController::class, 'profile'])->name('profile');
 });
