@@ -88,12 +88,12 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT AREA -->
-  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+  <!-- MAIN CONTENT AREA (Full Width Desktop) -->
+  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
     
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
-      <div class="max-w-5xl w-full mx-auto flex items-center justify-between">
+      <div class="w-full flex items-center justify-between">
         <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
@@ -104,8 +104,8 @@
       </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-5 flex-1">
+    <!-- Main Content Container (Penuh Lebar Layar) -->
+    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex flex-col gap-6 flex-1">
       
       <!-- Section Title -->
       <div class="flex items-center justify-between">
@@ -117,8 +117,8 @@
         </span>
       </div>
 
-      <!-- Container Card Jurnal (Grid 1 Kolom di HP, 2 Kolom di Laptop) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Container Card Jurnal (Grid Responsif 1 -> 2 -> 3 Kolom) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
         
         <!-- CARD 1 -->
         <div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4">
@@ -136,26 +136,38 @@
 
             <div class="w-full h-px bg-brand-50"></div>
 
-            <div class="flex flex-col gap-1 text-xs sm:text-sm text-brand-600">
+            <div class="flex flex-col gap-1.5 text-xs sm:text-sm text-brand-600">
               <p><strong class="font-semibold text-[#3E3028]">Materi:</strong> Persamaan Linear Satu Variabel</p>
               <p><strong class="font-semibold text-[#3E3028]">Kehadiran:</strong> 30 Hadir / 2 Absen • <span class="text-brand-700 font-medium">07:03 – 07:43</span></p>
             </div>
+
+            <!-- MINI-CARD: Keterangan Dispen / Absen -->
+            <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-3 flex flex-col gap-1.5 mt-1">
+              <div class="flex items-center gap-1.5 text-amber-900 font-semibold text-xs">
+                <svg class="w-4 h-4 text-amber-700 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                <span>Siswa Dispen / Izin (2):</span>
+              </div>
+              <ul class="text-xs text-amber-900/90 pl-5 list-disc space-y-0.5">
+                <li>Ahmad Dani <span class="text-amber-700 font-medium">(Dispen Lomba OSN)</span></li>
+                <li>Siti Nurhaliza <span class="text-amber-700 font-medium">(Izin Sakit)</span></li>
+              </ul>
+            </div>
+
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-2 pt-2 border-t border-brand-50">
-            <a href="{{ url('/form-jurnal') }}" class="px-3.5 py-1.5 bg-brand-50 border border-brand-800 text-brand-800 hover:bg-brand-100 font-poppins font-semibold text-xs rounded-lg transition-colors">
-              Edit
-            </a>
-            <a href="{{ url('/detail-jurnal') }}" class="px-3.5 py-1.5 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
-              Lihat
+          <!-- Action Button (Hanya Lihat) -->
+          <div class="flex justify-end pt-2 border-t border-brand-50">
+            <a href="{{ url('/detail-jurnal') }}" class="w-full sm:w-auto text-center px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
+              Lihat Detail
             </a>
           </div>
 
         </div>
 
         <!-- CARD 2 -->
-        <div class="bg-[#FFFFFF] border border-brand-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4">
+        <div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4">
           
           <div class="flex flex-col gap-3">
             <div class="flex justify-between items-start gap-2">
@@ -170,19 +182,25 @@
 
             <div class="w-full h-px bg-brand-50"></div>
 
-            <div class="flex flex-col gap-1 text-xs sm:text-sm text-brand-600">
+            <div class="flex flex-col gap-1.5 text-xs sm:text-sm text-brand-600">
               <p><strong class="font-semibold text-[#3E3028]">Materi:</strong> Sistem Pertidaksamaan Linear</p>
               <p><strong class="font-semibold text-[#3E3028]">Kehadiran:</strong> 32 Hadir / 0 Absen • <span class="text-brand-700 font-medium">08:00 – 08:45</span></p>
             </div>
+
+            <!-- MINI-CARD: Keterangan Dispen (Nihil) -->
+            <div class="bg-brand-50 border border-brand-100/80 rounded-xl p-3 flex items-center gap-2 mt-1">
+              <svg class="w-4 h-4 text-brand-600 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span class="text-xs text-brand-700 font-medium">Nihil / Seluruh siswa hadir kelas</span>
+            </div>
+
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-2 pt-2 border-t border-brand-50">
-            <a href="{{ url('/form-jurnal') }}" class="px-3.5 py-1.5 bg-brand-50 border border-brand-800 text-brand-800 hover:bg-brand-100 font-poppins font-semibold text-xs rounded-lg transition-colors">
-              Edit
-            </a>
-            <a href="{{ url('/detail-jurnal') }}" class="px-3.5 py-1.5 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
-              Lihat
+          <!-- Action Button (Hanya Lihat) -->
+          <div class="flex justify-end pt-2 border-t border-brand-50">
+            <a href="{{ url('/detail-jurnal') }}" class="w-full sm:w-auto text-center px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
+              Lihat Detail
             </a>
           </div>
 
@@ -204,19 +222,30 @@
 
             <div class="w-full h-px bg-brand-50"></div>
 
-            <div class="flex flex-col gap-1 text-xs sm:text-sm text-brand-600">
+            <div class="flex flex-col gap-1.5 text-xs sm:text-sm text-brand-600">
               <p><strong class="font-semibold text-[#3E3028]">Materi:</strong> Fungsi Kuadrat & Grafik</p>
-              <p><strong class="font-semibold text-[#3E3028]">Kehadiran:</strong> 28 Hadir / 4 Absen • <span class="text-brand-700 font-medium">09:00 – 09:45</span></p>
+              <p><strong class="font-semibold text-[#3E3028]">Kehadiran:</strong> 28 Hadir / 1 Absen • <span class="text-brand-700 font-medium">09:00 – 09:45</span></p>
             </div>
+
+            <!-- MINI-CARD: Keterangan Dispen -->
+            <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-3 flex flex-col gap-1.5 mt-1">
+              <div class="flex items-center gap-1.5 text-amber-900 font-semibold text-xs">
+                <svg class="w-4 h-4 text-amber-700 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                <span>Siswa Dispen / Izin (1):</span>
+              </div>
+              <ul class="text-xs text-amber-900/90 pl-5 list-disc space-y-0.5">
+                <li>Budi Pratama <span class="text-amber-700 font-medium">(Dispen Tugas Paskibra)</span></li>
+              </ul>
+            </div>
+
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex justify-end gap-2 pt-2 border-t border-brand-50">
-            <a href="{{ url('/form-jurnal') }}" class="px-3.5 py-1.5 bg-brand-50 border border-brand-800 text-brand-800 hover:bg-brand-100 font-poppins font-semibold text-xs rounded-lg transition-colors">
-              Edit
-            </a>
-            <a href="{{ url('/detail-jurnal') }}" class="px-3.5 py-1.5 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
-              Lihat
+          <!-- Action Button (Hanya Lihat) -->
+          <div class="flex justify-end pt-2 border-t border-brand-50">
+            <a href="{{ url('/detail-jurnal') }}" class="w-full sm:w-auto text-center px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
+              Lihat Detail
             </a>
           </div>
 

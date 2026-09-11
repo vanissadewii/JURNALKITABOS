@@ -42,7 +42,7 @@
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
   <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
     <div class="p-6 flex flex-col gap-8">
-      
+
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
@@ -51,7 +51,7 @@
 
       <!-- Navigation Links -->
       <nav class="flex flex-col gap-1.5">
-        
+
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -91,7 +91,7 @@
 
   <!-- MAIN CONTENT AREA -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
-    
+
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
@@ -107,7 +107,7 @@
 
     <!-- Main Content Container -->
     <main class="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 flex-1 flex flex-col items-center gap-6">
-      
+
       <!-- Avatar & Nama -->
       <div class="flex flex-col items-center text-center gap-3">
         <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-brand-300 text-brand-900 border-4 border-white shadow-md flex items-center justify-center font-poppins font-bold text-3xl sm:text-4xl">
@@ -121,11 +121,6 @@
 
       <!-- Card Data Detail Guru -->
       <div class="w-full bg-white border border-brand-100 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col divide-y divide-brand-100/80 text-xs sm:text-sm">
-        
-        <div class="flex justify-between items-center py-3">
-          <span class="text-brand-600 font-medium">NIP</span>
-          <span class="font-bold text-[#3E3028]">198501012010011001</span>
-        </div>
 
         <div class="flex justify-between items-center py-3">
           <span class="text-brand-600 font-medium">No. Handphone</span>
@@ -144,11 +139,27 @@
 
       </div>
 
-      <!-- Action Button Group (Elemen Link Menuju Form Edit Profil Guru) -->
+      <!-- Action Button Group -->
       <div class="w-full flex flex-col gap-3">
+        <!-- Edit Profil Button -->
         <a href="{{ url('/editprofil_guru') }}" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
           Edit Profil
         </a>
+
+        <!-- Logout Button (Memicu Modal Pop-up) -->
+        <button type="button" onclick="openLogoutModal()" class="w-full h-12 bg-red-50 hover:bg-red-100 text-red-600 font-poppins font-semibold text-sm rounded-xl flex items-center justify-center border border-red-200 shadow-xs active:scale-[0.99] transition-all gap-2">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          <span>Keluar (Log Out)</span>
+        </button>
+
+        <!-- Form Logout Tersembunyi (Akan di-submit via JavaScript) -->
+        <form id="logoutForm" method="POST" action="{{ route('logout') }}" class="hidden">
+          @csrf
+        </form>
       </div>
 
     </main>
@@ -158,7 +169,7 @@
   <!-- Bottom Navigation Bar (Mobile) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
     <div class="flex justify-between items-center">
-      
+
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -193,6 +204,68 @@
 
     </div>
   </nav>
+
+  <!-- MODAL KONFIRMASI LOGOUT -->
+  <div id="logoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200">
+    <!-- Card Modal -->
+    <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl transform scale-95 transition-transform duration-200 flex flex-col items-center text-center gap-4">
+      
+      <!-- Icon Peringatan -->
+      <div class="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+
+      <!-- Teks Konfirmasi -->
+      <div class="flex flex-col gap-1">
+        <h3 class="font-poppins font-bold text-lg text-[#3E3028]">Konfirmasi Log Out</h3>
+        <p class="text-xs sm:text-sm text-brand-600">Apakah Anda yakin ingin keluar dari akun ini?</p>
+      </div>
+
+      <!-- Tombol Aksi -->
+      <div class="flex gap-3 w-full mt-2">
+        <button type="button" onclick="closeLogoutModal()" class="flex-1 h-11 bg-brand-50 hover:bg-brand-100 text-brand-800 font-poppins font-semibold text-sm rounded-xl transition-all">
+          Batal
+        </button>
+        <button type="button" onclick="confirmLogout()" class="flex-1 h-11 bg-red-600 hover:bg-red-700 text-white font-poppins font-semibold text-sm rounded-xl transition-all shadow-md">
+          Ya, Log Out
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT UNTUK MODAL -->
+  <script>
+    const modal = document.getElementById('logoutModal');
+    const modalCard = modal.querySelector('div');
+
+    function openLogoutModal() {
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modalCard.classList.remove('scale-95');
+      modalCard.classList.add('scale-100');
+    }
+
+    function closeLogoutModal() {
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modalCard.classList.remove('scale-100');
+      modalCard.classList.add('scale-95');
+    }
+
+    function confirmLogout() {
+      document.getElementById('logoutForm').submit();
+    }
+
+    // Menutup modal jika area backdrop di luar modal diklik
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        closeLogoutModal();
+      }
+    });
+  </script>
 
 </body>
 </html>

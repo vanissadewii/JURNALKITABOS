@@ -42,7 +42,7 @@
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
   <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
     <div class="p-6 flex flex-col gap-8">
-      
+
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
@@ -88,10 +88,10 @@
 
   <!-- MAIN CONTENT AREA -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
-    
-    <!-- Top Header Bar -->
+
+    <!-- Top Header Bar (FULL WIDTH) -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
-      <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
+      <div class="w-full flex items-center justify-between">
         <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
@@ -102,13 +102,12 @@
       </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
-      
+    <!-- Main Content Container (FULL WIDTH 100% NGGAK DI-LIMIT MAX-WIDTH) -->
+    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
+
       <!-- Card Ringkasan Info Sesi -->
-      <div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs w-full flex flex-col gap-2.5 text-xs sm:text-sm">
-        
-        <!-- Mata Pelajaran -->
+      <div class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs w-full flex flex-col gap-3 text-sm">
+
         <div class="flex justify-between items-center">
           <span class="text-brand-600 font-medium">Mata Pelajaran</span>
           <span class="font-bold text-[#3E3028]">Matematika</span>
@@ -124,28 +123,20 @@
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">NIP</span>
-          <span class="font-bold text-[#3E3028]">198501012010011001</span>
-        </div>
-
-        <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
           <span class="text-brand-600 font-medium">Kelas</span>
           <span class="font-bold text-[#3E3028]">X RPL 1</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
-        <!-- Jam Ke / Sesi (Hanya Jam Ke dan Tanggal saja) -->
+        <!-- Jam Ke (Presisi tanpa Tanggal) -->
         <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Jam Ke / Sesi</span>
-          <span class="font-bold text-[#3E3028]">Jam Ke 1 - 3 • 21-07-2026</span>
+          <span class="text-brand-600 font-medium">Jam Ke</span>
+          <span class="font-bold text-[#3E3028]">Jam Ke 1 - 3</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
-        <!-- Waktu Kerja -->
         <div class="flex justify-between items-center">
           <span class="text-brand-600 font-medium">Waktu Kerja</span>
           <span class="font-bold text-[#3E3028]">07:03 – 07:43</span>
@@ -153,9 +144,9 @@
 
       </div>
 
-      <!-- Form Inputs Container -->
+      <!-- Form Inputs Container (Full Width) -->
       <form action="{{ url('/tampilkan-qr-guru') }}" method="GET" class="w-full flex flex-col gap-5">
-        
+
         <!-- Select Status Kehadiran Guru -->
         <div class="flex flex-col gap-1.5">
           <label for="status_guru" class="text-xs font-semibold text-brand-600">Status Kehadiran Guru</label>
@@ -164,10 +155,9 @@
               id="status_guru" 
               name="status_guru" 
               onchange="toggleStatusGuru(this.value)"
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] appearance-none focus:outline-none focus:border-brand-800 transition-colors pr-10 cursor-pointer font-semibold"
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] appearance-none focus:outline-none focus:border-brand-800 transition-colors pr-10 cursor-pointer font-semibold"
             >
               <option value="Hadir di Kelas" selected>Hadir di Kelas</option>
-              <option value="Tugas Terstruktur">Tugas Terstruktur</option>
               <option value="Izin / Sakit">Izin / Sakit</option>
             </select>
             <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-brand-600">
@@ -178,9 +168,19 @@
           </div>
         </div>
 
-        <!-- SECTION 1: DITAMPILKAN JIKA GURU "HADIR DI KELAS" / "TUGAS TERSTRUKTUR" -->
-        <div id="section-guru-hadir" class="flex flex-col gap-5">
-          
+        <!-- Banner Info Ketika Guru Izin/Sakit -->
+        <div id="banner-izin" class="hidden p-4 bg-amber-50 border border-amber-200 rounded-xl items-start gap-3">
+          <svg class="w-5 h-5 text-amber-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <p class="text-xs text-amber-900 leading-relaxed">
+            Status Anda saat ini adalah <strong>Izin / Sakit</strong>. Pengisian materi, presensi siswa, dan catatan pembelajaran dinonaktifkan.
+          </p>
+        </div>
+
+        <!-- FORM ISIAN UTAMA -->
+        <div id="section-form-utama" class="flex flex-col gap-5">
+
           <!-- Input Materi Pembelajaran -->
           <div class="flex flex-col gap-1.5">
             <label for="materi" class="text-xs font-semibold text-brand-600">Materi Pembelajaran</label>
@@ -189,12 +189,12 @@
               id="materi" 
               name="materi" 
               value="Persamaan Linear Satu Variabel" 
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
             >
           </div>
 
           <!-- Input Grid: Jumlah Hadir & Absen -->
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
               <label for="jumlah_hadir" class="text-xs font-semibold text-brand-600">Jumlah Hadir</label>
               <input 
@@ -202,7 +202,7 @@
                 id="jumlah_hadir" 
                 name="jumlah_hadir" 
                 value="30" 
-                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors"
+                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
               >
             </div>
 
@@ -214,21 +214,21 @@
                 name="jumlah_absen" 
                 value="0" 
                 readonly
-                class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-sm font-bold text-[#3E3028] focus:outline-none"
+                class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-xs sm:text-sm font-bold text-[#3E3028] focus:outline-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
               >
             </div>
           </div>
 
           <!-- FITUR MULTI-SELECT PRESENSI SISWA TIDAK HADIR -->
-          <div class="bg-white border border-brand-100 rounded-2xl p-4 flex flex-col gap-3 shadow-xs">
+          <div id="box-presensi-siswa" class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col gap-4 shadow-xs transition-all">
             <label for="select-siswa" class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028] flex items-center gap-2">
               <svg class="w-4 h-4 text-brand-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
               </svg>
               <span>Pilih Siswa Tidak Hadir / Absen:</span>
             </label>
-            
-            <select id="select-siswa" onchange="pilihSiswa(this.value)" class="w-full h-11 px-3.5 text-xs sm:text-sm font-semibold rounded-xl border border-brand-100 bg-brand-50/50 text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all cursor-pointer">
+
+            <select id="select-siswa" onchange="pilihSiswa(this.value)" class="w-full h-11 px-3.5 text-xs sm:text-sm font-semibold rounded-xl border border-brand-100 bg-brand-50/50 text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all cursor-pointer disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200">
               <option value="" disabled selected>-- Pilih Nama Siswa --</option>
               <option value="siswa-1">Aditya Pratama (Absen 01)</option>
               <option value="siswa-2">Bella Safira (Absen 02)</option>
@@ -237,12 +237,12 @@
             </select>
 
             <!-- Form Tambah Keterangan Siswa Sementara -->
-            <div id="form-keterangan-sementara" class="hidden flex-col gap-3 p-3.5 bg-brand-50 border border-brand-100 rounded-xl">
+            <div id="form-keterangan-sementara" class="hidden flex-col gap-3 p-4 bg-brand-50 border border-brand-100 rounded-xl">
               <div class="flex items-center justify-between border-b border-brand-100 pb-2">
-                <span class="font-poppins font-bold text-sm text-[#3E3028]" id="temp-nama">Aditya Pratama</span>
+                <span class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028]" id="temp-nama">Aditya Pratama</span>
                 <span class="text-xs text-brand-600 font-semibold" id="temp-absen">No. Absen: 01</span>
               </div>
-              
+
               <div class="flex items-center justify-between gap-3">
                 <label class="text-xs font-semibold text-brand-800">Status Kehadiran:</label>
                 <select id="temp-status" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-amber-300 bg-amber-50 text-amber-800 focus:outline-none cursor-pointer">
@@ -252,20 +252,19 @@
                 </select>
               </div>
 
-              <button type="button" onclick="tambahkanKeDaftar()" class="w-full py-2 bg-brand-800 hover:bg-brand-900 text-white font-semibold text-xs rounded-lg transition-all">
+              <button type="button" id="btn-tambah-absen" onclick="tambahkanKeDaftar()" class="w-full py-2 bg-brand-800 hover:bg-brand-900 text-white font-semibold text-xs rounded-lg transition-all">
                 + Tambahkan ke Daftar Absen
               </button>
             </div>
 
             <!-- DAFTAR / RIWAYAT SISWA YANG TIDAK HADIR -->
-            <div id="container-daftar-absen" class="flex flex-col gap-2 mt-2">
+            <div id="container-daftar-absen" class="flex flex-col gap-2 mt-1">
               <span class="text-xs font-bold text-brand-600">Daftar Siswa Tidak Hadir:</span>
-              
+
               <div id="empty-state-absen" class="text-xs text-brand-600 italic p-3 bg-brand-50/50 rounded-xl border border-dashed border-brand-100 text-center">
                 Belum ada siswa yang ditambahkan ke daftar absen.
               </div>
 
-              <!-- List hasil input akan otomatis dimasukkan ke sini oleh JavaScript -->
               <div id="list-siswa-absen" class="flex flex-col gap-2"></div>
             </div>
 
@@ -278,55 +277,8 @@
               id="catatan" 
               name="catatan" 
               rows="3" 
-              class="w-full p-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors resize-none"
+              class="w-full p-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all resize-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
             >Siswa sangat antusias mengerjakan latihan soal di papan tulis.</textarea>
-          </div>
-
-        </div>
-
-        <!-- SECTION 2: DITAMPILKAN KHUSUS JIKA GURU "IZIN / SAKIT" -->
-        <div id="section-guru-izin" class="hidden flex-col gap-5">
-          
-          <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
-            <svg class="w-5 h-5 text-amber-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <p class="text-xs text-amber-900 leading-relaxed">
-              Anda memilih status <strong>Izin / Sakit</strong>. Pengisian presensi siswa dinonaktifkan. Silakan isi alasan dan instruksi tugas untuk disampaikan ke kelas.
-            </p>
-          </div>
-
-          <!-- Keterangan Alasan Izin -->
-          <div class="flex flex-col gap-1.5">
-            <label for="keterangan_izin" class="text-xs font-semibold text-brand-600">Alasan Tidak Hadir</label>
-            <select id="keterangan_izin" name="keterangan_izin" class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors">
-              <option value="Sakit">Sakit</option>
-              <option value="Izin Dinas / Pelatihan">Izin Dinas / Pelatihan</option>
-              <option value="Keperluan Keluarga">Keperluan Keluarga</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-          </div>
-
-          <!-- Instruksi Tugas untuk Siswa -->
-          <div class="flex flex-col gap-1.5">
-            <label for="instruksi_tugas" class="text-xs font-semibold text-brand-600">Instruksi Tugas untuk Siswa</label>
-            <textarea 
-              id="instruksi_tugas" 
-              name="instruksi_tugas" 
-              rows="4" 
-              placeholder="Contoh: Kerjakan LKS Matematika Halaman 42 bagian A dan B. Kumpulkan ke Ketua Kelas di meja guru."
-              class="w-full p-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors resize-none"
-            ></textarea>
-          </div>
-
-          <!-- Pengumpulan Tugas -->
-          <div class="flex flex-col gap-1.5">
-            <label for="media_pengumpulan" class="text-xs font-semibold text-brand-600">Metode Pengumpulan Tugas</label>
-            <select id="media_pengumpulan" name="media_pengumpulan" class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors">
-              <option value="Kumpul via Ketua Kelas / Guru Piket">Kumpul via Ketua Kelas / Guru Piket</option>
-              <option value="Upload Google Classroom">Upload Google Classroom</option>
-              <option value="Dikumpulkan Pertemuan Selanjutnya">Dikumpulkan Pertemuan Selanjutnya</option>
-            </select>
           </div>
 
         </div>
@@ -379,27 +331,43 @@
 
   <!-- SCRIPT LOGIKA JAVASCRIPT -->
   <script>
-    // 1. Toggle Tampilan Form Berdasarkan Status Guru
     function toggleStatusGuru(status) {
-      const sectionHadir = document.getElementById('section-guru-hadir');
-      const sectionIzin = document.getElementById('section-guru-izin');
+      const materiInput = document.getElementById('materi');
+      const jumlahHadirInput = document.getElementById('jumlah_hadir');
+      const selectSiswaInput = document.getElementById('select-siswa');
+      const catatanInput = document.getElementById('catatan');
+      const boxPresensi = document.getElementById('box-presensi-siswa');
+      const bannerIzin = document.getElementById('banner-izin');
+      const formTemp = document.getElementById('form-keterangan-sementara');
 
       if (status === 'Izin / Sakit') {
-        sectionHadir.classList.add('hidden');
-        sectionHadir.classList.remove('flex');
+        materiInput.disabled = true;
+        jumlahHadirInput.disabled = true;
+        selectSiswaInput.disabled = true;
+        catatanInput.disabled = true;
 
-        sectionIzin.classList.remove('hidden');
-        sectionIzin.classList.add('flex');
+        boxPresensi.classList.add('bg-gray-100', 'opacity-60', 'pointer-events-none');
+        boxPresensi.classList.remove('bg-white');
+
+        formTemp.classList.add('hidden');
+        formTemp.classList.remove('flex');
+
+        bannerIzin.classList.remove('hidden');
+        bannerIzin.classList.add('flex');
       } else {
-        sectionIzin.classList.add('hidden');
-        sectionIzin.classList.remove('flex');
+        materiInput.disabled = false;
+        jumlahHadirInput.disabled = false;
+        selectSiswaInput.disabled = false;
+        catatanInput.disabled = false;
 
-        sectionHadir.classList.remove('hidden');
-        sectionHadir.classList.add('flex');
+        boxPresensi.classList.remove('bg-gray-100', 'opacity-60', 'pointer-events-none');
+        boxPresensi.classList.add('bg-white');
+
+        bannerIzin.classList.add('hidden');
+        bannerIzin.classList.remove('flex');
       }
     }
 
-    // Master Data Siswa
     const dataSiswa = {
       'siswa-1': { nama: 'Aditya Pratama', absen: '01' },
       'siswa-2': { nama: 'Bella Safira', absen: '02' },
@@ -410,11 +378,9 @@
     let selectedSiswaKey = null;
     let daftarAbsenSiswa = [];
 
-    // 2. Tampilkan form keterangan sementara saat dropdown siswa dipilih
     function pilihSiswa(key) {
       if (!key) return;
-      
-      // Cegah pilih siswa yang sudah dimasukkan ke daftar
+
       if (daftarAbsenSiswa.some(item => item.key === key)) {
         alert('Siswa ini sudah ada dalam daftar siswa tidak hadir.');
         document.getElementById('select-siswa').value = "";
@@ -426,13 +392,12 @@
 
       document.getElementById('temp-nama').innerText = siswa.nama;
       document.getElementById('temp-absen').innerText = 'No. Absen: ' + siswa.absen;
-      
+
       const formTemp = document.getElementById('form-keterangan-sementara');
       formTemp.classList.remove('hidden');
       formTemp.classList.add('flex');
     }
 
-    // 3. Masukkan Siswa ke Dalam Daftar / Riwayat Absen
     function tambahkanKeDaftar() {
       if (!selectedSiswaKey) return;
 
@@ -446,17 +411,14 @@
         status: statusKet
       });
 
-      // Reset Form Pengisian Sementara
       document.getElementById('form-keterangan-sementara').classList.add('hidden');
       document.getElementById('form-keterangan-sementara').classList.remove('flex');
       document.getElementById('select-siswa').value = "";
       selectedSiswaKey = null;
 
-      // Render ulang daftar riwayat & update jumlah tidak hadir
       renderDaftarAbsen();
     }
 
-    // 4. Render Riwayat Siswa Absen ke DOM
     function renderDaftarAbsen() {
       const listContainer = document.getElementById('list-siswa-absen');
       const emptyState = document.getElementById('empty-state-absen');
@@ -483,7 +445,7 @@
                 </span>
                 <span class="font-semibold text-xs sm:text-sm text-[#3E3028]">${item.nama}</span>
               </div>
-              
+
               <div class="flex items-center gap-2">
                 <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${badgeColor}">
                   ${item.status}
@@ -495,7 +457,6 @@
                 </button>
               </div>
 
-              <!-- Input Hidden untuk dikirimkan ke backend Laravel -->
               <input type="hidden" name="siswa_absen[${index}][key]" value="${item.key}">
               <input type="hidden" name="siswa_absen[${index}][status]" value="${item.status}">
             </div>
@@ -505,11 +466,9 @@
         });
       }
 
-      // Update angka pada field "Jumlah Tidak Hadir"
       inputJumlahAbsen.value = daftarAbsenSiswa.length;
     }
 
-    // 5. Hapus siswa dari daftar
     function hapusSiswaAbsen(index) {
       daftarAbsenSiswa.splice(index, 1);
       renderDaftarAbsen();
