@@ -53,13 +53,13 @@
 
                     {{-- Username --}}
                     <div class="flex flex-col gap-1.5">
-                        <label for="email" class="text-xs font-semibold text-[#7A6A60]">
-                            Nama Pengguna
-                        </label>
-                        <input id="email" type="text" name="email" value="{{ old('email') }}" required autofocus
-                            placeholder=""
-                            class="w-full h-10 px-3 border border-[#E5D8CC] rounded-lg text-sm text-[#3E3028] placeholder-[#B7A99C] focus:outline-none focus:ring-2 focus:ring-[#5C4033]/30">
-                    </div>
+    <label for="username" class="text-xs font-semibold text-[#7A6A60]">
+        Nama Pengguna
+    </label>
+    <input id="username" type="text" name="username" value="{{ old('username') }}" required autofocus
+        placeholder=""
+        class="w-full h-10 px-3 border border-[#E5D8CC] rounded-lg text-sm text-[#3E3028] placeholder-[#B7A99C] focus:outline-none focus:ring-2 focus:ring-[#5C4033]/30">
+</div>
 
                     {{-- Password --}}
                     <div class="flex flex-col gap-1.5">

@@ -4,6 +4,10 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MasterKelasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MapelController;
+use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\JamPelajaranController;
+use App\Http\Controllers\JadwalPelajaranController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -82,7 +86,7 @@ Route::middleware(['auth'])->group(function () {
         $role_user = Auth::user()->role;
 
         if ($role_user == 'admin') {
-            return view('admin.dashboard_admin');
+            return view('admin.tambah_admin');
         } elseif ($role_user == 'guru') {
             return view('guru.dashboard_guru');
         } elseif ($role_user == 'guru_piket') {
@@ -96,17 +100,33 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::resource('admin/kelas', MasterKelasController::class)
-    ->names('admin.kelas');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::resource('admin/kelas', MasterKelasController::class)
+        ->names('admin.kelas');
 
-Route::resource('admin/siswa', SiswaController::class)
-    ->names('admin.siswa');
+    Route::resource('admin/siswa', SiswaController::class)
+        ->names('admin.siswa');
 
-Route::resource('admin/user', UserController::class)
-    ->names('admin.user');
+    Route::resource('admin/user', UserController::class)
+        ->names('admin.user');
 
-Route::post('admin/siswa/import', [SiswaController::class, 'import'])->name('admin.siswa.import');
+    Route::post('admin/siswa/import', [SiswaController::class, 'import'])->name('admin.siswa.import');
 
+    Route::get('admin/jadwal/get-jam', [JadwalPelajaranController::class, 'getJamByKelasHari'])->name('jadwal.get-jam');
+    Route::resource('admin/jadwal', JadwalPelajaranController::class)->names('jadwal');
+
+    Route::resource('admin/mapel', MapelController::class)->names('mapel');
+    Route::resource('admin/semester', SemesterController::class)->names('semester');
+
+    Route::resource('admin/jam-pelajaran', JamPelajaranController::class)->names('jam-pelajaran');
+
+     Route::get('/admin/tambah', fn () => view('admin.tambah_admin'))->name('admin.tambah');
+
+     Route::post('admin/jam-pelajaran/generate', [JamPelajaranController::class, 'generate'])->name('jam-pelajaran.generate');
+Route::post('admin/jadwal/import', [JadwalPelajaranController::class, 'import'])->name('jadwal.import');
+     });
+
+Route::resource('admin/jam-pelajaran', JamPelajaranController::class)->names('jam-pelajaran');
 // Route Tampilkan QR Guru
 Route::get('/tampilkan-qr-guru', function () {
     return view('guru.tampilkan_qr_guru');
