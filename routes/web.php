@@ -6,6 +6,7 @@ use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DispenController;
 
 // Route ke profil-guru
 Route::get('/profil-guru', function () {
@@ -28,11 +29,6 @@ Route::get('/', function () {
 // Route untuk Dashboard Admin
 Route::get('/dashboard-admin', function () {
     return view('admin.dashboard_admin');
-});
-
-// Route untuk Dashboard Guru Piket (Nanti kalau filenya sudah ada)
-Route::get('/dashboard-guru_piket', function () {
-    return view('piket.dashboard_guru_piket');
 });
 
 // Route untuk Dashboard/Beranda Kelas
@@ -85,14 +81,13 @@ Route::middleware(['auth'])->group(function () {
         } elseif ($role_user == 'guru') {
             return view('guru.dashboard_guru');
         } elseif ($role_user == 'guru_piket') {
-            return view('piket.dashboard_guru_piket');
+            return view('guru-piket.berandaguru');
         } elseif ($role_user == 'kelas') {
             return view('kelas.beranda');
         } else {
             return redirect('/');
         }
     })->name('home');
-
 });
 
 Route::resource('admin/kelas', MasterKelasController::class)
@@ -131,6 +126,21 @@ Route::get('/detail-jurnal', function () {
     return view('guru.detail_jurnal');
 });
 
-Route::get('/guru-piket', function () {
-    return view('guru-piket.berandaguru');
+
+Route::middleware(['auth'])->group(function () {
+
+    // Route untuk Dashboard Guru Piket
+    Route::get('/dashboard-guru-piket', function () {
+        return view('guru-piket.berandaguru');
+    })->name('dashboard-guru-piket');
+
+
+    Route::get('/dispen', [DispenController::class, 'index'])->name('dispen.index');
+    Route::post('/dispen', [DispenController::class, 'store'])->name('dispen.store');
+    Route::get('/dispen/cari-siswa', [DispenController::class, 'cariSiswa'])->name('dispen.cari-siswa');
+    Route::get('/dispen/opsi-jam', [DispenController::class, 'opsiJam'])->name('dispen.opsi-jam');
 });
+
+Route::get('/dispen/approval/{token}', [DispenController::class, 'halamanApproval'])->name('dispen.approval');
+Route::post('/dispen/approval/{token}/setuju', [DispenController::class, 'setujui'])->name('dispen.approval.setuju');
+Route::post('/dispen/approval/{token}/tolak', [DispenController::class, 'tolak'])->name('dispen.approval.tolak');

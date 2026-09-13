@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,15 +34,15 @@
 
                 {{-- DASBOR --}}
                 <a href="{{ route('kelas.beranda') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
 
                     <svg class="w-5 h-5 shrink-0"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <path d="M3 12l9-9 9 9"/>
-                        <path d="M5 10v10h14V10"/>
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M3 12l9-9 9 9" />
+                        <path d="M5 10v10h14V10" />
                     </svg>
 
                     Dasbor
@@ -50,16 +51,16 @@
 
                 {{-- SCAN --}}
                 <a href="{{ route('kelas.scan') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
 
                     <svg class="w-5 h-5 shrink-0"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"/>
-                        <rect x="14" y="3" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/>
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
                     </svg>
 
                     Scan
@@ -68,15 +69,15 @@
 
                 {{-- KIRIM JURNAL --}}
                 <a href="{{ route('kelas.kirim-jurnal') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
 
                     <svg class="w-5 h-5 shrink-0"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <path d="M22 2L11 13"/>
-                        <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2">
+                        <path d="M22 2L11 13" />
+                        <path d="M22 2l-7 20-4-9-9-4 20-7z" />
                     </svg>
 
                     Kirim Jurnal
@@ -85,15 +86,15 @@
 
                 {{-- PROFIL AKTIF --}}
                 <a href="{{ route('kelas.profile') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
 
                     <svg class="w-5 h-5 shrink-0"
-                         viewBox="0 0 24 24"
-                         fill="none"
-                         stroke="currentColor"
-                         stroke-width="2">
-                        <circle cx="12" cy="8" r="4"/>
-                        <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
                     </svg>
 
                     Profil
@@ -191,7 +192,7 @@
                     </div>
 
                     <button type="button"
-                            class="shrink-0 px-3 py-2 rounded-lg bg-[#F5EFE8] text-[#5C4033]
+                        class="shrink-0 px-3 py-2 rounded-lg bg-[#F5EFE8] text-[#5C4033]
                                    text-xs sm:text-sm font-semibold hover:bg-[#EDE3D9]">
 
                         Hubungi
@@ -203,8 +204,8 @@
 
                 {{-- EDIT PROFIL --}}
                 <button type="button"
-                        onclick="openEditProfile()"
-                        class="w-full bg-[#5C4033] text-white rounded-[10px]
+                    onclick="openEditProfile()"
+                    class="w-full bg-[#5C4033] text-white rounded-[10px]
                                px-4 py-3 sm:py-3.5
                                font-['Inter'] font-semibold text-sm
                                hover:bg-[#4B3329]">
@@ -215,16 +216,15 @@
 
 
                 {{-- KELUAR AKUN --}}
-                <button type="button"
-                        class="w-full bg-[#FFEBEE] text-[#C62828] rounded-[10px]
-                               px-4 py-3 sm:py-3.5
-                               font-['Inter'] font-semibold text-sm
-                               hover:bg-[#FFE0E3]">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit"
+                        class="w-full h-[45px] rounded-lg bg-red-600 text-white flex items-center justify-center text-sm font-semibold cursor-pointer border-0">
+                        Log Out
+                    </button>
+                
 
-                    Keluar Akun
-
-                </button>
-
+                </form>
             </div>
 
         </main>
@@ -237,7 +237,7 @@
     {{-- ================================================= --}}
 
     <div id="editProfileModal"
-         class="hidden fixed inset-0 z-[100]
+        class="hidden fixed inset-0 z-[100]
                 bg-black/40
                 flex items-center justify-center
                 px-4 py-6">
@@ -267,8 +267,8 @@
 
                 {{-- TOMBOL X --}}
                 <button type="button"
-                        onclick="closeEditProfile()"
-                        class="w-8 h-8 flex items-center justify-center
+                    onclick="closeEditProfile()"
+                    class="w-8 h-8 flex items-center justify-center
                                rounded-lg text-[#7A6A60]
                                hover:bg-[#F5EFE8]
                                text-xl">
@@ -294,8 +294,8 @@
                         </label>
 
                         <input type="text"
-                               value="Winartin, S.Pd."
-                               class="w-full px-3.5 py-3 rounded-lg
+                            value="Winartin, S.Pd."
+                            class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
                                       bg-white
                                       text-sm text-[#3E3028]
@@ -314,8 +314,8 @@
                         </label>
 
                         <input type="number"
-                               value="36"
-                               class="w-full px-3.5 py-3 rounded-lg
+                            value="36"
+                            class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
                                       bg-white
                                       text-sm text-[#3E3028]
@@ -334,8 +334,8 @@
                         </label>
 
                         <input type="text"
-                               value="Fitr"
-                               class="w-full px-3.5 py-3 rounded-lg
+                            value="Fitr"
+                            class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
                                       bg-white
                                       text-sm text-[#3E3028]
@@ -360,9 +360,9 @@
                         <div class="relative">
 
                             <input id="oldPassword"
-                                   type="password"
-                                   placeholder="Masukkan password lama"
-                                   class="w-full px-3.5 py-3 pr-11 rounded-lg
+                                type="password"
+                                placeholder="Masukkan password lama"
+                                class="w-full px-3.5 py-3 pr-11 rounded-lg
                                           border border-[#E5D8CC]
                                           bg-white
                                           text-sm text-[#3E3028]
@@ -373,19 +373,19 @@
 
                             {{-- ICON MATA --}}
                             <button type="button"
-                                    onclick="togglePassword('oldPassword')"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2
+                                onclick="togglePassword('oldPassword')"
+                                class="absolute right-3 top-1/2 -translate-y-1/2
                                            text-[#7A6A60]
                                            hover:text-[#5C4033]">
 
                                 <svg class="w-5 h-5"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2">
 
-                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
-                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+                                    <circle cx="12" cy="12" r="3" />
 
                                 </svg>
 
@@ -406,9 +406,9 @@
                         <div class="relative">
 
                             <input id="newPassword"
-                                   type="password"
-                                   placeholder="Masukkan password baru"
-                                   class="w-full px-3.5 py-3 pr-11 rounded-lg
+                                type="password"
+                                placeholder="Masukkan password baru"
+                                class="w-full px-3.5 py-3 pr-11 rounded-lg
                                           border border-[#E5D8CC]
                                           bg-white
                                           text-sm text-[#3E3028]
@@ -419,19 +419,19 @@
 
                             {{-- ICON MATA --}}
                             <button type="button"
-                                    onclick="togglePassword('newPassword')"
-                                    class="absolute right-3 top-1/2 -translate-y-1/2
+                                onclick="togglePassword('newPassword')"
+                                class="absolute right-3 top-1/2 -translate-y-1/2
                                            text-[#7A6A60]
                                            hover:text-[#5C4033]">
 
                                 <svg class="w-5 h-5"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="2">
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2">
 
-                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
-                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" />
+                                    <circle cx="12" cy="12" r="3" />
 
                                 </svg>
 
@@ -449,8 +449,8 @@
 
                     {{-- BATAL --}}
                     <button type="button"
-                            onclick="closeEditProfile()"
-                            class="flex-1 px-4 py-3
+                        onclick="closeEditProfile()"
+                        class="flex-1 px-4 py-3
                                    rounded-lg
                                    border border-[#E5D8CC]
                                    bg-white
@@ -465,8 +465,8 @@
 
                     {{-- SIMPAN --}}
                     <button type="button"
-                            onclick="saveProfile()"
-                            class="flex-1 px-4 py-3
+                        onclick="saveProfile()"
+                        class="flex-1 px-4 py-3
                                    rounded-lg
                                    bg-[#5C4033]
                                    text-white
@@ -496,17 +496,17 @@
 
         {{-- DASBOR --}}
         <a href="{{ route('kelas.beranda') }}"
-           class="flex-1 flex flex-col items-center justify-center gap-1
+            class="flex-1 flex flex-col items-center justify-center gap-1
                   text-[11px] text-[#7A6A60]">
 
             <svg class="w-5 h-5"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
 
-                <path d="M3 12l9-9 9 9"/>
-                <path d="M5 10v10h14V10"/>
+                <path d="M3 12l9-9 9 9" />
+                <path d="M5 10v10h14V10" />
 
             </svg>
 
@@ -516,18 +516,18 @@
 
         {{-- SCAN --}}
         <a href="{{ route('kelas.scan') }}"
-           class="flex-1 flex flex-col items-center justify-center gap-1
+            class="flex-1 flex flex-col items-center justify-center gap-1
                   text-[11px] text-[#7A6A60]">
 
             <svg class="w-5 h-5"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
 
-                <rect x="3" y="3" width="7" height="7"/>
-                <rect x="14" y="3" width="7" height="7"/>
-                <rect x="3" y="14" width="7" height="7"/>
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
 
             </svg>
 
@@ -537,17 +537,17 @@
 
         {{-- KIRIM JURNAL --}}
         <a href="{{ route('kelas.kirim-jurnal') }}"
-           class="flex-1 flex flex-col items-center justify-center gap-1
+            class="flex-1 flex flex-col items-center justify-center gap-1
                   text-[11px] text-[#7A6A60]">
 
             <svg class="w-5 h-5"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
 
-                <path d="M22 2L11 13"/>
-                <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                <path d="M22 2L11 13" />
+                <path d="M22 2l-7 20-4-9-9-4 20-7z" />
 
             </svg>
 
@@ -557,17 +557,17 @@
 
         {{-- PROFIL AKTIF --}}
         <a href="{{ route('kelas.profile') }}"
-           class="flex-1 flex flex-col items-center justify-center gap-1
+            class="flex-1 flex flex-col items-center justify-center gap-1
                   text-[11px] text-[#5C4033] font-semibold">
 
             <svg class="w-5 h-5"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
 
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
 
             </svg>
 
@@ -582,7 +582,6 @@
     {{-- ================================================= --}}
 
     <script>
-
         // BUKA POPUP EDIT PROFIL
         function openEditProfile() {
 
@@ -644,8 +643,8 @@
             }
 
         });
-
     </script>
 
 </body>
+
 </html>
