@@ -111,7 +111,7 @@
             <div class="bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
 
                 <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
-                    Profil Kelas
+                    Profil Kelas XI RPL 2
                 </span>
 
                 <span class="text-[#D7B899] text-xs font-medium mt-0.8">
@@ -134,14 +134,18 @@
                 <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
                             flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
 
-                    {{-- WALI KELAS --}}
+                    {{-- Sekretaris (bisa 2 orang) --}}
                     <div class="flex flex-col gap-1">
                         <span class="text-xs sm:text-sm text-[#7A6A60]">
-                            Wali Kelas
+                            Sekretaris
                         </span>
 
                         <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
-                            Winartin, S.Pd.
+                            1. Seren Khanza Azila
+                        </span>
+
+                        <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
+                            2. Nama Sekretaris 2
                         </span>
                     </div>
 
@@ -161,25 +165,10 @@
 
                     <hr class="border-t border-[#E5D8CC] w-full m-0">
 
-
-                    {{-- KETUA KELAS --}}
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs sm:text-sm text-[#7A6A60]">
-                            Ketua Kelas
-                        </span>
-
-                        <span class="font-semibold text-sm sm:text-base text-[#3E3028]">
-                            Fitr
-                        </span>
-                    </div>
-
-                </div>
-
-
-                {{-- HUBUNGI ADMIN --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px]
-                            flex items-center justify-between gap-3
-                            shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                    {{-- HUBUNGI ADMIN --}}
+                    <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px]
+                                flex items-center justify-between gap-3
+                                shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
 
                     <div>
                         <div class="font-['Inter'] font-semibold text-sm text-[#3E3028]">
@@ -192,7 +181,8 @@
                     </div>
 
                     <button type="button"
-                        class="shrink-0 px-3 py-2 rounded-lg bg-[#F5EFE8] text-[#5C4033]
+                            onclick="hubungiAdmin()"
+                            class="shrink-0 px-3 py-2 rounded-lg bg-[#F5EFE8] text-[#5C4033]
                                    text-xs sm:text-sm font-semibold hover:bg-[#EDE3D9]">
 
                         Hubungi
@@ -286,16 +276,38 @@
                 <div class="flex flex-col gap-4">
 
 
-                    {{-- WALI KELAS --}}
+                    {{-- SEKRETARIS 1 --}}
                     <div>
 
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
-                            Wali Kelas
+                            Sekretaris 1
                         </label>
 
                         <input type="text"
-                            value="Winartin, S.Pd."
-                            class="w-full px-3.5 py-3 rounded-lg
+                               name="sekretaris_1"
+                               value="Seren Khanza Azila"
+                               class="w-full px-3.5 py-3 rounded-lg
+                                      border border-[#E5D8CC]
+                                      bg-white
+                                      text-sm text-[#3E3028]
+                                      outline-none
+                                      focus:border-[#5C4033]
+                                      focus:ring-1 focus:ring-[#5C4033]">
+
+                    </div>
+
+
+                    {{-- SEKRETARIS 2 --}}
+                    <div>
+
+                        <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
+                            Sekretaris 2
+                        </label>
+
+                        <input type="text"
+                               name="sekretaris_2"
+                               value="Nama Sekretaris 2"
+                               class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
                                       bg-white
                                       text-sm text-[#3E3028]
@@ -314,28 +326,9 @@
                         </label>
 
                         <input type="number"
-                            value="36"
-                            class="w-full px-3.5 py-3 rounded-lg
-                                      border border-[#E5D8CC]
-                                      bg-white
-                                      text-sm text-[#3E3028]
-                                      outline-none
-                                      focus:border-[#5C4033]
-                                      focus:ring-1 focus:ring-[#5C4033]">
-
-                    </div>
-
-
-                    {{-- KETUA KELAS --}}
-                    <div>
-
-                        <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
-                            Ketua Kelas
-                        </label>
-
-                        <input type="text"
-                            value="Fitr"
-                            class="w-full px-3.5 py-3 rounded-lg
+                               name="jumlah_siswa"
+                               value="36"
+                               class="w-full px-3.5 py-3 rounded-lg
                                       border border-[#E5D8CC]
                                       bg-white
                                       text-sm text-[#3E3028]
@@ -360,9 +353,10 @@
                         <div class="relative">
 
                             <input id="oldPassword"
-                                type="password"
-                                placeholder="Masukkan password lama"
-                                class="w-full px-3.5 py-3 pr-11 rounded-lg
+                                   name="password_lama"
+                                   type="password"
+                                   placeholder="Masukkan password lama"
+                                   class="w-full px-3.5 py-3 pr-11 rounded-lg
                                           border border-[#E5D8CC]
                                           bg-white
                                           text-sm text-[#3E3028]
@@ -406,9 +400,10 @@
                         <div class="relative">
 
                             <input id="newPassword"
-                                type="password"
-                                placeholder="Masukkan password baru"
-                                class="w-full px-3.5 py-3 pr-11 rounded-lg
+                                   name="password_baru"
+                                   type="password"
+                                   placeholder="Masukkan password baru"
+                                   class="w-full px-3.5 py-3 pr-11 rounded-lg
                                           border border-[#E5D8CC]
                                           bg-white
                                           text-sm text-[#3E3028]
@@ -629,6 +624,21 @@
         function saveProfile() {
 
             closeEditProfile();
+
+        }
+
+
+        // TOMBOL HUBUNGI -> LANGSUNG KE WHATSAPP ADMIN
+        // Nomor & pesan masih hardcode di frontend (belum ambil dari database)
+        function hubungiAdmin() {
+
+            const nomorAdmin = '6281234567890'; // ganti dengan nomor WA admin asli, format 62xxxxxxxxxx tanpa + atau 0 di depan
+
+            const pesan = 'Hallo Admin\nSaya dari Kelas:\nKendala:';
+
+            const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
+
+            window.open(url, '_blank');
 
         }
 
