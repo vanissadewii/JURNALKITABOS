@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Dispen extends Model
 {
-    use HasFactory;
-
     protected $table = 'dispens';
-
     protected $primaryKey = 'id_dispen';
 
     protected $fillable = [
@@ -33,42 +31,33 @@ class Dispen extends Model
         'disetujui_at' => 'datetime',
     ];
 
-    public function siswa()
+        /** @return BelongsTo<Siswa, $this> */
+    public function siswa(): BelongsTo
     {
         return $this->belongsTo(Siswa::class, 'id_siswa', 'id_siswa');
     }
 
-    public function kelas()
+    /** @return BelongsTo<Kelas, $this> */
+    public function kelas(): BelongsTo
     {
         return $this->belongsTo(Kelas::class, 'id_kelas', 'id_kelas');
     }
 
-    // GANTI App\Models\User kalau model user kamu namanya beda
-    public function guruPiket()
+    /** @return BelongsTo<User, $this> */
+    public function guruPiket(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_guru_piket');
+        return $this->belongsTo(\App\Models\User::class, 'id_guru_piket');
     }
 
-    public function waka()
+    /** @return BelongsTo<User, $this> */
+    public function waka(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_waka');
+        return $this->belongsTo(\App\Models\User::class, 'id_waka');
     }
 
-    // baris pivot dispen_jurnal
-    public function dispenJurnal()
+    /** @return HasMany<DispenJurnal, $this> */
+    public function dispenJurnal(): HasMany
     {
         return $this->hasMany(DispenJurnal::class, 'id_dispen', 'id_dispen');
-    }
-
-    public function isSampaiSelesai(): bool
-    {
-        return is_null($this->jam_ke_selesai);
-    }
-
-    public function labelJam(): string
-    {
-        return $this->isSampaiSelesai()
-            ? "Jam ke-{$this->jam_ke_mulai} s/d Selesai"
-            : "Jam ke-{$this->jam_ke_mulai} s/d {$this->jam_ke_selesai}";
     }
 }

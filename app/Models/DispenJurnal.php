@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DispenJurnal extends Model
 {
@@ -14,17 +15,20 @@ class DispenJurnal extends Model
         'id_jurnal',
     ];
 
-    public function dispen()
+        /** @return BelongsTo<Dispen, $this> */
+    public function dispen(): BelongsTo
     {
         return $this->belongsTo(Dispen::class, 'id_dispen', 'id_dispen');
     }
 
-    public function jadwal()
+    /** @return BelongsTo<JadwalPelajaran, $this> */
+    public function jadwal(): BelongsTo
     {
         return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal', 'id_jadwal');
     }
 
-    public function jurnal()
+    /** @return BelongsTo<Jurnal, $this> */
+    public function jurnal(): BelongsTo
     {
         return $this->belongsTo(Jurnal::class, 'id_jurnal', 'id_jurnal');
     }

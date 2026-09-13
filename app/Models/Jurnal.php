@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Jurnal extends Model
 {
     protected $table = 'jurnal';
-
     protected $primaryKey = 'id_jurnal';
 
     protected $fillable = [
@@ -20,7 +20,8 @@ class Jurnal extends Model
         'waktu_submit',
     ];
 
-    public function jadwal()
+        /** @return BelongsTo<JadwalPelajaran, $this> */
+    public function jadwal(): BelongsTo
     {
         return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal', 'id_jadwal');
     }
