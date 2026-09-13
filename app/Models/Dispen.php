@@ -10,6 +10,7 @@ class Dispen extends Model
     use HasFactory;
 
     protected $table = 'dispens';
+
     protected $primaryKey = 'id_dispen';
 
     protected $fillable = [
@@ -45,12 +46,12 @@ class Dispen extends Model
     // GANTI App\Models\User kalau model user kamu namanya beda
     public function guruPiket()
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_guru_piket');
+        return $this->belongsTo(User::class, 'id_guru_piket');
     }
 
     public function waka()
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_waka');
+        return $this->belongsTo(User::class, 'id_waka');
     }
 
     // baris pivot dispen_jurnal

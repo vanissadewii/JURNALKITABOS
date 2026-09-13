@@ -1,12 +1,12 @@
 <?php
 
+use App\Http\Controllers\DispenController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MasterKelasController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DispenController;
 
 // Route ke profil-guru
 Route::get('/profil-guru', function () {
@@ -118,14 +118,12 @@ Route::get('/detail-jurnal', function () {
     return view('guru.detail_jurnal');
 });
 
-
 Route::middleware(['auth'])->group(function () {
 
     // Route untuk Dashboard Guru Piket
     Route::get('/dashboard-guru-piket', function () {
         return view('guru-piket.berandaguru');
     })->name('dashboard-guru-piket');
-
 
     Route::get('/dispen', [DispenController::class, 'index'])->name('dispen.index');
     Route::post('/dispen', [DispenController::class, 'store'])->name('dispen.store');

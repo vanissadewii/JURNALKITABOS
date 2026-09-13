@@ -120,17 +120,18 @@ class DispenController extends Controller
 
         $dispen->load('siswa', 'kelas');
 
-        $pesan = "Halo " . config('services.waka.name') . ", ada pengajuan dispen baru.\n\n"
-            . "Nomor Surat: {$dispen->nomor_surat}\n"
-            . "Nama Siswa: {$dispen->siswa->nama}\n"
-            . "Kelas: {$dispen->kelas->tingkat} {$dispen->kelas->jurusan} {$dispen->kelas->rombel}\n"
-            . $dispen->labelJam() . "\n"
-            . "Alasan: {$dispen->alasan}\n\n"
-            . "Silakan cek & setujui di link berikut:\n"
-            . route('dispen.approval', $dispen->token_approval);
+        $pesan = 'Halo '.config('services.waka.name').", ada pengajuan dispen baru.\n\n"
+            ."Nomor Surat: {$dispen->nomor_surat}\n"
+            ."Nama Siswa: {$dispen->siswa->nama}\n"
+            ."Kelas: {$dispen->kelas->tingkat} {$dispen->kelas->jurusan} {$dispen->kelas->rombel}\n"
+            .$dispen->labelJam()."\n"
+            ."Alasan: {$dispen->alasan}\n\n"
+            ."Silakan cek & setujui di link berikut:\n"
+            .route('dispen.approval', $dispen->token_approval);
 
-        return "https://wa.me/{$nomorWaka}?text=" . urlencode($pesan);
+        return "https://wa.me/{$nomorWaka}?text=".urlencode($pesan);
     }
+
     public function halamanApproval(string $token)
     {
         $dispen = Dispen::with(['siswa', 'kelas', 'guruPiket'])
@@ -186,7 +187,7 @@ class DispenController extends Controller
         $jamSelesai = $dispen->jam_ke_selesai ?? $semuaJam->max();
 
         $jamTerdampak = $semuaJam->filter(
-            fn($jamKe) => $jamKe >= $jamMulai && $jamKe <= $jamSelesai
+            fn ($jamKe) => $jamKe >= $jamMulai && $jamKe <= $jamSelesai
         );
 
         if ($jamTerdampak->isEmpty()) {
@@ -211,7 +212,7 @@ class DispenController extends Controller
             ]);
 
             if ($jurnal->exists && ! empty($jurnal->keterangan)) {
-                $jurnal->keterangan = $jurnal->keterangan . " | {$keterangan}";
+                $jurnal->keterangan = $jurnal->keterangan." | {$keterangan}";
             } else {
                 $jurnal->keterangan = $keterangan;
             }
