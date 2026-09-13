@@ -15,7 +15,7 @@ class DispenJurnal extends Model
         'id_jurnal',
     ];
 
-        /** @return BelongsTo<Dispen, $this> */
+    /** @return BelongsTo<Dispen, $this> */
     public function dispen(): BelongsTo
     {
         return $this->belongsTo(Dispen::class, 'id_dispen', 'id_dispen');

@@ -10,11 +10,15 @@ use App\Models\Jurnal;
 use App\Models\Kelas;
 use App\Models\Siswa;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class DispenController extends Controller
 {
+    /** @var array<int, string> */
     private array $namaHari = [
         1 => 'Senin',
         2 => 'Selasa',
@@ -23,7 +27,7 @@ class DispenController extends Controller
         5 => 'Jumat',
     ];
 
-    public function index()
+    public function index(): View
     {
         $riwayat = Dispen::with(['siswa', 'kelas', 'guruPiket'])
             ->orderByDesc('created_at')
@@ -32,7 +36,7 @@ class DispenController extends Controller
         return view('guru-piket.dispen', compact('riwayat'));
     }
 
-    public function cariSiswa(Request $request)
+    public function cariSiswa(Request $request): JsonResponse
     {
         $q = $request->query('q', '');
 
@@ -56,9 +60,9 @@ class DispenController extends Controller
         return response()->json($siswa);
     }
 
-    public function opsiJam(Request $request)
+    public function opsiJam(Request $request): JsonResponse
     {
-        $kelas = Kelas::findOrFail($request->query('id_kelas'));
+        $kelas = Kelas::findOrFail((int) $request->query('id_kelas'));
         $tanggal = Carbon::parse($request->query('tanggal'));
 
         $isoWeekday = $tanggal->dayOfWeekIso;
@@ -83,7 +87,7 @@ class DispenController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'id_siswa' => 'required|exists:siswa,id_siswa',
@@ -102,37 +106,14 @@ class DispenController extends Controller
             'token_approval' => Str::random(40),
         ]);
 
-        $linkWa = $this->buatLinkWaApproval($dispen);
+        // TODO: kirim link approval ke waka di sini
 
         return redirect()
             ->route('dispen.index')
-            ->with('success', "Surat dispen {$dispen->nomor_surat} berhasil dibuat dan menunggu persetujuan Waka.")
-            ->with('link_wa', $linkWa);
+            ->with('success', "Surat dispen {$dispen->nomor_surat} berhasil dibuat dan menunggu persetujuan Waka.");
     }
 
-    private function buatLinkWaApproval(Dispen $dispen): ?string
-    {
-        $nomorWaka = config('services.waka.wa_number');
-
-        if (empty($nomorWaka)) {
-            return null;
-        }
-
-        $dispen->load('siswa', 'kelas');
-
-        $pesan = 'Halo '.config('services.waka.name').", ada pengajuan dispen baru.\n\n"
-            ."Nomor Surat: {$dispen->nomor_surat}\n"
-            ."Nama Siswa: {$dispen->siswa->nama}\n"
-            ."Kelas: {$dispen->kelas->tingkat} {$dispen->kelas->jurusan} {$dispen->kelas->rombel}\n"
-            .$dispen->labelJam()."\n"
-            ."Alasan: {$dispen->alasan}\n\n"
-            ."Silakan cek & setujui di link berikut:\n"
-            .route('dispen.approval', $dispen->token_approval);
-
-        return "https://wa.me/{$nomorWaka}?text=".urlencode($pesan);
-    }
-
-    public function halamanApproval(string $token)
+    public function halamanApproval(string $token): View
     {
         $dispen = Dispen::with(['siswa', 'kelas', 'guruPiket'])
             ->where('token_approval', $token)
@@ -141,7 +122,7 @@ class DispenController extends Controller
         return view('guru-piket.dispen-approval', compact('dispen'));
     }
 
-    public function setujui(string $token)
+    public function setujui(string $token): RedirectResponse
     {
         $dispen = Dispen::where('token_approval', $token)
             ->where('status', 'menunggu')
@@ -157,7 +138,7 @@ class DispenController extends Controller
         return back()->with('success', 'Dispen disetujui dan otomatis tercatat di jurnal guru terkait.');
     }
 
-    public function tolak(string $token)
+    public function tolak(string $token): RedirectResponse
     {
         $dispen = Dispen::where('token_approval', $token)
             ->where('status', 'menunggu')
@@ -229,23 +210,13 @@ class DispenController extends Controller
     private function generateNomorSurat(): string
     {
         $bulanRomawi = [
-            1 => 'I',
-            2 => 'II',
-            3 => 'III',
-            4 => 'IV',
-            5 => 'V',
-            6 => 'VI',
-            7 => 'VII',
-            8 => 'VIII',
-            9 => 'IX',
-            10 => 'X',
-            11 => 'XI',
-            12 => 'XII',
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
+            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII',
         ];
 
         $now = now();
         $urutan = Dispen::whereYear('created_at', $now->year)->count() + 1;
-        $nomor = str_pad($urutan, 3, '0', STR_PAD_LEFT);
+        $nomor = str_pad((string) $urutan, 3, '0', STR_PAD_LEFT);
 
         return "DSP/{$nomor}/{$bulanRomawi[$now->month]}/{$now->year}";
     }

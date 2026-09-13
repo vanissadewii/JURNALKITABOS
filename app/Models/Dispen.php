@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Dispen extends Model
 {
     protected $table = 'dispens';
+
     protected $primaryKey = 'id_dispen';
 
     protected $fillable = [
@@ -31,7 +32,7 @@ class Dispen extends Model
         'disetujui_at' => 'datetime',
     ];
 
-        /** @return BelongsTo<Siswa, $this> */
+    /** @return BelongsTo<Siswa, $this> */
     public function siswa(): BelongsTo
     {
         return $this->belongsTo(Siswa::class, 'id_siswa', 'id_siswa');
@@ -46,13 +47,13 @@ class Dispen extends Model
     /** @return BelongsTo<User, $this> */
     public function guruPiket(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_guru_piket');
+        return $this->belongsTo(User::class, 'id_guru_piket');
     }
 
     /** @return BelongsTo<User, $this> */
     public function waka(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_waka');
+        return $this->belongsTo(User::class, 'id_waka');
     }
 
     /** @return HasMany<DispenJurnal, $this> */
