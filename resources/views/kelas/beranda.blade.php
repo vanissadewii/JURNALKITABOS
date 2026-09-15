@@ -59,26 +59,28 @@
         {{-- KONTEN UTAMA --}}
         <main class="flex-1 w-full pb-24 md:pb-8">
 
-            {{-- HEADER (full-bleed, nggak ada padding samping) --}}
+            {{-- HEADER --}}
             <div class="bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
                 <span class="text-[#FFFFFF] text-[20px] font-['Poppins']">Hai 👋</span>
                 <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
-                    {{ $kelas->nama_kelas ?? 'XI RPL 2' }}
+                    XI RPL 2
                 </span>
                 <span class="text-[#D7B899] text-xs font-medium mt-0.8">
                     {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
                 </span>
             </div>
 
-            {{-- KARTU-KARTU (ada padding) --}}
+            {{-- ISI --}}
             <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-3.5">
 
                 <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028] mt-1">
                     Sesi Mengajar Aktif
                 </span>
 
+                {{-- ===== MATEMATIKA ===== --}}
                 <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
                             flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+
                     <div class="flex justify-between items-start sm:items-center gap-3">
                         <div>
                             <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Matematika</div>
@@ -88,13 +90,16 @@
                             Sedang Berjalan
                         </span>
                     </div>
+
                     <hr class="border-t border-[#E5D8CC] w-full m-0">
+
                     <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
                         <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
                             <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
                         </svg>
                         <span>10:00 – 13:50 (Jam ke-5 sampai ke-8)</span>
                     </div>
+
                     <div class="flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-[#2E7D32]">
                         <div class="w-5 h-5 rounded-[5px] bg-[#4CAF50] flex items-center justify-center">
                             <svg class="w-[13px] h-[13px]" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3">
@@ -103,8 +108,81 @@
                         </div>
                         <span>Kehadiran terverifikasi</span>
                     </div>
+
+                    {{-- SISWA DISPEN (bisa diklik) --}}
+                    <div class="bg-[#FFF8E1] border border-[#FFE082] rounded-[8px] overflow-hidden">
+                        <button type="button"
+                                onclick="toggleDispen(this)"
+                                class="w-full flex items-center justify-between gap-2 p-3 sm:p-3.5 text-left hover:bg-[#FFF3C4] transition">
+                            <div class="flex items-center gap-2">
+                                <div class="w-5 h-5 rounded-[5px] bg-[#F9A825] flex items-center justify-center shrink-0">
+                                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </div>
+                                <span class="font-['Inter'] font-semibold text-[13px] text-[#3E3028]">
+                                    Siswa Dispensasi (2)
+                                </span>
+                            </div>
+                            <svg class="w-4 h-4 text-[#7A6A60] transition-transform duration-200 arrow-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+
+                        <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
+                            <div class="flex flex-col gap-1.5 pt-1 border-t border-[#FFE082]">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-[13px] text-[#3E3028]">Rizki Pratama</span>
+                                    <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 8</span>
+                                </div>
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-[13px] text-[#3E3028]">Nadia Putri</span>
+                                    <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 10</span>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-[#7A6A60] mt-2.5 pt-2 border-t border-[#FFE082]">
+                                Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Rina</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    {{-- SISWA SAKIT / ALPA / IZIN (diinput guru di kelas) --}}
+                    <div class="bg-[#FFEBEE] border border-[#FFCDD2] rounded-[8px] overflow-hidden">
+                        <button type="button"
+                                onclick="toggleDispen(this)"
+                                class="w-full flex items-center justify-between gap-2 p-3 sm:p-3.5 text-left hover:bg-[#FFCDD2]/50 transition">
+                            <div class="flex items-center gap-2">
+                                <div class="w-5 h-5 rounded-[5px] bg-[#E53935] flex items-center justify-center shrink-0">
+                                    <span class="text-white text-[11px] font-bold">!</span>
+                                </div>
+                                <span class="font-['Inter'] font-semibold text-[13px] text-[#3E3028]">
+                                    Siswa Tidak Hadir (1)
+                                </span>
+                            </div>
+                            <svg class="w-4 h-4 text-[#7A6A60] transition-transform duration-200 arrow-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+
+                        <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
+                            <div class="flex flex-col gap-1.5 pt-1 border-t border-[#FFCDD2]">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-[13px] text-[#3E3028]">Andi Saputra</span>
+                                    <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-[#FFCDD2] text-[#C62828]">Sakit</span>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-[#7A6A60] mt-2.5 pt-2 border-t border-[#FFCDD2]">
+                                Diinput oleh: <span class="font-semibold text-[#3E3028]">Badrus Sulaiman, S.Pd., Gr.</span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
+
+                {{-- ===== BAHASA INGGRIS (Nadia lanjut dispen) ===== --}}
                 <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
                             flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
                     <div class="flex justify-between items-start sm:items-center gap-3">
@@ -123,42 +201,51 @@
                         </svg>
                         <span>13:00 – 15:00 (Jam ke-9 sampai ke-10)</span>
                     </div>
-                </div>
 
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
-                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-                    <div class="flex justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Jepang</div>
-                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Sulistyowati, SS.</div>
+                    {{-- NADIA LANJUT DISPEN --}}
+                    <div class="bg-[#FFF8E1] border border-[#FFE082] rounded-[8px] overflow-hidden">
+                        <button type="button"
+                                onclick="toggleDispen(this)"
+                                class="w-full flex items-center justify-between gap-2 p-3 sm:p-3.5 text-left hover:bg-[#FFF3C4] transition">
+                            <div class="flex items-center gap-2">
+                                <div class="w-5 h-5 rounded-[5px] bg-[#F9A825] flex items-center justify-center shrink-0">
+                                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="9" cy="7" r="4"/>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                    </svg>
+                                </div>
+                                <span class="font-['Inter'] font-semibold text-[13px] text-[#3E3028]">
+                                    Siswa Dispensasi (1)
+                                </span>
+                            </div>
+                            <svg class="w-4 h-4 text-[#7A6A60] transition-transform duration-200 arrow-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M6 9l6 6 6-6"/>
+                            </svg>
+                        </button>
+
+                        <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
+                            <div class="flex flex-col gap-1.5 pt-1 border-t border-[#FFE082]">
+                                <div class="flex items-center justify-between gap-2">
+                                    <span class="text-[13px] text-[#3E3028]">Nadia Putri</span>
+                                    <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 10</span>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-[#7A6A60] mt-2.5 pt-2 border-t border-[#FFE082]">
+                                Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Rina</span>
+                            </p>
                         </div>
-                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#E3F2FD] text-[#1976D2]">
-                            Izin (Pending)
-                        </span>
-                    </div>
-                    <hr class="border-t border-[#E5D8CC] w-full m-0">
-                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
-                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-                        </svg>
-                        <span>15:00 – 16:00 (Jam ke-10 sampai ke-11)</span>
-                    </div>
-                    <!-- TUGAS -->
-                    <div class="bg-[#FDFBF7] border border-[#E5D8CC] rounded-[8px] p-3 sm:p-4">
-                    <div class="font-['Inter'] font-semibold text-[13px] sm:text-sm text-[#3E3028] mb-1">
-                        Tugas:
-                    </div>
-
-                    <div class="font-['Inter'] text-[13px] sm:text-sm text-[#7A6A60]">
-                        Mengerjakan latihan Bahasa Jepang halaman 25
-                    </div>
                     </div>
                 </div>
+
 
                 <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028] mt-1">
                     Sesi Mengajar Selesai
                 </span>
 
+
+                {{-- ===== PJOK (Tidak Hadir) ===== --}}
                 <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
                             flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
                     <div class="flex justify-between items-start sm:items-center gap-3">
@@ -175,7 +262,7 @@
                         <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
                             <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
                         </svg>
-                        <span>07:00 – 09:40 (Jam ke-1 sampai ke-4)</span>
+                        <span>07:40 – 09:40 (Jam ke-2 sampai ke-4)</span>
                     </div>
                     <div class="flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-[#757575]">
                         <div class="w-5 h-5 rounded-[5px] bg-[#D32F2F] flex items-center justify-center text-white text-[13px] font-bold">✕</div>
@@ -183,12 +270,45 @@
                     </div>
                 </div>
 
+
+                {{-- ===== BAHASA JEPANG (Izin + Tugas) ===== --}}
+                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
+                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
+                    <div class="flex justify-between items-start sm:items-center gap-3">
+                        <div>
+                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Jepang</div>
+                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Sulistyowati, SS.</div>
+                        </div>
+                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#E3F2FD] text-[#1976D2]">
+                            Izin (Disetujui)
+                        </span>
+                    </div>
+                    <hr class="border-t border-[#E5D8CC] w-full m-0">
+                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
+                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+                        </svg>
+                        <span>07:00 – 07:40 (Jam ke-1)</span>
+                    </div>
+
+                    <div class="bg-[#FDFBF7] border border-[#E5D8CC] rounded-[8px] p-3 sm:p-4">
+                        <div class="font-['Inter'] font-semibold text-[13px] sm:text-sm text-[#3E3028] mb-1">
+                            Tugas:
+                        </div>
+                        <div class="font-['Inter'] text-[13px] sm:text-sm text-[#7A6A60]">
+                            Mengerjakan latihan Bahasa Jepang halaman 25
+                        </div>
+                        <p class="text-[11px] text-[#7A6A60] mt-2 pt-2 border-t border-[#E5D8CC]">
+                            Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span>
+                        </p>
+                    </div>
+                </div>
+
             </div>
         </main>
-
     </div>
 
-    {{-- BOTTOM NAV (mobile) --}}
+    {{-- BOTTOM NAV --}}
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
         <a href="{{ route('kelas.beranda') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
@@ -207,6 +327,16 @@
             Profil
         </a>
     </nav>
+
+    <script>
+        function toggleDispen(btn) {
+            const content = btn.nextElementSibling;
+            const arrow = btn.querySelector('.arrow-icon');
+
+            content.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+    </script>
 
 </body>
 </html>
