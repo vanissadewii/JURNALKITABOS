@@ -131,7 +131,6 @@ Route::get('/riwayat-jurnal', function () {
     return view('guru.riwayat_jurnal');
 });
 
-
 Route::get('/detail-jurnal', function () {
     return view('guru.detail_jurnal');
 });
@@ -152,4 +151,3 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dispen/approval/{token}', [DispenController::class, 'halamanApproval'])->name('dispen.approval');
 Route::post('/dispen/approval/{token}/setuju', [DispenController::class, 'setujui'])->name('dispen.approval.setuju');
 Route::post('/dispen/approval/{token}/tolak', [DispenController::class, 'tolak'])->name('dispen.approval.tolak');
-
