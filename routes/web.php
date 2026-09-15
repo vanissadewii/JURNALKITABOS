@@ -14,7 +14,7 @@ Route::get('/profil-guru', function () {
 });
 
 // Route ke editprofil-guru
-Route::get('/editprofil_guru', function () {
+Route::get('/editprofil-guru', function () {
     return view('guru.editprofil_guru');
 });
 
@@ -41,6 +41,16 @@ Route::get('/dashboard-guru', function () {
     return view('guru.dashboard_guru');
 });
 
+// Route ke Dashboard Guru
+Route::get('/detail-jurnal', function () {
+    return view('guru.detail_jurnal');
+});
+
+// Route ke Mulai Sesi
+Route::get('/mulai-sesi', function () {
+    return view('guru.mulai_sesi');
+});
+
 // Preview beranda kelas
 Route::get('/preview-beranda', function () {
     $kelas = (object) ['nama_kelas' => 'XI RPL 2'];
@@ -62,8 +72,7 @@ Route::prefix('kelas')->name('kelas.')->group(function () {
         return view('kelas.verifikasisukses');
     })->name('verifikasisukses');
 
-    Route::view('/kirim-jurnal', 'kelas.kirim-jurnal')
-        ->name('kirim-jurnal');
+    Route::get('/kirim-jurnal', [KelasController::class, 'kirimJurnal'])->name('kirim-jurnal');
 
     Route::get('/profile', [KelasController::class, 'profile'])->name('profile');
 });
@@ -104,6 +113,14 @@ Route::get('/tampilkan-qr-guru', function () {
 
 Route::get('/sesi-verifikasi-guru', function () {
     return view('guru.sesi_terverifikasi');
+});
+
+Route::get('/selesai-mengajar', function () {
+    return view('guru.selesai_mengajar');
+});
+
+Route::get('/ringkasan-sesi', function () {
+    return view('guru.ringkasan_sesi');
 });
 
 Route::get('/form-jurnal', function () {
