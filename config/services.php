@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'waka' => [
+        'wa_number' => env('WAKA_WA_NUMBER'),
+        'name' => env('WAKA_NAME', 'Waka'),
+    ],
 
 ];
