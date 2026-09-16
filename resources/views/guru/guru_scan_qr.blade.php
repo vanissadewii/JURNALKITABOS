@@ -36,7 +36,7 @@
       }
     }
   </script>
-  
+
   <style>
     /* Animasi Laser Scanner */
     @keyframes scanAnimation {
@@ -54,7 +54,7 @@
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
   <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
     <div class="p-6 flex flex-col gap-8">
-      
+
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
@@ -63,7 +63,7 @@
 
       <!-- Navigation Links -->
       <nav class="flex flex-col gap-1.5">
-        
+
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -101,12 +101,12 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT AREA (Digeser ke kanan untuk layar laptop) -->
+  <!-- MAIN CONTENT AREA -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
-    
-    <!-- Top Header Bar (Warna Cokelat Dashboard) -->
+
+    <!-- Top Header Bar (FULL WIDTH) -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
-      <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
+      <div class="w-full flex items-center justify-between">
         <a href="{{ url('/tampilkan-qr-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
@@ -117,20 +117,20 @@
       </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="w-full max-w-md mx-auto px-4 sm:px-6 py-6 flex-1 flex flex-col items-center justify-center gap-6">
-      
+    <!-- Main Content Container (FULL WIDTH 100%) -->
+    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center justify-center gap-6">
+
       <!-- Card Camera Viewfinder -->
-      <div class="w-full bg-white border border-brand-100 rounded-3xl p-5 sm:p-6 flex flex-col items-center gap-5 shadow-xs text-center">
-        
-        <div class="flex flex-col gap-1">
+      <div class="w-full bg-white border border-brand-100 rounded-3xl p-6 sm:p-8 flex flex-col items-center gap-6 shadow-xs text-center">
+
+        <div class="flex flex-col gap-1 max-w-xl">
           <h2 class="font-poppins font-bold text-lg sm:text-xl text-[#3E3028]">Pindai Kode QR Siswa</h2>
-          <p class="text-xs text-brand-600">Arahkan kamera ke QR Code milik siswa untuk melakukan verifikasi akhir.</p>
+          <p class="text-xs sm:text-sm text-brand-600">Arahkan kamera ke QR Code milik siswa untuk melakukan verifikasi akhir.</p>
         </div>
 
         <!-- Box Frame Kamera -->
-        <div class="w-full aspect-square bg-gray-900 rounded-2xl relative overflow-hidden flex items-center justify-center shadow-inner border-4 border-brand-100">
-          
+        <div class="w-full max-w-md aspect-square bg-gray-900 rounded-2xl relative overflow-hidden flex items-center justify-center shadow-inner border-4 border-brand-100">
+
           <!-- Element Video Preview Kamera -->
           <video id="webcam-preview" autoplay playsinline class="w-full h-full object-cover opacity-80"></video>
 
@@ -140,7 +140,7 @@
               <div class="w-6 h-6 border-t-4 border-l-4 border-amber-400 rounded-tl-lg"></div>
               <div class="w-6 h-6 border-t-4 border-r-4 border-amber-400 rounded-tr-lg"></div>
             </div>
-            
+
             <!-- Garis Laser Merah Pemindai -->
             <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-rose-500 to-transparent shadow-[0_0_12px_#f43f5e] relative scanner-laser"></div>
 
@@ -167,7 +167,7 @@
   <!-- Bottom Navigation Bar (Hanya muncul di Mobile/HP) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
     <div class="flex justify-between items-center">
-      
+
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -207,8 +207,8 @@
   <script>
     // Fungsi ini dipanggil saat kamera berhasil membaca QR milik siswa
     function onScanSuccess(qrCodeMessage) {
-      // Langsung redirect ke halaman sesi terverifikasi
-      window.location.href = "{{ url('/sesi-terverifikasi') }}";
+      // Mengarahkan ke route '/sesi-verifikasi-guru'
+      window.location.href = "{{ url('/sesi-verifikasi-guru') }}";
     }
 
     // Simulasi otomatis redirect setelah kamera scan QR (contoh 3 detik)

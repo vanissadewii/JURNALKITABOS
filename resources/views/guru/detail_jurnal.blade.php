@@ -88,12 +88,12 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT AREA -->
-  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+  <!-- MAIN CONTENT AREA (Full Width Desktop) -->
+  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
     
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
-      <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
+      <div class="w-full flex items-center justify-between">
         <a href="{{ url('/riwayat-jurnal') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
@@ -110,11 +110,11 @@
       </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="w-full max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col gap-6 flex-1">
+    <!-- Main Content Container (Penuh Lebar Layar) -->
+    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex flex-col gap-6 flex-1">
       
       <!-- Status Card -->
-      <div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex items-center justify-between gap-4">
         <div class="flex items-center gap-3.5">
           <div class="w-10 h-10 rounded-xl bg-[#E8F5E9] flex items-center justify-center shrink-0">
             <svg class="w-6 h-6 text-[#2E7D32]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -127,9 +127,6 @@
             <p class="text-xs text-brand-600">Disetujui oleh Kurikulum pada 21 Juli 2026 • 09:30 WIB</p>
           </div>
         </div>
-        <a href="{{ url('/form-jurnal') }}" class="px-4 py-2 bg-brand-50 border border-brand-800 text-brand-800 hover:bg-brand-100 font-poppins font-semibold text-xs rounded-xl transition-colors shrink-0">
-          Edit Jurnal
-        </a>
       </div>
 
       <!-- Detail Informasi Utama -->
@@ -167,7 +164,7 @@
 
         <!-- Material / Topics -->
         <div class="flex flex-col gap-2">
-          <h4 class="font-poppins font-bold text-sm text-[#3E3028] uppercase tracking-wider text-brand-600">Materi Pembelajaran</h4>
+          <h4 class="font-poppins font-bold text-sm uppercase tracking-wider text-brand-600">Materi Pembelajaran</h4>
           <p class="text-sm font-medium text-[#3E3028] leading-relaxed bg-brand-50 p-4 rounded-xl border border-brand-100">
             Persamaan Linear Satu Variabel (PLSV) — Membahas konsep dasar, bentuk umum, serta metode penyelesaian soal cerita kehidupan sehari-hari.
           </p>
@@ -175,7 +172,7 @@
 
         <!-- Catatan Pembelajaran / Jurnal Kelas -->
         <div class="flex flex-col gap-2">
-          <h4 class="font-poppins font-bold text-sm text-[#3E3028] uppercase tracking-wider text-brand-600">Catatan KBM & Kendala Kelas</h4>
+          <h4 class="font-poppins font-bold text-sm uppercase tracking-wider text-brand-600">Catatan KBM & Kendala Kelas</h4>
           <div class="text-sm text-brand-700 leading-relaxed bg-brand-50 p-4 rounded-xl border border-brand-100 flex flex-col gap-2">
             <p>• Pembelajaran berjalan lancar, antusiasme siswa cukup baik saat latihan soal kelompok.</p>
             <p>• Terdapat 2 siswa yang tidak hadir karena sakit dan ada surat izin terlampir.</p>
