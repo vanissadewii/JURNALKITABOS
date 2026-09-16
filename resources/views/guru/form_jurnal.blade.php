@@ -104,58 +104,74 @@
 
     <!-- Main Content Container -->
     <main class="w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
-      
+      @if ($errors->any())
+        <div class="w-full bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl p-4">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="w-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-xl p-4">
+            {{ session('success') }}
+        </div>
+    @endif
       <!-- Card Ringkasan Info Sesi -->
-      <div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs w-full flex flex-col gap-2.5 text-xs sm:text-sm">
-        
-        <!-- Mata Pelajaran -->
+<div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs w-full flex flex-col gap-2.5 text-xs sm:text-sm">
+
+    @if (!$jadwalAktif)
+        <p class="text-center text-red-600 font-semibold py-4">
+            Tidak ada jadwal mengajar Anda saat ini.
+        </p>
+    @else
         <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Mata Pelajaran</span>
-          <span class="font-bold text-[#3E3028]">Matematika</span>
+            <span class="text-brand-600 font-medium">Mata Pelajaran</span>
+            <span class="font-bold text-[#3E3028]">{{ $jadwalAktif->mapel->nama_mapel }}</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Guru</span>
-          <span class="font-bold text-[#3E3028]">Budi Santoso</span>
+            <span class="text-brand-600 font-medium">Guru</span>
+            <span class="font-bold text-[#3E3028]">{{ auth()->user()->name }}</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">NIP</span>
-          <span class="font-bold text-[#3E3028]">198501012010011001</span>
+            <span class="text-brand-600 font-medium">Kelas</span>
+            <span class="font-bold text-[#3E3028]">{{ $jadwalAktif->kelas->nama_kelas }}</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Kelas</span>
-          <span class="font-bold text-[#3E3028]">X RPL 1</span>
+            <span class="text-brand-600 font-medium">Jam Ke / Sesi</span>
+            <span class="font-bold text-[#3E3028]">
+                Jam Ke {{ $jadwalAktif->jamPelajaran->jam_ke }} • {{ now()->format('d-m-Y') }}
+            </span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
-        <!-- Jam Ke / Sesi (Hanya Jam Ke dan Tanggal saja) -->
         <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Jam Ke / Sesi</span>
-          <span class="font-bold text-[#3E3028]">Jam Ke 1 - 3 • 21-07-2026</span>
+            <span class="text-brand-600 font-medium">Waktu Kerja</span>
+            <span class="font-bold text-[#3E3028]">
+                {{ $jadwalAktif->jamPelajaran->jam_mulai }} – {{ $jadwalAktif->jamPelajaran->jam_selesai }}
+            </span>
         </div>
+    @endif
 
-        <div class="w-full h-px bg-brand-50"></div>
+</div>
 
-        <!-- Waktu Kerja -->
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Waktu Kerja</span>
-          <span class="font-bold text-[#3E3028]">07:03 – 07:43</span>
-        </div>
+      @if ($jadwalAktif)
+      <form action="{{ route('jurnal.store') }}" method="POST" class="w-full flex flex-col gap-5">
+        @csrf
+            <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif->id_jadwal }}">
 
-      </div>
-
-      <!-- Form Inputs Container -->
-      <form action="{{ url('/tampilkan-qr-guru') }}" method="GET" class="w-full flex flex-col gap-5">
-        
         <!-- Select Status Kehadiran Guru -->
         <div class="flex flex-col gap-1.5">
           <label for="status_guru" class="text-xs font-semibold text-brand-600">Status Kehadiran Guru</label>
@@ -228,13 +244,12 @@
               <span>Pilih Siswa Tidak Hadir / Absen:</span>
             </label>
             
-            <select id="select-siswa" onchange="pilihSiswa(this.value)" class="w-full h-11 px-3.5 text-xs sm:text-sm font-semibold rounded-xl border border-brand-100 bg-brand-50/50 text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all cursor-pointer">
-              <option value="" disabled selected>-- Pilih Nama Siswa --</option>
-              <option value="siswa-1">Aditya Pratama (Absen 01)</option>
-              <option value="siswa-2">Bella Safira (Absen 02)</option>
-              <option value="siswa-3">Citra Kirana (Absen 03)</option>
-              <option value="siswa-4">Doni Kusuma (Absen 04)</option>
-            </select>
+            <select id="select-siswa" onchange="pilihSiswa(this.value)" class="...">
+    <option value="" disabled selected>-- Pilih Nama Siswa --</option>
+    @foreach ($daftarSiswa as $s)
+        <option value="{{ $s->id_siswa }}">{{ $s->nama }}</option>
+    @endforeach
+</select>
 
             <!-- Form Tambah Keterangan Siswa Sementara -->
             <div id="form-keterangan-sementara" class="hidden flex-col gap-3 p-3.5 bg-brand-50 border border-brand-100 rounded-xl">
@@ -337,6 +352,7 @@
         </button>
 
       </form>
+      @endif
 
     </main>
 
@@ -401,10 +417,9 @@
 
     // Master Data Siswa
     const dataSiswa = {
-      'siswa-1': { nama: 'Aditya Pratama', absen: '01' },
-      'siswa-2': { nama: 'Bella Safira', absen: '02' },
-      'siswa-3': { nama: 'Citra Kirana', absen: '03' },
-      'siswa-4': { nama: 'Doni Kusuma', absen: '04' }
+        @foreach ($daftarSiswa as $s)
+            '{{ $s->id_siswa }}': { nama: '{{ $s->nama }}', absen: '{{ $loop->iteration }}' },
+        @endforeach
     };
 
     let selectedSiswaKey = null;

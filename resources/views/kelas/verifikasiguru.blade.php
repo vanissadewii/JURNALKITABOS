@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     @vite('resources/css/app.css')
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
@@ -88,23 +89,8 @@
                 </p>
 
                 {{-- SCANNER --}}
-                <div class="relative w-[200px] h-[200px] sm:w-[220px] sm:h-[220px] mx-auto mb-4
-                            bg-[#2D221C] border-4 border-dashed border-[#D7B899] rounded-2xl
-                            flex items-center justify-center">
-
-                    <div class="w-[70px] h-[70px] rounded-full border-2 border-[#D7B899]
-                                flex items-center justify-center text-[#D7B899] text-[28px]">
-                        ⌾
-                    </div>
-
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-                                w-[155px] sm:w-[170px] h-0.5 bg-[#D7B899]"></div>
-
-                </div>
-
-                <p class="text-center text-[#3E3028] text-xs leading-relaxed mb-5">
-                    Arahkan kamera ke QR Code guru
-                </p>
+                <div id="qr-reader" class="w-[240px] h-[240px] mx-auto mb-4 rounded-2xl overflow-hidden border-4 border-dashed border-[#D7B899]"></div>
+<p id="scan-status" class="text-center text-[#3E3028] text-xs leading-relaxed mb-5">Arahkan kamera ke QR Code guru</p>
 
                 {{-- DETAIL SESI --}}
                 <div class="w-full bg-white border border-[#E5D8CC] rounded-[10px] p-4 mb-4">
@@ -186,6 +172,42 @@
             alert('Sesi mengajar berhasil dikonfirmasi.');
         }
     </script>
+
+    <script>
+    const scanner = new Html5Qrcode("qr-reader");
+    const statusEl = document.getElementById('scan-status');
+
+    scanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 220 },
+        (decodedText) => {
+            scanner.pause();
+            statusEl.textContent = "Memverifikasi...";
+
+            fetch("{{ route('qr.scan-guru') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                },
+                body: JSON.stringify({ kode_qr: decodedText }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "{{ route('kelas.verifikasisukses') }}";
+                } else {
+                    statusEl.textContent = data.message;
+                    statusEl.classList.add('text-red-600', 'font-bold');
+                    setTimeout(() => scanner.resume(), 2000);
+                }
+            });
+        },
+        (errorMessage) => { /* diabaikan, ini dipanggil terus tiap frame tanpa QR terbaca */ }
+    ).catch(err => {
+        statusEl.textContent = "Gagal akses kamera: " + err;
+    });
+</script>
 
 </body>
 </html>

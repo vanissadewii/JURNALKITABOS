@@ -8,6 +8,8 @@ use App\Http\Controllers\MapelController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\JamPelajaranController;
 use App\Http\Controllers\JadwalPelajaranController;
+use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\QrSesiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -128,8 +130,13 @@ Route::post('admin/jadwal/import', [JadwalPelajaranController::class, 'import'])
 
 Route::resource('admin/jam-pelajaran', JamPelajaranController::class)->names('jam-pelajaran');
 // Route Tampilkan QR Guru
-Route::get('/tampilkan-qr-guru', function () {
-    return view('guru.tampilkan_qr_guru');
+Route::middleware(['auth', 'role:guru'])->group(function () {
+    Route::get('/qr/guru/{jurnal}', [QrSesiController::class, 'tampilkanQrGuru'])->name('qr.tampilkan-guru');
+    Route::get('/qr/guru/{jurnal}/status', [QrSesiController::class, 'cekStatusGuru'])->name('qr.status-guru');
+});
+
+Route::middleware(['auth', 'role:kelas'])->group(function () {
+    Route::post('/qr/kelas/scan-guru', [QrSesiController::class, 'scanGuruQr'])->name('qr.scan-guru');
 });
 
 Route::get('/sesi-verifikasi-guru', function () {
@@ -140,8 +147,9 @@ Route::get('/selesai-mengajar', function () {
     return view('guru.selesai_mengajar');
 });
 
-Route::get('/form-jurnal', function () {
-    return view('guru.form_jurnal');
+Route::middleware(['auth', 'role:guru'])->group(function () {
+    Route::get('/form-jurnal', [JurnalController::class, 'create'])->name('jurnal.create');
+    Route::post('/form-jurnal', [JurnalController::class, 'store'])->name('jurnal.store');
 });
 
 Route::get('/riwayat-jurnal', function () {

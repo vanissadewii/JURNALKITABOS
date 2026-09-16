@@ -116,8 +116,9 @@
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Jurnal Berhasil Disimpan</span>
           </span>
-          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028] mt-2">Matematika — X RPL 1</h2>
-          <p class="text-xs text-brand-600">Tunjukkan QR ini ke siswa/ketua kelas untuk diverifikasi.</p>
+         <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028] mt-2">
+    {{ $jurnal->jadwal->mapel->nama_mapel }} — {{ $jurnal->jadwal->kelas->nama_kelas }}
+</h2>
         </div>
 
         <!-- Box Display Timer Masa Berlaku QR -->
@@ -131,22 +132,17 @@
 
         <!-- Box Gambar QR Code -->
         <div id="qr-container" class="p-4 bg-brand-50 border-2 border-dashed border-brand-200 rounded-2xl flex flex-col items-center justify-center gap-2 relative transition-all">
-          
-          <!-- Ilustrasi QR Code SVG -->
-          <svg id="qr-svg" class="w-48 h-48 text-[#3E3028] transition-opacity duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM10 3h1v1h-1zM10 6h1v1h-1zM6 10h1v1H6zM9 10h1v1H9zM12 10h1v1h-1zM14 10h1v1h-1zM17 10h1v1h-1zM3 12h1v1H3zM6 12h1v1H6zM11 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM18 14h1v1h-1zM10 17h1v1h-1zM13 17h1v1h-1zM15 17h1v1h-1zM18 17h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM10 20h1v1h-1zM13 20h1v1h-1zM17 20h1v1h-1z"/>
-          </svg>
-          <span class="text-[11px] font-mono text-brand-600">ID Sesi: JG-20260721-001</span>
+    <img src="{{ $qrImage }}" alt="QR Code" class="w-48 h-48">
+    <span class="text-[11px] font-mono text-brand-600">ID Sesi: {{ $qrSesi->kode_qr }}</span>
 
-          <!-- Overlay Kadaluarsa (Muncul jika waktu habis) -->
-          <div id="qr-expired-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-xs rounded-2xl flex-col items-center justify-center p-4 gap-2">
-            <span class="text-xs font-bold text-rose-600 uppercase tracking-wide">QR Kadaluarsa</span>
-            <button onclick="resetTimer()" class="px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white text-xs font-poppins font-semibold rounded-xl shadow-sm active:scale-95 transition-all">
-              Generate Ulang QR
-            </button>
-          </div>
+    <div id="qr-expired-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-xs rounded-2xl flex-col items-center justify-center p-4 gap-2">
+        <span class="text-xs font-bold text-rose-600 uppercase tracking-wide">QR Kadaluarsa</span>
+    </div>
 
-        </div>
+    <div id="qr-verified-overlay" class="hidden absolute inset-0 bg-white/95 backdrop-blur-xs rounded-2xl flex-col items-center justify-center p-4 gap-2">
+        <span class="text-xs font-bold text-emerald-600 uppercase tracking-wide">✓ Sudah Diverifikasi Kelas</span>
+    </div>
+</div>
 
         <!-- Tombol Kembali / Selesai -->
         <div class="w-full pt-2">
@@ -201,52 +197,43 @@
   </nav>
 
   <!-- Script Timer Hitung Mundur & Redirect Kamera Guru -->
-  <script>
-    let durasiDetik = 300; // 5 Menit
-    let timerInterval;
+ <script>
+    const waktuExpired = new Date("{{ $qrSesi->waktu_expired->toIso8601String() }}").getTime();
 
-    function startTimer() {
-      const display = document.getElementById('timer-count');
-      const overlay = document.getElementById('qr-expired-overlay');
-      const svg = document.getElementById('qr-svg');
+    function updateTimer() {
+        const sisaMs = waktuExpired - Date.now();
+        const display = document.getElementById('timer-count');
+        const overlay = document.getElementById('qr-expired-overlay');
 
-      timerInterval = setInterval(() => {
-        let menit = Math.floor(durasiDetik / 60);
-        let detik = durasiDetik % 60;
-
-        menit = menit < 10 ? '0' + menit : menit;
-        detik = detik < 10 ? '0' + detik : detik;
-
-        display.textContent = `${menit}:${detik}`;
-
-        if (--durasiDetik < 0) {
-          clearInterval(timerInterval);
-          display.textContent = "00:00";
-          svg.classList.add('opacity-10');
-          overlay.classList.remove('hidden');
-          overlay.classList.add('flex');
+        if (sisaMs <= 0) {
+            display.textContent = "00:00";
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            return;
         }
-      }, 1000);
+
+        const menit = Math.floor(sisaMs / 60000);
+        const detik = Math.floor((sisaMs % 60000) / 1000);
+        display.textContent = `${String(menit).padStart(2, '0')}:${String(detik).padStart(2, '0')}`;
     }
 
-    function resetTimer() {
-      durasiDetik = 300;
-      document.getElementById('qr-expired-overlay').classList.add('hidden');
-      document.getElementById('qr-expired-overlay').classList.remove('flex');
-      document.getElementById('qr-svg').classList.remove('opacity-10');
-      startTimer();
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // Polling: cek apakah kelas sudah scan QR ini
+    function cekStatus() {
+        fetch("{{ route('qr.status-guru', $jurnal->id_jurnal) }}")
+            .then(res => res.json())
+            .then(data => {
+                if (data.sudah_dipindai) {
+                    document.getElementById('qr-verified-overlay').classList.remove('hidden');
+                    document.getElementById('qr-verified-overlay').classList.add('flex');
+                    clearInterval(pollInterval);
+                }
+            });
     }
 
-    // Jalankan timer saat halaman terbuka
-    window.onload = startTimer;
-
-    // Listener otomatis: saat siswa berhasil scan QR guru, halaman otomatis pindah ke kamera guru
-    /* 
-    window.addEventListener('qr-scanned-by-student', function() {
-      window.location.href = "{{ url('/guru-scan-qr') }}";
-    });
-    */
-  </script>
-
+    const pollInterval = setInterval(cekStatus, 3000);
+</script>
 </body>
 </html>
