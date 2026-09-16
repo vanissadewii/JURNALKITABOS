@@ -322,23 +322,13 @@
       </a>
 
       <!-- Inactive Mobile Link (Profil Guru) -->
-     <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
-    <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-        <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-        <circle cx="10" cy="6.5" r="3.5"/>
-    </svg>
-    <span>Profil</span>
-</a>
-
-<form method="POST" action="{{ route('logout') }}">
-    @csrf
-    <button type="submit" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-red-600 hover:bg-red-50 transition-all">
+      <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M7 4H4a1 1 0 00-1 1v10a1 1 0 001 1h3M13 14l4-4-4-4M17 10H7"/>
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
+          <circle cx="10" cy="6.5" r="3.5"/>
         </svg>
-        <span>Logout</span>
-    </button>
-</form>
+        <span>Profil</span>
+      </a>
 
     </div>
   </nav>

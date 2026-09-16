@@ -64,7 +64,7 @@
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
             <path d="M7 3v14"/>
           </svg>
-          <span>isi Jurnal</span>
+          <span>Isi Jurnal</span>
         </a>
 
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
@@ -89,7 +89,7 @@
   <!-- MAIN CONTENT AREA -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
 
-    <!-- Top Header Bar (FULL WIDTH) -->
+    <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
         <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
@@ -103,74 +103,48 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
-      @if ($errors->any())
-        <div class="w-full bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl p-4">
-            <ul class="list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
 
-    @if (session('success'))
-        <div class="w-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-xl p-4">
-            {{ session('success') }}
-        </div>
-    @endif
       <!-- Card Ringkasan Info Sesi -->
-<div class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs w-full flex flex-col gap-2.5 text-xs sm:text-sm">
+      <div class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs w-full flex flex-col gap-3 text-sm">
 
-    @if (!$jadwalAktif)
-        <p class="text-center text-red-600 font-semibold py-4">
-            Tidak ada jadwal mengajar Anda saat ini.
-        </p>
-    @else
         <div class="flex justify-between items-center">
-            <span class="text-brand-600 font-medium">Mata Pelajaran</span>
-            <span class="font-bold text-[#3E3028]">{{ $jadwalAktif->mapel->nama_mapel }}</span>
+          <span class="text-brand-600 font-medium">Mata Pelajaran</span>
+          <span class="font-bold text-[#3E3028]">Matematika</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-            <span class="text-brand-600 font-medium">Guru</span>
-            <span class="font-bold text-[#3E3028]">{{ auth()->user()->name }}</span>
+          <span class="text-brand-600 font-medium">Guru</span>
+          <span class="font-bold text-[#3E3028]">Budi Santoso</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-            <span class="text-brand-600 font-medium">Kelas</span>
-            <span class="font-bold text-[#3E3028]">{{ $jadwalAktif->kelas->nama_kelas }}</span>
+          <span class="text-brand-600 font-medium">Kelas</span>
+          <span class="font-bold text-[#3E3028]">X RPL 1</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-            <span class="text-brand-600 font-medium">Jam Ke / Sesi</span>
-            <span class="font-bold text-[#3E3028]">
-                Jam Ke {{ $jadwalAktif->jamPelajaran->jam_ke }} • {{ now()->format('d-m-Y') }}
-            </span>
+          <span class="text-brand-600 font-medium">Jam Ke</span>
+          <span class="font-bold text-[#3E3028]">Jam Ke 1 - 3</span>
         </div>
 
         <div class="w-full h-px bg-brand-50"></div>
 
         <div class="flex justify-between items-center">
-            <span class="text-brand-600 font-medium">Waktu Kerja</span>
-            <span class="font-bold text-[#3E3028]">
-                {{ $jadwalAktif->jamPelajaran->jam_mulai }} – {{ $jadwalAktif->jamPelajaran->jam_selesai }}
-            </span>
+          <span class="text-brand-600 font-medium">Waktu Kerja</span>
+          <span class="font-bold text-[#3E3028]">07:03 – 07:43</span>
         </div>
-    @endif
 
-</div>
+      </div>
 
-      @if ($jadwalAktif)
-      <form action="{{ route('jurnal.store') }}" method="POST" class="w-full flex flex-col gap-5">
-        @csrf
-            <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif->id_jadwal }}">
+      <!-- Form Inputs Container -->
+      <form action="{{ url('/tampilkan-qr-guru') }}" method="GET" class="w-full flex flex-col gap-5">
 
         <!-- Select Status Kehadiran Guru -->
         <div class="flex flex-col gap-1.5">
@@ -244,54 +218,38 @@
             </div>
           </div>
 
-          <!-- FITUR MULTI-SELECT PRESENSI SISWA TIDAK HADIR -->
+          <!-- FITUR PRESENSI SISWA SIMPEL (SEARCH & TANGGUNG JAWAB TOMBOL KET / S I A) -->
           <div id="box-presensi-siswa" class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col gap-4 shadow-xs transition-all">
-            <label for="select-siswa" class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028] flex items-center gap-2">
-              <svg class="w-4 h-4 text-brand-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
-              </svg>
-              <span>Pilih Siswa Tidak Hadir / Absen:</span>
-            </label>
-            
-            <select id="select-siswa" onchange="pilihSiswa(this.value)" class="...">
-    <option value="" disabled selected>-- Pilih Nama Siswa --</option>
-    @foreach ($daftarSiswa as $s)
-        <option value="{{ $s->id_siswa }}">{{ $s->nama }}</option>
-    @endforeach
-</select>
+            <div class="flex flex-col gap-2">
+              <label for="search-siswa" class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028] flex items-center gap-2">
+                <svg class="w-4 h-4 text-brand-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+                <span>Presensi Siswa Tidak Hadir:</span>
+              </label>
 
-            <!-- Form Tambah Keterangan Siswa Sementara -->
-            <div id="form-keterangan-sementara" class="hidden flex-col gap-3 p-4 bg-brand-50 border border-brand-100 rounded-xl">
-              <div class="flex items-center justify-between border-b border-brand-100 pb-2">
-                <span class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028]" id="temp-nama">Aditya Pratama</span>
-                <span class="text-xs text-brand-600 font-semibold" id="temp-absen">No. Absen: 01</span>
+              <!-- Input Cari Nama Siswa -->
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="search-siswa" 
+                  oninput="filterSiswa(this.value)"
+                  placeholder="Ketik nama / no. absen siswa..." 
+                  class="w-full h-10 pl-9 pr-3.5 bg-brand-50/50 border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                >
+                <svg class="w-4 h-4 text-brand-600 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
               </div>
-
-              <div class="flex items-center justify-between gap-3">
-                <label class="text-xs font-semibold text-brand-800">Status Kehadiran:</label>
-                <select id="temp-status" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-amber-300 bg-amber-50 text-amber-800 focus:outline-none cursor-pointer">
-                  <option value="Sakit">Sakit</option>
-                  <option value="Izin">Izin</option>
-                  <option value="Alpha">Alpha</option>
-                </select>
-              </div>
-
-              <button type="button" id="btn-tambah-absen" onclick="tambahkanKeDaftar()" class="w-full py-2 bg-brand-800 hover:bg-brand-900 text-white font-semibold text-xs rounded-lg transition-all">
-                + Tambahkan ke Daftar Absen
-              </button>
             </div>
 
-            <!-- DAFTAR / RIWAYAT SISWA YANG TIDAK HADIR -->
-            <div id="container-daftar-absen" class="flex flex-col gap-2 mt-1">
-              <span class="text-xs font-bold text-brand-600">Daftar Siswa Tidak Hadir:</span>
-
-              <div id="empty-state-absen" class="text-xs text-brand-600 italic p-3 bg-brand-50/50 rounded-xl border border-dashed border-brand-100 text-center">
-                Belum ada siswa yang ditambahkan ke daftar absen.
-              </div>
-
-              <div id="list-siswa-absen" class="flex flex-col gap-2"></div>
+            <!-- List Siswa dengan Tombol Aksi Langsung (S, I, A) -->
+            <div id="list-siswa-container" class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
+              <!-- Render otomatis via JavaScript -->
             </div>
 
+            <!-- Container Tersembunyi untuk Input Form Laravel/Backend -->
+            <div id="hidden-inputs-container"></div>
           </div>
 
           <!-- Input Catatan Kegiatan Kelas -->
@@ -313,7 +271,6 @@
         </button>
 
       </form>
-      @endif
 
     </main>
 
@@ -334,7 +291,7 @@
           <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
           <path d="M7 3v14"/>
         </svg>
-        <span>isi Jurnal</span>
+        <span>Isi Jurnal</span>
       </a>
 
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
@@ -354,35 +311,31 @@
     </div>
   </nav>
 
-  <!-- SCRIPT LOGIKA JAVASCRIPT -->
+  <!-- SCRIPT LOGIKA JAVASCRIPT SIMPEL -->
   <script>
     function toggleStatusGuru(status) {
       const materiInput = document.getElementById('materi');
       const jumlahHadirInput = document.getElementById('jumlah_hadir');
-      const selectSiswaInput = document.getElementById('select-siswa');
+      const searchSiswaInput = document.getElementById('search-siswa');
       const catatanInput = document.getElementById('catatan');
       const boxPresensi = document.getElementById('box-presensi-siswa');
       const bannerIzin = document.getElementById('banner-izin');
-      const formTemp = document.getElementById('form-keterangan-sementara');
 
       if (status === 'Izin / Sakit') {
         materiInput.disabled = true;
         jumlahHadirInput.disabled = true;
-        selectSiswaInput.disabled = true;
+        searchSiswaInput.disabled = true;
         catatanInput.disabled = true;
 
         boxPresensi.classList.add('bg-gray-100', 'opacity-60', 'pointer-events-none');
         boxPresensi.classList.remove('bg-white');
-
-        formTemp.classList.add('hidden');
-        formTemp.classList.remove('flex');
 
         bannerIzin.classList.remove('hidden');
         bannerIzin.classList.add('flex');
       } else {
         materiInput.disabled = false;
         jumlahHadirInput.disabled = false;
-        selectSiswaInput.disabled = false;
+        searchSiswaInput.disabled = false;
         catatanInput.disabled = false;
 
         boxPresensi.classList.remove('bg-gray-100', 'opacity-60', 'pointer-events-none');
@@ -393,110 +346,105 @@
       }
     }
 
-    const dataSiswa = {
-        @foreach ($daftarSiswa as $s)
-            '{{ $s->id_siswa }}': { nama: '{{ $s->nama }}', absen: '{{ $loop->iteration }}' },
-        @endforeach
-    };
+    // Data Siswa beserta Status Default ("Hadir")
+    const daftarSiswa = [
+      { key: 'siswa-1', nama: 'Aditya Pratama', absen: '01', status: 'Hadir' },
+      { key: 'siswa-2', nama: 'Bella Safira', absen: '02', status: 'Hadir' },
+      { key: 'siswa-3', nama: 'Citra Kirana', absen: '03', status: 'Hadir' },
+      { key: 'siswa-4', nama: 'Doni Kusuma', absen: '04', status: 'Hadir' }
+    ];
 
-    let selectedSiswaKey = null;
-    let daftarAbsenSiswa = [];
+    let searchKeyword = "";
 
-    function pilihSiswa(key) {
-      if (!key) return;
+    function filterSiswa(val) {
+      searchKeyword = val.toLowerCase();
+      renderListSiswa();
+    }
 
-      if (daftarAbsenSiswa.some(item => item.key === key)) {
-        alert('Siswa ini sudah ada dalam daftar siswa tidak hadir.');
-        document.getElementById('select-siswa').value = "";
+    function setStatusSiswa(key, newStatus) {
+      const targetSiswa = daftarSiswa.find(s => s.key === key);
+      if (targetSiswa) {
+        // Toggle: Jika status yang diklik sama, kembalikan ke 'Hadir'
+        targetSiswa.status = (targetSiswa.status === newStatus) ? 'Hadir' : newStatus;
+      }
+      renderListSiswa();
+      updateRingkasanJumlah();
+    }
+
+    function renderListSiswa() {
+      const container = document.getElementById('list-siswa-container');
+      container.innerHTML = '';
+
+      const filtered = daftarSiswa.filter(s => 
+        s.nama.toLowerCase().includes(searchKeyword) || 
+        s.absen.includes(searchKeyword)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-xs text-brand-600 italic p-3 bg-brand-50/50 rounded-xl text-center border border-dashed border-brand-100">
+            Siswa tidak ditemukan.
+          </div>`;
         return;
       }
 
-      selectedSiswaKey = key;
-      const siswa = dataSiswa[key];
+      filtered.forEach(siswa => {
+        const isSakit = siswa.status === 'Sakit';
+        const isIzin  = siswa.status === 'Izin';
+        const isAlpha = siswa.status === 'Alpha';
 
-      document.getElementById('temp-nama').innerText = siswa.nama;
-      document.getElementById('temp-absen').innerText = 'No. Absen: ' + siswa.absen;
+        const itemHTML = `
+          <div class="flex items-center justify-between p-2.5 bg-brand-50/60 border border-brand-100 rounded-xl text-xs sm:text-sm">
+            <div class="flex items-center gap-2.5 overflow-hidden">
+              <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-800 font-bold text-xs flex items-center justify-center shrink-0">
+                ${siswa.absen}
+              </span>
+              <span class="font-semibold text-[#3E3028] truncate">${siswa.nama}</span>
+            </div>
 
-      const formTemp = document.getElementById('form-keterangan-sementara');
-      formTemp.classList.remove('hidden');
-      formTemp.classList.add('flex');
-    }
-
-    function tambahkanKeDaftar() {
-      if (!selectedSiswaKey) return;
-
-      const siswa = dataSiswa[selectedSiswaKey];
-      const statusKet = document.getElementById('temp-status').value;
-
-      daftarAbsenSiswa.push({
-        key: selectedSiswaKey,
-        nama: siswa.nama,
-        absen: siswa.absen,
-        status: statusKet
+            <!-- Tombol Pilihan S I A Langsung -->
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" onclick="setStatusSiswa('${siswa.key}', 'Sakit')" 
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isSakit ? 'bg-amber-500 text-white shadow-xs scale-105' : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-50'}">
+                S
+              </button>
+              <button type="button" onclick="setStatusSiswa('${siswa.key}', 'Izin')" 
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isIzin ? 'bg-blue-500 text-white shadow-xs scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'}">
+                I
+              </button>
+              <button type="button" onclick="setStatusSiswa('${siswa.key}', 'Alpha')" 
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isAlpha ? 'bg-rose-500 text-white shadow-xs scale-105' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}">
+                A
+              </button>
+            </div>
+          </div>
+        `;
+        container.innerHTML += itemHTML;
       });
 
-      document.getElementById('form-keterangan-sementara').classList.add('hidden');
-      document.getElementById('form-keterangan-sementara').classList.remove('flex');
-      document.getElementById('select-siswa').value = "";
-      selectedSiswaKey = null;
-
-      renderDaftarAbsen();
+      renderHiddenInputs();
     }
 
-    function renderDaftarAbsen() {
-      const listContainer = document.getElementById('list-siswa-absen');
-      const emptyState = document.getElementById('empty-state-absen');
-      const inputJumlahAbsen = document.getElementById('jumlah_absen');
-
-      listContainer.innerHTML = '';
-
-      if (daftarAbsenSiswa.length === 0) {
-        emptyState.classList.remove('hidden');
-      } else {
-        emptyState.classList.add('hidden');
-
-        daftarAbsenSiswa.forEach((item, index) => {
-          let badgeColor = "";
-          if (item.status === 'Sakit') badgeColor = "bg-amber-100 text-amber-800 border-amber-300";
-          else if (item.status === 'Izin') badgeColor = "bg-blue-100 text-blue-800 border-blue-300";
-          else if (item.status === 'Alpha') badgeColor = "bg-rose-100 text-rose-800 border-rose-300";
-
-          const itemHTML = `
-            <div class="flex items-center justify-between p-3 bg-brand-50 border border-brand-100 rounded-xl">
-              <div class="flex items-center gap-2.5">
-                <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-800 font-bold text-xs flex items-center justify-center shrink-0">
-                  ${item.absen}
-                </span>
-                <span class="font-semibold text-xs sm:text-sm text-[#3E3028]">${item.nama}</span>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${badgeColor}">
-                  ${item.status}
-                </span>
-                <button type="button" onclick="hapusSiswaAbsen(${index})" class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              </div>
-
-              <input type="hidden" name="siswa_absen[${index}][key]" value="${item.key}">
-              <input type="hidden" name="siswa_absen[${index}][status]" value="${item.status}">
-            </div>
-          `;
-
-          listContainer.innerHTML += itemHTML;
-        });
-      }
-
-      inputJumlahAbsen.value = daftarAbsenSiswa.length;
+    function updateRingkasanJumlah() {
+      const totalTidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir').length;
+      document.getElementById('jumlah_absen').value = totalTidakHadir;
     }
 
-    function hapusSiswaAbsen(index) {
-      daftarAbsenSiswa.splice(index, 1);
-      renderDaftarAbsen();
+    function renderHiddenInputs() {
+      const hiddenContainer = document.getElementById('hidden-inputs-container');
+      hiddenContainer.innerHTML = '';
+
+      const tidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir');
+      tidakHadir.forEach((item, index) => {
+        hiddenContainer.innerHTML += `
+          <input type="hidden" name="siswa_absen[${index}][key]" value="${item.key}">
+          <input type="hidden" name="siswa_absen[${index}][status]" value="${item.status}">
+        `;
+      });
     }
+
+    // Inisialisasi Pertama
+    renderListSiswa();
   </script>
 
 </body>
