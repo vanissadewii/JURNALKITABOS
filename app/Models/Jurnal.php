@@ -21,7 +21,14 @@ class Jurnal extends Model
         'waktu_submit',
     ];
 
-    /** @return BelongsTo<JadwalPelajaran, $this> */
+    protected $casts = [
+        'tanggal' => 'date',
+        'waktu_submit' => 'datetime',
+    ];
+
+    /**
+     * @return BelongsTo<JadwalPelajaran, $this>
+     */
     public function jadwal(): BelongsTo
     {
         return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal', 'id_jadwal');

@@ -1,0 +1,18 @@
+[90m= [39m[34;4mApp\Models\User[39;24m {#9255
+    [34mid[39m: [35m2[39m,
+    [34mname[39m: [32m"[39m[32mBudi Santoso[39m[32m"[39m,
+    [34musername[39m: [32m"[39m[32mbudi[39m[32m"[39m,
+    [34memail[39m: [32m"[39m[32mbudi@jurnalkitabos.local[39m[32m"[39m,
+    [34mrole[39m: [32m"[39m[32mguru[39m[32m"[39m,
+    [34mno_telepon[39m: [32m"[39m[32m0890970817082[39m[32m"[39m,
+    [34mstatus[39m: [32m"[39m[32maktif[39m[32m"[39m,
+    [34mid_kelas[39m: [36mnull[39m,
+    [34memail_verified_at[39m: [36mnull[39m,
+    #[33mpassword[39m: [32m"[39m\$[32m2y[39m\$[32m12[39m\$[32mqgEQxnFU2n85JW7Y3CnFeuwins7SA9J0xEfru8Xg223IRec09uSNq[39m[32m"[39m,
+    #[33mtwo_factor_secret[39m: [36mnull[39m,
+    #[33mtwo_factor_recovery_codes[39m: [36mnull[39m,
+    [34mtwo_factor_confirmed_at[39m: [36mnull[39m,
+    #[33mremember_token[39m: [36mnull[39m,
+    [34mcreated_at[39m: [32m"[39m[32m2026-09-09 13:20:04[39m[32m"[39m,
+    [34mupdated_at[39m: [32m"[39m[32m2026-09-09 13:20:04[39m[32m"[39m,
+  }
