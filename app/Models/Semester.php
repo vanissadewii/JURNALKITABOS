@@ -12,7 +12,6 @@ class Semester extends Model
     protected $primaryKey = 'id_semester';
 
     protected $fillable = ['nama', 'tanggal_mulai', 'tanggal_selesai', 'status'];
-<<<<<<< HEAD
 
     /**
      * @return HasMany<JamPelajaran, $this>
@@ -22,6 +21,3 @@ class Semester extends Model
         return $this->hasMany(JamPelajaran::class, 'id_semester', 'id_semester');
     }
 }
-=======
-}
->>>>>>> develop
