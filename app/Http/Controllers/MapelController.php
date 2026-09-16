@@ -3,22 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mapel;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class MapelController extends Controller
 {
     public function index(): View
-{
-    $mapels = Mapel::orderBy('nama_mapel')->get();
-    return view('admin.tambah_mapel', compact('mapels'));
-}
+    {
+        $mapels = Mapel::orderBy('nama_mapel')->get();
 
-public function create(): View
-{
-    return view('admin.tambah_mapel');
-}
+        return view('admin.tambah_mapel', compact('mapels'));
+    }
+
+    public function create(): View
+    {
+        return view('admin.tambah_mapel');
+    }
 
     public function store(Request $request): RedirectResponse
     {

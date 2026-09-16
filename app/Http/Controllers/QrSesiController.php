@@ -4,32 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Models\Jurnal;
 use App\Models\QrSesi;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\SvgWriter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-use Endroid\QrCode\QrCode;
-use Endroid\QrCode\Writer\SvgWriter;
 
 class QrSesiController extends Controller
 {
     // GURU: tampilkan QR untuk jurnal tertentu
     public function tampilkanQrGuru(Jurnal $jurnal): View
-{
-    $jadwal = $jurnal->jadwal;
-    abort_if($jadwal->id_guru !== Auth::id(), 403);
+    {
+        $jadwal = $jurnal->jadwal;
+        abort_if($jadwal->id_guru !== Auth::id(), 403);
 
-    $qrSesi = QrSesi::where('id_jurnal', $jurnal->id_jurnal)
-        ->where('tipe', 'guru')
-        ->latest('id_qr')
-        ->firstOrFail();
+        $qrSesi = QrSesi::where('id_jurnal', $jurnal->id_jurnal)
+            ->where('tipe', 'guru')
+            ->latest('id_qr')
+            ->firstOrFail();
 
-    $qrCode = new QrCode($qrSesi->kode_qr);
-    $writer = new SvgWriter();
-    $qrImage = $writer->write($qrCode)->getDataUri();
+        $qrCode = new QrCode($qrSesi->kode_qr);
+        $writer = new SvgWriter;
+        $qrImage = $writer->write($qrCode)->getDataUri();
 
-    return view('guru.tampilkan_qr_guru', compact('jurnal', 'qrSesi', 'qrImage'));
-}
+        return view('guru.tampilkan_qr_guru', compact('jurnal', 'qrSesi', 'qrImage'));
+    }
 
     // GURU: AJAX polling, cek apakah kelas sudah scan
     public function cekStatusGuru(Jurnal $jurnal): JsonResponse
@@ -55,7 +55,7 @@ class QrSesiController extends Controller
             ->where('tipe', 'guru')
             ->first();
 
-        if (!$qrSesi) {
+        if (! $qrSesi) {
             return response()->json(['success' => false, 'message' => 'QR tidak dikenali.'], 404);
         }
 
@@ -74,7 +74,7 @@ class QrSesiController extends Controller
         }
 
         $qrSesi->update([
-            'dipindai_at'   => now(),
+            'dipindai_at' => now(),
             'dipindai_oleh' => Auth::id(),
         ]);
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Jurnal extends Model
 {
     protected $table = 'jurnal';
+
     protected $primaryKey = 'id_jurnal';
 
     protected $fillable = [

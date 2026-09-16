@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Semester;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SemesterController extends Controller
@@ -12,6 +12,7 @@ class SemesterController extends Controller
     public function index(): View
     {
         $semesters = Semester::orderBy('tanggal_mulai', 'desc')->get();
+
         return view('admin.tambah_semester', compact('semesters'));
     }
 

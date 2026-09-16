@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class QrSesi extends Model
 {
     protected $table = 'qr_sesi';
+
     protected $primaryKey = 'id_qr';
 
     protected $fillable = [
@@ -18,8 +19,8 @@ class QrSesi extends Model
 
     protected $casts = [
         'waktu_generate' => 'datetime',
-        'waktu_expired'  => 'datetime',
-        'dipindai_at'    => 'datetime',
+        'waktu_expired' => 'datetime',
+        'dipindai_at' => 'datetime',
     ];
 
     public function jadwal(): BelongsTo
@@ -34,7 +35,7 @@ class QrSesi extends Model
 
     public function sudahDipindai(): bool
     {
-        return !is_null($this->dipindai_at);
+        return ! is_null($this->dipindai_at);
     }
 
     public function sudahExpired(): bool
