@@ -18,7 +18,7 @@ class JadwalPelajaranImport implements SkipsOnFailure, ToModel, WithHeadingRow, 
 {
     use SkipsFailures;
 
-    // Menyimpan baris yang lolos validasi tapi gagal dicocokkan ke data master
+    /** @var array<int, string> */
     protected array $tidakCocok = [];
 
     public function model(array $row): ?Model
@@ -83,6 +83,7 @@ class JadwalPelajaranImport implements SkipsOnFailure, ToModel, WithHeadingRow, 
         ];
     }
 
+    /** @return array<int, string> */
     public function getTidakCocok(): array
     {
         return $this->tidakCocok;

@@ -8,6 +8,7 @@ use App\Models\JamPelajaran;
 use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -35,9 +36,9 @@ class JadwalPelajaranController extends Controller
     }
 
     // dipanggil AJAX setelah kelas dipilih, buat nampilin jam yang sesuai tingkat+hari kelas itu
-    public function getJamByKelasHari(Request $request)
+    public function getJamByKelasHari(Request $request): JsonResponse
     {
-
+        /** @var Kelas $kelas */
         $kelas = Kelas::findOrFail($request->id_kelas);
 
         $jamPelajaran = JamPelajaran::where('tingkat', $kelas->tingkat)

@@ -23,11 +23,17 @@ class QrSesi extends Model
         'dipindai_at' => 'datetime',
     ];
 
+    /**
+     * @return BelongsTo<JadwalPelajaran, $this>
+     */
     public function jadwal(): BelongsTo
     {
         return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal', 'id_jadwal');
     }
 
+    /**
+     * @return BelongsTo<Jurnal, $this>
+     */
     public function jurnal(): BelongsTo
     {
         return $this->belongsTo(Jurnal::class, 'id_jurnal', 'id_jurnal');

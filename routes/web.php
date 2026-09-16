@@ -133,10 +133,6 @@ Route::get('/sesi-verifikasi-guru', function () {
     return view('guru.sesi_terverifikasi');
 });
 
-Route::get('/selesai-mengajar', function () {
-    return view('guru.selesai_mengajar');
-});
-
 Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::get('/form-jurnal', [JurnalController::class, 'create'])->name('jurnal.create');
     Route::post('/form-jurnal', [JurnalController::class, 'store'])->name('jurnal.store');

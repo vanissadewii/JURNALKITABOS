@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jurnal;
 use App\Models\QrSesi;
+use App\Models\User;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\SvgWriter;
 use Illuminate\Http\JsonResponse;
@@ -32,20 +33,6 @@ class QrSesiController extends Controller
     }
 
     // GURU: AJAX polling, cek apakah kelas sudah scan
-    public function cekStatusGuru(Jurnal $jurnal): JsonResponse
-    {
-        abort_if($jurnal->jadwal->id_guru !== Auth::id(), 403);
-
-        $qrSesi = QrSesi::where('id_jurnal', $jurnal->id_jurnal)
-            ->where('tipe', 'guru')
-            ->latest('id_qr')
-            ->first();
-
-        return response()->json([
-            'sudah_dipindai' => $qrSesi?->sudahDipindai() ?? false,
-        ]);
-    }
-
     // KELAS: submit hasil scan kamera (kode_qr yang terbaca)
     public function scanGuruQr(Request $request): JsonResponse
     {
@@ -69,7 +56,11 @@ class QrSesiController extends Controller
 
         // Pastikan yang scan adalah akun kelas yang sesuai kelasnya
         $idKelasQr = $qrSesi->jadwal->id_kelas;
-        if (Auth::user()->id_kelas !== $idKelasQr) {
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->id_kelas !== $idKelasQr) {
             return response()->json(['success' => false, 'message' => 'QR ini bukan untuk kelas Anda.'], 403);
         }
 
