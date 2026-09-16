@@ -13,7 +13,6 @@ class JamPelajaran extends Model
     protected $primaryKey = 'id_jam';
 
     protected $fillable = ['id_semester', 'tingkat', 'hari', 'jam_ke', 'jam_mulai', 'jam_selesai'];
-<<<<<<< HEAD
 
     /**
      * @return BelongsTo<Semester, $this>
@@ -31,6 +30,3 @@ class JamPelajaran extends Model
         return $this->hasMany(JadwalPelajaran::class, 'id_jam', 'id_jam');
     }
 }
-=======
-}
->>>>>>> develop

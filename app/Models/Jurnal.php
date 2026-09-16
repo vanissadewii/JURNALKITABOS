@@ -8,10 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Jurnal extends Model
 {
     protected $table = 'jurnal';
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
     protected $primaryKey = 'id_jurnal';
 
     protected $fillable = [
@@ -24,7 +20,6 @@ class Jurnal extends Model
         'waktu_submit',
     ];
 
-<<<<<<< HEAD
     protected $casts = [
         'tanggal' => 'date',
         'waktu_submit' => 'datetime',
@@ -33,15 +28,8 @@ class Jurnal extends Model
     /**
      * @return BelongsTo<JadwalPelajaran, $this>
      */
-=======
-    /** @return BelongsTo<JadwalPelajaran, $this> */
->>>>>>> develop
     public function jadwal(): BelongsTo
     {
         return $this->belongsTo(JadwalPelajaran::class, 'id_jadwal', 'id_jadwal');
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> develop

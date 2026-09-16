@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class JadwalPelajaran extends Model
 {
     protected $table = 'jadwal_pelajaran';
-<<<<<<< HEAD
     protected $primaryKey = 'id_jadwal';
 
     protected $fillable = ['id_kelas', 'id_jam', 'id_guru', 'id_mapel'];
@@ -54,10 +53,3 @@ class JadwalPelajaran extends Model
         return $this->hasMany(Jurnal::class, 'id_jadwal', 'id_jadwal');
     }
 }
-=======
-
-    protected $primaryKey = 'id_jadwal';
-
-    protected $fillable = ['id_kelas', 'id_jam', 'id_guru', 'id_mapel'];
-}
->>>>>>> develop
