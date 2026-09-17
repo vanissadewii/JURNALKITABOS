@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropUnique(['email']); // drop index unique-nya dulu
             $table->dropColumn('email');
         });
     }
