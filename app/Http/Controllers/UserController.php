@@ -25,7 +25,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:50|unique:users,username',
             'password' => 'required|min:8',
-            'role' => 'required|in:kelas,guru,guru_piket,admin',
+            'role' => 'required|in:kelas,guru,admin',
             'no_telepon' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif,pending',
             'id_kelas' => 'nullable|exists:kelas,id_kelas',

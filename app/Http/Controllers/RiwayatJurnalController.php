@@ -76,7 +76,7 @@ class RiwayatJurnalController extends Controller
         $tidakHadir = [];
         $dispen = [];
 
-        foreach (preg_split('/\R|\s\|\s/', (string) $jurnal->keterangan) as $bagian) {
+        foreach (preg_split('/\R|\s\|\s/', (string) $jurnal->keterangan) ?: [] as $bagian) {
             $bagian = trim($bagian);
 
             if ($bagian === '') {
@@ -86,7 +86,7 @@ class RiwayatJurnalController extends Controller
             if (str_starts_with($bagian, 'Tidak hadir:')) {
                 $daftar = trim(substr($bagian, strlen('Tidak hadir:')));
 
-                foreach (preg_split('/\),\s*/', $daftar) as $item) {
+                foreach (preg_split('/\),\s*/', $daftar) ?: [] as $item) {
                     $item = trim($item);
 
                     if ($item === '') {

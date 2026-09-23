@@ -6,6 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id_jam
+ * @property int $id_semester
+ * @property string $tingkat
+ * @property string $hari
+ * @property int $jam_ke
+ * @property string $jam_mulai
+ * @property string $jam_selesai
+ */
 class JamPelajaran extends Model
 {
     protected $table = 'jam_pelajaran';

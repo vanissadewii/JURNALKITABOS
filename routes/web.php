@@ -1,10 +1,7 @@
 <?php
 
-use App\Http\Controllers\DispenController;
 use App\Http\Controllers\GuruDashboardController;
-use App\Http\Controllers\GuruPiketController;
 use App\Http\Controllers\JadwalPelajaranController;
-use App\Http\Controllers\JadwalPiketController;
 use App\Http\Controllers\JamPelajaranController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\KelasController;
@@ -24,17 +21,14 @@ Route::get('/', function () {
 });
 
 // Redirect setelah login, sesuai role
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', function () {
-        return match (Auth::user()->role) {
-            'admin' => view('admin.tambah_admin'),
-            'guru' => app(GuruDashboardController::class)->index(),
-            'guru_piket' => app(GuruPiketController::class)->beranda(),
-            'kelas' => redirect()->route('kelas.beranda'),
-            default => redirect('/'),
-        };
-    })->name('home');
-});
+Route::get('/home', function () {
+    return match (Auth::user()->role) {
+        'admin' => view('admin.tambah_admin'),
+        'guru' => app(GuruDashboardController::class)->index(),
+        'kelas' => redirect()->route('kelas.beranda'),
+        default => redirect('/'),
+    };
+})->name('home');
 
 // ====================== ADMIN ======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -79,16 +73,6 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::get('/guru/verifikasi-sukses/{jurnal}', [JurnalController::class, 'verifikasiSukses'])->name('guru.verifikasisukses');
 });
 
-// ====================== GURU PIKET ======================
-Route::middleware(['auth', 'role:guru_piket'])->group(function () {
-    Route::get('/dashboard-guru-piket', [GuruPiketController::class, 'beranda'])->name('dashboard-guru-piket');
-
-    Route::get('/dispen', [DispenController::class, 'index'])->name('dispen.index');
-    Route::post('/dispen', [DispenController::class, 'store'])->name('dispen.store');
-    Route::get('/dispen/cari-siswa', [DispenController::class, 'cariSiswa'])->name('dispen.cari-siswa');
-    Route::get('/dispen/opsi-jam', [DispenController::class, 'opsiJam'])->name('dispen.opsi-jam');
-});
-
 // ====================== KELAS / SISWA ======================
 Route::middleware(['auth', 'role:kelas'])->prefix('kelas')->name('kelas.')->group(function () {
     Route::get('/beranda', [KelasController::class, 'beranda'])->name('beranda');
@@ -102,9 +86,3 @@ Route::middleware(['auth', 'role:kelas'])->prefix('kelas')->name('kelas.')->grou
 
     Route::post('/qr/kelas/scan-guru', [QrSesiController::class, 'scanGuruQr'])->name('qr.scan-guru');
 });
-// ====================== PUBLIK (via token, tanpa login) ======================
-Route::get('/dispen/approval/{token}', [DispenController::class, 'halamanApproval'])->name('dispen.approval');
-Route::post('/dispen/approval/{token}/setuju', [DispenController::class, 'setujui'])->name('dispen.approval.setuju');
-Route::post('/dispen/approval/{token}/tolak', [DispenController::class, 'tolak'])->name('dispen.approval.tolak');
-
-Route::get('/piket-hari-ini', [JadwalPiketController::class, 'publik'])->name('piket.publik');

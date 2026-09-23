@@ -55,6 +55,11 @@ class VerifikasiSesiService
     }
 
     /** Semua jam berurutan (kelas, guru, mapel sama) pada hari jadwal itu. */
+    /**
+     * Semua jam berurutan (kelas, guru, mapel sama) pada hari jadwal itu.
+     *
+     * @return Collection<int, JadwalPelajaran>
+     */
     public function rentang(JadwalPelajaran $jadwal): Collection
     {
         $jadwal->loadMissing('jamPelajaran');

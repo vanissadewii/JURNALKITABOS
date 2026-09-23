@@ -80,7 +80,7 @@ class JurnalController extends Controller
 
         $keterangan = $validated['catatan'] ?? '';
         if (! empty($validated['siswa_absen'])) {
-            $daftarAbsen = collect($validated['siswa_absen'])
+            $daftarAbsen = collect((array) $validated['siswa_absen'])
                 ->map(fn ($s) => "{$s['nama']} ({$s['status']})")
                 ->implode(', ');
             $keterangan = trim($keterangan."\nTidak hadir: ".$daftarAbsen);

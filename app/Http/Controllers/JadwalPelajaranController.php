@@ -84,7 +84,7 @@ class JadwalPelajaranController extends Controller
     public function getJamByKelasHari(Request $request): JsonResponse
     {
         /** @var Kelas $kelas */
-        $kelas = Kelas::findOrFail($request->id_kelas);
+        $kelas = Kelas::findOrFail((int) $request->id_kelas);
 
         $jamPelajaran = JamPelajaran::where('tingkat', $kelas->tingkat)
             ->where('hari', $request->hari)
@@ -105,9 +105,9 @@ class JadwalPelajaranController extends Controller
             'id_mapel' => 'required|exists:mapel,id_mapel',
         ]);
 
-        $kelas = Kelas::findOrFail($validated['id_kelas']);
-        $dari = JamPelajaran::findOrFail($validated['jam_dari']);
-        $sampai = JamPelajaran::findOrFail($validated['jam_sampai']);
+        $kelas = Kelas::findOrFail((int) $validated['id_kelas']);
+        $dari = JamPelajaran::findOrFail((int) $validated['jam_dari']);
+        $sampai = JamPelajaran::findOrFail((int) $validated['jam_sampai']);
 
         if ($dari->hari !== $sampai->hari || (int) $dari->tingkat !== (int) $kelas->tingkat) {
             return back()->withErrors('Jam yang dipilih tidak sesuai dengan kelas atau hari.')->withInput();

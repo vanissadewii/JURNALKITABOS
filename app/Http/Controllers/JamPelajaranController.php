@@ -142,17 +142,18 @@ class JamPelajaranController extends Controller
             'senin_kamis' => ['Senin', 'Selasa', 'Rabu', 'Kamis'],
             'jumat' => ['Jumat'],
             'senin_jumat' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+            default => throw new \InvalidArgumentException("Kelompok hari tidak dikenal: {$kelompok}"),
         };
     }
 
-    public function edit($id): View
+    public function edit(int $id): View
     {
         $jamPelajaran = JamPelajaran::findOrFail($id);
 
         return view('admin.edit_jam_pelajaran', compact('jamPelajaran'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $jamPelajaran = JamPelajaran::findOrFail($id);
 
@@ -169,7 +170,7 @@ class JamPelajaranController extends Controller
         return redirect()->route('jam-pelajaran.index')->with('success', 'Jam pelajaran berhasil diperbarui.');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         JamPelajaran::findOrFail($id)->delete();
 
@@ -188,7 +189,7 @@ class JamPelajaranController extends Controller
         $diperbarui = 0;
 
         foreach ($ids as $id) {
-            if (! isset($rows[$id])) {
+            if (! isset($rows[(int) $id])) {
                 continue;
             }
 
@@ -204,7 +205,7 @@ class JamPelajaranController extends Controller
                 continue;
             }
 
-            $jam = JamPelajaran::find($id);
+            $jam = JamPelajaran::find((int) $id);
 
             if ($jam) {
                 $jam->update($validator->validated());
