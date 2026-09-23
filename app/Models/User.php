@@ -82,10 +82,13 @@ class User extends Authenticatable
         $initials = Str::initials($this->name, true);
 
         return Str::length($initials) > 1
-            ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
+            ? Str::substr($initials, 0, 1) . Str::substr($initials, -1)
             : $initials;
     }
 
+    /**
+     * @return HasMany<JadwalPiket, $this>
+     */
     public function jadwalPiket(): HasMany
     {
         return $this->hasMany(JadwalPiket::class, 'id_guru', 'id');

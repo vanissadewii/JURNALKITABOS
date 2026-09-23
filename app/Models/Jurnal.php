@@ -44,7 +44,12 @@ class Jurnal extends Model
         return $this->hasMany(JurnalSiswaAbsen::class, 'id_jurnal', 'id_jurnal');
     }
 
+    /**
+ * @return HasManyThrough<Dispen, DispenJurnal, $this>
+ */
     public function dispensasi(): HasManyThrough
+    {
+    
     {
         return $this->hasManyThrough(
             Dispen::class,
@@ -54,5 +59,6 @@ class Jurnal extends Model
             'id_jurnal',  // local key di jurnal
             'id_dispen'   // local key di dispen_jurnal
         );
+    }
     }
 }

@@ -187,7 +187,7 @@ class GuruPiketController extends Controller
 
         // ================= DATA GURU =================
 
-        $totalGuru = User::whereIn('role', ['guru', 'guru_piket'])->count();
+        $totalGuru = User::whereIn('role','guru')->count();
         $guruHadir = $jurnalHariIni->where('status_kehadiran_guru', 'hadir')
             ->unique(fn ($j) => $j->jadwal->id_guru)->count();
 

@@ -21,12 +21,12 @@ class JadwalPelajaranController extends Controller
         $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5];
 
         $jadwal = JadwalPelajaran::with(['kelas', 'jamPelajaran', 'guru', 'mapel'])
-            ->whereHas('jamPelajaran.semester', fn ($q) => $q->where('status', 'aktif'))
+            ->whereHas('jamPelajaran.semester', fn($q) => $q->where('status', 'aktif'))
             ->get()
             ->sortBy([
-                fn ($a, $b) => $a->id_kelas <=> $b->id_kelas,
-                fn ($a, $b) => $urutanHari[$a->jamPelajaran->hari] <=> $urutanHari[$b->jamPelajaran->hari],
-                fn ($a, $b) => $a->jamPelajaran->jam_ke <=> $b->jamPelajaran->jam_ke,
+                fn($a, $b) => $a->id_kelas <=> $b->id_kelas,
+                fn($a, $b) => $urutanHari[$a->jamPelajaran->hari] <=> $urutanHari[$b->jamPelajaran->hari],
+                fn($a, $b) => $a->jamPelajaran->jam_ke <=> $b->jamPelajaran->jam_ke,
             ])
             ->values();
 
@@ -84,11 +84,11 @@ class JadwalPelajaranController extends Controller
     public function getJamByKelasHari(Request $request): JsonResponse
     {
         /** @var Kelas $kelas */
-        $kelas = Kelas::findOrFail($request->id_kelas);
+        $kelas = Kelas::findOrFail((int) $request->id_kelas);
 
         $jamPelajaran = JamPelajaran::where('tingkat', $kelas->tingkat)
             ->where('hari', $request->hari)
-            ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
+            ->whereHas('semester', fn($q) => $q->where('status', 'aktif'))
             ->orderBy('jam_ke')
             ->get();
 
@@ -105,9 +105,9 @@ class JadwalPelajaranController extends Controller
             'id_mapel' => 'required|exists:mapel,id_mapel',
         ]);
 
-        $kelas = Kelas::findOrFail($validated['id_kelas']);
-        $dari = JamPelajaran::findOrFail($validated['jam_dari']);
-        $sampai = JamPelajaran::findOrFail($validated['jam_sampai']);
+        $kelas = Kelas::findOrFail((int) $validated['id_kelas']);
+        $dari = JamPelajaran::findOrFail((int) $validated['jam_dari']);
+        $sampai = JamPelajaran::findOrFail((int) $validated['jam_sampai']);
 
         if ($dari->hari !== $sampai->hari || (int) $dari->tingkat !== (int) $kelas->tingkat) {
             return back()->withErrors('Jam yang dipilih tidak sesuai dengan kelas atau hari.')->withInput();
@@ -158,11 +158,11 @@ class JadwalPelajaranController extends Controller
             $pesan = [];
 
             if ($gagalValidasi->isNotEmpty()) {
-                $pesan[] = $gagalValidasi->count().' baris gagal validasi (kolom kosong/format salah).';
+                $pesan[] = $gagalValidasi->count() . ' baris gagal validasi (kolom kosong/format salah).';
             }
 
             if (! empty($tidakCocok)) {
-                $pesan[] = count($tidakCocok).' baris tidak cocok dengan data master: '.implode(' | ', $tidakCocok);
+                $pesan[] = count($tidakCocok) . ' baris tidak cocok dengan data master: ' . implode(' | ', $tidakCocok);
             }
 
             return redirect()->back()->with('warning', implode(' ', $pesan));

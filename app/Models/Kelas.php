@@ -4,6 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id_kelas
+ * @property string $tingkat
+ * @property string $jurusan
+ * @property string $rombel
+ * @property-read string $nama_kelas
+ */
 class Kelas extends Model
 {
     protected $table = 'kelas';

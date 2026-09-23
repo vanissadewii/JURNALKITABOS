@@ -24,22 +24,19 @@ Route::get('/', function () {
 });
 
 // Redirect setelah login, sesuai role
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', function () {
-        return match (Auth::user()->role) {
-            'admin' => view('admin.tambah_admin'),
-            'guru' => app(GuruDashboardController::class)->index(),
-            'guru_piket' => app(GuruPiketController::class)->beranda(),
-            'kelas' => redirect()->route('kelas.beranda'),
-            default => redirect('/'),
-        };
-    })->name('home');
-});
+Route::get('/home', function () {
+    return match (Auth::user()->role) {
+        'admin' => view('admin.tambah_admin'),
+        'guru' => app(GuruDashboardController::class)->index(),
+        'kelas' => redirect()->route('kelas.beranda'),
+        default => redirect('/'),
+    };
+})->name('home');
 
 // ====================== ADMIN ======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/dashboard-admin', fn () => view('admin.dashboard_admin'));
-    Route::get('/admin/tambah', fn () => view('admin.tambah_admin'))->name('admin.tambah');
+    Route::get('/dashboard-admin', fn() => view('admin.dashboard_admin'));
+    Route::get('/admin/tambah', fn() => view('admin.tambah_admin'))->name('admin.tambah');
 
     Route::resource('admin/kelas', MasterKelasController::class)->names('admin.kelas');
     Route::resource('admin/siswa', SiswaController::class)->names('admin.siswa');
@@ -73,16 +70,16 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::get('/detail-jurnal/{jurnal}', [RiwayatJurnalController::class, 'show'])->name('jurnal.detail');
     Route::get('/riwayat-jurnal', [RiwayatJurnalController::class, 'index'])->name('riwayat-jurnal');
 
-    Route::get('/guru-scan', fn () => view('guru.guru_scan_qr'))->name('guru.scan');
+    Route::get('/guru-scan', fn() => view('guru.guru_scan_qr'))->name('guru.scan');
     Route::post('/guru/scan-kelas', [QrSesiController::class, 'guruScanKelas'])->name('guru.scan-kelas');
     Route::get('/guru/scan/status', [QrSesiController::class, 'guruStatus'])->name('guru.scan-status');
     Route::get('/guru/verifikasi-sukses/{jurnal}', [JurnalController::class, 'verifikasiSukses'])->name('guru.verifikasisukses');
 });
 
 // ====================== GURU PIKET ======================
-Route::middleware(['auth', 'role:guru_piket'])->group(function () {
-    Route::get('/dashboard-guru-piket', [GuruPiketController::class, 'beranda'])->name('dashboard-guru-piket');
-
+Route::middleware(['auth', 'sedang.piket'])->group(function () {
+    Route::get('/guru-piket', [GuruPiketController::class, 'index'])->name('guru-piket.index');
+    // route guru piket lainnya
     Route::get('/dispen', [DispenController::class, 'index'])->name('dispen.index');
     Route::post('/dispen', [DispenController::class, 'store'])->name('dispen.store');
     Route::get('/dispen/cari-siswa', [DispenController::class, 'cariSiswa'])->name('dispen.cari-siswa');
