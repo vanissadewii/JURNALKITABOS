@@ -16,7 +16,7 @@ class SesiKelasService
      * Sesi mengajar satu kelas pada hari dari $sekarang.
      * Jam berurutan dengan guru & mapel sama digabung jadi satu sesi.
      *
-     * @return Collection<int, object>
+     * @return Collection<int, SesiKelas>
      */
     public function sesiHariIni(Kelas $kelas, CarbonInterface $sekarang): Collection
     {
@@ -55,18 +55,18 @@ class SesiKelasService
                 continue;
             }
 
-            $sesi->push((object) [
-                'ids' => [$j->id_jadwal], // semua id_jadwal dalam sesi ini
-                'id_guru' => $j->id_guru,
-                'id_mapel' => $j->id_mapel,
-                'mapel' => $j->mapel->nama_mapel ?? '-',
-                'guru' => $j->guru->name ?? '-',
-                'jam_ke_mulai' => (int) $jam->jam_ke,
-                'jam_ke_sampai' => (int) $jam->jam_ke,
-                'jam_mulai' => substr($jam->jam_mulai, 0, 5),
-                'jam_selesai' => substr($jam->jam_selesai, 0, 5),
-                'status' => '',
-            ]);
+            $sesi->push(new SesiKelas(
+                ids: [$j->id_jadwal],
+                id_guru: $j->id_guru,
+                id_mapel: $j->id_mapel,
+                mapel: $j->mapel->nama_mapel ?? '-',
+                guru: $j->guru->name ?? '-',
+                jam_ke_mulai: (int) $jam->jam_ke,
+                jam_ke_sampai: (int) $jam->jam_ke,
+                jam_mulai: substr($jam->jam_mulai, 0, 5),
+                jam_selesai: substr($jam->jam_selesai, 0, 5),
+                status: '',
+            ));
         }
 
         $jamSekarang = $sekarang->format('H:i');

@@ -25,13 +25,13 @@ class VerifikasiSesiService
         $jam = $sekarang->format('H:i:s');
 
         return JadwalPelajaran::with(['kelas', 'mapel', 'guru', 'jamPelajaran'])
-            ->when($idKelas !== null, fn ($q) => $q->where('id_kelas', $idKelas))
-            ->when($idGuru !== null, fn ($q) => $q->where('id_guru', $idGuru))
-            ->whereHas('jamPelajaran', fn ($q) => $q
+            ->when($idKelas !== null, fn($q) => $q->where('id_kelas', $idKelas))
+            ->when($idGuru !== null, fn($q) => $q->where('id_guru', $idGuru))
+            ->whereHas('jamPelajaran', fn($q) => $q
                 ->where('hari', $hari)
                 ->where('jam_mulai', '<=', $jam)
                 ->where('jam_selesai', '>=', $jam)
-                ->whereHas('semester', fn ($s) => $s->where('status', 'aktif')))
+                ->whereHas('semester', fn($s) => $s->where('status', 'aktif')))
             ->first();
     }
 
@@ -39,7 +39,7 @@ class VerifikasiSesiService
     public function jurnalSesi(JadwalPelajaran $jadwal): ?Jurnal
     {
         return Jurnal::whereDate('tanggal', Waktu::sekarang()->toDateString())
-            ->whereHas('jadwal', fn ($q) => $q
+            ->whereHas('jadwal', fn($q) => $q
                 ->where('id_kelas', $jadwal->id_kelas)
                 ->where('id_guru', $jadwal->id_guru)
                 ->where('id_mapel', $jadwal->id_mapel))
@@ -55,6 +55,11 @@ class VerifikasiSesiService
     }
 
     /** Semua jam berurutan (kelas, guru, mapel sama) pada hari jadwal itu. */
+    /**
+     * Semua jam berurutan (kelas, guru, mapel sama) pada hari jadwal itu.
+     *
+     * @return Collection<int, JadwalPelajaran>
+     */
     public function rentang(JadwalPelajaran $jadwal): Collection
     {
         $jadwal->loadMissing('jamPelajaran');
@@ -64,11 +69,11 @@ class VerifikasiSesiService
             ->where('id_kelas', $jadwal->id_kelas)
             ->where('id_guru', $jadwal->id_guru)
             ->where('id_mapel', $jadwal->id_mapel)
-            ->whereHas('jamPelajaran', fn ($q) => $q
+            ->whereHas('jamPelajaran', fn($q) => $q
                 ->where('id_semester', $jam->id_semester)
                 ->where('hari', $jam->hari))
             ->get()
-            ->sortBy(fn ($j) => $j->jamPelajaran->jam_ke)
+            ->sortBy(fn($j) => $j->jamPelajaran->jam_ke)
             ->values();
     }
 

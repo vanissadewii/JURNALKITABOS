@@ -31,7 +31,7 @@ class KelasController extends Controller
         $sekarang = $this->sekarang();
         $sesi = $service->sesiHariIni($kelas, $sekarang);
 
-        $jurnalHariIni = Jurnal::with(['absenSiswa', 'dispensasi.siswa'])
+        $jurnalHariIni = Jurnal::with(['absenSiswa'])
             ->whereIn('id_jadwal', $sesi->pluck('ids')->flatten()->all())
             ->whereDate('tanggal', $sekarang->toDateString())
             ->get();
