@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,6 +38,7 @@
     }
   </script>
 </head>
+
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
@@ -54,15 +56,15 @@
 
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
           <span>Beranda</span>
         </a>
 
         <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-            <path d="M7 3v14"/>
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+            <path d="M7 3v14" />
           </svg>
           <span>isi Jurnal</span>
         </a>
@@ -70,7 +72,7 @@
         <!-- Menu Riwayat Jurnal -->
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
@@ -78,8 +80,8 @@
         <!-- Active Link (Profil Guru) -->
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-            <circle cx="10" cy="6.5" r="3.5"/>
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+            <circle cx="10" cy="6.5" r="3.5" />
           </svg>
           <span>Profil</span>
         </a>
@@ -97,7 +99,7 @@
       <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
         <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
+            <path d="M15 18l-6-6 6-6" />
           </svg>
         </a>
         <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Profil Saya</h1>
@@ -108,14 +110,20 @@
     <!-- Main Content Container -->
     <main class="w-full max-w-xl mx-auto px-4 sm:px-6 py-8 flex-1 flex flex-col items-center gap-6">
 
+      @if (session('success'))
+      <p class="w-full text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl p-3">{{ session('success') }}</p>
+      @endif
+
       <!-- Avatar & Nama -->
       <div class="flex flex-col items-center text-center gap-3">
         <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-brand-300 text-brand-900 border-4 border-white shadow-md flex items-center justify-center font-poppins font-bold text-3xl sm:text-4xl">
-          BS
+          {{ $guru->initials() }}
         </div>
         <div class="flex flex-col items-center gap-0.5">
-          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028]">Budi Santoso, S.Pd.</h2>
-          <span class="text-xs sm:text-sm text-brand-600 font-medium">Guru Pengajar Matematika</span>
+          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028]">{{ $guru->name }}</h2>
+          <span class="text-xs sm:text-sm text-brand-600 font-medium">
+            Guru{{ $mapel->isNotEmpty() ? ' Pengajar '.$mapel->implode(', ') : '' }}
+          </span>
         </div>
       </div>
 
@@ -124,39 +132,31 @@
 
         <div class="flex justify-between items-center py-3">
           <span class="text-brand-600 font-medium">No. Handphone</span>
-          <span class="font-bold text-[#3E3028]">081234560001</span>
-        </div>
-
-        <div class="flex justify-between items-center py-3">
-          <span class="text-brand-600 font-medium">Unit Kerja</span>
-          <span class="font-bold text-[#3E3028] text-right">SMK Negeri 1 Jakarta</span>
+          <span class="font-bold text-[#3E3028]">{{ $guru->no_telepon ?: '-' }}</span>
         </div>
 
         <div class="flex justify-between items-center py-3">
           <span class="text-brand-600 font-medium">Mata Pelajaran</span>
-          <span class="font-bold text-[#3E3028]">Matematika</span>
+          <span class="font-bold text-[#3E3028] text-right">{{ $mapel->isNotEmpty() ? $mapel->implode(', ') : '-' }}</span>
         </div>
 
       </div>
 
       <!-- Action Button Group -->
       <div class="w-full flex flex-col gap-3">
-        <!-- Edit Profil Button -->
         <a href="{{ url('/editprofil_guru') }}" class="w-full h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
           Edit Profil
         </a>
 
-        <!-- Logout Button (Memicu Modal Pop-up) -->
         <button type="button" onclick="openLogoutModal()" class="w-full h-12 bg-red-50 hover:bg-red-100 text-red-600 font-poppins font-semibold text-sm rounded-xl flex items-center justify-center border border-red-200 shadow-xs active:scale-[0.99] transition-all gap-2">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
           </svg>
           <span>Keluar (Log Out)</span>
         </button>
 
-        <!-- Form Logout Tersembunyi (Akan di-submit via JavaScript) -->
         <form id="logoutForm" method="POST" action="{{ route('logout') }}" class="hidden">
           @csrf
         </form>
@@ -172,15 +172,15 @@
 
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
         </svg>
         <span>Beranda</span>
       </a>
 
       <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-          <path d="M7 3v14"/>
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+          <path d="M7 3v14" />
         </svg>
         <span>isi Jurnal</span>
       </a>
@@ -188,7 +188,7 @@
       <!-- Mobile Link Riwayat Jurnal -->
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
         </svg>
         <span>Riwayat</span>
       </a>
@@ -196,8 +196,8 @@
       <!-- Active Mobile Link (Profil Guru) -->
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-          <circle cx="10" cy="6.5" r="3.5"/>
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+          <circle cx="10" cy="6.5" r="3.5" />
         </svg>
         <span>Profil</span>
       </a>
@@ -209,13 +209,13 @@
   <div id="logoutModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200">
     <!-- Card Modal -->
     <div class="bg-white w-full max-w-sm rounded-2xl p-6 shadow-xl transform scale-95 transition-transform duration-200 flex flex-col items-center text-center gap-4">
-      
+
       <!-- Icon Peringatan -->
       <div class="w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
         <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-          <line x1="12" y1="9" x2="12" y2="13"/>
-          <line x1="12" y1="17" x2="12.01" y2="17"/>
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
         </svg>
       </div>
 
@@ -268,4 +268,5 @@
   </script>
 
 </body>
+
 </html

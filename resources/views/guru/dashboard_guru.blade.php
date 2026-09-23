@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,12 +38,32 @@
     }
   </script>
 </head>
+
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
+
+  @if (session('notif_sukses'))
+  <div id="toast-notif"
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-[999] bg-[#E8F5E9] border border-[#258A3E] text-[#258A3E]
+            text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-[90%]
+            transition-opacity duration-500">
+    <span class="w-5 h-5 rounded-full bg-[#258A3E] text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+    {{ session('notif_sukses') }}
+  </div>
+  <script>
+    setTimeout(() => {
+      const toast = document.getElementById('toast-notif');
+      if (toast) {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+      }
+    }, 4000);
+  </script>
+  @endif
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
   <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
     <div class="p-6 flex flex-col gap-8">
-      
+
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
@@ -51,11 +72,11 @@
 
       <!-- Navigation Links -->
       <nav class="flex flex-col gap-1.5">
-        
+
         <!-- Active Link (Dashboard) -->
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
           <span>Beranda</span>
         </a>
@@ -63,8 +84,8 @@
         <!-- Menu Input Jurnal -->
         <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-            <path d="M7 3v14"/>
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+            <path d="M7 3v14" />
           </svg>
           <span>Isi Jurnal</span>
         </a>
@@ -72,7 +93,7 @@
         <!-- MENU LIST/RIWAYAT JURNAL -->
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
@@ -80,8 +101,8 @@
         <!-- Menu Profil Guru -->
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-            <circle cx="10" cy="6.5" r="3.5"/>
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+            <circle cx="10" cy="6.5" r="3.5" />
           </svg>
           <span>Profil</span>
         </a>
@@ -93,28 +114,28 @@
 
   <!-- MAIN CONTENT AREA (Full Width Desktop) -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
-    
+
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md px-6 md:px-10 py-6 sm:py-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      
+
       <div class="flex items-center justify-between w-full md:w-auto gap-4">
         <div class="flex flex-col gap-1">
           <span class="text-xs sm:text-sm font-medium tracking-wide text-brand-200">Selamat Datang,</span>
-          <h1 class="font-poppins text-2xl sm:text-3xl font-bold text-white tracking-tight">Budi Santoso</h1>
-          <span class="text-xs sm:text-sm text-brand-300">Guru Matematika • </span>
+          <h1 class="font-poppins text-2xl sm:text-3xl font-bold text-white tracking-tight">{{auth()->user()->name}}</h1>
+          <span class="text-xs sm:text-sm text-brand-300">Guru {{auth()->user()->mapel}} </span>
         </div>
 
         <!-- Logo Mobile -->
         <div class="md:hidden w-12 h-12 flex items-center justify-center bg-gradient-to-br from-white to-[#F5EFE8] border-2 border-brand-200 rounded-xl shadow-md shrink-0">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="3" width="15" height="18" rx="2.5" fill="#5C4033"/>
-            <circle cx="5.5" cy="6" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="12" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="18" r="0.8" fill="#D7B899"/>
-            <line x1="9" y1="7" x2="15" y2="7" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="10.5" x2="15" y2="10.5" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="14" x2="13" y2="14" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M14 19L20.5 12.5C21 12 21 11 20.5 10.5L19.5 9.5C19 9 18 9 17.5 9.5L11 16V19H14Z" fill="#D73800" stroke="#FFFFFF" stroke-width="1"/>
+            <rect x="3" y="3" width="15" height="18" rx="2.5" fill="#5C4033" />
+            <circle cx="5.5" cy="6" r="0.8" fill="#D7B899" />
+            <circle cx="5.5" cy="12" r="0.8" fill="#D7B899" />
+            <circle cx="5.5" cy="18" r="0.8" fill="#D7B899" />
+            <line x1="9" y1="7" x2="15" y2="7" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="9" y1="10.5" x2="15" y2="10.5" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="9" y1="14" x2="13" y2="14" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M14 19L20.5 12.5C21 12 21 11 20.5 10.5L19.5 9.5C19 9 18 9 17.5 9.5L11 16V19H14Z" fill="#D73800" stroke="#FFFFFF" stroke-width="1" />
           </svg>
         </div>
       </div>
@@ -123,8 +144,8 @@
         <!-- Tanggal Otomatis -->
         <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-[#FFF8F0] border border-white/10">
           <svg class="w-4 h-4 text-brand-200" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="2" y="3" width="10" height="9" rx="1"/>
-            <path d="M4 1v2M10 1v2M2 6h10"/>
+            <rect x="2" y="3" width="10" height="9" rx="1" />
+            <path d="M4 1v2M10 1v2M2 6h10" />
           </svg>
           <span id="current-date">--</span>
         </div>
@@ -132,14 +153,14 @@
         <!-- Logo Desktop -->
         <div class="hidden md:flex w-12 h-12 items-center justify-center bg-gradient-to-br from-white to-[#F5EFE8] border-2 border-brand-200 rounded-2xl shadow-md shrink-0">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="3" width="15" height="18" rx="2.5" fill="#5C4033"/>
-            <circle cx="5.5" cy="6" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="12" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="18" r="0.8" fill="#D7B899"/>
-            <line x1="9" y1="7" x2="15" y2="7" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="10.5" x2="15" y2="10.5" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="14" x2="13" y2="14" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M14 19L20.5 12.5C21 12 21 11 20.5 10.5L19.5 9.5C19 9 18 9 17.5 9.5L11 16V19H14Z" fill="#D73800" stroke="#FFFFFF" stroke-width="1"/>
+            <rect x="3" y="3" width="15" height="18" rx="2.5" fill="#5C4033" />
+            <circle cx="5.5" cy="6" r="0.8" fill="#D7B899" />
+            <circle cx="5.5" cy="12" r="0.8" fill="#D7B899" />
+            <circle cx="5.5" cy="18" r="0.8" fill="#D7B899" />
+            <line x1="9" y1="7" x2="15" y2="7" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="9" y1="10.5" x2="15" y2="10.5" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round" />
+            <line x1="9" y1="14" x2="13" y2="14" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M14 19L20.5 12.5C21 12 21 11 20.5 10.5L19.5 9.5C19 9 18 9 17.5 9.5L11 16V19H14Z" fill="#D73800" stroke="#FFFFFF" stroke-width="1" />
           </svg>
         </div>
       </div>
@@ -148,144 +169,123 @@
 
     <!-- Main Content Container (Penuh Lebar Layar) -->
     <main class="w-full px-6 md:px-10 py-8 flex flex-col gap-8 flex-1">
-      
+
+      @php
+      // sesi yang tampil di banner: yang sedang berlangsung, kalau tidak ada ambil yang akan datang
+      $utama = $sesiSaatIni ?? $sesi->firstWhere('status', 'Akan Datang');
+      $labelJam = fn ($s) => 'Jam ke-'.$s->jam_ke_mulai.($s->jam_ke_sampai > $s->jam_ke_mulai ? '-'.$s->jam_ke_sampai : '');
+      @endphp
+      @if (session('error'))
+      <div class="w-full bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-xl p-4">
+        {{ session('error') }}
+      </div>
+      @endif
+      @if (session('success'))
+      <div class="w-full bg-green-50 border border-green-200 text-green-700 text-sm font-medium rounded-xl p-4">
+        {{ session('success') }}
+      </div>
+      @endif
       <!-- SEKSI 1: Jadwal Mengajar Saat Ini -->
       <div class="flex flex-col gap-4 w-full">
         <div class="flex items-center justify-between">
           <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">Jadwal Mengajar Saat Ini</h2>
         </div>
 
-        <!-- Card Banner Utama (Full Width & Grid Responsif) -->
-        <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 md:p-8 flex flex-col justify-between gap-6 shadow-sm relative overflow-hidden before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:bg-amber-500">
-          
+        @if ($utama)
+        <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 md:p-8 flex flex-col justify-between gap-6 shadow-sm relative overflow-hidden before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 {{ $utama->status === 'Berlangsung' ? 'before:bg-green-500' : 'before:bg-amber-500' }}">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            <!-- Info Kelas & Mata Pelajaran -->
+
             <div class="lg:col-span-7 flex flex-col gap-3">
               <div class="flex items-center gap-3">
-                <span class="px-3.5 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-semibold text-amber-800">
-                  Belum Dimulai
-                </span>
-                <span class="text-xs font-semibold text-brand-600 border-l border-brand-200 pl-3">
-                  Sesi Aktif
-                </span>
+                @if ($utama->status === 'Berlangsung')
+                <span class="px-3.5 py-1 bg-green-50 border border-green-200 rounded-full text-xs font-semibold text-green-800">Sedang Berlangsung</span>
+                @else
+                <span class="px-3.5 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-semibold text-amber-800">Akan Datang</span>
+                @endif
               </div>
-              <h3 class="font-poppins font-bold text-2xl md:text-3xl text-[#3E3028]">Matematika</h3>
-              <p class="font-semibold text-base text-[#8C7B70]">Kelas X RPL 1</p>
+              <h3 class="font-poppins font-bold text-2xl md:text-3xl text-[#3E3028]">{{ $utama->mapel }}</h3>
+              <p class="font-semibold text-base text-[#8C7B70]">Kelas {{ $utama->kelas }}</p>
             </div>
 
-            <!-- Jam & Action Button -->
             <div class="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch sm:items-center lg:items-stretch xl:items-center justify-end gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-brand-100">
-              
               <div class="flex items-center gap-3 text-sm font-medium text-brand-700 bg-brand-50 px-4 py-3 rounded-xl border border-brand-100/60 justify-center">
                 <svg class="w-5 h-5 text-brand-800 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
-                  <circle cx="8" cy="8" r="6"/>
-                  <path d="M8 4.5v4.25l2.5 1.5"/>
+                  <circle cx="8" cy="8" r="6" />
+                  <path d="M8 4.5v4.25l2.5 1.5" />
                 </svg>
-                <span class="whitespace-nowrap">Jam ke-1 (07:00 – 07:45)</span>
+                <span class="whitespace-nowrap">{{ $labelJam($utama) }} ({{ $utama->jam_mulai }} – {{ $utama->jam_selesai }})</span>
               </div>
 
-              <a href="{{ url('/form-jurnal') }}" class="px-6 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all whitespace-nowrap">
+              <a href="{{ route('jurnal.create', ['jadwal' => $utama->id_jadwal]) }}" class="px-6 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all whitespace-nowrap">
                 Mulai Sesi Mengajar
               </a>
-
             </div>
 
           </div>
-
         </div>
+        @else
+        <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 md:p-8 text-sm font-medium text-brand-600">
+          Tidak ada sesi mengajar saat ini.
+        </div>
+        @endif
       </div>
 
-      <!-- SEKSI 2: Jadwal Hari Ini (Grid Layout di Desktop) -->
+      <!-- SEKSI 2: Jadwal Hari Ini -->
       <div class="flex flex-col gap-4 w-full">
         <div class="flex items-center justify-between">
           <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">
             Jadwal Mengajar Hari Ini
           </h2>
           <span class="text-xs font-semibold text-brand-700 bg-white border border-brand-100 px-3 py-1 rounded-full shadow-xs">
-            3 Sesi
+            {{ $sesi->count() }} Sesi
           </span>
         </div>
 
-        <!-- Grid 1 Kolom (Mobile) / 2-3 Kolom (Desktop) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-          
-          <!-- Item Jadwal 1 -->
-          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex items-start gap-3.5">
-                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
-                  01
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
-                  <p class="text-xs font-semibold text-[#8C7B70]">X RPL 1</p>
-                </div>
-              </div>
-              <span class="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full font-semibold text-xs whitespace-nowrap">
-                Akan Datang
-              </span>
-            </div>
-
-            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
-              <span class="text-brand-600 font-medium">Jam ke-1 • 07:00 – 07:45</span>
-              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                Isi Jurnal
-              </a>
-            </div>
-          </div>
-
-          <!-- Item Jadwal 2 -->
-          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex items-start gap-3.5">
-                <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
-                  02
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
-                  <p class="text-xs font-semibold text-[#8C7B70]">X RPL 2</p>
-                </div>
-              </div>
-              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs whitespace-nowrap">
-                Belum Dimulai
-              </span>
-            </div>
-
-            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
-              <span class="text-brand-600 font-medium">Jam ke-2 • 08:00 – 08:45</span>
-              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                Isi Jurnal
-              </a>
-            </div>
-          </div>
-
-          <!-- Item Jadwal 3 -->
-          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex items-start gap-3.5">
-                <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
-                  03
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
-                  <p class="text-xs font-semibold text-[#8C7B70]">XI RPL 1</p>
-                </div>
-              </div>
-              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs whitespace-nowrap">
-                Belum Dimulai
-              </span>
-            </div>
-
-            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
-              <span class="text-brand-600 font-medium">Jam ke-3 • 09:00 – 09:45</span>
-              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                Isi Jurnal
-              </a>
-            </div>
-          </div>
-
+        @if ($sesi->isEmpty())
+        <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 text-sm font-medium text-brand-600">
+          Tidak ada jadwal mengajar hari ini.
         </div>
+        @else
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+          @foreach ($sesi as $s)
+          @php
+          $badge = match ($s->status) {
+          'Berlangsung' => 'bg-green-50 border border-green-200 text-green-800',
+          'Akan Datang' => 'bg-amber-50 border border-amber-200 text-amber-800',
+          'Selesai' => 'bg-brand-100 text-brand-700',
+          default => 'bg-gray-100 text-gray-600',
+          };
+          $nomor = $s->status === 'Akan Datang' || $s->status === 'Berlangsung'
+          ? 'bg-amber-100 text-amber-800'
+          : 'bg-brand-100 text-brand-800';
+          @endphp
+
+          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-start gap-3.5">
+                <div class="w-10 h-10 rounded-xl {{ $nomor }} font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
+                  {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">{{ $s->mapel }}</h4>
+                  <p class="text-xs font-semibold text-[#8C7B70]">{{ $s->kelas }}</p>
+                </div>
+              </div>
+              <span class="px-3 py-1 {{ $badge }} rounded-full font-semibold text-xs whitespace-nowrap">
+                {{ $s->status }}
+              </span>
+            </div>
+
+            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
+              <span class="text-brand-600 font-medium">{{ $labelJam($s) }} • {{ $s->jam_mulai }} – {{ $s->jam_selesai }}</span>
+              <a href="{{ route('jurnal.create', ['jadwal' => $s->id_jadwal]) }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
+                Isi Jurnal
+              </a>
+            </div>
+          </div>
+          @endforeach
+        </div>
+        @endif
       </div>
 
     </main>
@@ -295,11 +295,11 @@
   <!-- Bottom Navigation Bar (Mobile HP) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
     <div class="flex justify-between items-center">
-      
+
       <!-- Active Mobile Link -->
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
         </svg>
         <span>Beranda</span>
       </a>
@@ -307,8 +307,8 @@
       <!-- Inactive Mobile Link (Form Jurnal) -->
       <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-          <path d="M7 3v14"/>
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+          <path d="M7 3v14" />
         </svg>
         <span>Isi Jurnal</span>
       </a>
@@ -316,7 +316,7 @@
       <!-- LIST RIWAYAT JURNAL MOBILE -->
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
         </svg>
         <span>Riwayat</span>
       </a>
@@ -324,8 +324,8 @@
       <!-- Inactive Mobile Link (Profil Guru) -->
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-          <circle cx="10" cy="6.5" r="3.5"/>
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+          <circle cx="10" cy="6.5" r="3.5" />
         </svg>
         <span>Profil</span>
       </a>
@@ -334,10 +334,16 @@
   </nav>
 
   <script>
-    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    const options = {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    };
     const today = new Date().toLocaleDateString('id-ID', options);
     document.getElementById('current-date').textContent = today;
   </script>
 
 </body>
+
 </html>

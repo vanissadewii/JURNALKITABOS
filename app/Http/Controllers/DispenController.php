@@ -106,11 +106,35 @@ class DispenController extends Controller
             'token_approval' => Str::random(40),
         ]);
 
-        // TODO: kirim link approval ke waka di sini
-
         return redirect()
             ->route('dispen.index')
-            ->with('success', "Surat dispen {$dispen->nomor_surat} berhasil dibuat dan menunggu persetujuan Waka.");
+            ->with('success', "Surat dispen {$dispen->nomor_surat} berhasil dibuat.")
+            ->with('link_wa', $this->linkWaWaka($dispen));
+    }
+
+    private function linkWaWaka(Dispen $dispen): ?string
+    {
+        $nomor = (string) preg_replace('/\D/', '', (string) config('waka.wa_number'));
+
+        if ($nomor === '') {
+            return null;
+        }
+
+        if (str_starts_with($nomor, '0')) {
+            $nomor = '6285606582551' . substr($nomor, 1);
+        }
+
+        $dispen->loadMissing('siswa');
+
+        $linkApproval = rtrim((string) config('app.url'), '/')
+            . route('dispen.approval', $dispen->token_approval, false);
+        $namaWaka = config('waka.nama');
+
+        $pesan = "Yth. {$namaWaka},\n\n"
+            . "Ada surat dispen {$dispen->nomor_surat} untuk {$dispen->siswa->nama} yang menunggu persetujuan Anda.\n\n"
+            . "Buka: {$linkApproval}";
+
+        return 'https://wa.me/' . $nomor . '?text=' . urlencode($pesan);
     }
 
     public function halamanApproval(string $token): View
@@ -119,18 +143,34 @@ class DispenController extends Controller
             ->where('token_approval', $token)
             ->firstOrFail();
 
-        return view('guru-piket.dispen-approval', compact('dispen'));
+        $user = auth()->user();
+
+        $alasanTidakBisa = match (true) {
+            ! $user => 'login',
+            $user->id === $dispen->id_guru_piket => 'pengaju_sendiri',
+            ! $user->sedangPiket() => 'bukan_piket',
+            default => null,
+        };
+
+        return view('guru-piket.dispen-approval', [
+            'dispen' => $dispen,
+            'bisaApprove' => $alasanTidakBisa === null,
+            'alasanTidakBisa' => $alasanTidakBisa,
+        ]);
     }
 
     public function setujui(string $token): RedirectResponse
     {
-        $dispen = Dispen::where('token_approval', $token)
-            ->where('status', 'menunggu')
-            ->firstOrFail();
+        $dispen = Dispen::where('token_approval', $token)->where('status', 'menunggu')->firstOrFail();
+
+        if ($respon = $this->tolakJikaTakBerhak($dispen)) {
+            return $respon;
+        }
 
         $dispen->update([
             'status' => 'disetujui',
             'disetujui_at' => now(),
+            'id_waka' => auth()->id(), // sekarang: id guru piket yang approve
         ]);
 
         $this->salurkanKeJurnal($dispen);
@@ -140,13 +180,34 @@ class DispenController extends Controller
 
     public function tolak(string $token): RedirectResponse
     {
-        $dispen = Dispen::where('token_approval', $token)
-            ->where('status', 'menunggu')
-            ->firstOrFail();
+        $dispen = Dispen::where('token_approval', $token)->where('status', 'menunggu')->firstOrFail();
+
+        if ($respon = $this->tolakJikaTakBerhak($dispen)) {
+            return $respon;
+        }
 
         $dispen->update(['status' => 'ditolak']);
 
         return back()->with('success', 'Dispen ditolak.');
+    }
+
+    private function tolakJikaTakBerhak(Dispen $dispen): ?RedirectResponse
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return back()->with('error', 'Anda harus login sebagai guru piket terlebih dahulu.');
+        }
+
+        if ($user->id === $dispen->id_guru_piket) {
+            return back()->with('error', 'Tidak bisa memproses pengajuan yang Anda buat sendiri. Minta guru piket lain.');
+        }
+
+        if (! $user->sedangPiket()) {
+            return back()->with('error', 'Hanya guru yang sedang bertugas piket saat ini yang bisa memproses surat ini.');
+        }
+
+        return null;
     }
 
     private function salurkanKeJurnal(Dispen $dispen): void
@@ -159,16 +220,27 @@ class DispenController extends Controller
             return;
         }
 
-        $semuaJam = JamPelajaran::where('tingkat', $dispen->kelas->tingkat)
+        $jamHariItu = JamPelajaran::where('tingkat', $dispen->kelas->tingkat)
             ->where('hari', $hari)
+            ->whereHas('semester', fn($q) => $q->where('status', 'aktif'))
             ->orderBy('jam_ke')
-            ->pluck('jam_ke');
+            ->get(['id_jam', 'jam_ke']);
+
+        $semuaJam = $jamHariItu->pluck('jam_ke');
 
         $jamMulai = $dispen->jam_ke_mulai;
         $jamSelesai = $dispen->jam_ke_selesai ?? $semuaJam->max();
 
+        $idJamTerdampak = $jamHariItu
+            ->whereBetween('jam_ke', [$jamMulai, $jamSelesai])
+            ->pluck('id_jam');
+
+        if ($idJamTerdampak->isEmpty()) {
+            return;
+        }
+
         $jamTerdampak = $semuaJam->filter(
-            fn ($jamKe) => $jamKe >= $jamMulai && $jamKe <= $jamSelesai
+            fn($jamKe) => $jamKe >= $jamMulai && $jamKe <= $jamSelesai
         );
 
         if ($jamTerdampak->isEmpty()) {
@@ -193,7 +265,7 @@ class DispenController extends Controller
             ]);
 
             if ($jurnal->exists && ! empty($jurnal->keterangan)) {
-                $jurnal->keterangan = $jurnal->keterangan." | {$keterangan}";
+                $jurnal->keterangan = $jurnal->keterangan . " | {$keterangan}";
             } else {
                 $jurnal->keterangan = $keterangan;
             }
@@ -210,8 +282,18 @@ class DispenController extends Controller
     private function generateNomorSurat(): string
     {
         $bulanRomawi = [
-            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
-            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII',
+            1 => 'I',
+            2 => 'II',
+            3 => 'III',
+            4 => 'IV',
+            5 => 'V',
+            6 => 'VI',
+            7 => 'VII',
+            8 => 'VIII',
+            9 => 'IX',
+            10 => 'X',
+            11 => 'XI',
+            12 => 'XII',
         ];
 
         $now = now();

@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Kelola User</title>
 </head>
+
 <body>
 
     <h2>Form Tambah User</h2>
+    <a href="{{ route('home') }}">← Kembali</a>
+    <br><br>
 
     <!-- Pesan Error Validasi -->
     @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
+    <div style="color: red;">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
     @endif
 
     <!-- Pesan Sukses -->
     @if (session('success'))
-        <p style="color: green;">{{ session('success') }}</p>
+    <p style="color: green;">{{ session('success') }}</p>
     @endif
 
     <!-- FORM TAMBAH USER -->
@@ -77,9 +81,9 @@
             <select name="id_kelas">
                 <option value="">-- Tidak ada --</option>
                 @foreach ($kelas as $k)
-                    <option value="{{ $k->id_kelas }}">
-                        {{ $k->tingkat }} {{ $k->jurusan }} {{ $k->rombel }}
-                    </option>
+                <option value="{{ $k->id_kelas }}">
+                    {{ $k->tingkat }} {{ $k->jurusan }} {{ $k->rombel }}
+                </option>
                 @endforeach
             </select>
         </div>
@@ -88,7 +92,8 @@
         <button type="submit">Simpan User</button>
     </form>
 
-    <br><hr><br>
+    <br>
+    <hr><br>
 
     <!-- TABEL DAFTAR USER -->
     <h2>Daftar User</h2>
@@ -98,6 +103,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>Username</th>
+                <th>No. Telepon</th>
                 <th>Role</th>
                 <th>Status</th>
                 <th>Kelas</th>
@@ -105,27 +111,29 @@
         </thead>
         <tbody>
             @forelse ($users as $i => $u)
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td>{{ $u->name }}</td>
-                    <td>{{ $u->username }}</td>
-                    <td>{{ $u->role }}</td>
-                    <td>{{ $u->status }}</td>
-                    <td>
-                        @if($u->kelas)
-                            {{ $u->kelas->tingkat }} {{ $u->kelas->jurusan }} {{ $u->kelas->rombel }}
-                        @else
-                            -
-                        @endif
-                    </td>
-                </tr>
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $u->name }}</td>
+                <td>{{ $u->username }}</td>
+                <td>{{ $u->no_telepon ?: '-' }}</td>
+                <td>{{ $u->role }}</td>
+                <td>{{ $u->status }}</td>
+                <td>
+                    @if($u->kelas)
+                    {{ $u->kelas->tingkat }} {{ $u->kelas->jurusan }} {{ $u->kelas->rombel }}
+                    @else
+                    -
+                    @endif
+                </td>
+            </tr>
             @empty
-                <tr>
-                    <td colspan="6" style="text-align: center;">Belum ada data user.</td>
-                </tr>
+            <tr>
+                <td colspan="6" style="text-align: center;">Belum ada data user.</td>
+            </tr>
             @endforelse
         </tbody>
     </table>
 
 </body>
+
 </html>

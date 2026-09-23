@@ -97,22 +97,22 @@
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
                         <span class="text-[#7A6A60]">Guru</span>
-                        <span class="text-[#3E3028] font-medium text-right">Kurnila Putri, S.Pd.</span>
+                        <span class="text-[#3E3028] font-medium text-right">{{ $qrSesi->jadwal?->guru?->name ?? '-' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
                         <span class="text-[#7A6A60]">Mata Pelajaran</span>
-                        <span class="text-[#3E3028] font-medium text-right">PPLG</span>
+                        <span class="text-[#3E3028] font-medium text-right">{{ $qrSesi->jadwal?->mapel?->nama_mapel ?? '-' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
                         <span class="text-[#7A6A60]">Kelas</span>
-                        <span class="text-[#3E3028] font-medium text-right">XI RPL 2</span>
+                        <span class="text-[#3E3028] font-medium text-right">{{ $qrSesi->jadwal?->kelas?->nama_kelas ?? '-' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
                         <span class="text-[#7A6A60]">Waktu Check-in</span>
-                        <span class="text-[#3E3028] font-medium text-right">07:03 WIB</span>
+                        <span class="text-[#3E3028] font-medium text-right">{{ $qrSesi->dipindai_at->format('H:i') }} WIB</span>
                     </div>
 
                     <div class="flex justify-between gap-4 pt-2.5 text-[13px]">

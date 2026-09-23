@@ -1,9 +1,13 @@
+<h1>Kelola Semester</h1>
+<a href="{{ route('home') }}">← Kembali</a>
+<br><br>
+
 @if ($errors->any())
-    <ul style="color:red;">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
+<ul style="color:red;">
+    @foreach ($errors->all() as $error)
+    <li>{{ $error }}</li>
+    @endforeach
+</ul>
 @endif
 
 <form method="POST" action="{{ route('semester.store') }}">
@@ -12,19 +16,37 @@
     <input type="date" name="tanggal_mulai" required>
     <input type="date" name="tanggal_selesai" required>
     <button type="submit">Simpan</button>
+    <button type="reset">Reset</button>
 </form>
 
 <table border="1" cellpadding="8">
-    <tr><th>No</th><th>Nama</th><th>Mulai</th><th>Selesai</th><th>Status</th></tr>
+    <tr>
+        <th>No</th>
+        <th>Nama</th>
+        <th>Mulai</th>
+        <th>Selesai</th>
+        <th>Status</th>
+    </tr>
     @forelse ($semesters as $i => $s)
-        <tr>
-            <td>{{ $i + 1 }}</td>
-            <td>{{ $s->nama }}</td>
-            <td>{{ $s->tanggal_mulai }}</td>
-            <td>{{ $s->tanggal_selesai }}</td>
-            <td>{{ $s->status }}</td>
-        </tr>
+    <tr>
+        <td>{{ $i + 1 }}</td>
+        <td>{{ $s->nama }}</td>
+        <td>{{ $s->tanggal_mulai }}</td>
+        <td>{{ $s->tanggal_selesai }}</td>
+        <td>
+            {{ $s->status }}
+
+            @if($s->status === 'nonaktif')
+            <form action="{{ route('semester.activate', $s->id_semester) }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit">Aktifkan</button>
+            </form>
+            @endif
+        </td>
+    </tr>
     @empty
-        <tr><td colspan="5">Belum ada semester.</td></tr>
+    <tr>
+        <td colspan="5">Belum ada semester.</td>
+    </tr>
     @endforelse
 </table>
