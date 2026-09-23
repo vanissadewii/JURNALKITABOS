@@ -4,91 +4,112 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
-use App\Models\QrSesi;
 use App\Models\Siswa;
+use App\Services\VerifikasiSesiService;
+use App\Support\Waktu;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class JurnalController extends Controller
 {
-    public function create(): View
+    public function create(Request $request, VerifikasiSesiService $sesi): View|RedirectResponse
     {
-        $user = Auth::user();
-        $sekarang = now();
-        $hari = 'Senin';
-        $jamSekarang = '07:10:00';
+        $guru = Auth::user();
 
-        $jadwalAktif = JadwalPelajaran::where('id_guru', $user->id)
-            ->whereHas('jamPelajaran', function ($q) use ($hari, $jamSekarang) {
-                $q->where('hari', $hari)
-                    ->where('jam_mulai', '<=', $jamSekarang)
-                    ->where('jam_selesai', '>=', $jamSekarang);
-            })
-            ->with(['kelas', 'jamPelajaran', 'mapel'])
-            ->first();
+        $jadwalAktif = $request->query('jadwal')
+            ? JadwalPelajaran::with(['kelas', 'mapel', 'jamPelajaran'])
+                ->where('id_guru', $guru->id)
+                ->where('id_jadwal', (int) $request->query('jadwal'))
+                ->first()
+            : $sesi->jadwalBerlangsung(idGuru: (int) $guru->id);
 
-        $daftarSiswa = collect();
-
-        if ($jadwalAktif) {
-            $daftarSiswa = Siswa::where('id_kelas', $jadwalAktif->id_kelas)
-                ->orderBy('nama')
-                ->get();
+        if (! $jadwalAktif) {
+            return redirect()->route('dashboard-guru')
+                ->with('error', 'Tidak ada sesi mengajar yang sedang berlangsung.');
         }
 
-        return view('guru.form_jurnal', compact('jadwalAktif', 'daftarSiswa'));
+        if (! $sesi->masihBerjalan($jadwalAktif)) {
+            return redirect()->route('dashboard-guru')
+                ->with('error', 'Sesi pelajaran ini sudah selesai, jurnal tidak bisa diisi lagi.');
+        }
+
+        $jurnal = $sesi->jurnalSesi($jadwalAktif); // draft yang sudah pernah diisi (kalau ada)
+
+        if ($jurnal && $jurnal->status_verifikasi === 'terverifikasi') {
+            return redirect()->route('guru.verifikasisukses', $jurnal);
+        }
+
+        if ($jurnal) {
+            return redirect()->route('guru.scan')
+                ->with('info', 'Jurnal sudah terkirim, tinggal verifikasi kehadiran lewat scan QR kelas.');
+        }
+
+        $daftarSiswa = Siswa::where('id_kelas', $jadwalAktif->id_kelas)->orderBy('nama')->get();
+        $rentang = $sesi->rentang($jadwalAktif);
+
+        return view('guru.form_jurnal', compact('jadwalAktif', 'daftarSiswa', 'rentang'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, VerifikasiSesiService $sesi): RedirectResponse
     {
         $validated = $request->validate([
             'id_jadwal' => 'required|exists:jadwal_pelajaran,id_jadwal',
-            'materi' => 'required|string',
-            'keterangan' => 'nullable|string',
+            'materi' => 'nullable|string',
+            'catatan' => 'nullable|string',
             'jumlah_hadir' => 'nullable|integer|min:0',
+            'siswa_absen' => 'nullable|array',
+            'siswa_absen.*.nama' => 'required_with:siswa_absen|string',
+            'siswa_absen.*.status' => 'required_with:siswa_absen|in:Sakit,Izin,Alpha',
         ]);
 
         $jadwal = JadwalPelajaran::where('id_jadwal', $validated['id_jadwal'])
             ->where('id_guru', Auth::id())
             ->firstOrFail();
 
+        if (! $sesi->masihBerjalan($jadwal)) {
+            return redirect()->route('dashboard-guru')
+                ->with('error', 'Sesi pelajaran ini sudah selesai, jurnal tidak bisa dikirim lagi.');
+        }
+
+        if ($sesi->jurnalSesi($jadwal)) {
+            return redirect()->route('guru.scan')
+                ->with('info', 'Jurnal sesi ini sudah terkirim, tinggal verifikasi.');
+        }
+
+        $keterangan = $validated['catatan'] ?? '';
+        if (! empty($validated['siswa_absen'])) {
+            $daftarAbsen = collect($validated['siswa_absen'])
+                ->map(fn ($s) => "{$s['nama']} ({$s['status']})")
+                ->implode(', ');
+            $keterangan = trim($keterangan."\nTidak hadir: ".$daftarAbsen);
+        }
+
         $jurnal = Jurnal::create([
             'id_jadwal' => $jadwal->id_jadwal,
-            'tanggal' => now()->toDateString(),
-            'materi' => $validated['materi'],
-            'keterangan' => $validated['keterangan'] ?? null,
+            'tanggal' => Waktu::sekarang()->toDateString(),
+            'status_kehadiran_guru' => 'hadir',
+            'status_verifikasi' => 'belum_verifikasi',
+            'materi' => $validated['materi'] ?? null,
+            'keterangan' => $keterangan ?: null,
             'jumlah_hadir' => $validated['jumlah_hadir'] ?? null,
-            'waktu_submit' => now(),
+            'waktu_submit' => Waktu::sekarang(),
         ]);
+        foreach ($validated['siswa_absen'] ?? [] as $s) {
+            $jurnal->absenSiswa()->create(['nama' => $s['nama'], 'status' => $s['status']]);
+        }
 
-        QrSesi::create([
-            'id_jadwal' => $jadwal->id_jadwal,
-            'id_jurnal' => $jurnal->id_jurnal,
-            'tipe' => 'guru',
-            'kode_qr' => (string) Str::uuid(),
-            'waktu_generate' => now(),
-            'waktu_expired' => now()->addMinutes(5),
-            'status' => 'aktif',
-        ]);
-
-        return redirect()->route('guru.scan-kelas', $jurnal->id_jurnal);
+        return redirect()->route('guru.scan')
+            ->with('success', 'Jurnal terkirim. Verifikasi kehadiran dengan scan QR kelas sekarang.');
     }
 
-    public function approve(Jurnal $jurnal): RedirectResponse
+    public function verifikasiSukses(Request $request, Jurnal $jurnal): View
     {
-        $jurnal->update(['status_verifikasi' => 'terverifikasi']);
+        $jurnal->load('jadwal.kelas', 'jadwal.mapel');
 
-        return back()->with('success', 'Jurnal berhasil disetujui.');
-    }
+        abort_if((int) $jurnal->jadwal->id_guru !== (int) $request->user()->id, 403);
 
-    public function reject(Request $request, Jurnal $jurnal): RedirectResponse
-    {
-        $request->validate(['alasan' => ['required', 'string', 'max:500']]);
-
-        $jurnal->update(['status_verifikasi' => 'belum_verifikasi']);
-
-        return back()->with('success', 'Jurnal dikembalikan untuk diperbaiki.');
+        return view('guru.verifikasisukses', compact('jurnal'));
     }
 }

@@ -61,4 +61,16 @@ class Dispen extends Model
     {
         return $this->hasMany(DispenJurnal::class, 'id_dispen', 'id_dispen');
     }
+
+    public function isSampaiSelesai(): bool
+    {
+        return is_null($this->jam_ke_selesai);
+    }
+
+    public function labelJam(): string
+    {
+        return $this->isSampaiSelesai()
+            ? "Jam ke-{$this->jam_ke_mulai} s/d Selesai"
+            : "Jam ke-{$this->jam_ke_mulai} s/d {$this->jam_ke_selesai}";
+    }
 }

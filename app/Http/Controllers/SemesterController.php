@@ -36,4 +36,14 @@ class SemesterController extends Controller
 
         return redirect()->back()->with('success', 'Semester berhasil ditambahkan dan diaktifkan.');
     }
+
+    public function activate($id): RedirectResponse
+    {
+        Semester::where('status', 'aktif')->update(['status' => 'nonaktif']);
+
+        $semester = Semester::findOrFail($id);
+        $semester->update(['status' => 'aktif']);
+
+        return redirect()->back()->with('success', 'Semester berhasil diaktifkan.');
+    }
 }
