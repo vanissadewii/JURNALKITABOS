@@ -18,12 +18,57 @@ class JadwalPelajaranController extends Controller
 {
     public function index(): View
     {
-        $jadwal = JadwalPelajaran::with(['kelas', 'jamPelajaran', 'guru', 'mapel'])->get();
+        $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5];
+
+        $jadwal = JadwalPelajaran::with(['kelas', 'jamPelajaran', 'guru', 'mapel'])
+            ->whereHas('jamPelajaran.semester', fn ($q) => $q->where('status', 'aktif'))
+            ->get()
+            ->sortBy([
+                fn ($a, $b) => $a->id_kelas <=> $b->id_kelas,
+                fn ($a, $b) => $urutanHari[$a->jamPelajaran->hari] <=> $urutanHari[$b->jamPelajaran->hari],
+                fn ($a, $b) => $a->jamPelajaran->jam_ke <=> $b->jamPelajaran->jam_ke,
+            ])
+            ->values();
+
+        // gabungkan jam berurutan (kelas, hari, guru, mapel sama) jadi satu baris
+        $jadwalGrup = collect();
+
+        foreach ($jadwal as $row) {
+            $jam = $row->jamPelajaran;
+            $last = $jadwalGrup->last();
+
+            if (
+                $last
+                && $last->id_kelas == $row->id_kelas
+                && $last->hari === $jam->hari
+                && $last->id_guru == $row->id_guru
+                && $last->id_mapel == $row->id_mapel
+                && $last->jam_ke_sampai + 1 === (int) $jam->jam_ke
+            ) {
+                $last->jam_ke_sampai = (int) $jam->jam_ke;
+                $last->jam_selesai = substr($jam->jam_selesai, 0, 5);
+            } else {
+                $jadwalGrup->push((object) [
+                    'id_kelas' => $row->id_kelas,
+                    'id_guru' => $row->id_guru,
+                    'id_mapel' => $row->id_mapel,
+                    'kelas' => $row->kelas->nama_kelas ?? '-',
+                    'hari' => $jam->hari,
+                    'jam_ke_mulai' => (int) $jam->jam_ke,
+                    'jam_ke_sampai' => (int) $jam->jam_ke,
+                    'jam_mulai' => substr($jam->jam_mulai, 0, 5),
+                    'jam_selesai' => substr($jam->jam_selesai, 0, 5),
+                    'guru' => $row->guru->name ?? '-',
+                    'mapel' => $row->mapel->nama_mapel ?? '-',
+                ]);
+            }
+        }
+
         $kelas = Kelas::orderBy('tingkat')->orderBy('jurusan')->orderBy('rombel')->get();
         $guru = User::where('role', 'guru')->orderBy('name')->get();
         $mapel = Mapel::orderBy('nama_mapel')->get();
 
-        return view('admin.tambah_jadwal', compact('jadwal', 'kelas', 'guru', 'mapel'));
+        return view('admin.tambah_jadwal', compact('jadwalGrup', 'kelas', 'guru', 'mapel'));
     }
 
     public function create(): View
@@ -54,14 +99,49 @@ class JadwalPelajaranController extends Controller
     {
         $validated = $request->validate([
             'id_kelas' => 'required|exists:kelas,id_kelas',
-            'id_jam' => 'required|exists:jam_pelajaran,id_jam',
+            'jam_dari' => 'required|exists:jam_pelajaran,id_jam',
+            'jam_sampai' => 'required|exists:jam_pelajaran,id_jam',
             'id_guru' => 'required|exists:users,id',
             'id_mapel' => 'required|exists:mapel,id_mapel',
         ]);
 
-        JadwalPelajaran::create($validated);
+        $kelas = Kelas::findOrFail($validated['id_kelas']);
+        $dari = JamPelajaran::findOrFail($validated['jam_dari']);
+        $sampai = JamPelajaran::findOrFail($validated['jam_sampai']);
 
-        return redirect()->back()->with('success', 'Jadwal berhasil ditambahkan.');
+        if ($dari->hari !== $sampai->hari || (int) $dari->tingkat !== (int) $kelas->tingkat) {
+            return back()->withErrors('Jam yang dipilih tidak sesuai dengan kelas atau hari.')->withInput();
+        }
+
+        if ($sampai->jam_ke < $dari->jam_ke) {
+            return back()->withErrors('"Sampai jam ke" tidak boleh lebih kecil dari "Dari jam ke".')->withInput();
+        }
+
+        $jamList = JamPelajaran::where('id_semester', $dari->id_semester)
+            ->where('tingkat', $dari->tingkat)
+            ->where('hari', $dari->hari)
+            ->whereBetween('jam_ke', [$dari->jam_ke, $sampai->jam_ke])
+            ->orderBy('jam_ke')
+            ->get();
+
+        $sudahAda = JadwalPelajaran::where('id_kelas', $kelas->id_kelas)
+            ->whereIn('id_jam', $jamList->pluck('id_jam'))
+            ->exists();
+
+        if ($sudahAda) {
+            return back()->withErrors('Sebagian jam pada rentang itu sudah punya jadwal untuk kelas ini.')->withInput();
+        }
+
+        foreach ($jamList as $jam) {
+            JadwalPelajaran::create([
+                'id_kelas' => $kelas->id_kelas,
+                'id_jam' => $jam->id_jam,
+                'id_guru' => $validated['id_guru'],
+                'id_mapel' => $validated['id_mapel'],
+            ]);
+        }
+
+        return redirect()->back()->with('success', "Jadwal berhasil ditambahkan untuk {$jamList->count()} jam pelajaran.");
     }
 
     public function import(Request $request): RedirectResponse

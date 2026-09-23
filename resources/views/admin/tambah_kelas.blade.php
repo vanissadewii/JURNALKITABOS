@@ -7,7 +7,7 @@
 
     <h2>Form Tambah Kelas</h2>
 
-    <a href="{{ route('admin.kelas.index') }}">← Kembali</a>
+    <a href="{{ route('home') }}">← Kembali</a>
     <br><br>
 
     @if ($errors->any())

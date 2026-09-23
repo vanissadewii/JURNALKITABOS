@@ -33,9 +33,6 @@ class UserController extends Controller
 
         $validated['password'] = bcrypt($validated['password']);
 
-        // Buatkan email dummy otomatis agar tidak kena error NULL di database
-        $validated['email'] = strtolower(trim($validated['username'])).'@jurnalkitabos.local';
-
         User::create($validated);
 
         return redirect()->route('admin.user.index')->with('success', 'User berhasil ditambahkan.');

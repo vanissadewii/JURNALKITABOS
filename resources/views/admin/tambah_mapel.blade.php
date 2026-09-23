@@ -1,3 +1,7 @@
+<h1>Form Tambah Mapel</h1>
+<a href="{{ route('home') }}">← Kembali</a>
+<br><br>
+
 @if ($errors->any())
     <div style="color: red;">
         <ul>
