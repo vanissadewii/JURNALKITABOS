@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\JadwalPelajaran;
+use App\Models\Jurnal;
 use App\Models\QrSesi;
 use App\Models\User;
-use App\Models\Jurnal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -27,7 +27,7 @@ class RiwayatJurnalController extends Controller
             })
             ->values();
 
-        $tanggalAdaSesi = $semuaJurnal->pluck('tanggal')->map(fn($t) => $t->format('Y-m-d'))->unique()->values();
+        $tanggalAdaSesi = $semuaJurnal->pluck('tanggal')->map(fn ($t) => $t->format('Y-m-d'))->unique()->values();
 
         return view('guru.riwayat_jurnal', compact('semuaJurnal', 'tanggalAdaSesi'));
     }
@@ -49,13 +49,13 @@ class RiwayatJurnalController extends Controller
                 ->where('id_kelas', $jadwal->id_kelas)
                 ->where('id_guru', $jadwal->id_guru)
                 ->where('id_mapel', $jadwal->id_mapel)
-                ->whereHas('jamPelajaran', fn($q) => $q
+                ->whereHas('jamPelajaran', fn ($q) => $q
                     ->where('id_semester', $jam->id_semester)
                     ->where('hari', $jam->hari))
                 ->get()
-                ->map(fn($j) => $j->jamPelajaran)
+                ->map(fn ($j) => $j->jamPelajaran)
                 ->filter()
-                ->keyBy(fn($j) => (int) $j->jam_ke);
+                ->keyBy(fn ($j) => (int) $j->jam_ke);
 
             $awal = (int) $jam->jam_ke;
             $akhir = (int) $jam->jam_ke;

@@ -11,6 +11,7 @@ class JadwalPiket extends Model
     use HasFactory;
 
     protected $table = 'jadwal_piket';
+
     protected $primaryKey = 'id_piket';
 
     protected $fillable = ['id_guru', 'hari', 'sesi', 'jam_mulai', 'jam_selesai'];

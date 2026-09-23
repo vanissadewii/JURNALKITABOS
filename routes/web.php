@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\JadwalPiketController;
-use App\Http\Controllers\ProfilGuruController;
-use App\Http\Controllers\GuruPiketController;
 use App\Http\Controllers\DispenController;
 use App\Http\Controllers\GuruDashboardController;
+use App\Http\Controllers\GuruPiketController;
 use App\Http\Controllers\JadwalPelajaranController;
+use App\Http\Controllers\JadwalPiketController;
 use App\Http\Controllers\JamPelajaranController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\MasterKelasController;
+use App\Http\Controllers\ProfilGuruController;
 use App\Http\Controllers\QrSesiController;
 use App\Http\Controllers\RiwayatJurnalController;
 use App\Http\Controllers\SemesterController;
@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/login');
 });
-
 
 // Redirect setelah login, sesuai role
 Route::middleware(['auth'])->group(function () {
@@ -39,8 +38,8 @@ Route::middleware(['auth'])->group(function () {
 
 // ====================== ADMIN ======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/dashboard-admin', fn() => view('admin.dashboard_admin'));
-    Route::get('/admin/tambah', fn() => view('admin.tambah_admin'))->name('admin.tambah');
+    Route::get('/dashboard-admin', fn () => view('admin.dashboard_admin'));
+    Route::get('/admin/tambah', fn () => view('admin.tambah_admin'))->name('admin.tambah');
 
     Route::resource('admin/kelas', MasterKelasController::class)->names('admin.kelas');
     Route::resource('admin/siswa', SiswaController::class)->names('admin.siswa');
@@ -64,7 +63,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // ====================== GURU ======================
 Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::get('/dashboard-guru', [GuruDashboardController::class, 'index'])->name('dashboard-guru');
-    
 
     Route::get('/profil-guru', [ProfilGuruController::class, 'show'])->name('profil-guru');
     Route::get('/editprofil_guru', [ProfilGuruController::class, 'edit'])->name('profil-guru.edit');
@@ -75,7 +73,7 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::get('/detail-jurnal/{jurnal}', [RiwayatJurnalController::class, 'show'])->name('jurnal.detail');
     Route::get('/riwayat-jurnal', [RiwayatJurnalController::class, 'index'])->name('riwayat-jurnal');
 
-    Route::get('/guru-scan', fn() => view('guru.guru_scan_qr'))->name('guru.scan');
+    Route::get('/guru-scan', fn () => view('guru.guru_scan_qr'))->name('guru.scan');
     Route::post('/guru/scan-kelas', [QrSesiController::class, 'guruScanKelas'])->name('guru.scan-kelas');
     Route::get('/guru/scan/status', [QrSesiController::class, 'guruStatus'])->name('guru.scan-status');
     Route::get('/guru/verifikasi-sukses/{jurnal}', [JurnalController::class, 'verifikasiSukses'])->name('guru.verifikasisukses');
@@ -108,17 +106,5 @@ Route::middleware(['auth', 'role:kelas'])->prefix('kelas')->name('kelas.')->grou
 Route::get('/dispen/approval/{token}', [DispenController::class, 'halamanApproval'])->name('dispen.approval');
 Route::post('/dispen/approval/{token}/setuju', [DispenController::class, 'setujui'])->name('dispen.approval.setuju');
 Route::post('/dispen/approval/{token}/tolak', [DispenController::class, 'tolak'])->name('dispen.approval.tolak');
-
-
-
-
-
-
-
-
-
-
-
-
 
 Route::get('/piket-hari-ini', [JadwalPiketController::class, 'publik'])->name('piket.publik');

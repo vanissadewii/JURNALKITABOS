@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JadwalPelajaran;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Auth;
 use App\Models\Kelas;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;

@@ -121,20 +121,20 @@ class DispenController extends Controller
         }
 
         if (str_starts_with($nomor, '0')) {
-            $nomor = '6285606582551' . substr($nomor, 1);
+            $nomor = '6285606582551'.substr($nomor, 1);
         }
 
         $dispen->loadMissing('siswa');
 
         $linkApproval = rtrim((string) config('app.url'), '/')
-            . route('dispen.approval', $dispen->token_approval, false);
+            .route('dispen.approval', $dispen->token_approval, false);
         $namaWaka = config('waka.nama');
 
         $pesan = "Yth. {$namaWaka},\n\n"
-            . "Ada surat dispen {$dispen->nomor_surat} untuk {$dispen->siswa->nama} yang menunggu persetujuan Anda.\n\n"
-            . "Buka: {$linkApproval}";
+            ."Ada surat dispen {$dispen->nomor_surat} untuk {$dispen->siswa->nama} yang menunggu persetujuan Anda.\n\n"
+            ."Buka: {$linkApproval}";
 
-        return 'https://wa.me/' . $nomor . '?text=' . urlencode($pesan);
+        return 'https://wa.me/'.$nomor.'?text='.urlencode($pesan);
     }
 
     public function halamanApproval(string $token): View
@@ -222,7 +222,7 @@ class DispenController extends Controller
 
         $jamHariItu = JamPelajaran::where('tingkat', $dispen->kelas->tingkat)
             ->where('hari', $hari)
-            ->whereHas('semester', fn($q) => $q->where('status', 'aktif'))
+            ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
             ->orderBy('jam_ke')
             ->get(['id_jam', 'jam_ke']);
 
@@ -240,7 +240,7 @@ class DispenController extends Controller
         }
 
         $jamTerdampak = $semuaJam->filter(
-            fn($jamKe) => $jamKe >= $jamMulai && $jamKe <= $jamSelesai
+            fn ($jamKe) => $jamKe >= $jamMulai && $jamKe <= $jamSelesai
         );
 
         if ($jamTerdampak->isEmpty()) {
@@ -265,7 +265,7 @@ class DispenController extends Controller
             ]);
 
             if ($jurnal->exists && ! empty($jurnal->keterangan)) {
-                $jurnal->keterangan = $jurnal->keterangan . " | {$keterangan}";
+                $jurnal->keterangan = $jurnal->keterangan." | {$keterangan}";
             } else {
                 $jurnal->keterangan = $keterangan;
             }

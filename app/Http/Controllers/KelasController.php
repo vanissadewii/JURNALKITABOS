@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\CarbonInterface;
-use Carbon\Carbon;
 use App\Models\Jurnal;
 use App\Models\PengirimanJurnalKelas;
 use App\Models\QrSesi;
 use App\Services\SesiKelasService;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -85,7 +85,7 @@ class KelasController extends Controller
             return $s;
         });
 
-        $semuaSelesai = $sesi->isNotEmpty() && $sesi->every(fn($s) => $s->status === 'Selesai');
+        $semuaSelesai = $sesi->isNotEmpty() && $sesi->every(fn ($s) => $s->status === 'Selesai');
 
         $pengiriman = PengirimanJurnalKelas::where('id_kelas', $kelas->id_kelas)
             ->whereDate('tanggal', $sekarang->toDateString())
@@ -103,7 +103,7 @@ class KelasController extends Controller
         $sekarang = $this->sekarang();
         $sesi = $service->sesiHariIni($kelas, $sekarang);
 
-        if ($sesi->isEmpty() || $sesi->contains(fn($s) => $s->status !== 'Selesai')) {
+        if ($sesi->isEmpty() || $sesi->contains(fn ($s) => $s->status !== 'Selesai')) {
             return back()->with('error', 'Masih ada sesi yang belum selesai.');
         }
 

@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Jurnal extends Model
 {
@@ -22,6 +22,7 @@ class Jurnal extends Model
         'status_verifikasi',
         'waktu_submit',
     ];
+
     protected $casts = [
         'tanggal' => 'date',
         'waktu_submit' => 'datetime',
@@ -42,6 +43,7 @@ class Jurnal extends Model
     {
         return $this->hasMany(JurnalSiswaAbsen::class, 'id_jurnal', 'id_jurnal');
     }
+
     public function dispensasi(): HasManyThrough
     {
         return $this->hasManyThrough(

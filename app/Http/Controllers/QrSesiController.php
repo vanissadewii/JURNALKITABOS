@@ -153,7 +153,7 @@ class QrSesiController extends Controller
 
             return response()->json([
                 'tahap' => 'selesai',
-                'redirect' => route('dashboard-guru'), 
+                'redirect' => route('dashboard-guru'),
             ]);
         }
 

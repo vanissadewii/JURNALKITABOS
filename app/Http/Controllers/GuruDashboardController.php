@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Support\Waktu;  
 use App\Models\JadwalPelajaran;
+use App\Support\Waktu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 

@@ -17,24 +17,24 @@ class JamPelajaranController extends Controller
 
         $jamPelajaran = $semesterAktif
             ? JamPelajaran::with('semester')
-            ->where('id_semester', $semesterAktif->id_semester)
-            ->orderBy('tingkat')
-            ->orderBy('hari')
-            ->orderBy('jam_ke')
-            ->get()
+                ->where('id_semester', $semesterAktif->id_semester)
+                ->orderBy('tingkat')
+                ->orderBy('hari')
+                ->orderBy('jam_ke')
+                ->get()
             : collect();
 
         $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5];
 
         $jamGrup = $jamPelajaran
-            ->groupBy(fn($j) => "{$j->tingkat}|{$j->jam_ke}|{$j->jam_mulai}|{$j->jam_selesai}")
+            ->groupBy(fn ($j) => "{$j->tingkat}|{$j->jam_ke}|{$j->jam_mulai}|{$j->jam_selesai}")
             ->map(function ($items) use ($urutanHari) {
                 $first = $items->first();
-                $nomor = $items->pluck('hari')->map(fn($h) => $urutanHari[$h])->sort()->values();
+                $nomor = $items->pluck('hari')->map(fn ($h) => $urutanHari[$h])->sort()->values();
 
                 $berurutan = $nomor->count() > 1
                     && $nomor->last() - $nomor->first() === $nomor->count() - 1;
-                $namaHari = $nomor->map(fn($n) => array_search($n, $urutanHari));
+                $namaHari = $nomor->map(fn ($n) => array_search($n, $urutanHari));
 
                 return (object) [
                     'semester' => $first->semester,
@@ -43,7 +43,7 @@ class JamPelajaranController extends Controller
                     'jam_mulai' => substr($first->jam_mulai, 0, 5),
                     'jam_selesai' => substr($first->jam_selesai, 0, 5),
                     'hari' => $berurutan
-                        ? $namaHari->first() . ' - ' . $namaHari->last()
+                        ? $namaHari->first().' - '.$namaHari->last()
                         : $namaHari->implode(', '),
                     'urutan' => $nomor->first(),
                 ];
@@ -53,6 +53,7 @@ class JamPelajaranController extends Controller
 
         return view('admin.tambah_jam_pelajaran', compact('jamPelajaran', 'jamGrup', 'semesterAktif'));
     }
+
     public function create(): View
     {
         $semesterAktif = Semester::where('status', 'aktif')->first();
@@ -143,6 +144,7 @@ class JamPelajaranController extends Controller
             'senin_jumat' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
         };
     }
+
     public function edit($id): View
     {
         $jamPelajaran = JamPelajaran::findOrFail($id);
@@ -173,6 +175,7 @@ class JamPelajaranController extends Controller
 
         return redirect()->route('jam-pelajaran.index')->with('success', 'Jam pelajaran berhasil dihapus.');
     }
+
     public function bulkUpdate(Request $request): RedirectResponse
     {
         $ids = $request->input('pilih', []);
@@ -185,7 +188,7 @@ class JamPelajaranController extends Controller
         $diperbarui = 0;
 
         foreach ($ids as $id) {
-            if (!isset($rows[$id])) {
+            if (! isset($rows[$id])) {
                 continue;
             }
 
@@ -220,7 +223,7 @@ class JamPelajaranController extends Controller
             return redirect()->back()->with('error', 'Tidak ada baris yang dipilih untuk dihapus.');
         }
 
-        $keyName = (new JamPelajaran())->getKeyName();
+        $keyName = (new JamPelajaran)->getKeyName();
 
         $jumlah = JamPelajaran::whereIn($keyName, $ids)->delete();
 
