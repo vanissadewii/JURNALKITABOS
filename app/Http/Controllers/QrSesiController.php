@@ -14,6 +14,33 @@ use Illuminate\View\View;
 
 class QrSesiController extends Controller
 {
+    public function scanKelas(Jurnal $jurnal): View
+    {
+        abort_if($jurnal->jadwal->id_guru !== Auth::id(), 403);
+
+        return view('guru.guru_scan_qr', compact('jurnal'));
+    }
+
+    public function prosesScanKelas(Request $request, Jurnal $jurnal): JsonResponse
+    {
+        $request->validate(['kode_kelas' => 'required|string']);
+        abort_if($jurnal->jadwal->id_guru !== Auth::id(), 403);
+
+        if (! str_starts_with($request->kode_kelas, 'kelas:')) {
+            return response()->json(['success' => false, 'message' => 'QR kelas tidak dikenali.'], 422);
+        }
+
+        $idKelas = (int) str_replace('kelas:', '', $request->kode_kelas);
+        if ($idKelas !== (int) $jurnal->jadwal->id_kelas) {
+            return response()->json(['success' => false, 'message' => 'QR ini bukan untuk kelas pada jadwal jurnal.'], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'redirect' => route('qr.tampilkan-guru', $jurnal->id_jurnal),
+        ]);
+    }
+
     // GURU: tampilkan QR untuk jurnal tertentu
     public function tampilkanQrGuru(Jurnal $jurnal): View
     {
@@ -70,5 +97,20 @@ class QrSesiController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Verifikasi berhasil.']);
+    }
+
+    public function cekStatusGuru(Jurnal $jurnal): JsonResponse
+    {
+        abort_if($jurnal->jadwal->id_guru !== Auth::id(), 403);
+
+        $qrSesi = QrSesi::where('id_jurnal', $jurnal->id_jurnal)
+            ->where('tipe', 'guru')
+            ->latest('id_qr')
+            ->firstOrFail();
+
+        return response()->json([
+            'scanned' => $qrSesi->sudahDipindai(),
+            'expired' => $qrSesi->sudahExpired(),
+        ]);
     }
 }

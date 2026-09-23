@@ -73,6 +73,22 @@ class JurnalController extends Controller
             'status' => 'aktif',
         ]);
 
-        return redirect()->route('qr.tampilkan-guru', $jurnal->id_jurnal);
+        return redirect()->route('guru.scan-kelas', $jurnal->id_jurnal);
+    }
+
+    public function approve(Jurnal $jurnal): RedirectResponse
+    {
+        $jurnal->update(['status_verifikasi' => 'terverifikasi']);
+
+        return back()->with('success', 'Jurnal berhasil disetujui.');
+    }
+
+    public function reject(Request $request, Jurnal $jurnal): RedirectResponse
+    {
+        $request->validate(['alasan' => ['required', 'string', 'max:500']]);
+
+        $jurnal->update(['status_verifikasi' => 'belum_verifikasi']);
+
+        return back()->with('success', 'Jurnal dikembalikan untuk diperbaiki.');
     }
 }

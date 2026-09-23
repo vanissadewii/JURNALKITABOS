@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
  * @property string $email
  * @property string $role
  * @property string|null $no_telepon
+ * @property string|null $mapel
  * @property string $status
  * @property int|null $id_kelas
  * @property Carbon|null $email_verified_at
@@ -40,6 +41,7 @@ class User extends Authenticatable
         'password',
         'role',
         'no_telepon',
+        'mapel',
         'status',
         'id_kelas',
     ];
