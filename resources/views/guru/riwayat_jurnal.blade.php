@@ -36,30 +36,39 @@
       }
     }
   </script>
+  <style>
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+    .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; }
+    .guru-sidebar-nav a svg { color: #7A6A60 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
+    .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+  </style>
 </head>
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
-  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
-    <div class="p-6 flex flex-col gap-8">
+  <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="py-6 px-4 flex flex-col gap-8">
       
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
       </div>
 
       <!-- Navigation Links -->
-      <nav class="flex flex-col gap-1.5">
+      <nav class="guru-sidebar-nav flex flex-col gap-1">
         
-        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
           </svg>
           <span>Beranda</span>
         </a>
 
-        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ route('jurnal.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
             <path d="M7 3v14"/>
@@ -67,15 +76,18 @@
           <span>Isi Jurnal</span>
         </a>
 
-        <!-- Active Link (Riwayat Jurnal) -->
-        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
+        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
+        </a>
+
+        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
             <circle cx="10" cy="6.5" r="3.5"/>
@@ -94,9 +106,7 @@
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
-        <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
           </svg>
         </a>
         <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Riwayat Jurnal Mengajar</h1>
@@ -177,10 +187,6 @@
             <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
             <span>Ada Sesi Jurnal</span>
           </div>
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-brand-800 inline-block"></span>
-            <span>Tanggal Terpilih</span>
-          </div>
         </div>
 
       </section>
@@ -223,11 +229,11 @@
                 <svg class="w-4 h-4 text-amber-700 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                 </svg>
-                <span>Siswa Dispen / Izin (2):</span>
+                <span>Siswa tidak hadir (2):</span>
               </div>
               <ul class="text-xs text-amber-900/90 pl-5 list-disc space-y-0.5">
-                <li>Ahmad Dani <span class="text-amber-700 font-medium">(Dispen Lomba OSN)</span></li>
-                <li>Siti Nurhaliza <span class="text-amber-700 font-medium">(Izin Sakit)</span></li>
+                <li>Ahmad Dani <span class="text-amber-700 font-medium">(Izin)</span></li>
+                <li>Siti Nurhaliza <span class="text-amber-700 font-medium">(Sakit)</span></li>
               </ul>
             </div>
           </div>
@@ -262,7 +268,7 @@
             <div class="bg-brand-50 border border-brand-100/80 rounded-xl p-3 flex items-center gap-2 mt-1">
               <svg class="w-4 h-4 text-brand-600 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
+                </svg>
               <span class="text-xs text-brand-700 font-medium">Nihil / Seluruh siswa hadir kelas</span>
             </div>
           </div>
@@ -299,10 +305,10 @@
                 <svg class="w-4 h-4 text-amber-700 shrink-0" viewBox="0 0 20 20" fill="currentColor">
                   <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                 </svg>
-                <span>Siswa Dispen / Izin (1):</span>
+                <span>Siswa tidak hadir (1):</span>
               </div>
               <ul class="text-xs text-amber-900/90 pl-5 list-disc space-y-0.5">
-                <li>Budi Pratama <span class="text-amber-700 font-medium">(Dispen Tugas Paskibra)</span></li>
+                <li>Budi Pratama <span class="text-amber-700 font-medium">(Izin)</span></li>
               </ul>
             </div>
           </div>
@@ -355,6 +361,8 @@
         </svg>
         <span>Riwayat</span>
       </a>
+
+      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">

@@ -60,6 +60,36 @@
         .menu-active svg {
             color: #3F2924 !important;
         }
+
+        html {
+            scrollbar-width: none;
+        }
+
+        html::-webkit-scrollbar {
+            display: none;
+        }
+
+        .guru-piket-sidebar .menu-item {
+            gap: .75rem;
+            margin-top: 0 !important;
+            border-radius: .5rem;
+            padding: .625rem .75rem;
+            font-size: 1rem;
+            color: #7A6A60;
+        }
+
+        .guru-piket-sidebar .menu-item svg {
+            color: #7A6A60;
+        }
+
+        .guru-piket-sidebar .menu-active {
+            background: #F5EFE8;
+            color: #5C4033 !important;
+        }
+
+        .guru-piket-sidebar .menu-active svg {
+            color: #3E3028 !important;
+        }
     </style>
 
     @yield('head')
@@ -73,42 +103,18 @@
         <!-- SIDEBAR -->
         <!-- ===================================================== -->
 
-        <aside class="fixed left-0 top-0 z-40 h-screen w-[180px] bg-white text-[#3F2924] border-r border-[#EFE8E2]">
+        <aside class="guru-piket-sidebar fixed left-0 top-0 z-40 h-screen w-64 bg-white text-[#3E3028] border-r border-[#E5D8CC]">
 
             <!-- Logo -->
-            <div class="flex h-[78px] items-center gap-3 border-b border-[#EFE8E2] px-5">
-
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#238B3A]">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="h-5 w-5 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="2">
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M12 14l9-5-9-5-9 5 9 5z" />
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M5 12v5c3 2 11 2 14 0v-5" />
-                    </svg>
-                </div>
-
-                <div class="leading-tight">
-                    <p class="text-[9px] font-medium uppercase tracking-wide text-[#8D7B74]">
-                        NUSA PORTAL
-                    </p>
-
-                    <p class="mt-0.5 text-[11px] font-bold text-[#3F2924]">
-                        SMA N 1 Nusantara
-                    </p>
-                </div>
+            <div class="border-b border-[#E5D8CC] px-5 py-6">
+                <p class="font-poppins text-xl font-extrabold leading-tight text-[#5C4033]">JURNAL GURU</p>
+                <p class="mt-1 text-md font-medium text-[#7A6A60]">Akun Guru</p>
 
             </div>
 
 
             <!-- Menu -->
-            <nav class="px-4 py-5">
+            <nav class="px-4 py-6">
 
                 <a href="{{ route('home') }}"
                     class="menu-item {{ request()->routeIs('home') ? 'menu-active' : 'text-[#8D7B74]' }} flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-[11px] font-medium transition hover:bg-[#F5EFE8] hover:text-[#3F2924]">
@@ -182,26 +188,24 @@
 
 
 
-                <a href="{{ route('dispen.index') }}"
-                    class="menu-item {{ request()->routeIs('dispen.*') ? 'menu-active' : 'text-[#8D7B74]' }} mt-2 flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left text-[11px] font-medium transition hover:bg-[#F5EFE8] hover:text-[#3F2924]">
+                <div class="mt-2">
+                    <button type="button" onclick="togglePiketMenu()"
+                        class="menu-item {{ request()->routeIs('dashboard-guru-piket', 'piket.*', 'dispen.*') ? 'menu-active' : 'text-[#8D7B74]' }} flex w-full items-center justify-between rounded-md text-left text-[11px] font-medium transition hover:bg-[#F5EFE8] hover:text-[#3F2924]">
+                        <span class="flex items-center gap-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/>
+                            </svg>
+                            Piket
+                        </span>
+                        <svg id="piketChevron" class="h-4 w-4 transition-transform {{ request()->routeIs('piket.*', 'dispen.*') ? 'rotate-180' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
 
-                    <!-- Send / Surat -->
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        stroke-width="1.8">
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M22 2L11 13" />
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M22 2l-7 20-4-9-9-4 20-7z" />
-                    </svg>
-
-                    Dispen
-                </a>
+                    <div id="piketSubmenu" class="{{ request()->routeIs('piket.*', 'dispen.*') ? '' : 'hidden' }} ml-7 mt-1 space-y-1 border-l border-[#E5D8CC] pl-3">
+                        <a href="{{ route('piket.jurnal') }}" class="block rounded-md px-3 py-2 text-[11px] {{ request()->routeIs('piket.jurnal') ? 'menu-active font-semibold' : 'text-[#8D7B74] hover:bg-[#F5EFE8]' }}">Jurnal Guru</a>
+                        <a href="{{ route('piket.dispen') }}" class="block rounded-md px-3 py-2 text-[11px] {{ request()->routeIs('piket.dispen', 'dispen.*') ? 'menu-active font-semibold' : 'text-[#8D7B74] hover:bg-[#F5EFE8]' }}">Dispen</a>
+                        <a href="{{ route('piket.upload-tugas') }}" class="block rounded-md px-3 py-2 text-[11px] {{ request()->routeIs('piket.upload-tugas') ? 'menu-active font-semibold' : 'text-[#8D7B74] hover:bg-[#F5EFE8]' }}">Upload Tugas</a>
+                    </div>
+                </div>
 
 
                 <button
@@ -275,7 +279,7 @@
 
 
             <!-- Logout -->
-            <div class="absolute bottom-0 left-0 right-0 border-t border-[#EFE8E2] p-4">
+            <div class="absolute bottom-0 left-0 right-0 border-t border-[#E5D8CC] p-4">
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -311,10 +315,10 @@
         <!-- MAIN -->
         <!-- ===================================================== -->
 
-        <main class="ml-[180px] min-h-screen flex-1">
+        <main class="ml-64 min-h-screen flex-1">
 
             <!-- TOP HEADER -->
-            <header class="flex h-[78px] items-center justify-between border-b border-[#2F1F1B] bg-[#3F2924] px-5">
+            <header class="sticky top-0 z-30 flex min-h-[78px] items-center justify-between border-b border-[#5C4033] bg-[#5C4033] px-7">
 
                 <div>
                     <h1
@@ -413,6 +417,14 @@
     <!-- ===================================================== -->
 
     <script>
+        function togglePiketMenu() {
+            const submenu = document.getElementById('piketSubmenu');
+            const chevron = document.getElementById('piketChevron');
+
+            submenu.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+
         function showPage(pageId, button = null) {
 
             const pages = document.querySelectorAll('.page');

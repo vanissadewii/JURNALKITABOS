@@ -30,7 +30,7 @@
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>
                     </svg>
-                    Dasbor
+                    Beranda
                 </a>
                 <a href="{{ route('kelas.scan') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
@@ -72,7 +72,7 @@
             <div class="w-full max-w-[500px] mx-auto px-4 py-6 sm:px-5 md:pt-10 pb-10 flex flex-col items-center">
 
                 <h2 class="m-0 mb-1.5 font-['Poppins'] text-lg sm:text-xl md:text-2xl font-bold text-center text-[#3E3028]">
-                    QR Code Siswa
+                    QR Code Kelas
                 </h2>
 
                 <p class="m-0 mb-6 text-xs leading-relaxed text-center text-[#7A6A60]">
@@ -80,19 +80,15 @@
                     untuk memulai verifikasi sesi.
                 </p>
 
-                {{-- QR PLACEHOLDER — nanti diganti komponen QR asli --}}
+                {{-- QR kelas untuk dipindai guru --}}
                 <div class="w-[190px] h-[190px] sm:w-[210px] sm:h-[210px] md:w-[220px] md:h-[220px]
                             bg-white border border-[#E5D8CC] rounded-2xl flex items-center justify-center
                             p-[18px] shadow-[0_4px_15px_rgba(62,48,40,0.06)]">
-
-                    <div class="relative w-[150px] h-[150px] sm:w-[170px] sm:h-[170px] md:w-[180px] md:h-[180px]
-                                bg-[linear-gradient(90deg,#3E3028_10px,transparent_10px),linear-gradient(#3E3028_10px,transparent_10px),linear-gradient(90deg,transparent_20px,#3E3028_20px_30px),linear-gradient(transparent_20px,#3E3028_20px_30px)]
-                                bg-[length:30px_30px] bg-[position:0_0]">
-
-                        <div class="absolute top-0 left-0 w-[38px] h-[38px] border-[8px] border-[#3E3028] bg-white"></div>
-                        <div class="absolute right-0 bottom-0 w-[38px] h-[38px] border-[8px] border-[#3E3028] bg-white"></div>
-
-                    </div>
+                    @if ($qrImage)
+                        <img src="{{ $qrImage }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain">
+                    @else
+                        <p class="text-center text-xs text-[#7A6A60]">Akun kelas belum terhubung ke kelas.</p>
+                    @endif
 
                 </div>
 
@@ -116,7 +112,7 @@
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Kelas</span>
-                        <span class="text-[#3E3028] font-semibold text-right">XI RPL 2</span>
+                        <span class="text-[#3E3028] font-semibold text-right">{{ $kelas?->nama_kelas ?? '-' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
@@ -152,11 +148,10 @@
 
     </div>
 
-    {{-- BOTTOM NAV (mobile) --}}
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
         <a href="{{ route('kelas.beranda') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
-            Dasbor
+            Beranda
         </a>
         <a href="{{ route('kelas.scan') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>

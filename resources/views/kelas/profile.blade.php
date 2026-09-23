@@ -32,7 +32,6 @@
 
             <nav class="flex flex-col gap-1">
 
-                {{-- DASBOR --}}
                 <a href="{{ route('kelas.beranda') }}"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
 
@@ -45,7 +44,7 @@
                         <path d="M5 10v10h14V10" />
                     </svg>
 
-                    Dasbor
+                    Beranda
                 </a>
 
 
@@ -206,25 +205,17 @@
 
 
                 {{-- KELUAR AKUN --}}
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit"
-                        class="w-full h-[45px] rounded-lg bg-red-600 text-white flex items-center justify-center text-sm font-semibold cursor-pointer border-0">
-                        Log Out
-                    </button>
-                
-
-                </form>
+                <button type="button"
+                    onclick="openLogoutConfirm()"
+                    class="w-full h-[45px] rounded-lg bg-red-600 text-white flex items-center justify-center text-sm font-semibold cursor-pointer border-0">
+                    Log Out
+                </button>
             </div>
 
         </main>
 
     </div>
 
-
-    {{-- ================================================= --}}
-    {{-- POPUP EDIT PROFIL --}}
-    {{-- ================================================= --}}
 
     <div id="editProfileModal"
         class="hidden fixed inset-0 z-[100]
@@ -338,12 +329,8 @@
 
                     </div>
 
-
-                    {{-- PEMBATAS --}}
                     <div class="border-t border-[#E5D8CC] my-1"></div>
 
-
-                    {{-- PASSWORD LAMA --}}
                     <div>
 
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
@@ -389,8 +376,6 @@
 
                     </div>
 
-
-                    {{-- PASSWORD BARU --}}
                     <div>
 
                         <label class="block text-sm font-semibold text-[#3E3028] mb-1.5">
@@ -441,8 +426,6 @@
 
                 {{-- TOMBOL BATAL & SIMPAN --}}
                 <div class="flex gap-3 mt-6">
-
-                    {{-- BATAL --}}
                     <button type="button"
                         onclick="closeEditProfile()"
                         class="flex-1 px-4 py-3
@@ -454,11 +437,8 @@
                                    hover:bg-[#F5EFE8]">
 
                         Batal
-
                     </button>
 
-
-                    {{-- SIMPAN --}}
                     <button type="button"
                         onclick="saveProfile()"
                         class="flex-1 px-4 py-3
@@ -469,7 +449,6 @@
                                    hover:bg-[#4B3329]">
 
                         Simpan
-
                     </button>
 
                 </div>
@@ -481,15 +460,57 @@
     </div>
 
 
-    {{-- ================================================= --}}
-    {{-- BOTTOM NAV MOBILE --}}
-    {{-- ================================================= --}}
+    {{-- MODAL KONFIRMASI LOGOUT --}}
+    <div id="logoutConfirmModal"
+        class="hidden fixed inset-0 z-[100]
+                bg-black/40
+                flex items-center justify-center
+                px-4 py-6">
+
+        <div class="bg-white w-full max-w-[380px]
+                    rounded-[12px]
+                    shadow-[0_10px_35px_rgba(0,0,0,0.15)]
+                    p-5 sm:p-6">
+
+            <h2 class="font-['Poppins'] font-bold text-lg text-[#3E3028] mb-2">
+                Konfirmasi Logout
+            </h2>
+
+            <p class="text-sm text-[#7A6A60] mb-6">
+                Apakah Anda yakin ingin keluar dari akun ini?
+            </p>
+
+            <div class="flex gap-3">
+                <button type="button"
+                    onclick="closeLogoutConfirm()"
+                    class="flex-1 px-4 py-3 rounded-lg
+                           border border-[#E5D8CC]
+                           bg-white text-[#5C4033]
+                           text-sm font-semibold
+                           hover:bg-[#F5EFE8]">
+                    Batal
+                </button>
+
+                <form method="POST" action="{{ route('logout') }}" class="flex-1">
+                    @csrf
+                    <button type="submit"
+                        class="w-full px-4 py-3 rounded-lg
+                               bg-red-600 text-white
+                               text-sm font-semibold
+                               hover:bg-red-700">
+                        Ya, Log Out
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
 
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px]
                 bg-white border-t border-[#E5D8CC]
                 flex z-50">
 
-        {{-- DASBOR --}}
         <a href="{{ route('kelas.beranda') }}"
             class="flex-1 flex flex-col items-center justify-center gap-1
                   text-[11px] text-[#7A6A60]">
@@ -505,7 +526,7 @@
 
             </svg>
 
-            Dasbor
+            Beranda
         </a>
 
 
@@ -571,11 +592,6 @@
 
     </nav>
 
-
-    {{-- ================================================= --}}
-    {{-- JAVASCRIPT --}}
-    {{-- ================================================= --}}
-
     <script>
         // BUKA POPUP EDIT PROFIL
         function openEditProfile() {
@@ -588,7 +604,6 @@
 
         }
 
-
         // TUTUP POPUP EDIT PROFIL
         function closeEditProfile() {
 
@@ -599,7 +614,6 @@
             document.body.classList.remove('overflow-hidden');
 
         }
-
 
         // LIHAT / SEMBUNYIKAN PASSWORD
         function togglePassword(inputId) {
@@ -618,30 +632,20 @@
 
         }
 
-
         // TOMBOL SIMPAN
-        // Sementara hanya menutup popup karena belum terhubung database
         function saveProfile() {
 
             closeEditProfile();
 
         }
 
-
         // TOMBOL HUBUNGI -> LANGSUNG KE WHATSAPP ADMIN
-        // Nomor & pesan masih hardcode di frontend (belum ambil dari database)
         function hubungiAdmin() {
-
-            const nomorAdmin = '6281234567890'; // ganti dengan nomor WA admin asli, format 62xxxxxxxxxx tanpa + atau 0 di depan
-
-            const pesan = 'Hallo Admin\nSaya dari Kelas:\nKendala:';
-
-            const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
-
-            window.open(url, '_blank');
-
+        const nomorAdmin = '6287782599520';
+        const pesan = 'Hallo Admin\nSaya dari Kelas:\nKendala:';
+        const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
+        window.open(url, '_blank');
         }
-
 
         // KLIK AREA GELAP UNTUK MENUTUP POPUP
         document.getElementById('editProfileModal').addEventListener('click', function(event) {
@@ -649,6 +653,34 @@
             if (event.target === this) {
 
                 closeEditProfile();
+
+            }
+
+        });
+
+        // BUKA / TUTUP KONFIRMASI LOGOUT
+        function openLogoutConfirm() {
+
+            document.getElementById('logoutConfirmModal').classList.remove('hidden');
+
+            document.body.classList.add('overflow-hidden');
+
+        }
+
+        function closeLogoutConfirm() {
+
+            document.getElementById('logoutConfirmModal').classList.add('hidden');
+
+            document.body.classList.remove('overflow-hidden');
+
+        }
+
+        // KLIK AREA GELAP UNTUK MENUTUP KONFIRMASI LOGOUT
+        document.getElementById('logoutConfirmModal').addEventListener('click', function(event) {
+
+            if (event.target === this) {
+
+                closeLogoutConfirm();
 
             }
 

@@ -36,24 +36,33 @@
       }
     }
   </script>
+  <style>
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+    .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; }
+    .guru-sidebar-nav a svg { color: #7A6A60 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
+    .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+  </style>
 </head>
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
-  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
-    <div class="p-6 flex flex-col gap-8">
+  <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="py-6 px-4 flex flex-col gap-8">
       
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
       </div>
 
       <!-- Navigation Links -->
-      <nav class="flex flex-col gap-1.5">
+      <nav class="guru-sidebar-nav flex flex-col gap-1">
         
         <!-- Active Link (Dashboard) -->
-        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
+        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
           </svg>
@@ -61,7 +70,7 @@
         </a>
 
         <!-- Menu Input Jurnal -->
-        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ route('jurnal.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
             <path d="M7 3v14"/>
@@ -70,15 +79,19 @@
         </a>
 
         <!-- MENU LIST/RIWAYAT JURNAL -->
-        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
 
+        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
+        </a>
+
         <!-- Menu Profil Guru -->
-        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
             <circle cx="10" cy="6.5" r="3.5"/>
@@ -95,52 +108,17 @@
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
     
     <!-- Top Header Bar -->
-    <header class="w-full bg-[#5C4033] shadow-md px-6 md:px-10 py-6 sm:py-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <header class="sticky top-0 z-30 w-full bg-[#5C4033] shadow-md px-6 md:px-10 py-6 sm:py-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       
       <div class="flex items-center justify-between w-full md:w-auto gap-4">
         <div class="flex flex-col gap-1">
           <span class="text-xs sm:text-sm font-medium tracking-wide text-brand-200">Selamat Datang,</span>
           <h1 class="font-poppins text-2xl sm:text-3xl font-bold text-white tracking-tight">Budi Santoso</h1>
-          <span class="text-xs sm:text-sm text-brand-300">Guru Matematika • </span>
-        </div>
-
-        <!-- Logo Mobile -->
-        <div class="md:hidden w-12 h-12 flex items-center justify-center bg-gradient-to-br from-white to-[#F5EFE8] border-2 border-brand-200 rounded-xl shadow-md shrink-0">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="3" width="15" height="18" rx="2.5" fill="#5C4033"/>
-            <circle cx="5.5" cy="6" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="12" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="18" r="0.8" fill="#D7B899"/>
-            <line x1="9" y1="7" x2="15" y2="7" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="10.5" x2="15" y2="10.5" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="14" x2="13" y2="14" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M14 19L20.5 12.5C21 12 21 11 20.5 10.5L19.5 9.5C19 9 18 9 17.5 9.5L11 16V19H14Z" fill="#D73800" stroke="#FFFFFF" stroke-width="1"/>
-          </svg>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between w-full md:w-auto gap-4">
-        <!-- Tanggal Otomatis -->
-        <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-[#FFF8F0] border border-white/10">
-          <svg class="w-4 h-4 text-brand-200" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="2" y="3" width="10" height="9" rx="1"/>
-            <path d="M4 1v2M10 1v2M2 6h10"/>
-          </svg>
-          <span id="current-date">--</span>
-        </div>
-
-        <!-- Logo Desktop -->
-        <div class="hidden md:flex w-12 h-12 items-center justify-center bg-gradient-to-br from-white to-[#F5EFE8] border-2 border-brand-200 rounded-2xl shadow-md shrink-0">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="3" width="15" height="18" rx="2.5" fill="#5C4033"/>
-            <circle cx="5.5" cy="6" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="12" r="0.8" fill="#D7B899"/>
-            <circle cx="5.5" cy="18" r="0.8" fill="#D7B899"/>
-            <line x1="9" y1="7" x2="15" y2="7" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="10.5" x2="15" y2="10.5" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <line x1="9" y1="14" x2="13" y2="14" stroke="#E2C7B0" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M14 19L20.5 12.5C21 12 21 11 20.5 10.5L19.5 9.5C19 9 18 9 17.5 9.5L11 16V19H14Z" fill="#D73800" stroke="#FFFFFF" stroke-width="1"/>
-          </svg>
+          <span class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-[#D7B899]">
+            <span>Guru Matematika</span>
+            <span class="text-white/40">•</span>
+            <span>{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</span>
+          </span>
         </div>
       </div>
 
@@ -185,7 +163,7 @@
                 <span class="whitespace-nowrap">Jam ke-1 (07:00 – 07:45)</span>
               </div>
 
-              <a href="{{ url('/form-jurnal') }}" class="px-6 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all whitespace-nowrap">
+              <a href="{{ route('jurnal.create') }}" class="px-6 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all whitespace-nowrap">
                 Mulai Sesi Mengajar
               </a>
 
@@ -229,7 +207,7 @@
 
             <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
               <span class="text-brand-600 font-medium">Jam ke-1 • 07:00 – 07:45</span>
-              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
+              <a href="{{ url('/form-jurnal') }}" data-session-start="07:00" class="session-link font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
                 Isi Jurnal
               </a>
             </div>
@@ -254,7 +232,7 @@
 
             <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
               <span class="text-brand-600 font-medium">Jam ke-2 • 08:00 – 08:45</span>
-              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
+              <a href="{{ url('/form-jurnal') }}" data-session-start="08:00" class="session-link font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
                 Isi Jurnal
               </a>
             </div>
@@ -279,7 +257,7 @@
 
             <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
               <span class="text-brand-600 font-medium">Jam ke-3 • 09:00 – 09:45</span>
-              <a href="{{ url('/form-jurnal') }}" class="font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
+              <a href="{{ url('/form-jurnal') }}" data-session-start="09:00" class="session-link font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
                 Isi Jurnal
               </a>
             </div>
@@ -321,6 +299,11 @@
         <span>Riwayat</span>
       </a>
 
+      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg>
+        <span>Piket</span>
+      </a>
+
       <!-- Inactive Mobile Link (Profil Guru) -->
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -334,9 +317,19 @@
   </nav>
 
   <script>
-    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    const today = new Date().toLocaleDateString('id-ID', options);
-    document.getElementById('current-date').textContent = today;
+    document.querySelectorAll('.session-link').forEach((link) => {
+      const [startHour, startMinute] = link.dataset.sessionStart.split(':').map(Number);
+      const now = new Date();
+      const isAvailable = now.getHours() * 60 + now.getMinutes() >= startHour * 60 + startMinute;
+
+      if (!isAvailable) {
+        link.removeAttribute('href');
+        link.classList.remove('text-brand-800', 'hover:text-brand-900', 'underline');
+        link.classList.add('cursor-not-allowed', 'text-[#B8ADA5]', 'no-underline');
+        link.textContent = 'Belum tersedia';
+        link.setAttribute('aria-disabled', 'true');
+      }
+    });
   </script>
 
 </body>

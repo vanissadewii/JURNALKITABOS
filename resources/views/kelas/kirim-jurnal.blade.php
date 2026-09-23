@@ -15,8 +15,7 @@
 
     <div class="md:flex md:min-h-screen">
 
-        {{-- SIDEBAR DESKTOP --}}
-        <aside class="hidden md:flex md:flex-col md:w-64 md:min-h-screen md:h-auto md:sticky md:top-0
+        <aside class="hidden md:flex md:flex-col md:w-64 md:h-screen md:sticky md:top-0
                bg-white border-r border-[#E5D8CC] py-6 px-4">
 
             <div class="mb-8 px-2">
@@ -36,7 +35,7 @@
                         <path d="M3 12l9-9 9 9"/>
                         <path d="M5 10v10h14V10"/>
                     </svg>
-                    Dasbor
+                    Beranda
                 </a>
 
                 <a href="{{ route('kelas.scan') }}"
@@ -75,7 +74,7 @@
         <main class="flex-1 w-full min-w-0 pb-24 md:pb-8">
 
             {{-- HEADER --}}
-            <div class="bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
+            <div class="sticky top-0 z-30 bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
                 <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
                     Kirim Jurnal
                 </span>
@@ -85,7 +84,6 @@
             </div>
 
 
-            {{-- ISI --}}
             <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-4">
 
                 <div class="flex items-center justify-between mt-1">
@@ -99,35 +97,51 @@
                 <div class="w-full max-w-full bg-white border border-[#E5D8CC] rounded-[10px]
                             shadow-[0_4px_12px_rgba(62,48,40,0.03)] overflow-x-auto">
 
-                    <table class="min-w-[1200px] w-full text-left border-collapse">
+                    <table class="min-w-[1300px] w-full text-left border-collapse">
 
                         <thead>
                             <tr class="bg-[#F5EFE8]">
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC]">
+                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] align-middle">
                                     Jam Ke-
                                 </th>
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC]">
+                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] align-middle">
                                     Nama Pengajar
                                 </th>
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC]">
+                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] align-middle">
                                     Mata Pelajaran
                                 </th>
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
+                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center align-middle">
                                     Hadir
                                 </th>
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
+                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center align-middle">
                                     Tidak Hadir<br>
                                     <span class="normal-case font-medium">(Tugas)</span>
                                 </th>
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] min-w-[260px]">
+                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] min-w-[260px] align-middle">
                                     Materi
                                 </th>
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
-                                    Jumlah Hadir Siswa
+                                <th colspan="6" class="px-5 py-2.5 text-[11px] font-semibold uppercase text-[#5C4033] text-center border-b border-r border-[#E5D8CC]">
+                                    Keadaan Siswa
                                 </th>
-                                <th class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-[#E5D8CC] min-w-[200px]">
-                                    Siswa Tidak Hadir<br>
-                                    <span class="normal-case font-medium">(Nama - S/I/A/D)</span>
+                            </tr>
+                            <tr class="bg-[#F5EFE8]">
+                                <th class="px-4 py-3 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
+                                    Jumlah Hadir
+                                </th>
+                                <th class="px-4 py-3 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] min-w-[170px]">
+                                    Nama Siswa
+                                </th>
+                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] text-center w-10">
+                                    S
+                                </th>
+                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] text-center w-10">
+                                    I
+                                </th>
+                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] text-center w-10">
+                                    A
+                                </th>
+                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-[#E5D8CC] text-center w-10">
+                                    D
                                 </th>
                             </tr>
                         </thead>
@@ -154,17 +168,16 @@
                                 <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
                                     Mengerjakan latihan Bahasa Jepang halaman 25
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
-                                    35
+                                <td class="px-4 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
+                                    -
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028]">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div class="flex items-start gap-2">
-                                            <span class="break-words leading-6">Andi Saputra</span>
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#FFEBEE] text-[#C62828] border border-[#FFCDD2] font-bold text-[11px] shrink-0">S</span>
-                                        </div>
-                                    </div>
+                                <td class="px-4 py-4 text-[13px] text-[#7A6A60] whitespace-nowrap border-r border-[#E5D8CC]">
+                                    -
                                 </td>
+                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4"></td>
                             </tr>
 
                             {{-- 2. PJOK (Jam 2-4) - Tidak Hadir --}}
@@ -187,53 +200,83 @@
                                 <td class="px-5 py-4 text-[13px] text-[#7A6A60] whitespace-nowrap border-r border-[#E5D8CC]">
                                     -
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#7A6A60] text-center whitespace-nowrap border-r border-[#E5D8CC]">
+                                <td class="px-4 py-4 text-[13px] text-[#7A6A60] text-center whitespace-nowrap border-r border-[#E5D8CC]">
                                     -
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#7A6A60] text-center whitespace-nowrap">
+                                <td class="px-4 py-4 text-[13px] text-[#7A6A60] whitespace-nowrap border-r border-[#E5D8CC]">
                                     -
                                 </td>
+                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4"></td>
                             </tr>
 
                             {{-- 3. Matematika (Jam 5-8) - Hadir --}}
-                            <tr class="border-b border-[#E5D8CC] align-top">
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                            <tr class="border-b border-[#F0E9DF] align-top">
+                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
                                     5 - 8
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
                                     Badrus Sulaiman, S.Pd., Gr.
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
+                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
                                     Matematika
                                 </td>
-                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                <td rowspan="4" class="px-5 py-4 text-center border-r border-b border-[#E5D8CC] align-top">
                                     <span class="text-[#2E7D32] font-bold">✓</span>
                                 </td>
-                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
+                                <td rowspan="4" class="px-5 py-4 text-center border-r border-b border-[#E5D8CC] align-top">
                                     <span class="text-[#C62828] font-bold">✕</span>
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
+                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-b border-[#E5D8CC] align-top">
                                     Persamaan dan Pertidaksamaan
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
-                                    33
+                                <td rowspan="4" class="px-4 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
+                                    32
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028]">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div class="flex items-start gap-2">
-                                            <span class="break-words leading-6">Rizki Pratama</span>
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#FFF8E1] text-[#F9A825] border border-[#FFE082] font-bold text-[11px] shrink-0">D</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="break-words leading-6">Nadia Putri</span>
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#FFF8E1] text-[#F9A825] border border-[#FFE082] font-bold text-[11px] shrink-0">D</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="break-words leading-6">Andi Saputra</span>
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#FFEBEE] text-[#C62828] border border-[#FFCDD2] font-bold text-[11px] shrink-0">S</span>
-                                        </div>
-                                    </div>
+                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#F0E9DF]">
+                                    Rizki Pratama
                                 </td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center">
+                                    <span class="text-[#3E3028] font-bold">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-[#F0E9DF] align-top">
+                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#F0E9DF]">
+                                    Nadia Putri
+                                </td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center">
+                                    <span class="text-[#3E3028] font-bold">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-[#F0E9DF] align-top">
+                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#F0E9DF]">
+                                    Fajar Nugroho
+                                </td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
+                                <td class="px-3 py-2.5 text-center">
+                                    <span class="text-[#3E3028] font-bold">✓</span>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-[#E5D8CC] align-top">
+                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#E5D8CC]">
+                                    Andi Saputra
+                                </td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#E5D8CC]">
+                                    <span class="text-[#3E3028] font-bold">✓</span>
+                                </td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-2.5 text-center border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-2.5 text-center"></td>
                             </tr>
 
                             {{-- 4. Bahasa Inggris (Jam 9-10) - Hadir --}}
@@ -256,20 +299,17 @@
                                 <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
                                     Asking and Giving Opinion
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
-                                    34
+                                <td class="px-4 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
+                                    35
                                 </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028]">
-                                    <div class="flex flex-col gap-1.5">
-                                        <div class="flex items-start gap-2">
-                                            <span class="break-words leading-6">Nadia Putri</span>
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#FFF8E1] text-[#F9A825] border border-[#FFE082] font-bold text-[11px] shrink-0">D</span>
-                                        </div>
-                                        <div class="flex items-start gap-2">
-                                            <span class="break-words leading-6">Andi Saputra</span>
-                                            <span class="w-6 h-6 flex items-center justify-center rounded-md bg-[#FFEBEE] text-[#C62828] border border-[#FFCDD2] font-bold text-[11px] shrink-0">S</span>
-                                        </div>
-                                    </div>
+                                <td class="px-4 py-4 text-[13px] text-[#3E3028] border-r border-[#E5D8CC]">
+                                    Nadia Putri
+                                </td>
+                                <td class="px-3 py-4 text-center border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4 text-center border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4 text-center border-r border-[#E5D8CC]"></td>
+                                <td class="px-3 py-4 text-center">
+                                    <span class="text-[#3E3028] font-bold">✓</span>
                                 </td>
                             </tr>
 
@@ -331,7 +371,6 @@
     </div>
 
 
-    {{-- BOTTOM NAV MOBILE --}}
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
         <a href="{{ route('kelas.beranda') }}"
            class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
@@ -339,7 +378,7 @@
                 <path d="M3 12l9-9 9 9"/>
                 <path d="M5 10v10h14V10"/>
             </svg>
-            Dasbor
+            Beranda
         </a>
         <a href="{{ route('kelas.scan') }}"
            class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">

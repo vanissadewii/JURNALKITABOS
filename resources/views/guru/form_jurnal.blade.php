@@ -36,28 +36,29 @@
       }
     }
   </script>
+  <style>html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; } .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; } .guru-sidebar-nav { gap: .25rem !important; } .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a svg { width: 1.25rem !important; height: 1.25rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a.bg-brand-50, .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; } .guru-sidebar-nav a.bg-brand-50 svg, .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }</style>
 </head>
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
-  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
-    <div class="p-6 flex flex-col gap-8">
+  <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="py-6 px-4 flex flex-col gap-8">
 
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+        <span class="text-md font-medium text-brand-600">Akun Guru</span>
       </div>
 
       <!-- Navigation Links -->
-      <nav class="flex flex-col gap-1.5">
+      <nav class="guru-sidebar-nav flex flex-col gap-1">
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
           </svg>
           <span>Beranda</span>
         </a>
-
+        
         <!-- Active Link (Isi Jurnal) -->
         <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
@@ -73,6 +74,8 @@
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
+
+        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -92,9 +95,7 @@
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
-        <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6"/>
           </svg>
         </a>
         <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Lengkapi Jurnal Mengajar</h1>
@@ -143,39 +144,10 @@
 
       </div>
 
-      <!-- Form Inputs Container -->
-      <form action="{{ url('/tampilkan-qr-guru') }}" method="GET" class="w-full flex flex-col gap-5">
-
-        <!-- Select Status Kehadiran Guru -->
-        <div class="flex flex-col gap-1.5">
-          <label for="status_guru" class="text-xs font-semibold text-brand-600">Status Kehadiran Guru</label>
-          <div class="relative">
-            <select 
-              id="status_guru" 
-              name="status_guru" 
-              onchange="toggleStatusGuru(this.value)"
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] appearance-none focus:outline-none focus:border-brand-800 transition-colors pr-10 cursor-pointer font-semibold"
-            >
-              <option value="Hadir di Kelas" selected>Hadir di Kelas</option>
-              <option value="Izin / Sakit">Izin / Sakit</option>
-            </select>
-            <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-brand-600">
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 9l6 6 6-6"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Banner Info Ketika Guru Izin/Sakit -->
-        <div id="banner-izin" class="hidden p-4 bg-amber-50 border border-amber-200 rounded-xl items-start gap-3">
-          <svg class="w-5 h-5 text-amber-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <p class="text-xs text-amber-900 leading-relaxed">
-            Status Anda saat ini adalah <strong>Izin / Sakit</strong>. Pengisian materi, presensi siswa, dan catatan pembelajaran dinonaktifkan.
-          </p>
-        </div>
+      <!-- Form Inputs Container (Action mengarah ke guru-scan-qr) -->
+      <form action="{{ route('jurnal.store') }}" method="POST" class="w-full flex flex-col gap-5">
+        @csrf
+        <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif?->id_jadwal }}">
 
         <!-- FORM ISIAN UTAMA -->
         <div id="section-form-utama" class="flex flex-col gap-5">
@@ -188,7 +160,7 @@
               id="materi" 
               name="materi" 
               value="Persamaan Linear Satu Variabel" 
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
             >
           </div>
 
@@ -200,8 +172,9 @@
                 type="number" 
                 id="jumlah_hadir" 
                 name="jumlah_hadir" 
-                value="30" 
-                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
+                value="4" 
+                readonly
+                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
               >
             </div>
 
@@ -213,12 +186,12 @@
                 name="jumlah_absen" 
                 value="0" 
                 readonly
-                class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-xs sm:text-sm font-bold text-[#3E3028] focus:outline-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
+                class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-xs sm:text-sm font-bold text-[#3E3028] focus:outline-none"
               >
             </div>
           </div>
 
-          <!-- FITUR PRESENSI SISWA SIMPEL (SEARCH & TANGGUNG JAWAB TOMBOL KET / S I A) -->
+          <!-- FITUR PRESENSI SISWA SIMPEL -->
           <div id="box-presensi-siswa" class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col gap-4 shadow-xs transition-all">
             <div class="flex flex-col gap-2">
               <label for="search-siswa" class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028] flex items-center gap-2">
@@ -235,7 +208,7 @@
                   id="search-siswa" 
                   oninput="filterSiswa(this.value)"
                   placeholder="Ketik nama / no. absen siswa..." 
-                  class="w-full h-10 pl-9 pr-3.5 bg-brand-50/50 border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  class="w-full h-10 pl-9 pr-3.5 bg-brand-50/50 border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
                 >
                 <svg class="w-4 h-4 text-brand-600 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -250,17 +223,6 @@
 
             <!-- Container Tersembunyi untuk Input Form Laravel/Backend -->
             <div id="hidden-inputs-container"></div>
-          </div>
-
-          <!-- Input Catatan Kegiatan Kelas -->
-          <div class="flex flex-col gap-1.5">
-            <label for="catatan" class="text-xs font-semibold text-brand-600">Catatan Kegiatan Kelas</label>
-            <textarea 
-              id="catatan" 
-              name="catatan" 
-              rows="3" 
-              class="w-full p-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all resize-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200"
-            >Siswa sangat antusias mengerjakan latihan soal di papan tulis.</textarea>
           </div>
 
         </div>
@@ -301,6 +263,8 @@
         <span>Riwayat</span>
       </a>
 
+      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
@@ -313,39 +277,6 @@
 
   <!-- SCRIPT LOGIKA JAVASCRIPT SIMPEL -->
   <script>
-    function toggleStatusGuru(status) {
-      const materiInput = document.getElementById('materi');
-      const jumlahHadirInput = document.getElementById('jumlah_hadir');
-      const searchSiswaInput = document.getElementById('search-siswa');
-      const catatanInput = document.getElementById('catatan');
-      const boxPresensi = document.getElementById('box-presensi-siswa');
-      const bannerIzin = document.getElementById('banner-izin');
-
-      if (status === 'Izin / Sakit') {
-        materiInput.disabled = true;
-        jumlahHadirInput.disabled = true;
-        searchSiswaInput.disabled = true;
-        catatanInput.disabled = true;
-
-        boxPresensi.classList.add('bg-gray-100', 'opacity-60', 'pointer-events-none');
-        boxPresensi.classList.remove('bg-white');
-
-        bannerIzin.classList.remove('hidden');
-        bannerIzin.classList.add('flex');
-      } else {
-        materiInput.disabled = false;
-        jumlahHadirInput.disabled = false;
-        searchSiswaInput.disabled = false;
-        catatanInput.disabled = false;
-
-        boxPresensi.classList.remove('bg-gray-100', 'opacity-60', 'pointer-events-none');
-        boxPresensi.classList.add('bg-white');
-
-        bannerIzin.classList.add('hidden');
-        bannerIzin.classList.remove('flex');
-      }
-    }
-
     // Data Siswa beserta Status Default ("Hadir")
     const daftarSiswa = [
       { key: 'siswa-1', nama: 'Aditya Pratama', absen: '01', status: 'Hadir' },
@@ -427,6 +358,8 @@
 
     function updateRingkasanJumlah() {
       const totalTidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir').length;
+      const totalSiswa = daftarSiswa.length;
+      document.getElementById('jumlah_hadir').value = totalSiswa - totalTidakHadir;
       document.getElementById('jumlah_absen').value = totalTidakHadir;
     }
 
@@ -445,6 +378,7 @@
 
     // Inisialisasi Pertama
     renderListSiswa();
+    updateRingkasanJumlah();
   </script>
 
 </body>

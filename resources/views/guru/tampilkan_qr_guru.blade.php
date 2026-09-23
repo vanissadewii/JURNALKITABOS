@@ -36,47 +36,58 @@
       }
     }
   </script>
+  <style>
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+    .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; }
+    .guru-sidebar-nav a svg { color: #7A6A60 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
+    .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+  </style>
 </head>
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
-  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
-    <div class="p-6 flex flex-col gap-8">
+  <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="py-6 px-4 flex flex-col gap-8">
       
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
       </div>
 
       <!-- Navigation Links -->
-      <nav class="flex flex-col gap-1.5">
+      <nav class="guru-sidebar-nav flex flex-col gap-1">
         
-        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
           </svg>
           <span>Beranda</span>
         </a>
 
-        <!-- Active Link (isi Jurnal) -->
-        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
+        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
             <path d="M7 3v14"/>
           </svg>
-          <span>isi Jurnal</span>
+          <span>Isi Jurnal</span>
         </a>
 
-        <!-- Menu Riwayat Jurnal -->
-        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
+        </a>
+
+        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
             <circle cx="10" cy="6.5" r="3.5"/>
@@ -93,7 +104,7 @@
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
     
     <!-- Top Header Bar (Warna Cokelat Dashboard) -->
-    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex items-center justify-between">
       <div class="max-w-4xl w-full mx-auto flex items-center justify-between">
         <a href="{{ url('/form-jurnal') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -116,8 +127,8 @@
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Jurnal Berhasil Disimpan</span>
           </span>
-          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028] mt-2">Matematika — X RPL 1</h2>
-          <p class="text-xs text-brand-600">Tunjukkan QR ini ke siswa/ketua kelas untuk diverifikasi.</p>
+          <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028] mt-2">{{ $jurnal->jadwal->mapel->nama_mapel ?? 'Mata Pelajaran' }} — {{ $jurnal->jadwal->kelas->nama_kelas }}</h2>
+          <p class="text-xs text-brand-600">Tunjukkan QR ini ke kelas untuk diverifikasi.</p>
         </div>
 
         <!-- Box Display Timer Masa Berlaku QR -->
@@ -133,10 +144,8 @@
         <div id="qr-container" class="p-4 bg-brand-50 border-2 border-dashed border-brand-200 rounded-2xl flex flex-col items-center justify-center gap-2 relative transition-all">
           
           <!-- Ilustrasi QR Code SVG -->
-          <svg id="qr-svg" class="w-48 h-48 text-[#3E3028] transition-opacity duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM10 3h1v1h-1zM10 6h1v1h-1zM6 10h1v1H6zM9 10h1v1H9zM12 10h1v1h-1zM14 10h1v1h-1zM17 10h1v1h-1zM3 12h1v1H3zM6 12h1v1H6zM11 12h1v1h-1zM13 12h1v1h-1zM15 12h1v1h-1zM10 14h1v1h-1zM12 14h1v1h-1zM14 14h1v1h-1zM18 14h1v1h-1zM10 17h1v1h-1zM13 17h1v1h-1zM15 17h1v1h-1zM18 17h1v1h-1zM12 19h1v1h-1zM14 19h1v1h-1zM16 19h1v1h-1zM10 20h1v1h-1zM13 20h1v1h-1zM17 20h1v1h-1z"/>
-          </svg>
-          <span class="text-[11px] font-mono text-brand-600">ID Sesi: JG-20260721-001</span>
+          <img id="qr-svg" class="w-48 h-48 transition-opacity duration-300" src="{{ $qrImage }}" alt="QR code verifikasi sesi">
+          <span class="text-[11px] font-mono text-brand-600">ID Sesi: {{ $qrSesi->kode_qr }}</span>
 
           <!-- Overlay Kadaluarsa (Muncul jika waktu habis) -->
           <div id="qr-expired-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-xs rounded-2xl flex-col items-center justify-center p-4 gap-2">
@@ -189,6 +198,8 @@
         <span>Riwayat</span>
       </a>
 
+      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
@@ -240,12 +251,18 @@
     // Jalankan timer saat halaman terbuka
     window.onload = startTimer;
 
-    // Listener otomatis: saat siswa berhasil scan QR guru, halaman otomatis pindah ke kamera guru
-    /* 
-    window.addEventListener('qr-scanned-by-student', function() {
-      window.location.href = "{{ url('/guru-scan-qr') }}";
-    });
-    */
+    const statusUrl = "{{ route('qr.status-guru', $jurnal) }}";
+    const homeUrl = "{{ url('/dashboard-guru') }}";
+
+    const statusInterval = setInterval(async () => {
+      const response = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });
+      const result = await response.json();
+
+      if (result.scanned) {
+        clearInterval(statusInterval);
+        window.location.href = homeUrl;
+      }
+    }, 2000);
   </script>
 
 </body>

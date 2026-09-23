@@ -30,7 +30,7 @@
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>
                     </svg>
-                    Dasbor
+                    Beranda
                 </a>
                 <a href="{{ route('kelas.scan') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
@@ -60,12 +60,12 @@
         <main class="flex-1 w-full pb-24 md:pb-8">
 
             {{-- HEADER --}}
-            <div class="bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
-                <span class="text-[#FFFFFF] text-[20px] font-['Poppins']">Hai 👋</span>
-                <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
-                    XI RPL 2
+            <div class="sticky top-0 z-30 bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
+                <span class="text-[#D7B899] text-xs sm:text-sm font-medium tracking-wide">Selamat Datang,</span>
+                <span class="text-white text-2xl md:text-3xl font-['Poppins'] font-bold">
+                    {{ $kelas->tingkat }} {{ $kelas->jurusan }} {{ $kelas->rombel }}
                 </span>
-                <span class="text-[#D7B899] text-xs font-medium mt-0.8">
+                <span class="text-[#D7B899] text-xs sm:text-sm font-medium">
                     {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
                 </span>
             </div>
@@ -109,7 +109,7 @@
                         <span>Kehadiran terverifikasi</span>
                     </div>
 
-                    {{-- SISWA DISPEN (bisa diklik) --}}
+
                     <div class="bg-[#FFF8E1] border border-[#FFE082] rounded-[8px] overflow-hidden">
                         <button type="button"
                                 onclick="toggleDispen(this)"
@@ -124,7 +124,7 @@
                                     </svg>
                                 </div>
                                 <span class="font-['Inter'] font-semibold text-[13px] text-[#3E3028]">
-                                    Siswa Dispensasi (2)
+                                    Siswa Dispensasi (3)
                                 </span>
                             </div>
                             <svg class="w-4 h-4 text-[#7A6A60] transition-transform duration-200 arrow-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -133,23 +133,37 @@
                         </button>
 
                         <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
-                            <div class="flex flex-col gap-1.5 pt-1 border-t border-[#FFE082]">
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="text-[13px] text-[#3E3028]">Rizki Pratama</span>
-                                    <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 8</span>
+                            <div class="flex flex-col pt-1 border-t border-[#FFE082]">
+                                <div class="flex flex-col gap-1 pb-2.5">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-[13px] font-semibold text-[#3E3028]">Rizki Pratama</span>
+                                        <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 8</span>
+                                    </div>
+                                    <span class="text-[12px] text-[#5C4033]">Ket: Mengikuti Lomba OSN Matematika</span>
+                                    <span class="text-[11px] text-[#7A6A60]">Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Rina</span></span>
+                                    <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
                                 </div>
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="text-[13px] text-[#3E3028]">Nadia Putri</span>
-                                    <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 10</span>
+                                <div class="flex flex-col gap-1 py-2.5 border-t border-[#FFE082]/60">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-[13px] font-semibold text-[#3E3028]">Nadia Putri</span>
+                                        <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 10</span>
+                                    </div>
+                                    <span class="text-[12px] text-[#5C4033]">Ket: Pulang karena sakit</span>
+                                    <span class="text-[11px] text-[#7A6A60]">Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Endah</span></span>
+                                    <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
+                                </div>
+                                <div class="flex flex-col gap-1 pt-2.5 border-t border-[#FFE082]/60">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="text-[13px] font-semibold text-[#3E3028]">Fajar Nugroho</span>
+                                        <span class="text-[11px] font-medium text-[#7A6A60]">Telat 15 menit</span>
+                                    </div>
+                                    <span class="text-[12px] text-[#5C4033]">Ket: Ban motor bocor di jalan</span>
+                                    <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
                                 </div>
                             </div>
-                            <p class="text-[11px] text-[#7A6A60] mt-2.5 pt-2 border-t border-[#FFE082]">
-                                Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Rina</span>
-                            </p>
                         </div>
                     </div>
 
-                    {{-- SISWA SAKIT / ALPA / IZIN (diinput guru di kelas) --}}
                     <div class="bg-[#FFEBEE] border border-[#FFCDD2] rounded-[8px] overflow-hidden">
                         <button type="button"
                                 onclick="toggleDispen(this)"
@@ -174,9 +188,6 @@
                                     <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-[#FFCDD2] text-[#C62828]">Sakit</span>
                                 </div>
                             </div>
-                            <p class="text-[11px] text-[#7A6A60] mt-2.5 pt-2 border-t border-[#FFCDD2]">
-                                Diinput oleh: <span class="font-semibold text-[#3E3028]">Badrus Sulaiman, S.Pd., Gr.</span>
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -226,15 +237,15 @@
                         </button>
 
                         <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
-                            <div class="flex flex-col gap-1.5 pt-1 border-t border-[#FFE082]">
+                            <div class="flex flex-col gap-1 pt-1 border-t border-[#FFE082]">
                                 <div class="flex items-center justify-between gap-2">
-                                    <span class="text-[13px] text-[#3E3028]">Nadia Putri</span>
+                                    <span class="text-[13px] font-semibold text-[#3E3028]">Nadia Putri</span>
                                     <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 10</span>
                                 </div>
+                                <span class="text-[12px] text-[#5C4033]">Ket: Pulang karena sakit</span>
+                                <span class="text-[11px] text-[#7A6A60]">Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Endah</span></span>
+                                <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
                             </div>
-                            <p class="text-[11px] text-[#7A6A60] mt-2.5 pt-2 border-t border-[#FFE082]">
-                                Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Rina</span>
-                            </p>
                         </div>
                     </div>
                 </div>
