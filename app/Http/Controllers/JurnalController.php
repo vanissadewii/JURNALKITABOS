@@ -20,9 +20,9 @@ class JurnalController extends Controller
 
         $jadwalAktif = $request->query('jadwal')
             ? JadwalPelajaran::with(['kelas', 'mapel', 'jamPelajaran'])
-            ->where('id_guru', $guru->id)
-            ->where('id_jadwal', (int) $request->query('jadwal'))
-            ->first()
+                ->where('id_guru', $guru->id)
+                ->where('id_jadwal', (int) $request->query('jadwal'))
+                ->first()
             : $sesi->jadwalBerlangsung(idGuru: (int) $guru->id);
 
         if (! $jadwalAktif) {
@@ -81,9 +81,9 @@ class JurnalController extends Controller
         $keterangan = $validated['catatan'] ?? '';
         if (! empty($validated['siswa_absen'])) {
             $daftarAbsen = collect((array) $validated['siswa_absen'])
-                ->map(fn($s) => "{$s['nama']} ({$s['status']})")
+                ->map(fn ($s) => "{$s['nama']} ({$s['status']})")
                 ->implode(', ');
-            $keterangan = trim($keterangan . "\nTidak hadir: " . $daftarAbsen);
+            $keterangan = trim($keterangan."\nTidak hadir: ".$daftarAbsen);
         }
 
         $jurnal = Jurnal::create([

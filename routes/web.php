@@ -32,8 +32,8 @@ Route::get('/home', function () {
 
 // ====================== ADMIN ======================
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/dashboard-admin', fn() => view('admin.dashboard_admin'));
-    Route::get('/admin/tambah', fn() => view('admin.tambah_admin'))->name('admin.tambah');
+    Route::get('/dashboard-admin', fn () => view('admin.dashboard_admin'));
+    Route::get('/admin/tambah', fn () => view('admin.tambah_admin'))->name('admin.tambah');
 
     Route::resource('admin/kelas', MasterKelasController::class)->names('admin.kelas');
     Route::resource('admin/siswa', SiswaController::class)->names('admin.siswa');
@@ -67,7 +67,7 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
     Route::get('/detail-jurnal/{jurnal}', [RiwayatJurnalController::class, 'show'])->name('jurnal.detail');
     Route::get('/riwayat-jurnal', [RiwayatJurnalController::class, 'index'])->name('riwayat-jurnal');
 
-    Route::get('/guru-scan', fn() => view('guru.guru_scan_qr'))->name('guru.scan');
+    Route::get('/guru-scan', fn () => view('guru.guru_scan_qr'))->name('guru.scan');
     Route::post('/guru/scan-kelas', [QrSesiController::class, 'guruScanKelas'])->name('guru.scan-kelas');
     Route::get('/guru/scan/status', [QrSesiController::class, 'guruStatus'])->name('guru.scan-status');
     Route::get('/guru/verifikasi-sukses/{jurnal}', [JurnalController::class, 'verifikasiSukses'])->name('guru.verifikasisukses');
