@@ -10,9 +10,5 @@ class JurnalSiswaAbsen extends Model
 
     protected $primaryKey = 'id_absen';
 
-<<<<<<< HEAD
-    protected $fillable = ['id_jurnal', 'nama', 'status'];
-=======
     protected $fillable = ['id_jurnal', 'id_siswa', 'nama', 'status'];
->>>>>>> putri/tampilan-admin
 }

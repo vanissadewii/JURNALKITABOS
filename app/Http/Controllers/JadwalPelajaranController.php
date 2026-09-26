@@ -18,23 +18,15 @@ class JadwalPelajaranController extends Controller
 {
     public function index(): View
     {
-<<<<<<< HEAD
-        $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5];
-=======
         $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6, 'Minggu' => 7];
->>>>>>> putri/tampilan-admin
 
         $jadwal = JadwalPelajaran::with(['kelas', 'jamPelajaran', 'guru', 'mapel'])
             ->whereHas('jamPelajaran.semester', fn ($q) => $q->where('status', 'aktif'))
             ->get()
             ->sortBy([
-<<<<<<< HEAD
-                fn ($a, $b) => $a->id_kelas <=> $b->id_kelas,
-=======
                 fn ($a, $b) => (int) ($a->kelas->tingkat ?? 99) <=> (int) ($b->kelas->tingkat ?? 99),
                 fn ($a, $b) => strnatcasecmp($a->kelas->jurusan ?? '', $b->kelas->jurusan ?? ''),
                 fn ($a, $b) => (int) ($a->kelas->rombel ?? 0) <=> (int) ($b->kelas->rombel ?? 0),
->>>>>>> putri/tampilan-admin
                 fn ($a, $b) => $urutanHari[$a->jamPelajaran->hari] <=> $urutanHari[$b->jamPelajaran->hari],
                 fn ($a, $b) => $a->jamPelajaran->jam_ke <=> $b->jamPelajaran->jam_ke,
             ])
@@ -57,19 +49,13 @@ class JadwalPelajaranController extends Controller
             ) {
                 $last->jam_ke_sampai = (int) $jam->jam_ke;
                 $last->jam_selesai = substr($jam->jam_selesai, 0, 5);
-<<<<<<< HEAD
-=======
                 $last->jadwal_ids[] = $row->id_jadwal;
->>>>>>> putri/tampilan-admin
             } else {
                 $jadwalGrup->push((object) [
                     'id_kelas' => $row->id_kelas,
                     'id_guru' => $row->id_guru,
                     'id_mapel' => $row->id_mapel,
-<<<<<<< HEAD
-=======
                     'jadwal_ids' => [$row->id_jadwal],
->>>>>>> putri/tampilan-admin
                     'kelas' => $row->kelas->nama_kelas ?? '-',
                     'hari' => $jam->hari,
                     'jam_ke_mulai' => (int) $jam->jam_ke,
@@ -87,8 +73,6 @@ class JadwalPelajaranController extends Controller
         $mapel = Mapel::orderBy('nama_mapel')->get();
 
         return view('admin.tambah_jadwal', compact('jadwalGrup', 'kelas', 'guru', 'mapel'));
-<<<<<<< HEAD
-=======
     }
 
     public function destroyGroup(Request $request): RedirectResponse
@@ -101,7 +85,6 @@ class JadwalPelajaranController extends Controller
         $jumlah = JadwalPelajaran::whereIn('id_jadwal', $validated['ids'])->delete();
 
         return redirect()->route('jadwal.index')->with('success', "{$jumlah} sesi jadwal berhasil dihapus.");
->>>>>>> putri/tampilan-admin
     }
 
     public function create(): View
@@ -148,12 +131,9 @@ class JadwalPelajaranController extends Controller
         if ($dari->hari !== $sampai->hari || (int) $dari->tingkat !== (int) $kelas->tingkat) {
             return back()->withErrors('Jam yang dipilih tidak sesuai dengan kelas atau hari.')->withInput();
         }
-<<<<<<< HEAD
-=======
         if (in_array($dari->hari, ['Sabtu', 'Minggu'], true) && ! $this->kelasUjiWeekend($kelas)) {
             return back()->withErrors('Jadwal akhir pekan untuk uji coba hanya tersedia pada kelas XI RPL 2.')->withInput();
         }
->>>>>>> putri/tampilan-admin
 
         if ($sampai->jam_ke < $dari->jam_ke) {
             return back()->withErrors('"Sampai jam ke" tidak boleh lebih kecil dari "Dari jam ke".')->withInput();
@@ -184,8 +164,6 @@ class JadwalPelajaranController extends Controller
         }
 
         return redirect()->back()->with('success', "Jadwal berhasil ditambahkan untuk {$jamList->count()} jam pelajaran.");
-<<<<<<< HEAD
-=======
     }
 
     private function kelasUjiWeekend(Kelas $kelas): bool
@@ -193,7 +171,6 @@ class JadwalPelajaranController extends Controller
         return (int) $kelas->tingkat === 11
             && strtoupper(trim($kelas->jurusan)) === 'RPL'
             && (int) $kelas->rombel === 2;
->>>>>>> putri/tampilan-admin
     }
 
     public function import(Request $request): RedirectResponse

@@ -173,8 +173,6 @@ class UserController extends Controller
             }
         }
 
-<<<<<<< HEAD
-=======
         if ($validated['role'] !== 'kelas') {
             $validated['id_kelas'] = null;
             $validated['id_ketua_kelas'] = null;
@@ -188,7 +186,6 @@ class UserController extends Controller
 
         $validated['password'] = bcrypt($validated['password']);
 
->>>>>>> putri/tampilan-admin
         User::create($validated);
 
         return redirect()->route('admin.user.index')->with('success', 'User berhasil ditambahkan.');

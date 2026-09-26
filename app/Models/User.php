@@ -78,8 +78,6 @@ class User extends Authenticatable
     public function kelas(): BelongsTo
     {
         return $this->belongsTo(Kelas::class, 'id_kelas', 'id_kelas');
-<<<<<<< HEAD
-=======
     }
 
     public function ketuaKelas(): BelongsTo
@@ -95,7 +93,6 @@ class User extends Authenticatable
     public function sekretarisKedua(): BelongsTo
     {
         return $this->belongsTo(Siswa::class, 'id_sekretaris_2', 'id_siswa');
->>>>>>> putri/tampilan-admin
     }
 
     /**
@@ -118,33 +115,6 @@ class User extends Authenticatable
     /** Dipakai buat nampilin menu "Piket" di navbar — guru ini pernah dijadwal piket. */
     public function isGuruPiket(): bool
     {
-<<<<<<< HEAD
-        return $this->jadwalPiket()->exists();
-    }
-
-    /** Dipakai buat validasi approve — guru ini piket TEPAT SEKARANG. */
-    public function sedangPiket(?Carbon $waktu = null): bool
-    {
-        $waktu ??= now();
-
-        $hari = match ($waktu->dayOfWeekIso) {
-            1 => 'Senin',
-            2 => 'Selasa',
-            3 => 'Rabu',
-            4 => 'Kamis',
-            5 => 'Jumat',
-            default => null,
-        };
-
-        if (! $hari) {
-            return false;
-        }
-
-        return $this->jadwalPiket()
-            ->where('hari', $hari)
-            ->whereTime('jam_mulai', '<=', $waktu->format('H:i:s'))
-            ->whereTime('jam_selesai', '>=', $waktu->format('H:i:s'))
-=======
         return JadwalPiketBulanan::where('id_guru', $this->id)->exists();
     }
 
@@ -164,7 +134,6 @@ class User extends Authenticatable
                     $jam->where('jam_mulai', '00:00:00')->where('jam_selesai', '00:00:00');
                 });
             })
->>>>>>> putri/tampilan-admin
             ->exists();
     }
 }

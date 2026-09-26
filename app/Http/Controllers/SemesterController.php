@@ -37,8 +37,6 @@ class SemesterController extends Controller
         return redirect()->back()->with('success', 'Semester berhasil ditambahkan dan diaktifkan.');
     }
 
-<<<<<<< HEAD
-=======
     public function update(Request $request, int $id): RedirectResponse
     {
         $semester = Semester::findOrFail($id);
@@ -70,7 +68,6 @@ class SemesterController extends Controller
         return redirect()->route('semester.index')->with('success', 'Semester berhasil dihapus.');
     }
 
->>>>>>> putri/tampilan-admin
     public function activate($id): RedirectResponse
     {
         Semester::where('status', 'aktif')->update(['status' => 'nonaktif']);

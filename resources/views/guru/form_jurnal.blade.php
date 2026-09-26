@@ -427,8 +427,7 @@
     renderListSiswa();
     updateRingkasanJumlah();
   </script>
-  @endif
-
+  
 </body>
 
 </html>

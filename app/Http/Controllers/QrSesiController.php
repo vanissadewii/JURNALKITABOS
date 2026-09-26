@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JadwalPelajaran;
-<<<<<<< HEAD
-=======
 use App\Models\Jurnal;
->>>>>>> putri/tampilan-admin
 use App\Models\QrSesi;
 use App\Services\VerifikasiSesiService;
 use Endroid\QrCode\QrCode;
@@ -17,31 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-<<<<<<< HEAD
-
-class QrSesiController extends Controller
-{
-    private const MASA_QR_DETIK = 30;          // umur satu QR (dirotasi terus)
-
-    private const SISA_MINIMAL_DETIK = 15;     // sisa umur kurang dari ini: dibuatkan QR baru
-
-    private const BATAS_SALING_SCAN_MENIT = 5; // setelah guru scan, kelas harus scan balik dalam waktu ini
-
-    public function __construct(private VerifikasiSesiService $sesi) {}
-
-    // ================= KELAS =================
-
-    /** Ditanya terus oleh halaman scan kelas: tampilkan QR, atau pemindai, atau pesan. */
-    public function kelasStatus(): JsonResponse
-    {
-        $idKelas = Auth::user()->id_kelas;
-
-        if (! $idKelas) {
-            return $this->pesan('Akun ini belum terhubung ke kelas.');
-        }
-
-        $jadwal = $this->sesi->jadwalBerlangsung(idKelas: (int) $idKelas);
-=======
 use Illuminate\View\View;
 
 class QrSesiController extends Controller
@@ -113,7 +85,6 @@ class QrSesiController extends Controller
 
         $qrSesi = $this->qrAktif($jurnal->jadwal, 'guru');
         $qrImage = (new SvgWriter)->write(new QrCode($qrSesi->kode_qr))->getDataUri();
->>>>>>> putri/tampilan-admin
 
         if (! $jadwal) {
             return $this->pesan('Tidak ada sesi pelajaran yang sedang berlangsung.');
@@ -132,8 +103,6 @@ class QrSesiController extends Controller
         return $this->tampilQr($this->qrAktif($jadwal, 'kelas'));
     }
 
-<<<<<<< HEAD
-=======
     public function cekStatusGuru(Jurnal $jurnal): JsonResponse
     {
         abort_unless((int) $jurnal->jadwal()->value('id_guru') === (int) Auth::id(), 403);
@@ -222,7 +191,6 @@ class QrSesiController extends Controller
         return $this->tampilQr($this->qrAktif($jadwal, 'kelas'), $jadwal);
     }
 
->>>>>>> putri/tampilan-admin
     /** Kelas memindai QR guru. Jurnal harus sudah diisi & dikirim guru lebih dulu. */
     public function scanGuruQr(Request $request): JsonResponse
     {
@@ -256,12 +224,9 @@ class QrSesiController extends Controller
         }
 
         $berlangsung = $this->sesi->jadwalBerlangsung(idKelas: (int) $user->id_kelas);
-<<<<<<< HEAD
-=======
         if (! $berlangsung && app()->isLocal() && $this->sesi->jurnalSesi($qr->jadwal)) {
             $berlangsung = $qr->jadwal;
         }
->>>>>>> putri/tampilan-admin
 
         if (! $berlangsung || (int) $berlangsung->id_guru !== (int) $qr->jadwal->id_guru) {
             return $this->gagal('Sesi pelajaran ini sudah selesai atau belum dimulai.', 422);
@@ -420,11 +385,7 @@ class QrSesiController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
-    private function tampilQr(QrSesi $qr): JsonResponse
-=======
     private function tampilQr(QrSesi $qr, ?JadwalPelajaran $jadwal = null): JsonResponse
->>>>>>> putri/tampilan-admin
     {
         $gambar = (new SvgWriter)->write(new QrCode($qr->kode_qr))->getDataUri();
 
@@ -432,11 +393,6 @@ class QrSesiController extends Controller
             'tahap' => 'tampil_qr',
             'qr' => $gambar,
             'kode' => app()->isLocal() ? $qr->kode_qr : null,
-<<<<<<< HEAD
-        ]);
-    }
-
-=======
             'sesi' => $jadwal ? $this->detailSesi($jadwal) : null,
         ]);
     }
@@ -457,7 +413,6 @@ class QrSesiController extends Controller
         ];
     }
 
->>>>>>> putri/tampilan-admin
     private function pesan(string $teks): JsonResponse
     {
         return response()->json(['tahap' => 'pesan', 'pesan' => $teks]);

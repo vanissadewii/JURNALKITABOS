@@ -25,14 +25,10 @@ class ProfilGuruController extends Controller
             ->orderBy('nama_mapel')
             ->pluck('nama_mapel');
 
-<<<<<<< HEAD
-        return view('guru.profil_guru', compact('guru', 'mapel'));
-=======
         $user = $guru;
         $adminPhone = config('jurnal.admin_phone');
 
         return view('guru.profil_guru', compact('user', 'mapel', 'adminPhone'));
->>>>>>> putri/tampilan-admin
     }
 
     public function edit(): View

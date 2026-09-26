@@ -6,17 +6,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verifikasi Kehadiran Guru</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    @vite('resources/css/app.css')
-    <style>
-        #qr-reader video {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-        }
-
+  @vite('resources/css/app.css')
+  <style>
+    #qr-reader video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+    }
+  </style>
   <style>
     /* Animasi Laser Scanner */
     @keyframes scanAnimation {
@@ -42,6 +42,8 @@
   </style>
 </head>
 
+<body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
+
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
   <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
     <div class="py-6 px-4 flex flex-col gap-8">
@@ -49,7 +51,7 @@
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
+        <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
       </div>
 
       <!-- Navigation Links -->
@@ -88,12 +90,8 @@
           <span>Profil</span>
         </a>
       </nav>
-
-    <div class="w-full bg-[#5C4033] px-4 py-5 sm:px-6 flex items-center justify-between text-white">
-        <a href="{{ route('dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center text-2xl shrink-0">←</a>
-        <h1 class="m-0 font-['Poppins'] text-[15px] sm:text-[17px] font-semibold text-center">Scan Sesi Mengajar</h1>
-        <div class="w-9 shrink-0"></div>
     </div>
+  </aside>
 
   <!-- MAIN CONTENT AREA -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
@@ -194,7 +192,7 @@
         <span>Profil</span>
       </a>
     </div>
-    @endif
+  </nav>
 
   <!-- Script Penanganan Hasil Scan QR Kamera -->
   <script>

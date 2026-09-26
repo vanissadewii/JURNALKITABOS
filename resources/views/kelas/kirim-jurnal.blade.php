@@ -141,7 +141,6 @@
                 <p class="text-center text-[11px] text-[#7A6A60]">
                     Pastikan seluruh jurnal hari ini sudah benar sebelum dikirim.
                 </p>
-                @endif
 
             </div>
         </main>

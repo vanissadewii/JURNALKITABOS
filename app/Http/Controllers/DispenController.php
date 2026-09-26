@@ -129,21 +129,6 @@ class DispenController extends Controller
 
     private function linkWaWaka(Dispen $dispen): ?string
     {
-<<<<<<< HEAD
-        $nomor = (string) preg_replace('/\D/', '', (string) config('waka.wa_number'));
-
-        if ($nomor === '') {
-            return null;
-        }
-
-        if (str_starts_with($nomor, '0')) {
-            $nomor = '6285606582551'.substr($nomor, 1);
-        }
-
-        $dispen->loadMissing('siswa');
-
-        $linkApproval = rtrim((string) config('app.url'), '/')
-=======
         $nomor = config('jurnal.admin_phone', '087782599520');
         $nomor = (string) preg_replace('/\D/', '', $nomor);
         $nomor = str_starts_with($nomor, '0') ? '62'.substr($nomor, 1) : $nomor;
@@ -151,7 +136,6 @@ class DispenController extends Controller
         $dispen->loadMissing('siswa');
 
         $linkApproval = request()->getSchemeAndHttpHost()
->>>>>>> putri/tampilan-admin
             .route('dispen.approval', $dispen->token_approval, false);
         $namaWaka = config('waka.nama');
 
@@ -168,19 +152,8 @@ class DispenController extends Controller
             ->where('token_approval', $token)
             ->firstOrFail();
 
-<<<<<<< HEAD
-        $user = auth()->user();
-
-        $alasanTidakBisa = match (true) {
-            ! $user => 'login',
-            $user->id === $dispen->id_guru_piket => 'pengaju_sendiri',
-            ! $user->sedangPiket() => 'bukan_piket',
-            default => null,
-        };
-=======
         // Link berisi token acak unik yang dikirim langsung ke Waka; token hanya berlaku sekali.
         $alasanTidakBisa = $dispen->status !== 'menunggu' ? 'sudah_diproses' : null;
->>>>>>> putri/tampilan-admin
 
         return view('guru-piket.dispen-approval', [
             'dispen' => $dispen,
@@ -192,22 +165,9 @@ class DispenController extends Controller
     public function setujui(string $token): RedirectResponse
     {
         $dispen = Dispen::where('token_approval', $token)->where('status', 'menunggu')->firstOrFail();
-<<<<<<< HEAD
-
-        if ($respon = $this->tolakJikaTakBerhak($dispen)) {
-            return $respon;
-        }
-
-        $dispen->update([
-            'status' => 'disetujui',
-            'disetujui_at' => now(),
-            'id_waka' => auth()->id(), // sekarang: id guru piket yang approve
-        ]);
-=======
 
         // Otorisasi berasal dari token persetujuan sekali pakai yang hanya dikirim ke Waka.
         $dispen->update(['status' => 'disetujui', 'disetujui_at' => now()]);
->>>>>>> putri/tampilan-admin
 
         $this->salurkanKeJurnal($dispen);
 
@@ -217,13 +177,6 @@ class DispenController extends Controller
     public function tolak(string $token): RedirectResponse
     {
         $dispen = Dispen::where('token_approval', $token)->where('status', 'menunggu')->firstOrFail();
-<<<<<<< HEAD
-
-        if ($respon = $this->tolakJikaTakBerhak($dispen)) {
-            return $respon;
-        }
-=======
->>>>>>> putri/tampilan-admin
 
         $dispen->update(['status' => 'ditolak']);
 

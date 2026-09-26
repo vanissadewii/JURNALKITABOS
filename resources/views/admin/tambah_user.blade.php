@@ -136,71 +136,6 @@
         </section>
     </main>
 
-<<<<<<< HEAD
-        <div>
-            <label>No. Telepon:</label><br>
-            <input type="text" name="no_telepon" value="{{ old('no_telepon') }}">
-        </div>
-        <br>
-
-        <div>
-            <label>Kelas (khusus role "Kelas"):</label><br>
-            <select name="id_kelas">
-                <option value="">-- Tidak ada --</option>
-                @foreach ($kelas as $k)
-                <option value="{{ $k->id_kelas }}">
-                    {{ $k->tingkat }} {{ $k->jurusan }} {{ $k->rombel }}
-                </option>
-                @endforeach
-            </select>
-        </div>
-        <br>
-
-        <button type="submit">Simpan User</button>
-    </form>
-
-    <br>
-    <hr><br>
-
-    <!-- TABEL DAFTAR USER -->
-    <h2>Daftar User</h2>
-    <table border="1" cellpadding="8" cellspacing="0">
-        <thead>
-            <tr style="background-color: #f2f2f2;">
-                <th>No</th>
-                <th>Nama</th>
-                <th>Username</th>
-                <th>No. Telepon</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Kelas</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($users as $i => $u)
-            <tr>
-                <td>{{ $i + 1 }}</td>
-                <td>{{ $u->name }}</td>
-                <td>{{ $u->username }}</td>
-                <td>{{ $u->no_telepon ?: '-' }}</td>
-                <td>{{ $u->role }}</td>
-                <td>{{ $u->status }}</td>
-                <td>
-                    @if($u->kelas)
-                    {{ $u->kelas->tingkat }} {{ $u->kelas->jurusan }} {{ $u->kelas->rombel }}
-                    @else
-                    -
-                    @endif
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="6" style="text-align: center;">Belum ada data user.</td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
-=======
     <div id="editUserModal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/45 p-4" onclick="if(event.target===this) tutupEditUser()">
         <section class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
             <div class="flex items-center justify-between border-b border-[#E5D8CC] bg-[#FFFCF9] px-5 py-4 sm:px-6"><div><h2 class="font-['Poppins'] text-lg font-bold">Edit User</h2><p class="mt-1 text-xs text-[#7A6A60]">Perbarui informasi akun.</p></div><button type="button" onclick="tutupEditUser()" class="rounded-lg px-3 py-2 text-lg text-[#7A6A60] hover:bg-[#F5EFE8]" aria-label="Tutup">×</button></div>
@@ -220,7 +155,6 @@
             </form>
         </section>
     </div>
->>>>>>> putri/tampilan-admin
 
     <script>
         function toggleUserPassword(){const input=document.getElementById('userManualPassword');const button=input.nextElementSibling;const showing=input.type==='password';input.type=showing?'text':'password';button.setAttribute('aria-label',showing?'Sembunyikan password':'Tampilkan password');button.title=showing?'Sembunyikan password':'Tampilkan password';}
@@ -239,9 +173,4 @@
     </script>
     @include('shared.preserve_search_scroll')
 </body>
-<<<<<<< HEAD
-
 </html>
-=======
-</html>
->>>>>>> putri/tampilan-admin

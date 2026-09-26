@@ -10,13 +10,6 @@ class PengirimanJurnalKelas extends Model
 
     protected $primaryKey = 'id_pengiriman';
 
-<<<<<<< HEAD
-    protected $fillable = ['id_kelas', 'tanggal', 'dikirim_oleh', 'dikirim_at'];
-
-    protected $casts = [
-        'tanggal' => 'date',
-        'dikirim_at' => 'datetime',
-=======
     protected $fillable = ['id_kelas', 'tanggal', 'dikirim_oleh', 'dikirim_at', 'status', 'alasan_tolak', 'id_diperiksa_oleh', 'diperiksa_at'];
 
     public function kelas()
@@ -37,6 +30,5 @@ class PengirimanJurnalKelas extends Model
     protected $casts = [
         'tanggal' => 'date',
         'dikirim_at' => 'datetime', 'diperiksa_at' => 'datetime',
->>>>>>> putri/tampilan-admin
     ];
 }
