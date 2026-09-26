@@ -33,18 +33,48 @@ class SiswaImport implements SkipsOnFailure, ToModel, WithHeadingRow, WithValida
             throw new \Exception("Kelas '{$tingkat} {$jurusan} {$rombel}' tidak ditemukan di database tabel kelas!");
         }
 
+        $noAbsen = trim((string) ($row['no_absen'] ?? ''));
+        if ($noAbsen === '') {
+            $noAbsen = (string) ((Siswa::where('id_kelas', $kelas->id_kelas)->max('no_absen') ?? 0) + 1);
+        }
+
         return new Siswa([
-            'nisn' => trim($row['nisn']),
+            'nisn' => null,
             'nama' => trim($row['nama']),
+            'no_absen' => (int) $noAbsen,
             'id_kelas' => $kelas->id_kelas,
         ]);
+    }
+
+    public function prepareForValidation($data, $index): array
+    {
+        // File daftar siswa sekolah memakai kolom "kelas" dengan angka Romawi,
+        // sedangkan data master menyimpan tingkat sebagai 10, 11, atau 12.
+        $tingkat = trim((string) ($data['tingkat'] ?? $data['kelas'] ?? ''));
+        $jurusan = strtoupper(trim((string) ($data['jurusan'] ?? '')));
+        $rombel = trim((string) ($data['rombel'] ?? ''));
+
+        $data['tingkat'] = match (strtoupper($tingkat)) {
+            'X' => '10',
+            'XI' => '11',
+            'XII' => '12',
+            default => $tingkat,
+        };
+        $data['jurusan'] = $jurusan;
+        // File sekolah menandai rombel ULW dengan "-", sedangkan kelas master
+        // ULW dibuat dengan rombel 1.
+        if ($jurusan === 'ULW' && ($rombel === '' || $rombel === '-')) {
+            $data['rombel'] = '1';
+        }
+
+        return $data;
     }
 
     public function rules(): array
     {
         return [
-            'nisn' => ['required', 'max:20', 'unique:siswa,nisn'],
             'nama' => ['required', 'string', 'max:100'],
+            'no_absen' => ['nullable', 'integer', 'min:1'],
             'tingkat' => ['required'],
             'jurusan' => ['required'],
             'rombel' => ['required'],

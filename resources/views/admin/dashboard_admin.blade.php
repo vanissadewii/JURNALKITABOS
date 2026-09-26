@@ -89,8 +89,7 @@
                 {{-- BERANDA --}}
                 <a
                     href="{{ route('admin.dashboard') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold
-                           bg-[#5C4033] text-white"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.dashboard') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                 >
 
                     <svg
@@ -106,14 +105,13 @@
 
                     Beranda
 
-                </a>
+                </button>
 
 
                 {{-- KEHADIRAN GURU --}}
                 <a
-                    href="{{ route('jadwal.index') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm
-                           text-[#3E3028] hover:bg-[#F5EFE8]"
+                    href="{{ route('admin.jurnal') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.kehadiran') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                 >
 
                     <svg
@@ -135,8 +133,7 @@
                 {{-- JURNAL --}}
                 <a
                     href="{{ route('admin.jurnal') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm
-                           text-[#3E3028] hover:bg-[#F5EFE8]"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.jurnal') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                 >
 
                     <svg
@@ -155,11 +152,18 @@
                 </a>
 
 
+                <a
+                    href="{{ route('admin.aturan-jurnal-susulan.edit') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.aturan-jurnal-susulan.*') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                >
+                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg>
+                    Aturan Jurnal Susulan
+                </a>
+
                 {{-- LIHAT VERIFIKASI --}}
                 <a
                     href="{{ route('admin.verifikasi') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm
-                           text-[#3E3028] hover:bg-[#F5EFE8]"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.verifikasi') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                 >
 
                     <svg
@@ -181,8 +185,7 @@
                 {{-- REKAP --}}
                 <a
                     href="{{ route('admin.rekap') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm
-                           text-[#3E3028] hover:bg-[#F5EFE8]"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.rekap') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                 >
 
                     <svg
@@ -208,13 +211,17 @@
                 {{-- TAMBAH --}}
                 {{-- ================================================= --}}
 
-                <details class="mt-1 group">
+                <p class="px-3.5 mt-4 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">PENGATURAN</p>
+
+                @php
+                    $tambahAktif = request()->routeIs('admin.tambah.*', 'jadwal.*', 'jam-pelajaran.*', 'mapel.*', 'admin.kelas.*', 'semester.*', 'admin.siswa.*', 'admin.user.*');
+                @endphp
+                <details id="tambahMenu" class="mt-1 group">
 
                     {{-- TOMBOL TAMBAH --}}
                     <summary
                         class="list-none cursor-pointer w-full flex items-center justify-between gap-3
-                               px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028]
-                               hover:bg-[#F5EFE8] transition"
+                               px-3.5 py-2.5 rounded-lg text-sm {{ $tambahAktif ? 'bg-[#5C4033] font-semibold text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }} transition"
                     >
 
                         <span class="flex items-center gap-3">
@@ -237,7 +244,7 @@
 
 
                         <svg
-                            class="w-4 h-4 text-[#7A6A60] transition-transform duration-200
+                            class="w-4 h-4 {{ $tambahAktif ? 'text-white' : 'text-[#7A6A60]' }} transition-transform duration-200
                                    group-open:rotate-180"
                             fill="none"
                             stroke="currentColor"
@@ -256,8 +263,8 @@
                         {{-- ADMIN --}}
                         <a
                             href="{{ route('admin.tambah.admin') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.admin') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Admin
                         </a>
@@ -266,8 +273,8 @@
                         {{-- JADWAL --}}
                         <a
                             href="{{ route('admin.tambah.jadwal') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jadwal', 'jadwal.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Jadwal
                         </a>
@@ -276,8 +283,8 @@
                         {{-- JAM PELAJARAN --}}
                         <a
                             href="{{ route('admin.tambah.jam') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jam', 'jam-pelajaran.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Jam Pelajaran
                         </a>
@@ -286,8 +293,8 @@
                         {{-- MATA PELAJARAN --}}
                         <a
                             href="{{ route('admin.tambah.mapel') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.mapel', 'mapel.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Mata Pelajaran
                         </a>
@@ -296,8 +303,8 @@
                         {{-- KELAS --}}
                         <a
                             href="{{ route('admin.tambah.kelas') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.kelas', 'admin.kelas.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Kelas
                         </a>
@@ -306,8 +313,8 @@
                         {{-- SEMESTER --}}
                         <a
                             href="{{ route('admin.tambah.semester') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.semester', 'semester.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Semester
                         </a>
@@ -316,8 +323,8 @@
                         {{-- PIKET --}}
                         <a
                             href="{{ route('admin.tambah.piket') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.piket') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Piket
                         </a>
@@ -326,8 +333,8 @@
                         {{-- SISWA --}}
                         <a
                             href="{{ route('admin.tambah.siswa') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.siswa', 'admin.siswa.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             Siswa
                         </a>
@@ -336,8 +343,8 @@
                         {{-- USER --}}
                         <a
                             href="{{ route('admin.tambah.user') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px]
-                                   text-[#3E3028] hover:bg-[#F5EFE8] transition"
+                            onclick="closeTambahMenu()"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.user', 'admin.user.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                         >
                             User
                         </a>
@@ -354,17 +361,15 @@
         {{-- PROFILE --}}
         <div class="border-t border-[#E5D8CC] px-4 py-4">
 
-            <a
-                href="{{ route('admin.profil') }}"
+            <button type="button" onclick="openAdminProfileModal()"
+                
                 class="flex items-center gap-3 px-1.5 mb-3 rounded-lg
                        hover:bg-[#F5EFE8] py-1.5 transition"
             >
 
                 <div class="w-8 h-8 rounded-full bg-[#E8DFD6] flex items-center justify-center shrink-0">
 
-                    <span class="text-xs font-bold text-[#5C4033]">
-                        AT
-                    </span>
+                    <span class="text-xs font-bold text-[#5C4033]">{{ auth()->user()->initials() }}</span>
 
                 </div>
 
@@ -372,7 +377,7 @@
                 <div class="min-w-0">
 
                     <p class="text-sm font-semibold text-[#3E3028] truncate">
-                        Admin Testing
+                        {{ auth()->user()->name }}
                     </p>
 
                     <p class="text-[11px] text-[#A08978]">
@@ -381,7 +386,7 @@
 
                 </div>
 
-            </a>
+            </button>
 
 
             <button
@@ -408,7 +413,7 @@
 
 
         {{-- HEADER --}}
-        <div class="bg-[#5C4033] px-4 py-5 sm:px-6 md:px-7">
+        <div class="sticky top-0 z-30 bg-[#5C4033] px-4 py-5 sm:px-6 md:px-7 shadow-sm">
 
             <div class="flex items-center justify-between">
 
@@ -419,7 +424,7 @@
                     </p>
 
                     <h1 class="text-white font-['Poppins'] font-bold text-xl md:text-2xl">
-                        Admin Testing
+                        {{ auth()->user()->name }}
                     </h1>
 
                 </div>
@@ -461,799 +466,88 @@
 
 
         {{-- CONTENT --}}
-        <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-4">
-
-
-            {{-- STATISTIK --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-
-
-                {{-- GURU --}}
-                <a href="{{ route('admin.user.create') }}" class="bg-white rounded-lg p-3.5 border border-[#E5D8CC] hover:border-[#5C4033] hover:shadow-sm transition">
-
-                    <p class="text-[11px] font-semibold text-[#7A6A60] uppercase">
-                        Total Guru
-                    </p>
-
-                    <p class="font-['Poppins'] font-extrabold text-[22px] mt-1">
-                        24
-                    </p>
-
+        <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-5">
+            <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <a href="{{ route('admin.user.index', ['role' => 'guru']) }}" class="group flex items-center gap-3 rounded-xl border border-[#E5D8CC] bg-white p-4 transition hover:border-[#5C4033] hover:shadow-md">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#5C4033]/10 text-[#5C4033]">G</div>
+                    <div><p class="truncate text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">Total Guru</p><p class="font-['Poppins'] text-xl font-extrabold">{{ $jumlahGuru }}</p></div>
                 </a>
-
-
-                {{-- SISWA --}}
-                <a href="{{ route('admin.siswa.create') }}" class="bg-white rounded-lg p-3.5 border border-[#E5D8CC] hover:border-[#5C4033] hover:shadow-sm transition">
-
-                    <p class="text-[11px] font-semibold text-[#7A6A60] uppercase">
-                        Total Siswa
-                    </p>
-
-                    <p class="font-['Poppins'] font-extrabold text-[22px] mt-1">
-                        720
-                    </p>
-
+                <a href="{{ route('admin.siswa.index') }}" class="group flex items-center gap-3 rounded-xl border border-[#E5D8CC] bg-white p-4 transition hover:border-[#2E7D32] hover:shadow-md">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#2E7D32]/10 text-[#2E7D32]">S</div>
+                    <div><p class="truncate text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">Total Siswa</p><p class="font-['Poppins'] text-xl font-extrabold">{{ $jumlahSiswa }}</p></div>
                 </a>
-
-
-                {{-- KELAS --}}
-                <a href="{{ route('admin.kelas.create') }}" class="bg-white rounded-lg p-3.5 border border-[#E5D8CC] hover:border-[#5C4033] hover:shadow-sm transition">
-
-                    <p class="text-[11px] font-semibold text-[#7A6A60] uppercase">
-                        Total Kelas
-                    </p>
-
-                    <p class="font-['Poppins'] font-extrabold text-[22px] mt-1">
-                        24
-                    </p>
-
+                <a href="{{ route('admin.kelas.index') }}" class="group flex items-center gap-3 rounded-xl border border-[#E5D8CC] bg-white p-4 transition hover:border-[#1565C0] hover:shadow-md">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#1565C0]/10 text-[#1565C0]">K</div>
+                    <div><p class="truncate text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">Total Kelas</p><p class="font-['Poppins'] text-xl font-extrabold">{{ $jumlahKelas }}</p></div>
                 </a>
-
-
-                {{-- JURNAL --}}
-                <a href="{{ route('admin.jurnal') }}" class="bg-white rounded-lg p-3.5 border border-[#E5D8CC] hover:border-[#5C4033] hover:shadow-sm transition">
-
-                    <p class="text-[11px] font-semibold text-[#7A6A60] uppercase">
-                        Total Jurnal
-                    </p>
-
-                    <p class="font-['Poppins'] font-extrabold text-[22px] mt-1">
-                        156
-                    </p>
-
+                <a href="{{ route('admin.jurnal') }}" class="group flex items-center gap-3 rounded-xl border border-[#E5D8CC] bg-white p-4 transition hover:border-[#F57F17] hover:shadow-md">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#F57F17]/10 text-[#F57F17]">J</div>
+                    <div><p class="truncate text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">Total Jurnal</p><p class="font-['Poppins'] text-xl font-extrabold">{{ $jumlahJurnal }}</p></div>
                 </a>
-
             </div>
 
-
-
-            {{-- NOTIFIKASI VERIFIKASI --}}
-            <a
-                href="{{ route('admin.verifikasi') }}"
-                class="flex items-center justify-between gap-3 bg-[#FFFDE7]
-                       border border-[#F5D563] rounded-lg px-4 py-3.5
-                       hover:bg-[#FFF9C4] transition"
-            >
-
-                <div class="flex items-center gap-3">
-
-                    <div class="w-9 h-9 rounded-lg bg-[#F57F17]/15
-                                flex items-center justify-center shrink-0">
-
-                        <svg
-                            class="w-[18px] h-[18px] text-[#F57F17]"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-
-                    </div>
-
-
-                    <div>
-
-                        <p class="text-[13px] font-semibold text-[#3E3028]">
-                            3 jurnal menunggu verifikasi
-                        </p>
-
-                        <p class="text-[11px] text-[#7A6A60] mt-0.5">
-                            Cek dan verifikasi sebelum jam pulang
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <svg
-                    class="w-4 h-4 text-[#7A6A60] shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                >
-                    <path d="M9 18l6-6-6-6"/>
-                </svg>
-
+            <a href="{{ route('admin.jurnal') }}" class="flex items-center justify-between gap-3 rounded-xl border border-[#F5D08A] bg-white p-3.5 transition hover:border-[#F57F17] hover:shadow-md">
+                <div><p class="text-[13px] font-semibold text-[#3E3028]">{{ $menungguVerifikasi }} jurnal menunggu verifikasi hari ini</p><p class="mt-0.5 text-[11px] text-[#7A6A60]">Buka daftar jurnal guru</p></div>
+                <span class="text-[#7A6A60]">→</span>
             </a>
 
-            {{-- GURU TIDAK HADIR --}}
-            <div class="bg-white border border-[#E5D8CC] border-l-4
-                        border-l-[#C62828] rounded-lg p-4">
-
-                <div class="flex items-center justify-between mb-2.5">
-
-                    <h2 class="font-['Poppins'] font-bold text-[13px]
-                               uppercase text-[#C62828]">
-                        Guru Tidak Hadir Hari Ini
-                    </h2>
-
-                    <span class="text-[11px] font-bold px-2.5 py-1 rounded-md
-                                 bg-[#FFEBEE] text-[#C62828]">
-                        1 Guru
-                    </span>
-
+            <section>
+                <h2 class="mb-2.5 font-['Poppins'] text-[13px] font-bold uppercase">Ringkasan Jurnal Guru Hari Ini</h2>
+                <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                    @foreach ([['Hadir','hadir','#2E7D32'],['Izin','izin','#1565C0'],['Sakit','sakit','#F57F17'],['Tidak Hadir','tidak_hadir','#C62828']] as [$label,$key,$warna])
+                        <a href="{{ route('admin.jurnal') }}" class="rounded-xl border border-[#E5D8CC] border-l-4 bg-white p-3.5 hover:shadow-md" style="border-left-color: {{ $warna }}">
+                            <p class="text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">{{ $label }}</p>
+                            <p class="mt-1 font-['Poppins'] text-xl font-extrabold" style="color: {{ $warna }}">{{ $ringkasanKehadiran[$key] }}</p>
+                        </a>
+                    @endforeach
                 </div>
+            </section>
 
-
-                <div class="flex justify-between items-start gap-3">
-
-                    <div>
-
-                        <p class="text-[14px] font-semibold text-[#3E3028]">
-                            Zainul Arifin, S.Pd.
-                        </p>
-
-                        <p class="text-[12px] text-[#7A6A60] mt-0.5">
-                            PJOK • XI RPL 2 • 07:40 – 09:40 (Jam ke-2 s/d 4)
-                        </p>
-
-                    </div>
-
-
-                    <a href="{{ route('admin.rekap') }}"
-                    class="text-[11px] font-semibold text-[#5C4033] whitespace-nowrap hover:underline">
-                    Lihat detail
-                    </a>
-
+            <section>
+                <div class="mb-2.5 flex items-center justify-between"><h2 class="font-['Poppins'] text-[13px] font-bold uppercase">Jadwal Mengajar Hari Ini · {{ $hariIni }}</h2></div>
+                <div class="mb-3 flex gap-2">
+                    @foreach (['X','XI','XII'] as $tingkat)
+                        <button type="button" onclick="filterTingkat('{{ $tingkat }}', this)" data-tingkat-btn="{{ $tingkat }}" class="tingkat-tab-btn rounded-full border border-[#D8C9BC] bg-white px-4 py-1.5 text-xs font-semibold text-[#5C4033] transition">Kelas {{ $tingkat }}</button>
+                    @endforeach
                 </div>
-
-            </div>
-
-
-
-            {{-- JADWAL MENGAJAR HARI INI --}}
-            <div>
-
-                <h2 class="font-['Poppins'] font-bold text-[13px] uppercase mb-2.5">
-                    Jadwal Mengajar Hari Ini
-                </h2>
-
-
                 <div class="flex flex-col gap-2.5">
-
-
-                    {{-- XI RPL 1 --}}
-                    <div class="bg-white border border-[#E5D8CC] rounded-lg overflow-hidden">
-
-                        <button
-                            type="button"
-                            onclick="toggleJadwal('kelas-xi-rpl-1')"
-                            class="w-full p-3.5 flex items-center justify-between
-                                   text-left hover:bg-[#F5EFE8] transition"
-                        >
-
-                            <div>
-
-                                <p class="font-['Poppins'] font-bold text-[15px]">
-                                    XI RPL 1
-                                </p>
-
-                                <p class="text-[12px] text-[#7A6A60] mt-0.5">
-                                    3 sesi mengajar hari ini
-                                </p>
-
+                    @foreach (['X', 'XI', 'XII'] as $tingkatKosong)
+                        @if (($kelasPerTingkat->get($tingkatKosong) ?? collect())->isEmpty())
+                            <div data-tingkat-empty="{{ $tingkatKosong }}" class="hidden rounded-xl border border-dashed border-[#D8C9BC] bg-white p-6 text-center text-sm text-[#7A6A60]">Belum ada data kelas tingkat {{ $tingkatKosong }}.</div>
+                        @endif
+                    @endforeach
+                    @foreach ($kelasPerTingkat as $tingkat => $daftarKelas)
+                        @foreach ($daftarKelas as $kelas)
+                            @php($daftarJadwal = $jadwalPerKelas->get($kelas->id_kelas, collect()))
+                            <div data-tingkat="{{ $tingkat }}" class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white">
+                                <button type="button" onclick="toggleJadwal('kelas-{{ $kelas->id_kelas }}')" class="flex w-full items-center justify-between p-3.5 text-left transition hover:bg-[#F5EFE8]">
+                                    <div><p class="font-['Poppins'] text-[15px] font-bold">{{ $kelas->nama_kelas }}</p><p class="mt-0.5 text-[12px] text-[#7A6A60]">{{ $daftarJadwal->count() }} jadwal hari ini</p></div>
+                                    <div class="flex items-center gap-2"><span class="rounded-md bg-[#E8F5E9] px-2.5 py-1 text-[11px] font-bold text-[#2E7D32]">{{ $daftarJadwal->count() }} jadwal</span><svg id="icon-kelas-{{ $kelas->id_kelas }}" class="h-4 w-4 text-[#7A6A60] transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+                                </button>
+                                <div id="kelas-{{ $kelas->id_kelas }}" class="hidden border-t border-[#E5D8CC] p-3.5">
+                                    @forelse ($daftarJadwal as $jadwal)
+                                        @php($jurnal = $jadwal->jurnalHariIni)
+                                        @php($status = $jurnal?->status_kehadiran_guru)
+                                        <article class="mb-2.5 rounded-lg border border-[#E5D8CC] p-3 last:mb-0">
+                                            <div class="flex flex-wrap justify-between gap-3"><div><p class="text-[13px] font-semibold">{{ $jadwal->mapel->nama_mapel ?? 'Mata pelajaran belum diatur' }}</p><p class="mt-1 text-[11px] text-[#7A6A60]">{{ $jadwal->guru->name ?? 'Guru belum diatur' }} · {{ substr($jadwal->jamPelajaran->jam_mulai,0,5) }}–{{ substr($jadwal->jamPelajaran->jam_selesai,0,5) }} (jam ke-{{ $jadwal->jamPelajaran->jam_ke }})</p></div>
+                                                @if ($status === 'tidak_hadir')<span class="h-fit rounded-md bg-[#FFEBEE] px-2 py-1 text-[10px] font-bold text-[#C62828]">Tidak hadir</span>
+                                                @elseif ($jurnal)<span class="h-fit rounded-md bg-[#E8F5E9] px-2 py-1 text-[10px] font-bold text-[#2E7D32]">Jurnal dikirim</span>
+                                                @else<span class="h-fit rounded-md bg-[#FFFDE7] px-2 py-1 text-[10px] font-bold text-[#F57F17]">Belum ada jurnal</span>@endif
+                                            </div>
+                                            @if ($jurnal && $status !== 'tidak_hadir')<p class="mt-2 text-[11px] text-[#7A6A60]">Verifikasi jurnal: {{ $jurnal->status_verifikasi === 'terverifikasi' ? 'Terverifikasi' : 'Menunggu verifikasi' }}</p>@endif
+                                        </article>
+                                    @empty
+                                        <p class="rounded-lg bg-[#F5EFE8] p-3 text-xs text-[#7A6A60]">Belum ada jadwal untuk kelas ini hari ini.</p>
+                                    @endforelse
+                                </div>
                             </div>
-
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="text-[11px] font-bold px-2.5 py-1
-                                             rounded-md bg-[#E8F5E9] text-[#2E7D32]">
-                                    3 Sesi
-                                </span>
-
-                                <svg
-                                    id="icon-kelas-xi-rpl-1"
-                                    class="w-4 h-4 text-[#7A6A60] transition-transform duration-200"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-
-                            </div>
-
-                        </button>
-
-
-                        <div
-                            id="kelas-xi-rpl-1"
-                            class="hidden border-t border-[#E5D8CC]"
-                        >
-
-                            <div class="p-3.5 flex flex-col gap-2.5">
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <div class="flex justify-between gap-3">
-
-                                        <div>
-
-                                            <p class="font-semibold text-[13px]">
-                                                Matematika
-                                            </p>
-
-                                            <p class="text-[11px] text-[#7A6A60] mt-1">
-                                                Budi Santoso • 07:00 – 08:30
-                                            </p>
-
-                                        </div>
-
-                                        <span class="h-fit text-[10px] font-bold
-                                                     px-2 py-1 rounded-md
-                                                     bg-[#E8F5E9] text-[#2E7D32]">
-                                            Terverifikasi
-                                        </span>
-
-                                    </div>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <div class="flex justify-between gap-3">
-
-                                        <div>
-
-                                            <p class="font-semibold text-[13px]">
-                                                Bahasa Indonesia
-                                            </p>
-
-                                            <p class="text-[11px] text-[#7A6A60] mt-1">
-                                                Siti Aminah • 08:30 – 10:00
-                                            </p>
-
-                                        </div>
-
-                                        <span class="h-fit text-[10px] font-bold
-                                                     px-2 py-1 rounded-md
-                                                     bg-[#FFFDE7] text-[#F57F17]">
-                                            Menunggu
-                                        </span>
-
-                                    </div>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: -
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <div class="flex justify-between gap-3">
-
-                                        <div>
-
-                                            <p class="font-semibold text-[13px]">
-                                                PPLG
-                                            </p>
-
-                                            <p class="text-[11px] text-[#7A6A60] mt-1">
-                                                Andi Wijaya • 10:15 – 11:45
-                                            </p>
-
-                                        </div>
-
-                                        <span class="h-fit text-[10px] font-bold
-                                                     px-2 py-1 rounded-md
-                                                     bg-[#E8F5E9] text-[#2E7D32]">
-                                            Terverifikasi
-                                        </span>
-
-                                    </div>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Budi
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    {{-- XI RPL 2 --}}
-                    <div class="bg-white border border-[#E5D8CC] rounded-lg overflow-hidden">
-
-                        <button
-                            type="button"
-                            onclick="toggleJadwal('kelas-xi-rpl-2')"
-                            class="w-full p-3.5 flex items-center justify-between
-                                   text-left hover:bg-[#F5EFE8] transition"
-                        >
-
-                            <div>
-
-                                <p class="font-['Poppins'] font-bold text-[15px]">
-                                    XI RPL 2
-                                </p>
-
-                                <p class="text-[12px] text-[#7A6A60] mt-0.5">
-                                    4 sesi mengajar hari ini
-                                </p>
-
-                            </div>
-
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="text-[11px] font-bold px-2.5 py-1
-                                             rounded-md bg-[#E8F5E9] text-[#2E7D32]">
-                                    4 Sesi
-                                </span>
-
-                                <svg
-                                    id="icon-kelas-xi-rpl-2"
-                                    class="w-4 h-4 text-[#7A6A60] transition-transform duration-200"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-
-                            </div>
-
-                        </button>
-
-
-                        <div
-                            id="kelas-xi-rpl-2"
-                            class="hidden border-t border-[#E5D8CC]"
-                        >
-
-                            <div class="p-3.5 flex flex-col gap-2.5">
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <div class="flex justify-between gap-3">
-
-                                        <div>
-
-                                            <p class="font-semibold text-[13px]">
-                                                Matematika
-                                            </p>
-
-                                            <p class="text-[11px] text-[#7A6A60] mt-1">
-                                                Budi Santoso • 07:00 – 08:30
-                                            </p>
-
-                                        </div>
-
-                                        <span class="h-fit text-[10px] font-bold
-                                                     px-2 py-1 rounded-md
-                                                     bg-[#E8F5E9] text-[#2E7D32]">
-                                            Terverifikasi
-                                        </span>
-
-                                    </div>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <div class="flex justify-between gap-3">
-
-                                        <div>
-
-                                            <p class="font-semibold text-[13px]">
-                                                Bahasa Indonesia
-                                            </p>
-
-                                            <p class="text-[11px] text-[#7A6A60] mt-1">
-                                                Siti Aminah • 08:30 – 10:00
-                                            </p>
-
-                                        </div>
-
-                                        <span class="h-fit text-[10px] font-bold
-                                                     px-2 py-1 rounded-md
-                                                     bg-[#FFFDE7] text-[#F57F17]">
-                                            Menunggu
-                                        </span>
-
-                                    </div>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: -
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <div class="flex justify-between gap-3">
-
-                                        <div>
-
-                                            <p class="font-semibold text-[13px]">
-                                                PJOK
-                                            </p>
-
-                                            <p class="text-[11px] text-[#7A6A60] mt-1">
-                                                Zainul Arifin • 10:15 – 11:45
-                                            </p>
-
-                                        </div>
-
-                                        <span class="h-fit text-[10px] font-bold
-                                                     px-2 py-1 rounded-md
-                                                     bg-[#FFEBEE] text-[#C62828]">
-                                            Tidak Hadir
-                                        </span>
-
-                                    </div>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <div class="flex justify-between gap-3">
-
-                                        <div>
-
-                                            <p class="font-semibold text-[13px]">
-                                                PPLG
-                                            </p>
-
-                                            <p class="text-[11px] text-[#7A6A60] mt-1">
-                                                Andi Wijaya • 12:30 – 14:00
-                                            </p>
-
-                                        </div>
-
-                                        <span class="h-fit text-[10px] font-bold
-                                                     px-2 py-1 rounded-md
-                                                     bg-[#E8F5E9] text-[#2E7D32]">
-                                            Terverifikasi
-                                        </span>
-
-                                    </div>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Budi
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    {{-- X RPL 1 --}}
-                    <div class="bg-white border border-[#E5D8CC] rounded-lg overflow-hidden">
-
-                        <button
-                            type="button"
-                            onclick="toggleJadwal('kelas-x-rpl-1')"
-                            class="w-full p-3.5 flex items-center justify-between
-                                   text-left hover:bg-[#F5EFE8] transition"
-                        >
-
-                            <div>
-
-                                <p class="font-['Poppins'] font-bold text-[15px]">
-                                    X RPL 1
-                                </p>
-
-                                <p class="text-[12px] text-[#7A6A60] mt-0.5">
-                                    5 sesi mengajar hari ini
-                                </p>
-
-                            </div>
-
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="text-[11px] font-bold px-2.5 py-1
-                                             rounded-md bg-[#E8F5E9] text-[#2E7D32]">
-                                    5 Sesi
-                                </span>
-
-                                <svg
-                                    id="icon-kelas-x-rpl-1"
-                                    class="w-4 h-4 text-[#7A6A60] transition-transform duration-200"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-
-                            </div>
-
-                        </button>
-
-
-                        <div
-                            id="kelas-x-rpl-1"
-                            class="hidden border-t border-[#E5D8CC]"
-                        >
-
-                            <div class="p-3.5 flex flex-col gap-2.5">
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        Matematika
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Budi Santoso • 07:00 – 08:00
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        Bahasa Indonesia
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Siti Aminah • 08:00 – 09:00
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        PPLG
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Andi Wijaya • 09:15 – 10:15
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Budi
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        Bahasa Inggris
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Siti Aminah • 10:15 – 11:15
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Budi
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        PJOK
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Zainul Arifin • 11:15 – 12:15
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    {{-- X RPL 2 --}}
-                    <div class="bg-white border border-[#E5D8CC] rounded-lg overflow-hidden">
-
-                        <button
-                            type="button"
-                            onclick="toggleJadwal('kelas-x-rpl-2')"
-                            class="w-full p-3.5 flex items-center justify-between
-                                   text-left hover:bg-[#F5EFE8] transition"
-                        >
-
-                            <div>
-
-                                <p class="font-['Poppins'] font-bold text-[15px]">
-                                    X RPL 2
-                                </p>
-
-                                <p class="text-[12px] text-[#7A6A60] mt-0.5">
-                                    4 sesi mengajar hari ini
-                                </p>
-
-                            </div>
-
-
-                            <div class="flex items-center gap-2">
-
-                                <span class="text-[11px] font-bold px-2.5 py-1
-                                             rounded-md bg-[#E8F5E9] text-[#2E7D32]">
-                                    4 Sesi
-                                </span>
-
-                                <svg
-                                    id="icon-kelas-x-rpl-2"
-                                    class="w-4 h-4 text-[#7A6A60] transition-transform duration-200"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M6 9l6 6 6-6"/>
-                                </svg>
-
-                            </div>
-
-                        </button>
-
-
-                        <div
-                            id="kelas-x-rpl-2"
-                            class="hidden border-t border-[#E5D8CC]"
-                        >
-
-                            <div class="p-3.5 flex flex-col gap-2.5">
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        Matematika
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Budi Santoso • 07:00 – 08:00
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        Bahasa Indonesia
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Siti Aminah • 08:00 – 09:00
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Budi
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        PPLG
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Andi Wijaya • 09:15 – 10:15
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Ahmad
-                                    </p>
-
-                                </div>
-
-
-                                <div class="border border-[#E5D8CC] rounded-lg p-3">
-
-                                    <p class="font-semibold text-[13px]">
-                                        PJOK
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-1">
-                                        Zainul Arifin • 10:15 – 11:15
-                                    </p>
-
-                                    <p class="text-[11px] text-[#7A6A60] mt-2">
-                                        Guru piket: Budi
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
+                        @endforeach
+                    @endforeach
+                    @if ($kelasList->isEmpty())<p class="rounded-xl border border-dashed border-[#D8C9BC] bg-white p-6 text-center text-sm text-[#7A6A60]">Belum ada data kelas. Tambahkan kelas melalui menu admin.</p>@endif
                 </div>
-
-            </div>
-
+            </section>
         </div>
-
     </div>
-
-
 
     {{-- LOGOUT CONFIRMATION --}}
     <div
@@ -1285,7 +579,7 @@
                     Batal
                 </button>
 
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Apakah Anda yakin ingin logout?')">
                     @csrf
                     <button
                         type="submit"
@@ -1373,8 +667,48 @@
 
         }
 
+        function closeTambahMenu() {
+            const menu = document.getElementById('tambahMenu');
+            if (menu) {
+                menu.open = false;
+            }
+        }
+
+        function filterTingkat(tingkat, btn) {
+
+            // tampilkan/sembunyikan kartu kelas sesuai tingkat yang dipilih
+            document.querySelectorAll('[data-tingkat]').forEach(function (card) {
+                card.classList.toggle('hidden', card.dataset.tingkat !== tingkat);
+            });
+
+            // tampilkan pesan "belum ada jadwal" jika tingkat kosong
+            document.querySelectorAll('[data-tingkat-empty]').forEach(function (empty) {
+                empty.classList.toggle('hidden', empty.dataset.tingkatEmpty !== tingkat);
+            });
+
+            // update style tombol tab aktif
+            document.querySelectorAll('.tingkat-tab-btn').forEach(function (tab) {
+                const aktif = tab === btn;
+                tab.classList.toggle('bg-[#5C4033]', aktif);
+                tab.classList.toggle('text-white', aktif);
+                tab.classList.toggle('bg-white', !aktif);
+                tab.classList.toggle('border', !aktif);
+                tab.classList.toggle('border-[#D8C9BC]', !aktif);
+                tab.classList.toggle('text-[#5C4033]', !aktif);
+            });
+
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabAwal = document.querySelector('[data-tingkat-btn="X"]');
+            if (tabAwal) {
+                filterTingkat('X', tabAwal);
+            }
+        });
+
     </script>
 
+    @include('admin.partials.admin_profile_modal')
 </body>
 
 </html>

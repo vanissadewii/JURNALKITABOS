@@ -36,7 +36,14 @@
       }
     }
   </script>
-  <style>html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; } .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; } .guru-sidebar-nav { gap: .25rem !important; } .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a svg { width: 1.25rem !important; height: 1.25rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a.bg-brand-50, .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; } .guru-sidebar-nav a.bg-brand-50 svg, .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }</style>
+  <style>
+    @media (max-width: 767px) {
+      input, select, textarea { font-size: 16px !important; }
+    }
+    @media (max-width: 767px) {
+      html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+    }
+    html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; } .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; } .guru-sidebar-nav { gap: .25rem !important; } .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a svg { width: 1.25rem !important; height: 1.25rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a.bg-brand-50, .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; } .guru-sidebar-nav a.bg-brand-50 svg, .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }</style>
 </head>
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
@@ -75,7 +82,7 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -90,64 +97,60 @@
   </aside>
 
   <!-- MAIN CONTENT AREA -->
-  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+  <div class="flex-1 min-w-0 max-w-full md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
 
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          </svg>
+        <a href="{{ route('dashboard-guru') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12.5 4.5L7 10l5.5 5.5"/></svg><span class="hidden sm:inline">Beranda</span>
         </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Lengkapi Jurnal Mengajar</h1>
-        <div class="w-9"></div>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">{{ $isSusulan ? 'Isi Jurnal Kemarin' : 'Lengkapi Jurnal Mengajar' }}</h1>
+        <div class="w-16"></div>
       </div>
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
+    <main class="w-full min-w-0 max-w-full px-4 sm:px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
+
+      @if ($isSusulan)
+        <div class="w-full rounded-2xl border border-amber-200 bg-[#FFFCF4] p-5 text-sm">
+          <p class="font-poppins font-bold text-[#5C4033]">Jurnal susulan • {{ $tanggalJurnal->locale('id')->translatedFormat('l, d F Y') }}</p>
+          <p class="mt-1 text-xs leading-5 text-[#7A6A60]">Pilih jadwal yang terlewat kemarin. Daftar ini berdasarkan jadwal pada hari kemarin, bukan jadwal hari ini.</p>
+          @if ($jadwalPilihan->count() > 1)
+            <form method="GET" action="{{ route('jurnal.create') }}" class="mt-4 flex flex-col gap-2 sm:flex-row">
+              <input type="hidden" name="susulan" value="1">
+              <select name="jadwal" onchange="this.form.submit()" class="h-11 flex-1 rounded-lg border border-[#D8C9BC] bg-white px-3.5 text-sm">
+                @foreach ($jadwalPilihan as $pilihan)
+                  <option value="{{ $pilihan->id_jadwal }}" @selected($jadwalAktif->id_jadwal === $pilihan->id_jadwal)>
+                    {{ $pilihan->jamPelajaran->jam_ke }} • {{ $pilihan->mapel->nama_mapel }} • {{ $pilihan->kelas->nama_kelas }} ({{ substr($pilihan->jamPelajaran->jam_mulai, 0, 5) }}–{{ substr($pilihan->jamPelajaran->jam_selesai, 0, 5) }})
+                  </option>
+                @endforeach
+              </select>
+              <noscript><button type="submit" class="rounded-lg bg-[#5C4033] px-4 py-2 text-white">Pilih Jadwal</button></noscript>
+            </form>
+          @endif
+        </div>
+      @endif
 
       <!-- Card Ringkasan Info Sesi -->
       <div class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs w-full flex flex-col gap-3 text-sm">
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Mata Pelajaran</span>
-          <span class="font-bold text-[#3E3028]">Matematika</span>
-        </div>
-
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Mata Pelajaran</span><span class="font-bold text-[#3E3028]">{{ $jadwalAktif->mapel->nama_mapel }}</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Guru</span>
-          <span class="font-bold text-[#3E3028]">Budi Santoso</span>
-        </div>
-
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Guru</span><span class="font-bold text-[#3E3028]">{{ auth()->user()->name }}</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Kelas</span>
-          <span class="font-bold text-[#3E3028]">X RPL 1</span>
-        </div>
-
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Kelas</span><span class="font-bold text-[#3E3028]">{{ $jadwalAktif->kelas->nama_kelas }}</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Jam Ke</span>
-          <span class="font-bold text-[#3E3028]">Jam Ke 1 - 3</span>
-        </div>
-
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Jam Ke</span><span class="font-bold text-[#3E3028]">Jam Ke {{ $rentang->first()->jamPelajaran->jam_ke }}@if ($rentang->count() > 1) – {{ $rentang->last()->jamPelajaran->jam_ke }}@endif</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Waktu Kerja</span>
-          <span class="font-bold text-[#3E3028]">07:03 – 07:43</span>
-        </div>
-
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">{{ $isSusulan ? 'Tanggal Jurnal' : 'Waktu Pelajaran' }}</span><span class="font-bold text-[#3E3028]">{{ $isSusulan ? $tanggalJurnal->locale('id')->translatedFormat('d F Y') : substr($rentang->first()->jamPelajaran->jam_mulai, 0, 5).' – '.substr($rentang->last()->jamPelajaran->jam_selesai, 0, 5) }}</span></div>
       </div>
 
-      <!-- Form Inputs Container (Action mengarah ke guru-scan-qr) -->
+      <!-- Form Inputs Container -->
       <form action="{{ route('jurnal.store') }}" method="POST" class="w-full flex flex-col gap-5">
         @csrf
-        <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif?->id_jadwal }}">
+        <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif->id_jadwal }}">
+        @if ($isSusulan)<input type="hidden" name="susulan" value="1">@endif
 
         <!-- FORM ISIAN UTAMA -->
         <div id="section-form-utama" class="flex flex-col gap-5">
@@ -159,7 +162,7 @@
               type="text" 
               id="materi" 
               name="materi" 
-              value="Persamaan Linear Satu Variabel" 
+              value="{{ old('materi', $jurnal?->materi ?? '') }}"
               class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
             >
           </div>
@@ -172,7 +175,7 @@
                 type="number" 
                 id="jumlah_hadir" 
                 name="jumlah_hadir" 
-                value="4" 
+                value="{{ old('jumlah_hadir', $jurnal?->jumlah_hadir ?? $daftarSiswa->count()) }}"
                 readonly
                 class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
               >
@@ -263,7 +266,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -276,14 +279,11 @@
   </nav>
 
   <!-- SCRIPT LOGIKA JAVASCRIPT SIMPEL -->
+    @include('shared.preserve_search_scroll')
   <script>
     // Data Siswa beserta Status Default ("Hadir")
-    const daftarSiswa = [
-      { key: 'siswa-1', nama: 'Aditya Pratama', absen: '01', status: 'Hadir' },
-      { key: 'siswa-2', nama: 'Bella Safira', absen: '02', status: 'Hadir' },
-      { key: 'siswa-3', nama: 'Citra Kirana', absen: '03', status: 'Hadir' },
-      { key: 'siswa-4', nama: 'Doni Kusuma', absen: '04', status: 'Hadir' }
-    ];
+    const daftarSiswa = {!! $daftarSiswaJson !!};
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
 
     let searchKeyword = "";
 
@@ -294,8 +294,8 @@
 
     function setStatusSiswa(key, newStatus) {
       const targetSiswa = daftarSiswa.find(s => s.key === key);
-      if (targetSiswa) {
-        // Toggle: Jika status yang diklik sama, kembalikan ke 'Hadir'
+      if (targetSiswa && !targetSiswa.otomatis) {
+        // Status dari surat piket dan dispensasi disetujui berasal dari sumber resmi.
         targetSiswa.status = (targetSiswa.status === newStatus) ? 'Hadir' : newStatus;
       }
       renderListSiswa();
@@ -307,8 +307,7 @@
       container.innerHTML = '';
 
       const filtered = daftarSiswa.filter(s => 
-        s.nama.toLowerCase().includes(searchKeyword) || 
-        s.absen.includes(searchKeyword)
+        window.matchesAllSearchTerms(searchKeyword, 'nama ' + s.nama, 'absen ' + s.absen)
       );
 
       if (filtered.length === 0) {
@@ -322,28 +321,31 @@
       filtered.forEach(siswa => {
         const isSakit = siswa.status === 'Sakit';
         const isIzin  = siswa.status === 'Izin';
+        const isDispen = siswa.status === 'Dispen';
         const isAlpha = siswa.status === 'Alpha';
 
         const itemHTML = `
-          <div class="flex items-center justify-between p-2.5 bg-brand-50/60 border border-brand-100 rounded-xl text-xs sm:text-sm">
-            <div class="flex items-center gap-2.5 overflow-hidden">
+          <div class="flex min-w-0 items-center justify-between gap-2 p-2.5 bg-brand-50/60 border border-brand-100 rounded-xl text-xs sm:text-sm">
+            <div class="flex min-w-0 flex-1 items-center gap-2.5 overflow-hidden">
               <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-800 font-bold text-xs flex items-center justify-center shrink-0">
                 ${siswa.absen}
               </span>
-              <span class="font-semibold text-[#3E3028] truncate">${siswa.nama}</span>
+              <span class="font-semibold text-[#3E3028] truncate">${escapeHtml(siswa.nama)}</span>
             </div>
+            ${siswa.alasan ? `<span class="min-w-0 max-w-full truncate text-[11px] text-violet-800 sm:ml-2">${escapeHtml(siswa.alasan)}</span>` : ''}
 
             <!-- Tombol Pilihan S I A Langsung -->
             <div class="flex items-center gap-1 shrink-0">
-              <button type="button" onclick="setStatusSiswa('${siswa.key}', 'Sakit')" 
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Sakit')"
                 class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isSakit ? 'bg-amber-500 text-white shadow-xs scale-105' : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-50'}">
                 S
               </button>
-              <button type="button" onclick="setStatusSiswa('${siswa.key}', 'Izin')" 
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Izin')"
                 class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isIzin ? 'bg-blue-500 text-white shadow-xs scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'}">
                 I
               </button>
-              <button type="button" onclick="setStatusSiswa('${siswa.key}', 'Alpha')" 
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Dispen')" class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isDispen ? 'bg-violet-500 text-white shadow-xs scale-105' : 'bg-white text-violet-700 border border-violet-200 hover:bg-violet-50'}">D</button>
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Alpha')"
                 class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isAlpha ? 'bg-rose-500 text-white shadow-xs scale-105' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}">
                 A
               </button>
@@ -371,6 +373,8 @@
       tidakHadir.forEach((item, index) => {
         hiddenContainer.innerHTML += `
           <input type="hidden" name="siswa_absen[${index}][key]" value="${item.key}">
+          <input type="hidden" name="siswa_absen[${index}][id_siswa]" value="${item.id_siswa}">
+          <input type="hidden" name="siswa_absen[${index}][nama]" value="${item.nama}">
           <input type="hidden" name="siswa_absen[${index}][status]" value="${item.status}">
         `;
       });

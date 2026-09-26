@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scan QR Presensi Siswa</title>
+  <title>Verifikasi Kehadiran Guru</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,6 +47,8 @@
     .scanner-laser {
       animation: scanAnimation 2.2s infinite ease-in-out;
     }
+    #webcam-preview video { width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 1rem; }
+    #webcam-preview canvas { display: none; }
   </style>
   <script src="https://unpkg.com/html5-qrcode" defer></script>
   <style>
@@ -95,7 +97,7 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
         </a>
 
@@ -122,50 +124,55 @@
             <path d="M15 18l-6-6 6-6"/>
           </svg>
         </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Scan QR Siswa</h1>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Verifikasi Kehadiran Guru</h1>
         <div class="w-9"></div>
       </div>
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center justify-center gap-6">
+    <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-7 sm:py-10 flex-1 flex flex-col gap-6">
 
-      <!-- Card Camera Viewfinder -->
-      <div class="w-full bg-white border border-brand-100 rounded-3xl p-6 sm:p-8 flex flex-col items-center gap-6 shadow-xs text-center">
-
-        <div class="flex flex-col gap-1 max-w-xl">
-          <h2 class="font-poppins font-bold text-lg sm:text-xl text-[#3E3028]">Pindai Kode QR Siswa</h2>
-          <p class="text-xs sm:text-sm text-brand-600">Arahkan kamera ke QR Code kelas untuk memulai sesi mengajar.</p>
+      <section class="rounded-3xl bg-white border border-brand-100 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-[#5C4033] to-[#795846] px-5 py-6 sm:px-8 sm:py-7 text-white">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+            <div>
+              <p class="text-xs uppercase tracking-[0.18em] text-white/70 font-semibold">Jurnal berhasil disimpan</p>
+              <h2 class="mt-2 font-poppins font-bold text-xl sm:text-2xl">{{ $jurnal->jadwal->mapel->nama_mapel ?? 'Mata Pelajaran' }}</h2>
+              <p class="mt-1 text-sm text-white/80">{{ $jurnal->jadwal->kelas->nama_kelas ?? 'Kelas' }}</p>
+            </div>
+            <span class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-2 text-xs font-semibold w-fit">
+              <span class="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
+              Menunggu scan QR kelas
+            </span>
+          </div>
         </div>
 
-        <!-- Box Frame Kamera -->
-        <div class="w-full max-w-md aspect-square bg-gray-900 rounded-2xl relative overflow-hidden flex items-center justify-center shadow-inner border-4 border-brand-100">
+        <div class="p-5 sm:p-8 flex flex-col items-center gap-5 text-center">
+          <div class="max-w-xl">
+            <h3 class="font-poppins font-bold text-lg sm:text-xl">Pindai QR yang tampil di layar kelas</h3>
+            <p class="mt-2 text-sm text-brand-600">Izinkan akses kamera, lalu arahkan kamera ke kode QR kelas. Setelah terbaca, halaman QR guru akan terbuka otomatis.</p>
+          </div>
 
-          <div id="webcam-preview" class="w-full h-full"></div>
-
-          <div class="absolute w-56 h-56 border-2 border-white/50 rounded-2xl flex flex-col justify-between p-2 pointer-events-none">
-            <div class="flex justify-between">
-              <div class="w-6 h-6 border-t-4 border-l-4 border-amber-400 rounded-tl-lg"></div>
-              <div class="w-6 h-6 border-t-4 border-r-4 border-amber-400 rounded-tr-lg"></div>
+          <div class="w-full max-w-lg aspect-[4/3] bg-[#171411] rounded-3xl relative overflow-hidden flex items-center justify-center shadow-lg border-[6px] border-brand-100">
+            <div id="webcam-preview" class="absolute inset-0 w-full h-full"></div>
+            <div class="absolute inset-[12%] rounded-2xl border border-white/30 pointer-events-none">
+              <div class="absolute -top-px -left-px w-8 h-8 border-t-4 border-l-4 border-amber-400 rounded-tl-xl"></div>
+              <div class="absolute -top-px -right-px w-8 h-8 border-t-4 border-r-4 border-amber-400 rounded-tr-xl"></div>
+              <div class="absolute -bottom-px -left-px w-8 h-8 border-b-4 border-l-4 border-amber-400 rounded-bl-xl"></div>
+              <div class="absolute -bottom-px -right-px w-8 h-8 border-b-4 border-r-4 border-amber-400 rounded-br-xl"></div>
+              <div class="scanner-laser absolute left-2 right-2 h-0.5 bg-gradient-to-r from-transparent via-rose-400 to-transparent shadow-[0_0_14px_#fb7185]"></div>
             </div>
-
-            <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-rose-500 to-transparent shadow-[0_0_12px_#f43f5e] relative scanner-laser"></div>
-
-            <div class="flex justify-between">
-              <div class="w-6 h-6 border-b-4 border-l-4 border-amber-400 rounded-bl-lg"></div>
-              <div class="w-6 h-6 border-b-4 border-r-4 border-amber-400 rounded-br-lg"></div>
+            <div class="absolute top-3 left-3 rounded-full bg-black/60 backdrop-blur px-3 py-1.5 flex items-center gap-2 border border-white/10 pointer-events-none">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="camera-label" class="text-[11px] font-semibold text-white">Menyiapkan kamera...</span>
             </div>
           </div>
 
-          <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-            <span class="text-[11px] font-medium text-white">Kamera Aktif</span>
+          <div id="scan-status" role="status" aria-live="polite" class="w-full max-w-lg rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 text-sm text-brand-700">
+            Menunggu kamera siap...
           </div>
-
         </div>
-
-      </div>
-
+      </section>
     </main>
 
   </div>
@@ -195,7 +202,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -211,42 +218,76 @@
   <script>
     let scanFinished = false;
 
+    const statusBox = document.getElementById('scan-status');
+    const cameraLabel = document.getElementById('camera-label');
+
+    function tampilkanStatus(pesan, gagal = false) {
+      statusBox.textContent = pesan;
+      statusBox.className = gagal
+        ? 'w-full max-w-lg rounded-xl bg-rose-50 border border-rose-200 px-4 py-3 text-sm text-rose-800'
+        : 'w-full max-w-lg rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 text-sm text-brand-700';
+    }
+
     async function onScanSuccess(qrCodeMessage) {
       if (scanFinished) return;
+      scanFinished = true;
+      tampilkanStatus('QR terbaca. Memeriksa kode kelas...');
 
-      const response = await fetch("{{ route('guru.scan-kelas.process', $jurnal) }}", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ kode_kelas: qrCodeMessage })
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        scanFinished = true;
-        window.location.href = result.redirect;
-      } else {
-        alert(result.message || 'QR kelas tidak valid.');
+      try {
+        const response = await fetch("{{ route('guru.scan-kelas.process', $jurnal) }}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({ kode_qr: qrCodeMessage })
+        });
+        const result = await response.json();
+        if (response.ok && result.success && result.redirect) {
+          tampilkanStatus('QR kelas valid. Membuka QR guru...');
+          window.location.href = result.redirect;
+          return;
+        }
+        tampilkanStatus(result.message || 'QR kelas tidak valid. Arahkan kamera ke QR kelas yang sesuai.', true);
+      } catch (error) {
+        tampilkanStatus('Tidak dapat memeriksa QR. Periksa koneksi lalu coba pindai lagi.', true);
       }
+      scanFinished = false;
     }
 
     function startScanner() {
+      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+        cameraLabel.textContent = 'Butuh koneksi HTTPS';
+        tampilkanStatus('Browser HP memblokir kamera karena halaman dibuka melalui alamat HTTP jaringan lokal. Buka aplikasi lewat alamat HTTPS (misalnya tunnel HTTPS) atau localhost agar izin kamera tersedia.', true);
+        return;
+      }
+
       const scanner = new Html5Qrcode('webcam-preview');
       scanner.start(
         { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
+        { fps: 10, qrbox: (viewWidth, viewHeight) => {
+          const sisi = Math.floor(Math.min(viewWidth, viewHeight) * 0.68);
+          return { width: sisi, height: sisi };
+        } },
         onScanSuccess,
         () => {}
-      ).catch(() => {
-        document.getElementById('webcam-preview').innerHTML = '<p class="p-4 text-center text-sm text-white">Kamera tidak dapat diakses.</p>';
+      ).then(() => {
+        cameraLabel.textContent = 'Kamera siap';
+        tampilkanStatus('Kamera aktif. Arahkan ke QR kelas untuk melanjutkan.');
+      }).catch(() => {
+        cameraLabel.textContent = 'Kamera tidak tersedia';
+        tampilkanStatus('Kamera tidak dapat diakses. Pastikan izin kamera untuk situs ini diaktif, tutup aplikasi lain yang memakai kamera, lalu muat ulang. Kamera HP memerlukan HTTPS atau localhost.', true);
       });
     }
 
     window.addEventListener('load', () => {
-      if (window.Html5Qrcode) startScanner();
+      if (window.Html5Qrcode) {
+        startScanner();
+      } else {
+        cameraLabel.textContent = 'Pemindai tidak tersedia';
+        tampilkanStatus('Pemindai QR gagal dimuat. Muat ulang halaman dan coba lagi.', true);
+      }
     });
   </script>
 

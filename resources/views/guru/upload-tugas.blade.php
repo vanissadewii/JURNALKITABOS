@@ -218,39 +218,7 @@
 
                         </span>
 
-
-                        <svg
-                            class="chev w-4 h-4 text-[#7A6A60]
-                                   transition-transform shrink-0"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                        >
-                            <path d="M5 7l5 5 5-5"/>
-                        </svg>
-
                     </summary>
-
-
-                    <!-- SUB MENU PIKET -->
-                    <div class="ml-7 mt-1 space-y-1 border-l border-[#E5D8CC] pl-3">
-                        <a href="{{ route('piket.jurnal') }}"
-                            class="block rounded-md px-3 py-2 text-xs text-[#7A6A60] hover:bg-[#F5EFE8]" >
-                            Jurnal Mengajar
-                        </a>
-
-                        <a
-                            href="{{ route('piket.dispen') }}" class="block rounded-md px-3 py-2 text-xs text-[#7A6A60] hover:bg-[#F5EFE8]" >
-                            Dispen
-                        </a>
-
-                        <a
-                            href="{{ route('piket.upload-tugas') }}" class="block rounded-md px-3 py-2 text-xs font-semibold bg-[#F5EFE8] text-[#5C4033]" >
-                            Upload Tugas
-                        </a>
-
-                    </div>
 
                 </details>
 
@@ -314,7 +282,7 @@
 
                 <!-- KEMBALI -->
                 <a
-                    href="{{ route('dashboard-guru-piket') }}"
+                    @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif style="@if(!auth()->user()->sedangPiket())pointer-events:none;opacity:.5;cursor:not-allowed @endif"
                     class="text-xs font-semibold text-[#D7B899]
                            hover:text-white flex items-center gap-1 mb-1"
                 >
@@ -355,10 +323,14 @@
                    flex flex-col gap-6 flex-1"
         >
 
+            @if(session('success'))<div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>@endif
+            @if(isset($errors) && $errors->any())<div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ $errors->first() }}</div>@endif
+
             <!-- FORM UPLOAD -->
             <form
                 method="POST"
-                action="#"
+                enctype="multipart/form-data"
+                action="{{ route('piket.upload-tugas.store') }}"
                 class="bg-white border border-brand-100
                        rounded-2xl p-5 md:p-7
                        flex flex-col gap-6"
@@ -379,6 +351,94 @@
                     >
                         Upload Tugas
                     </h2>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STATUS GURU (IZIN / SAKIT) -->
+                <!-- ================================================= -->
+
+                <div class="flex flex-col gap-2">
+
+                    <label class="text-sm font-semibold text-[#3E3028]">
+                        Status Guru
+                    </label>
+
+                    <div class="grid grid-cols-2 gap-3">
+
+                        <button
+                            type="button"
+                            id="btnIzin"
+                            onclick="pilihStatus('izin')"
+                            class="status-btn h-11 rounded-xl border border-[#E5D8CC]
+                                   bg-white text-[#3E3028]
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2
+                                   hover:bg-brand-50 transition"
+                        >
+                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M10 2v6l4 2"/>
+                                <circle cx="10" cy="10" r="7.5"/>
+                            </svg>
+                            Izin
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btnSakit"
+                            onclick="pilihStatus('sakit')"
+                            class="status-btn h-11 rounded-xl border border-[#E5D8CC]
+                                   bg-white text-[#3E3028]
+                                   text-sm font-semibold
+                                   flex items-center justify-center gap-2
+                                   hover:bg-brand-50 transition"
+                        >
+                            <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/>
+                                <path d="M10 7v3.5M10 13.2v.1"/>
+                            </svg>
+                            Sakit
+                        </button>
+
+                    </div>
+
+                    <p id="statusWarning" class="hidden text-xs font-medium text-[#C62828]">
+                        Pilih status guru (Izin/Sakit) terlebih dahulu.
+                    </p>
+
+                    <!-- VALUE YANG DIKIRIM -->
+                    <input type="hidden" name="status" id="status">
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- ALASAN IZIN (muncul jika status = izin) -->
+                <!-- ================================================= -->
+
+                <div id="alasanIzinWrapper" class="hidden flex-col gap-2">
+
+                    <label for="alasanIzin" class="text-sm font-semibold text-[#3E3028]">
+                        Alasan Izin
+                    </label>
+
+                    <textarea
+                        id="alasanIzin"
+                        name="alasan_izin"
+                        rows="3"
+                        placeholder="Contoh: Ada keperluan keluarga mendadak..."
+                        class="w-full px-3 py-3
+                               bg-white
+                               border border-[#E5D8CC]
+                               rounded-xl
+                               text-sm text-[#3E3028]
+                               placeholder:text-[#B3A39A]
+                               resize-none
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-[#D7B899]"
+                    ></textarea>
 
                 </div>
 
@@ -626,13 +686,14 @@
                                focus:ring-[#D7B899]"
                     ></textarea>
 
-
-                    <span class="text-xs text-[#9E8E83]">
-                        Tugas yang diberikan akan dikirim ke seluruh siswa di kelas yang dipilih.
-                    </span>
-
                 </div>
 
+
+                <div class="flex flex-col gap-2">
+                    <label for="file" class="text-sm font-semibold text-[#3E3028]">Lampiran materi / tugas (opsional)</label>
+                    <input id="file" name="file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" class="w-full rounded-xl border border-[#E5D8CC] bg-white px-3 py-3 text-sm">
+                    <p class="text-xs text-[#7A6A60]">Lampiran opsional: PDF, dokumen Office, atau ZIP; maksimal 20 MB.</p>
+                </div>
 
                 <!-- ================================================= -->
                 <!-- BUTTON -->
@@ -646,7 +707,7 @@
 
                     <!-- BATAL -->
                     <a
-                        href="{{ route('dashboard-guru-piket') }}"
+                        @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif style="@if(!auth()->user()->sedangPiket())pointer-events:none;opacity:.5;cursor:not-allowed @endif"
                         class="h-11 px-5 rounded-xl
                                border border-[#E5D8CC]
                                bg-white
@@ -664,6 +725,7 @@
                     <!-- UPLOAD -->
                     <button
                         type="submit"
+                        onclick="return validasiStatus()"
                         class="h-11 px-5 rounded-xl
                                bg-[#5C4033]
                                hover:bg-[#3E2B22]
@@ -788,7 +850,7 @@
 
             <!-- Piket -->
             <a
-                href="{{ route('dashboard-guru-piket') }}"
+                @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif style="@if(!auth()->user()->sedangPiket())pointer-events:none;opacity:.5;cursor:not-allowed @endif"
                 class="flex flex-col items-center gap-1
                        text-xs font-bold text-brand-800"
             >
@@ -848,22 +910,58 @@
            DATA KELAS
            ======================================================= */
 
-        const daftarKelas = [
-            'X RPL 2',
-            'XI RPL 2',
-            'XII RPL 1'
-        ];
+        const daftarKelas = @json($kelasOptions);
+        const daftarMapel = @json($mapelList->values());
+        cariKelas();
+        cariMapel();
+
+        function pilihStatus(status) {
+
+            document.getElementById('status').value = status;
+            document.getElementById('statusWarning').classList.add('hidden');
+
+            const btnIzin = document.getElementById('btnIzin');
+            const btnSakit = document.getElementById('btnSakit');
+            const alasanWrapper = document.getElementById('alasanIzinWrapper');
+
+            [btnIzin, btnSakit].forEach(btn => {
+                btn.classList.remove('bg-[#5C4033]', 'text-white', 'border-[#5C4033]');
+                btn.classList.add('bg-white', 'text-[#3E3028]', 'border-[#E5D8CC]');
+            });
+
+            const tombolAktif = status === 'izin' ? btnIzin : btnSakit;
+            tombolAktif.classList.remove('bg-white', 'text-[#3E3028]', 'border-[#E5D8CC]');
+            tombolAktif.classList.add('bg-[#5C4033]', 'text-white', 'border-[#5C4033]');
+
+            if (status === 'izin') {
+                alasanWrapper.classList.remove('hidden');
+                alasanWrapper.classList.add('flex');
+            } else {
+                alasanWrapper.classList.add('hidden');
+                alasanWrapper.classList.remove('flex');
+                document.getElementById('alasanIzin').value = '';
+            }
+
+        }
 
 
         /* =======================================================
-           DATA MATA PELAJARAN
+           VALIDASI SEBELUM SUBMIT
            ======================================================= */
 
-        const daftarMapel = [
-            'Matematika',
-            'Bahasa Inggris',
-            'Pemrograman Web'
-        ];
+        function validasiStatus() {
+
+            const status = document.getElementById('status').value;
+
+            if (!status) {
+                document.getElementById('statusWarning').classList.remove('hidden');
+                document.getElementById('statusWarning').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+
+            return true;
+
+        }
 
 
         /* =======================================================
@@ -885,7 +983,7 @@
 
             const filtered =
                 daftarKelas.filter(kelas =>
-                    kelas.toLowerCase().includes(keyword)
+                    window.matchesAllSearchTerms(keyword, 'kelas ' + kelas)
                 );
 
 
@@ -959,7 +1057,7 @@
 
             const filtered =
                 daftarMapel.filter(mapel =>
-                    mapel.toLowerCase().includes(keyword)
+                    window.matchesAllSearchTerms(keyword, 'mapel ' + mapel)
                 );
 
 
@@ -1015,5 +1113,6 @@
 
     </script>
 
+    @include('shared.preserve_search_scroll')
 </body>
 </html>

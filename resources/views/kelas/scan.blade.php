@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     @vite('resources/css/app.css')
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
@@ -59,10 +60,9 @@
         {{-- KONTEN UTAMA --}}
         <main class="flex-1 w-full pb-24 md:pb-8">
 
-            {{-- HEADER SCAN (back button + judul) --}}
             <div class="w-full bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex items-center justify-center text-white">
 
-            <h1 class="m-0 font-['Poppins'] text-[15px] sm:text-[17px] font-semibold text-center">
+            <h1 class="m-0 font-['Poppins'] text-xl sm:text-[17px] font-bold text-center">
                 Scan Sesi Mengajar
             </h1>
 
@@ -84,11 +84,8 @@
                 <div class="w-[190px] h-[190px] sm:w-[210px] sm:h-[210px] md:w-[220px] md:h-[220px]
                             bg-white border border-[#E5D8CC] rounded-2xl flex items-center justify-center
                             p-[18px] shadow-[0_4px_15px_rgba(62,48,40,0.06)]">
-                    @if ($qrImage)
-                        <img src="{{ $qrImage }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain">
-                    @else
-                        <p class="text-center text-xs text-[#7A6A60]">Akun kelas belum terhubung ke kelas.</p>
-                    @endif
+                    <img id="qr-kelas-image" src="{{ $qrImage ?? '' }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain {{ $qrImage ? '' : 'hidden' }}">
+                    <p id="qr-kelas-status" class="text-center text-xs text-[#7A6A60]">{{ session('error', 'Memeriksa sesi mengajar...') }}</p>
 
                 </div>
 
@@ -102,27 +99,27 @@
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Guru Pengajar</span>
-                        <span class="text-[#3E3028] font-semibold text-right">Kurnila Putri, S.Pd.</span>
+                        <span id="sesi-guru" class="text-[#3E3028] font-semibold text-right">—</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Mata Pelajaran</span>
-                        <span class="text-[#3E3028] font-semibold text-right">PPLG</span>
+                        <span id="sesi-mapel" class="text-[#3E3028] font-semibold text-right">—</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Kelas</span>
-                        <span class="text-[#3E3028] font-semibold text-right">{{ $kelas?->nama_kelas ?? '-' }}</span>
+                        <span id="sesi-kelas" class="text-[#3E3028] font-semibold text-right">{{ $kelas?->nama_kelas ?? '-' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Jam</span>
-                        <span class="text-[#3E3028] font-semibold text-right">07:00 - 09:40</span>
+                        <span id="sesi-jam" class="text-[#3E3028] font-semibold text-right">—</span>
                     </div>
 
                     <div class="flex justify-between gap-4 pt-2.5 text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Status</span>
-                        <span class="text-[#3E3028] font-semibold text-right">Sesi Aktif</span>
+                        <span id="sesi-status" class="text-[#3E3028] font-semibold text-right">—</span>
                     </div>
 
                 </div>
@@ -167,5 +164,54 @@
         </a>
     </nav>
 
+    <script>
+        const qrImage = document.getElementById('qr-kelas-image');
+        const qrStatus = document.getElementById('qr-kelas-status');
+
+        function perbaruiDetailSesi(sesi) {
+            if (!sesi) {
+                document.getElementById('sesi-guru').textContent = '—';
+                document.getElementById('sesi-mapel').textContent = '—';
+                document.getElementById('sesi-jam').textContent = '—';
+                document.getElementById('sesi-status').textContent = '—';
+                return;
+            }
+            document.getElementById('sesi-guru').textContent = sesi.guru || '—';
+            document.getElementById('sesi-mapel').textContent = sesi.mapel || '—';
+            document.getElementById('sesi-kelas').textContent = sesi.kelas || '—';
+            document.getElementById('sesi-jam').textContent = sesi.jam || '—';
+            document.getElementById('sesi-status').textContent = sesi.status || '—';
+        }
+
+        async function perbaruiStatusQrKelas() {
+            try {
+                const response = await fetch("{{ route('qr.status-kelas') }}", {
+                    headers: { 'Accept': 'application/json' },
+                });
+                const data = await response.json();
+
+                perbaruiDetailSesi(data.sesi);
+                if (data.tahap === 'tampil_qr') {
+                    qrImage.src = data.qr;
+                    qrImage.classList.remove('hidden');
+                    qrStatus.classList.add('hidden');
+                } else if (data.tahap === 'scan') {
+                    window.location.href = "{{ route('kelas.verifikasiguru') }}";
+                    return;
+                } else {
+                    qrImage.classList.add('hidden');
+                    qrStatus.classList.remove('hidden');
+                    qrStatus.textContent = data.pesan || 'Belum ada sesi mengajar aktif.';
+                }
+            } catch (error) {
+                qrImage.classList.add('hidden');
+                qrStatus.classList.remove('hidden');
+                qrStatus.textContent = 'Status QR belum dapat dimuat. Coba muat ulang halaman.';
+            }
+        }
+
+        perbaruiStatusQrKelas();
+        setInterval(perbaruiStatusQrKelas, 5000);
+    </script>
 </body>
 </html>

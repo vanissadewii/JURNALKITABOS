@@ -83,7 +83,7 @@
         </a>
 
         <!-- Active Link (Piket) -->
-        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
           <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg>
           <span>Piket</span>
         </a>
@@ -123,7 +123,7 @@
           Pilih Menu Piket
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 w-full">
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 w-full">
 
           <!-- MENU 1: Jurnal Mengajar (Terima Jurnal dari Kelas) -->
           <a href="{{ route('piket.jurnal') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
@@ -162,6 +162,12 @@
             </span>
           </a>
 
+          <a href="{{ route('piket.input-surat') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-center"><span class="text-xl font-bold">S/I</span></div>
+            <div class="flex flex-col gap-1.5"><h3 class="font-poppins font-bold text-lg text-[#3E3028]">Input Surat</h3><p class="text-sm text-[#8C7B70] leading-relaxed">Catat siswa sakit atau izin agar statusnya otomatis terisi di jurnal kelas.</p></div>
+            <span class="mt-auto text-sm font-semibold text-brand-800">Buka Menu →</span>
+          </a>
+
           <!-- MENU 3: Upload Tugas (Guru Izin/Sakit) -->
           <a href="{{ url('/piket/upload-tugas') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
             <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center shrink-0">
@@ -178,6 +184,12 @@
               Buka Menu
               <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4l6 6-6 6"/></svg>
             </span>
+          </a>
+
+          <a href="{{ route('piket.rekap') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center"><svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M7 3v14M10 7h4M10 10h4M10 13h4"/></svg></div>
+            <div class="flex flex-col gap-1.5"><h3 class="font-poppins font-bold text-lg text-[#3E3028]">Rekap</h3><p class="text-sm text-[#8C7B70] leading-relaxed">Lihat jurnal, dispensasi, surat, dan tugas berdasarkan tanggal, lalu unduh ke Excel.</p></div>
+            <span class="mt-auto text-sm font-semibold text-brand-800">Buka Rekap →</span>
           </a>
 
         </div>
@@ -214,7 +226,7 @@
       </a>
 
       <!-- Active Mobile Link (Piket) -->
-      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg>
         <span>Piket</span>
       </a>

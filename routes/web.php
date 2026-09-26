@@ -1,9 +1,22 @@
 <?php
 
 use App\Http\Controllers\DispenController;
+use App\Http\Controllers\PiketRekapController;
+use App\Http\Controllers\RiwayatJurnalController;
+use App\Http\Controllers\ProfilGuruController;
+use App\Http\Controllers\UploadTugasController;
+use App\Http\Controllers\SuratSiswaController;
+use App\Http\Controllers\AdminJadwalPiketController;
+use App\Http\Controllers\AdminAccountController;
+use App\Http\Controllers\AdminProfileController;
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminMonitoringController;
+use App\Http\Controllers\AdminRekapController;
 use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\JamPelajaranController;
 use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\GuruPiketController;
+use App\Http\Controllers\PengaturanJurnalSusulanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\MasterKelasController;
@@ -11,45 +24,18 @@ use App\Http\Controllers\QrSesiController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
+use App\Models\PengaturanJurnalSusulan;
+use App\Models\JadwalPelajaran;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Support\Waktu;
 use Illuminate\Support\Facades\Route;
 
-// Route ke profil-guru
+// Profil guru menggunakan kolom no_telepon yang sama seperti panel admin.
 Route::middleware(['auth', 'role:guru,guru_piket'])->group(function () {
-    Route::get('/profil-guru', function () {
-        $user = Auth::user();
-
-        return view('guru.profil_guru', compact('user'));
-    });
-
-    Route::post('/profil-guru', function (Request $request) {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'no_telepon' => ['nullable', 'string', 'max:20'],
-            'mapel' => ['required', 'string', 'max:100'],
-            'password_lama' => ['nullable', 'string'],
-            'password_baru' => ['nullable', 'string', 'min:8'],
-        ]);
-
-        $user = $request->user();
-        if (! empty($validated['password_baru'])) {
-            if (empty($validated['password_lama']) || ! Hash::check($validated['password_lama'], $user->password)) {
-                return back()->withErrors(['password_lama' => 'Password lama tidak sesuai.'])->withInput();
-            }
-
-            $user->password = Hash::make($validated['password_baru']);
-        }
-
-        $user->name = $validated['name'];
-        $user->no_telepon = $validated['no_telepon'] ?? null;
-        $user->mapel = $validated['mapel'];
-
-        $user->save();
-
-        return redirect('/profil-guru')->with('success', 'Profil berhasil diperbarui.');
-    });
+    Route::get('/profil-guru', [ProfilGuruController::class, 'show'])->name('profil-guru');
+    Route::post('/profil-guru', [ProfilGuruController::class, 'update'])->name('profil-guru.update');
 });
 
 Route::middleware(['auth', 'role:guru,guru_piket'])->group(function () {
@@ -64,37 +50,57 @@ Route::get('/', function () {
 });
 
 // Dashboard / Beranda Admin
-Route::get('/dashboard-admin', function () {
-    return view('admin.dashboard_admin');
-})->name('admin.dashboard');
+Route::get('/dashboard-admin', [AdminDashboardController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])->name('admin.dashboard');
 
 // Menu Admin - Frontend
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     // MENU ADMIN
-    Route::view('/jurnal', 'admin.jurnal')->name('jurnal');
-    Route::view('/verifikasi', 'admin.verifikasi')->name('verifikasi');
-    Route::view('/rekap', 'admin.rekap')->name('rekap');
-    Route::view('/tambah', 'admin.tambah_admin')->name('tambah');
+    Route::get('/jurnal', [JurnalController::class, 'adminIndex'])->name('jurnal');
+    Route::get('/aturan-jurnal-susulan', [PengaturanJurnalSusulanController::class, 'edit'])->name('aturan-jurnal-susulan.edit');
+    Route::put('/aturan-jurnal-susulan', [PengaturanJurnalSusulanController::class, 'update'])->name('aturan-jurnal-susulan.update');
+    Route::get('/kehadiran-guru', [AdminMonitoringController::class, 'kehadiran'])->name('kehadiran');
+    Route::get('/verifikasi', [AdminMonitoringController::class, 'verifikasi'])->name('verifikasi');
+    Route::get('/rekap/export', [AdminRekapController::class, 'export'])->name('rekap.export');
+    Route::get('/rekap', [AdminRekapController::class, 'index'])->name('rekap');
+    Route::get('/tambah', fn () => redirect()->route('admin.tambah.admin'))->name('tambah');
 
-    Route::view(
-        '/tambah/admin',
-        'admin.tambah_admin'
-    )->name('tambah.admin');
-
-
-    Route::view(
-        '/tambah/piket',
-        'admin.admin-guru-piket'
-    )->name('tambah.piket');
+    Route::get('/tambah/admin', [AdminAccountController::class, 'index'])->name('tambah.admin');
+    Route::post('/tambah/admin', [AdminAccountController::class, 'store'])->name('tambah.admin.store');
+    Route::delete('/tambah/admin/{user}', [AdminAccountController::class, 'destroy'])->name('tambah.admin.destroy');
 
 
-    Route::view(
-        '/tambah/siswa',
-        'admin.tambah_siswa'
-    )->name('tambah.siswa');
+    Route::get('/tambah/piket', [AdminJadwalPiketController::class, 'index'])
+        ->name('tambah.piket');
+    Route::post('/tambah/piket/waka', [AdminJadwalPiketController::class, 'storeWaka'])
+        ->name('tambah.piket.waka');
+    Route::post('/tambah/piket/simpan', [AdminJadwalPiketController::class, 'store'])
+        ->name('tambah.piket.store');
+    Route::post('/tambah/piket/import', [AdminJadwalPiketController::class, 'import'])
+        ->name('tambah.piket.import');
 
 
+    Route::get('/tambah/siswa', fn () => redirect()->route('admin.siswa.index'))
+        ->name('tambah.siswa');
+    Route::get('/tambah/jadwal', fn () => redirect()->route('jadwal.index'))
+        ->name('tambah.jadwal');
+    Route::get('/tambah/jam', fn () => redirect()->route('jam-pelajaran.index'))
+        ->name('tambah.jam');
+    Route::get('/tambah/mapel', fn () => redirect()->route('mapel.index'))
+        ->name('tambah.mapel');
+    Route::get('/tambah/kelas', fn () => redirect()->route('admin.kelas.index'))
+        ->name('tambah.kelas');
+    Route::get('/tambah/semester', fn () => redirect()->route('semester.index'))
+        ->name('tambah.semester');
+    Route::get('/tambah/user', fn () => redirect()->route('admin.user.index'))
+        ->name('tambah.user');
+    Route::get('/profil', fn () => redirect()->route('admin.dashboard'))->name('profil');
+    Route::post('/profil', [AdminProfileController::class, 'update'])->name('profil.update');
+    Route::get('/guru', fn () => redirect()->route('admin.user.index'))
+        ->name('guru');
+    Route::get('/sesi', fn () => redirect()->route('admin.jurnal'))
+        ->name('sesi');
 });
 
 // ============================================================
@@ -102,40 +108,31 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // ============================================================
 
 // Route untuk Dashboard/Beranda Kelas
-Route::get('/dashboard-kelas', function () {
-    return view('kelas.beranda');
-});
+Route::get('/dashboard-kelas', fn () => redirect()->route('kelas.beranda'))
+    ->middleware(['auth']);
 
 // Route ke Dashboard Guru
-Route::get('/dashboard-guru', function () {
-    return view('guru.dashboard_guru');
-});
+Route::get('/dashboard-guru', [\App\Http\Controllers\GuruDashboardController::class, 'index'])
+    ->middleware(['auth', 'role:guru,guru_piket'])->name('dashboard-guru');
 
-// Preview beranda kelas
-Route::get('/preview-beranda', function () {
-    $kelas = (object) ['nama_kelas' => 'XI RPL 2'];
+// Beranda memakai kelas yang benar-benar terhubung ke akun login.
+Route::get('/kelas/beranda', [KelasController::class, 'beranda'])
+    ->middleware(['auth', 'role:kelas'])
+    ->name('kelas.beranda');
 
-    return view('kelas.beranda', compact('kelas'));
-});
-
-// SEMENTARA - buat ngerjain & ngecek tampilan kelas
-Route::prefix('kelas')->name('kelas.')->group(function () {
-    Route::get('/beranda', [KelasController::class, 'beranda'])->name('beranda');
-
+// Halaman operasional lainnya tetap khusus akun kelas.
+Route::middleware(['auth', 'role:kelas'])->prefix('kelas')->name('kelas.')->group(function () {
     Route::get('/scan', [KelasController::class, 'scan'])->name('scan');
 
-    Route::get('/verifikasiguru', function () {
-        return view('kelas.verifikasiguru');
-    })->name('verifikasiguru');
+    Route::get('/verifikasiguru', [QrSesiController::class, 'halamanVerifikasiGuru'])->name('verifikasiguru');
 
-    Route::get('/verifikasisukses', function () {
-        return view('kelas.verifikasisukses');
-    })->name('verifikasisukses');
-
-    Route::view('/kirim-jurnal', 'kelas.kirim-jurnal')
+    Route::get('/kirim-jurnal', [KelasController::class, 'kirimJurnal'])
         ->name('kirim-jurnal');
+    Route::post('/kirim-jurnal', [KelasController::class, 'kirimJurnalStore'])
+        ->name('kirim-jurnal.store');
 
     Route::get('/profile', [KelasController::class, 'profile'])->name('profile');
+    Route::put('/profile', [KelasController::class, 'updateProfile'])->name('profile.update');
 });
 
 
@@ -149,19 +146,19 @@ Route::middleware(['auth'])->group(function () {
 
         // ADMIN → BERANDA ADMIN BARU
         if ($role_user == 'admin') {
-            return view('admin.dashboard_admin');
+            return redirect()->route('admin.dashboard');
 
         // GURU
         } elseif ($role_user == 'guru') {
-            return view('guru.dashboard_guru');
+            return redirect()->route('dashboard-guru');
 
-        // GURU PIKET
+        // GURU PIKET (akun lama)
         } elseif ($role_user == 'guru_piket') {
-            return view('guru.piket');
+            return redirect()->route('dashboard-guru-piket');
 
         // KELAS
         } elseif ($role_user == 'kelas') {
-            return view('kelas.beranda');
+            return redirect()->route('kelas.beranda');
 
         } else {
             return redirect('/');
@@ -185,6 +182,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('admin/user', UserController::class)
         ->names('admin.user');
 
+    Route::post('admin/user/import', [UserController::class, 'import'])->name('admin.user.import');
+
     Route::post(
         'admin/siswa/import',
         [SiswaController::class, 'import']
@@ -196,15 +195,26 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         [JadwalPelajaranController::class, 'getJamByKelasHari']
     )->name('jadwal.get-jam');
 
+    Route::delete(
+        'admin/jadwal/hapus-grup',
+        [JadwalPelajaranController::class, 'destroyGroup']
+    )->name('jadwal.destroy-group');
+
     Route::resource('admin/jadwal', JadwalPelajaranController::class)
         ->names('jadwal');
 
+
+    Route::post('admin/mapel/import', [MapelController::class, 'import'])
+        ->name('mapel.import');
 
     Route::resource('admin/mapel', MapelController::class)
         ->names('mapel');
 
     Route::resource('admin/semester', SemesterController::class)
         ->names('semester');
+
+    Route::patch('admin/semester/{id}/activate', [SemesterController::class, 'activate'])
+        ->name('semester.activate');
 
     Route::resource('admin/jam-pelajaran', JamPelajaranController::class)
         ->names('jam-pelajaran');
@@ -214,6 +224,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         'admin/jam-pelajaran/generate',
         [JamPelajaranController::class, 'generate']
     )->name('jam-pelajaran.generate');
+
+    Route::patch('admin/jam-pelajaran/pengaturan/kegiatan', [JamPelajaranController::class, 'updateKegiatan'])
+        ->name('jam-pelajaran.kegiatan.update');
 
     Route::post(
         'admin/jadwal/import',
@@ -225,10 +238,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // ============================================================
 // ROUTE JAM PELAJARAN
 // ============================================================
-
-Route::resource('admin/jam-pelajaran', JamPelajaranController::class)
-    ->names('jam-pelajaran');
-
 
 // ============================================================
 // ROUTE QR GURU
@@ -255,6 +264,9 @@ Route::middleware(['auth', 'role:guru,guru_piket'])->group(function () {
 
 Route::middleware(['auth', 'role:kelas'])->group(function () {
 
+    Route::get('/qr/kelas/status', [QrSesiController::class, 'kelasStatus'])
+        ->name('qr.status-kelas');
+
     Route::post(
         '/qr/kelas/scan-guru',
         [QrSesiController::class, 'scanGuruQr']
@@ -275,7 +287,7 @@ Route::get('/sesi-verifikasi-guru', function () {
 // ROUTE JURNAL GURU
 // ============================================================
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role:guru,guru_piket'])->group(function () {
 
     Route::get(
         '/form-jurnal',
@@ -293,13 +305,8 @@ Route::middleware(['auth'])->group(function () {
 // RIWAYAT & DETAIL JURNAL
 // ============================================================
 
-Route::get('/riwayat-jurnal', function () {
-    return view('guru.riwayat_jurnal');
-});
-
-Route::get('/detail-jurnal', function () {
-    return view('guru.detail_jurnal');
-});
+Route::get('/riwayat-jurnal', [RiwayatJurnalController::class, 'index'])->middleware(['auth', 'role:guru,guru_piket'])->name('riwayat-jurnal');
+Route::get('/detail-jurnal/{jurnal}', [RiwayatJurnalController::class, 'show'])->middleware(['auth', 'role:guru,guru_piket'])->name('riwayat-jurnal.detail');
 
 
 // ============================================================
@@ -309,47 +316,55 @@ Route::get('/detail-jurnal', function () {
 Route::middleware(['auth'])->group(function () {
 
     // Dashboard Guru Piket
-    Route::get('/dashboard-guru-piket', function () {
-        return view('guru.piket');
-    })->name('dashboard-guru-piket');
+    Route::get('/dashboard-guru-piket', [GuruPiketController::class, 'beranda'])
+        ->middleware(['role:guru,guru_piket', 'piket.aktif'])->name('dashboard-guru-piket');
 
-    Route::prefix('piket')->name('piket.')->group(function () {
-        Route::view('/jurnal-mengajar', 'guru.jurnal-mengajar')
-            ->name('jurnal');
+    Route::prefix('piket')->name('piket.')->middleware(['role:guru,guru_piket', 'piket.aktif'])->group(function () {
+        Route::get('/jurnal-mengajar', [JurnalController::class, 'piketIndex'])->name('jurnal');
 
-        Route::post('/jurnal-mengajar/{jurnal}/approve', [JurnalController::class, 'approve'])
-            ->name('jurnal.approve');
+        Route::post('/jurnal-mengajar/{jurnal}/approve', [JurnalController::class, 'approve'])->name('jurnal.approve');
 
-        Route::post('/jurnal-mengajar/{jurnal}/tolak', [JurnalController::class, 'reject'])
-            ->name('jurnal.reject');
+        Route::post('/jurnal-mengajar/{jurnal}/tolak', [JurnalController::class, 'reject'])->name('jurnal.reject');
 
         Route::get('/dispensasi-siswa', [DispenController::class, 'index'])
             ->name('dispen');
 
-        Route::view('/upload-tugas', 'guru.upload-tugas')
+        Route::get('/input-surat', [SuratSiswaController::class, 'index'])->name('input-surat');
+        Route::post('/input-surat', [SuratSiswaController::class, 'store'])->name('input-surat.store');
+
+        Route::get('/upload-tugas', [UploadTugasController::class, 'create'])
             ->name('upload-tugas');
+        Route::post('/upload-tugas', [UploadTugasController::class, 'store'])
+            ->name('upload-tugas.store');
+
+    });
+
+    // Rekap hanya baca, sehingga bisa dibuka di luar jam piket.
+    Route::prefix('piket')->name('piket.')->middleware(['role:guru,guru_piket', 'piket.aktif'])->group(function () {
+        Route::get('/rekap', [PiketRekapController::class, 'index'])->name('rekap');
+        Route::get('/rekap/export', [PiketRekapController::class, 'export'])->name('rekap.export');
     });
 
 
     Route::get(
         '/dispen',
         [DispenController::class, 'index']
-    )->name('dispen.index');
+    )->middleware(['role:guru,guru_piket', 'piket.aktif'])->name('dispen.index');
 
     Route::post(
         '/dispen',
         [DispenController::class, 'store']
-    )->name('dispen.store');
+    )->middleware(['role:guru,guru_piket', 'piket.aktif'])->name('dispen.store');
 
     Route::get(
         '/dispen/cari-siswa',
         [DispenController::class, 'cariSiswa']
-    )->name('dispen.cari-siswa');
+    )->middleware(['role:guru,guru_piket', 'piket.aktif'])->name('dispen.cari-siswa');
 
     Route::get(
         '/dispen/opsi-jam',
         [DispenController::class, 'opsiJam']
-    )->name('dispen.opsi-jam');
+    )->middleware(['role:guru,guru_piket', 'piket.aktif'])->name('dispen.opsi-jam');
 });
 
 

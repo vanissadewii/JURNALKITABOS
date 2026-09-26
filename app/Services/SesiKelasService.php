@@ -5,12 +5,13 @@ namespace App\Services;
 use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
 use Carbon\CarbonInterface;
+use App\Support\RentangJam;
 use Illuminate\Support\Collection;
 
 class SesiKelasService
 {
     /** @var array<int, string> */
-    private const NAMA_HARI = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat'];
+    private const NAMA_HARI = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'];
 
     /**
      * Sesi mengajar satu kelas pada hari dari $sekarang.
@@ -20,7 +21,7 @@ class SesiKelasService
      */
     public function sesiHariIni(Kelas $kelas, CarbonInterface $sekarang): Collection
     {
-        $hari = self::NAMA_HARI[$sekarang->dayOfWeekIso] ?? null; // null kalau Sabtu/Minggu
+        $hari = self::NAMA_HARI[$sekarang->dayOfWeekIso] ?? null; // null di luar hari pada jadwal
 
         if (! $hari) {
             return collect();
@@ -69,13 +70,13 @@ class SesiKelasService
             ]);
         }
 
-        $jamSekarang = $sekarang->format('H:i');
-
         foreach ($sesi as $s) {
-            if ($jamSekarang > $s->jam_selesai) {
-                $s->status = 'Selesai';
-            } elseif ($jamSekarang >= $s->jam_mulai) {
+            $menit = RentangJam::menit($sekarang->format('H:i'));
+            $selesai = RentangJam::menit($s->jam_selesai) ?: 1440;
+            if (RentangJam::sedangBerjalan($s->jam_mulai, $s->jam_selesai, $sekarang)) {
                 $s->status = 'Berlangsung';
+            } elseif ($menit >= RentangJam::menit($s->jam_mulai) && $menit >= $selesai) {
+                $s->status = 'Selesai';
             } else {
                 $s->status = 'Belum Dimulai';
             }

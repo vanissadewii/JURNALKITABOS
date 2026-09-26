@@ -18,13 +18,15 @@ class JadwalPelajaranController extends Controller
 {
     public function index(): View
     {
-        $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5];
+        $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6, 'Minggu' => 7];
 
         $jadwal = JadwalPelajaran::with(['kelas', 'jamPelajaran', 'guru', 'mapel'])
             ->whereHas('jamPelajaran.semester', fn ($q) => $q->where('status', 'aktif'))
             ->get()
             ->sortBy([
-                fn ($a, $b) => $a->id_kelas <=> $b->id_kelas,
+                fn ($a, $b) => (int) ($a->kelas->tingkat ?? 99) <=> (int) ($b->kelas->tingkat ?? 99),
+                fn ($a, $b) => strnatcasecmp($a->kelas->jurusan ?? '', $b->kelas->jurusan ?? ''),
+                fn ($a, $b) => (int) ($a->kelas->rombel ?? 0) <=> (int) ($b->kelas->rombel ?? 0),
                 fn ($a, $b) => $urutanHari[$a->jamPelajaran->hari] <=> $urutanHari[$b->jamPelajaran->hari],
                 fn ($a, $b) => $a->jamPelajaran->jam_ke <=> $b->jamPelajaran->jam_ke,
             ])
@@ -47,11 +49,13 @@ class JadwalPelajaranController extends Controller
             ) {
                 $last->jam_ke_sampai = (int) $jam->jam_ke;
                 $last->jam_selesai = substr($jam->jam_selesai, 0, 5);
+                $last->jadwal_ids[] = $row->id_jadwal;
             } else {
                 $jadwalGrup->push((object) [
                     'id_kelas' => $row->id_kelas,
                     'id_guru' => $row->id_guru,
                     'id_mapel' => $row->id_mapel,
+                    'jadwal_ids' => [$row->id_jadwal],
                     'kelas' => $row->kelas->nama_kelas ?? '-',
                     'hari' => $jam->hari,
                     'jam_ke_mulai' => (int) $jam->jam_ke,
@@ -71,6 +75,18 @@ class JadwalPelajaranController extends Controller
         return view('admin.tambah_jadwal', compact('jadwalGrup', 'kelas', 'guru', 'mapel'));
     }
 
+    public function destroyGroup(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1'],
+            'ids.*' => ['required', 'integer', 'distinct', 'exists:jadwal_pelajaran,id_jadwal'],
+        ]);
+
+        $jumlah = JadwalPelajaran::whereIn('id_jadwal', $validated['ids'])->delete();
+
+        return redirect()->route('jadwal.index')->with('success', "{$jumlah} sesi jadwal berhasil dihapus.");
+    }
+
     public function create(): View
     {
         $kelas = Kelas::orderBy('tingkat')->orderBy('jurusan')->orderBy('rombel')->get();
@@ -85,6 +101,9 @@ class JadwalPelajaranController extends Controller
     {
         /** @var Kelas $kelas */
         $kelas = Kelas::findOrFail($request->id_kelas);
+        if (in_array($request->hari, ['Sabtu', 'Minggu'], true) && ! $this->kelasUjiWeekend($kelas)) {
+            return response()->json([]);
+        }
 
         $jamPelajaran = JamPelajaran::where('tingkat', $kelas->tingkat)
             ->where('hari', $request->hari)
@@ -111,6 +130,9 @@ class JadwalPelajaranController extends Controller
 
         if ($dari->hari !== $sampai->hari || (int) $dari->tingkat !== (int) $kelas->tingkat) {
             return back()->withErrors('Jam yang dipilih tidak sesuai dengan kelas atau hari.')->withInput();
+        }
+        if (in_array($dari->hari, ['Sabtu', 'Minggu'], true) && ! $this->kelasUjiWeekend($kelas)) {
+            return back()->withErrors('Jadwal akhir pekan untuk uji coba hanya tersedia pada kelas XI RPL 2.')->withInput();
         }
 
         if ($sampai->jam_ke < $dari->jam_ke) {
@@ -142,6 +164,13 @@ class JadwalPelajaranController extends Controller
         }
 
         return redirect()->back()->with('success', "Jadwal berhasil ditambahkan untuk {$jamList->count()} jam pelajaran.");
+    }
+
+    private function kelasUjiWeekend(Kelas $kelas): bool
+    {
+        return (int) $kelas->tingkat === 11
+            && strtoupper(trim($kelas->jurusan)) === 'RPL'
+            && (int) $kelas->rombel === 2;
     }
 
     public function import(Request $request): RedirectResponse

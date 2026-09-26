@@ -11,7 +11,7 @@ class Siswa extends Model
 
     protected $primaryKey = 'id_siswa';
 
-    protected $fillable = ['nisn', 'nama', 'id_kelas'];
+    protected $fillable = ['nisn', 'nama', 'no_absen', 'id_kelas'];
 
     /**
      * @return BelongsTo<Kelas, $this>

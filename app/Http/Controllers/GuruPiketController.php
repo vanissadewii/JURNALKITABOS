@@ -16,7 +16,7 @@ use Illuminate\View\View;
 class GuruPiketController extends Controller
 {
     /** @var array<int, string> */
-    private const NAMA_HARI = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat'];
+    private const NAMA_HARI = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'];
 
     /** Satu tempat untuk waktu "sekarang" (gampang dipalsukan saat tes). */
     private function sekarang(): CarbonInterface
@@ -36,6 +36,7 @@ class GuruPiketController extends Controller
     {
         return Jurnal::with(['jadwal.kelas', 'jadwal.mapel', 'jadwal.guru', 'absenSiswa'])
             ->whereDate('tanggal', $tanggal)
+            ->whereNotNull('waktu_submit')
             ->when($idKelas, fn ($q, $id) => $q->whereHas('jadwal', fn ($j) => $j->where('id_kelas', $id)))
             ->orderBy('id_jurnal')
             ->get()
@@ -102,6 +103,7 @@ class GuruPiketController extends Controller
                     ! $jurnal => 'Belum ada jurnal',
                     $jurnal->status_kehadiran_guru === 'izin' => 'Izin',
                     $jurnal->status_kehadiran_guru === 'sakit' => 'Sakit',
+                    $jurnal->status_kehadiran_guru === 'tidak_hadir' => 'Guru Tidak Hadir',
                     $jurnal->status_verifikasi === 'terverifikasi' => 'Terverifikasi',
                     default => 'Menunggu scan',
                 };
@@ -215,6 +217,7 @@ class GuruPiketController extends Controller
                 $status = match (true) {
                     $jurnalGuru->contains('status_kehadiran_guru', 'izin') => 'Izin',
                     $jurnalGuru->contains('status_kehadiran_guru', 'sakit') => 'Sakit',
+                    $jurnalGuru->contains('status_kehadiran_guru', 'tidak_hadir') => 'Guru Tidak Hadir',
                     $jurnalGuru->isNotEmpty() => 'Hadir',
                     default => 'Belum ada jurnal',
                 };
@@ -234,11 +237,11 @@ class GuruPiketController extends Controller
             ->values();
 
         $guruTidakHadir = $jurnalHariIni
-            ->whereIn('status_kehadiran_guru', ['izin', 'sakit'])
+            ->whereIn('status_kehadiran_guru', ['izin', 'sakit', 'tidak_hadir'])
             ->unique(fn ($j) => $j->jadwal->id_guru)
             ->map(fn ($j) => (object) [
                 'nama' => $j->jadwal->guru->name ?? '-',
-                'status' => ucfirst($j->status_kehadiran_guru),
+                'status' => $j->status_kehadiran_guru === 'tidak_hadir' ? 'Guru Tidak Hadir' : ucfirst($j->status_kehadiran_guru),
                 'mapel' => $j->jadwal->mapel->nama_mapel ?? '-',
                 'kelas' => $j->jadwal->kelas->nama_kelas ?? '-',
                 'keterangan' => $j->keterangan ?: '-',
@@ -265,7 +268,7 @@ class GuruPiketController extends Controller
         $laporanAlpha = $siswaLaporan->where('status', 'Alpha')->count();
 
         $guruIzinSakitLaporan = $jurnalLaporan
-            ->whereIn('status_kehadiran_guru', ['izin', 'sakit'])
+            ->whereIn('status_kehadiran_guru', ['izin', 'sakit', 'tidak_hadir'])
             ->unique(fn ($j) => $j->jadwal->id_guru)
             ->count();
 
@@ -275,14 +278,6 @@ class GuruPiketController extends Controller
             ->when($idKelasLaporan, fn ($q, $id) => $q->where('id_kelas', $id))
             ->get();
 
-        return view('guru-piket.berandaguru', compact(
-            'guru', 'sekarang',
-            'sesiBerlangsung', 'jumlahBerlangsung', 'jumlahBelumJurnal',
-            'guruIzin', 'guruSakit', 'siswaAbsen', 'siswaSakit', 'siswaIzin', 'siswaAlpha', 'aktivitas',
-            'dispenHariIni', 'absensiSiswa',
-            'totalGuru', 'guruHadir', 'guruHariIni', 'guruTidakHadir',
-            'tanggalLaporan', 'idKelasLaporan', 'daftarKelas', 'jurnalLaporan', 'siswaLaporan',
-            'laporanSakit', 'laporanIzin', 'laporanAlpha', 'guruIzinSakitLaporan', 'dispenLaporan'
-        ));
+        return view('guru.piket');
     }
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Dashboard - Jurnal Guru</title>
     @vite('resources/css/app.css')
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 <body>
     <div class="min-h-screen p-8">

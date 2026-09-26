@@ -70,13 +70,17 @@
         </a>
 
         <!-- Menu Input Jurnal -->
+        @if ($sesiSaatIni)
         <a href="{{ route('jurnal.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        @else
+        <span aria-disabled="true" title="Isi jurnal tersedia saat sesi mengajar berlangsung" class="pointer-events-none flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#9E8E83] opacity-50">
+        @endif
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
             <path d="M7 3v14"/>
           </svg>
           <span>Isi Jurnal</span>
-        </a>
+        @if ($sesiSaatIni)</a>@else</span>@endif
 
         <!-- MENU LIST/RIWAYAT JURNAL -->
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
@@ -86,7 +90,7 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
         </a>
 
@@ -113,9 +117,9 @@
       <div class="flex items-center justify-between w-full md:w-auto gap-4">
         <div class="flex flex-col gap-1">
           <span class="text-xs sm:text-sm font-medium tracking-wide text-brand-200">Selamat Datang,</span>
-          <h1 class="font-poppins text-2xl sm:text-3xl font-bold text-white tracking-tight">Budi Santoso</h1>
+          <h1 class="font-poppins text-2xl sm:text-3xl font-bold text-white tracking-tight">{{ $guru->name }}</h1>
           <span class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-[#D7B899]">
-            <span>Guru Matematika</span>
+            <span>Guru</span>
             <span class="text-white/40">•</span>
             <span>{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</span>
           </span>
@@ -126,145 +130,90 @@
 
     <!-- Main Content Container (Penuh Lebar Layar) -->
     <main class="w-full px-6 md:px-10 py-8 flex flex-col gap-8 flex-1">
+      @if (session('success'))
+        <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-800">{{ session('success') }}</div>
+      @endif
+      @if (session('error'))
+        <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">{{ session('error') }}</div>
+      @endif
+
+      @if (($izinJurnalSusulan ?? false) && ($adaJadwalKemarin ?? false))
+        <section class="flex flex-col gap-3 rounded-2xl border border-amber-200 bg-[#FFFCF4] p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <div class="flex items-start gap-3">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-800"><svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 2v4m8-4v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2z"/><path d="m9 16 2 2 4-4"/></svg></div>
+            <div><div class="flex flex-wrap items-center gap-2"><h2 class="font-poppins text-base font-bold text-[#3E3028]">Jurnal Kemarin</h2><span class="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-900">Izin aktif</span></div><p class="mt-1 text-xs leading-5 text-[#7A6A60]">Lengkapi jurnal dari jadwal mengajar kemarin. Akses dibuka oleh admin khusus untuk akun Anda.</p></div>
+          </div>
+          <a href="{{ route('jurnal.create', ['susulan' => 1]) }}" class="inline-flex h-10 shrink-0 items-center justify-center rounded-xl bg-[#5C4033] px-4 text-sm font-semibold text-white shadow-sm hover:bg-[#3E2B22]">Isi Jurnal Kemarin</a>
+        </section>
+      @endif
       
-      <!-- SEKSI 1: Jadwal Mengajar Saat Ini -->
-      <div class="flex flex-col gap-4 w-full">
+      <section class="flex flex-col gap-4 w-full">
         <div class="flex items-center justify-between">
           <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">Jadwal Mengajar Saat Ini</h2>
+          @if ($kegiatanDitiadakan)
+            <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-[11px] font-semibold text-amber-800">Jam dimajukan</span>
+          @endif
         </div>
-
-        <!-- Card Banner Utama (Full Width & Grid Responsif) -->
-        <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 md:p-8 flex flex-col justify-between gap-6 shadow-sm relative overflow-hidden before:absolute before:left-0 before:top-0 before:bottom-0 before:w-2 before:bg-amber-500">
-          
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            
-            <!-- Info Kelas & Mata Pelajaran -->
-            <div class="lg:col-span-7 flex flex-col gap-3">
-              <div class="flex items-center gap-3">
-                <span class="px-3.5 py-1 bg-amber-50 border border-amber-200 rounded-full text-xs font-semibold text-amber-800">
-                  Belum Dimulai
-                </span>
-                <span class="text-xs font-semibold text-brand-600 border-l border-brand-200 pl-3">
-                  Sesi Aktif
-                </span>
+        @php($sesiUtama = $sesiSaatIni ?? $sesiBerikutnya)
+        @if ($sesiUtama)
+          <article class="w-full rounded-2xl border border-brand-100 bg-white p-6 shadow-sm md:p-8">
+            <div class="flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
+              <div>
+                <span class="rounded-full bg-[#F5EFE8] px-3 py-1 text-xs font-semibold text-[#5C4033]">{{ $sesiUtama->status }}</span>
+                <h3 class="mt-3 font-poppins text-2xl font-bold text-[#3E3028]">{{ $sesiUtama->kelas }}</h3>
+                <p class="mt-1 font-semibold text-[#8C7B70]">{{ $sesiUtama->mapel }}</p>
               </div>
-              <h3 class="font-poppins font-bold text-2xl md:text-3xl text-[#3E3028]">Matematika</h3>
-              <p class="font-semibold text-base text-[#8C7B70]">Kelas X RPL 1</p>
-            </div>
-
-            <!-- Jam & Action Button -->
-            <div class="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col xl:flex-row items-stretch sm:items-center lg:items-stretch xl:items-center justify-end gap-4 border-t lg:border-t-0 pt-4 lg:pt-0 border-brand-100">
-              
-              <div class="flex items-center gap-3 text-sm font-medium text-brand-700 bg-brand-50 px-4 py-3 rounded-xl border border-brand-100/60 justify-center">
-                <svg class="w-5 h-5 text-brand-800 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
-                  <circle cx="8" cy="8" r="6"/>
-                  <path d="M8 4.5v4.25l2.5 1.5"/>
-                </svg>
-                <span class="whitespace-nowrap">Jam ke-1 (07:00 – 07:45)</span>
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <span class="rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-medium text-brand-700">Jam ke-{{ $sesiUtama->jam_ke_mulai }}@if($sesiUtama->jam_ke_sampai !== $sesiUtama->jam_ke_mulai)–{{ $sesiUtama->jam_ke_sampai }}@endif · {{ $sesiUtama->jam_mulai }}–{{ $sesiUtama->jam_selesai }}</span>
+                @if ($sesiSaatIni)
+                  <a href="{{ route('jurnal.create') }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#5C4033] px-6 text-sm font-semibold text-white shadow-md hover:bg-[#3E2B22]">Mulai Sesi Mengajar</a>
+                @else
+                  <span aria-disabled="true" class="inline-flex h-12 cursor-not-allowed items-center justify-center rounded-xl bg-[#E5D8CC] px-6 text-sm font-semibold text-[#7A6A60]">Menunggu sesi dimulai</span>
+                @endif
               </div>
-
-              <a href="{{ route('jurnal.create') }}" class="px-6 h-12 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all whitespace-nowrap">
-                Mulai Sesi Mengajar
-              </a>
-
             </div>
-
+          </article>
+        @else
+          <div class="rounded-2xl border border-dashed border-brand-200 bg-white p-8 text-center text-sm text-[#7A6A60]">
+            @if ($hari)
+              Belum ada jadwal mengajar untuk hari ini.
+            @else
+              Tidak ada jadwal mengajar pada akhir pekan.
+            @endif
           </div>
+        @endif
+      </section>
 
-        </div>
-      </div>
-
-      <!-- SEKSI 2: Jadwal Hari Ini (Grid Layout di Desktop) -->
-      <div class="flex flex-col gap-4 w-full">
+      <section class="flex w-full flex-col gap-4">
         <div class="flex items-center justify-between">
-          <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">
-            Jadwal Mengajar Hari Ini
-          </h2>
-          <span class="text-xs font-semibold text-brand-700 bg-white border border-brand-100 px-3 py-1 rounded-full shadow-xs">
-            3 Sesi
-          </span>
+          <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">Jadwal Mengajar Hari Ini</h2>
+          <span class="rounded-full border border-brand-100 bg-white px-3 py-1 text-xs font-semibold text-brand-700">{{ $sesi->count() }} Sesi</span>
         </div>
-
-        <!-- Grid 1 Kolom (Mobile) / 2-3 Kolom (Desktop) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-          
-          <!-- Item Jadwal 1 -->
-          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex items-start gap-3.5">
-                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
-                  01
+        @if ($sesi->isNotEmpty())
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            @foreach ($sesi as $item)
+              @php($statusClass = match($item->status) { 'Berlangsung' => 'border-green-200 bg-green-50 text-green-800', 'Akan Datang' => 'border-amber-200 bg-amber-50 text-amber-800', 'Selesai' => 'border-[#E5D8CC] bg-[#F5EFE8] text-[#7A6A60]', default => 'border-gray-200 bg-gray-100 text-gray-600' })
+              <article class="flex flex-col justify-between gap-5 rounded-2xl border border-brand-100 bg-white p-5 transition-all hover:border-brand-300 hover:shadow-md">
+                <div class="flex items-start justify-between gap-4">
+                  <div class="flex items-start gap-3.5">
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 font-poppins text-sm font-bold text-brand-800">{{ str_pad((string) $item->jam_ke_mulai, 2, '0', STR_PAD_LEFT) }}</span>
+                    <div><h3 class="font-poppins text-base font-bold text-[#3E3028]">{{ $item->kelas }}</h3><p class="text-xs font-semibold text-[#8C7B70]">{{ $item->mapel }}</p></div>
+                  </div>
+                  <span class="whitespace-nowrap rounded-full border px-3 py-1 text-xs font-semibold {{ $statusClass }}">{{ $item->status }}</span>
                 </div>
-                <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
-                  <p class="text-xs font-semibold text-[#8C7B70]">X RPL 1</p>
+                <div class="flex items-center justify-between gap-2 border-t border-brand-50 pt-3 text-xs">
+                  <span class="font-medium text-brand-600">Jam ke-{{ $item->jam_ke_mulai }}@if($item->jam_ke_sampai !== $item->jam_ke_mulai)–{{ $item->jam_ke_sampai }}@endif · {{ $item->jam_mulai }}–{{ $item->jam_selesai }}</span>
+                  @if ($item->status === 'Berlangsung')
+                    <a href="{{ route('jurnal.create') }}" class="shrink-0 font-poppins font-semibold text-brand-800 underline underline-offset-2">Isi Jurnal</a>
+                  @endif
                 </div>
-              </div>
-              <span class="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full font-semibold text-xs whitespace-nowrap">
-                Akan Datang
-              </span>
-            </div>
-
-            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
-              <span class="text-brand-600 font-medium">Jam ke-1 • 07:00 – 07:45</span>
-              <a href="{{ url('/form-jurnal') }}" data-session-start="07:00" class="session-link font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                Isi Jurnal
-              </a>
-            </div>
+              </article>
+            @endforeach
           </div>
-
-          <!-- Item Jadwal 2 -->
-          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex items-start gap-3.5">
-                <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
-                  02
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
-                  <p class="text-xs font-semibold text-[#8C7B70]">X RPL 2</p>
-                </div>
-              </div>
-              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs whitespace-nowrap">
-                Belum Dimulai
-              </span>
-            </div>
-
-            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
-              <span class="text-brand-600 font-medium">Jam ke-2 • 08:00 – 08:45</span>
-              <a href="{{ url('/form-jurnal') }}" data-session-start="08:00" class="session-link font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                Isi Jurnal
-              </a>
-            </div>
-          </div>
-
-          <!-- Item Jadwal 3 -->
-          <div class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col justify-between gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex items-start gap-3.5">
-                <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-800 font-poppins font-bold flex items-center justify-center shrink-0 text-sm">
-                  03
-                </div>
-                <div class="flex flex-col gap-0.5">
-                  <h4 class="font-poppins font-bold text-base text-[#3E3028]">Matematika</h4>
-                  <p class="text-xs font-semibold text-[#8C7B70]">XI RPL 1</p>
-                </div>
-              </div>
-              <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full font-semibold text-xs whitespace-nowrap">
-                Belum Dimulai
-              </span>
-            </div>
-
-            <div class="pt-3 border-t border-brand-50 flex items-center justify-between text-xs">
-              <span class="text-brand-600 font-medium">Jam ke-3 • 09:00 – 09:45</span>
-              <a href="{{ url('/form-jurnal') }}" data-session-start="09:00" class="session-link font-poppins font-semibold text-brand-800 hover:text-brand-900 underline underline-offset-2">
-                Isi Jurnal
-              </a>
-            </div>
-          </div>
-
-        </div>
-      </div>
+        @else
+          <div class="rounded-2xl border border-dashed border-brand-200 bg-white p-8 text-center text-sm text-[#7A6A60]">Tidak ada sesi untuk ditampilkan.</div>
+        @endif
+      </section>
 
     </main>
 
@@ -283,13 +232,17 @@
       </a>
 
       <!-- Inactive Mobile Link (Form Jurnal) -->
-      <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      @if ($sesiSaatIni)
+      <a href="{{ route('jurnal.create') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      @else
+      <span aria-disabled="true" title="Isi jurnal tersedia saat sesi mengajar berlangsung" class="pointer-events-none flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] opacity-50">
+      @endif
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
           <path d="M7 3v14"/>
         </svg>
         <span>Isi Jurnal</span>
-      </a>
+      @if ($sesiSaatIni)</a>@else</span>@endif
 
       <!-- LIST RIWAYAT JURNAL MOBILE -->
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
@@ -299,7 +252,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg>
         <span>Piket</span>
       </a>
@@ -316,21 +269,7 @@
     </div>
   </nav>
 
-  <script>
-    document.querySelectorAll('.session-link').forEach((link) => {
-      const [startHour, startMinute] = link.dataset.sessionStart.split(':').map(Number);
-      const now = new Date();
-      const isAvailable = now.getHours() * 60 + now.getMinutes() >= startHour * 60 + startMinute;
 
-      if (!isAvailable) {
-        link.removeAttribute('href');
-        link.classList.remove('text-brand-800', 'hover:text-brand-900', 'underline');
-        link.classList.add('cursor-not-allowed', 'text-[#B8ADA5]', 'no-underline');
-        link.textContent = 'Belum tersedia';
-        link.setAttribute('aria-disabled', 'true');
-      }
-    });
-  </script>
 
 </body>
 </html>

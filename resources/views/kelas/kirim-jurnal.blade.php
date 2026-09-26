@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     @vite('resources/css/app.css')
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen overflow-x-hidden">
@@ -78,9 +79,6 @@
                 <span class="text-white text-xl md:text-3xl font-['Poppins'] font-bold">
                     Kirim Jurnal
                 </span>
-                <span class="text-[#D7B899] text-xs font-medium mt-0.8">
-                    {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
-                </span>
             </div>
 
 
@@ -97,260 +95,36 @@
                 <div class="w-full max-w-full bg-white border border-[#E5D8CC] rounded-[10px]
                             shadow-[0_4px_12px_rgba(62,48,40,0.03)] overflow-x-auto">
 
-                    <table class="min-w-[1300px] w-full text-left border-collapse">
-
-                        <thead>
-                            <tr class="bg-[#F5EFE8]">
-                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] align-middle">
-                                    Jam Ke-
-                                </th>
-                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] align-middle">
-                                    Nama Pengajar
-                                </th>
-                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] align-middle">
-                                    Mata Pelajaran
-                                </th>
-                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center align-middle">
-                                    Hadir
-                                </th>
-                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center align-middle">
-                                    Tidak Hadir<br>
-                                    <span class="normal-case font-medium">(Tugas)</span>
-                                </th>
-                                <th rowspan="2" class="px-5 py-4 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] min-w-[260px] align-middle">
-                                    Materi
-                                </th>
-                                <th colspan="6" class="px-5 py-2.5 text-[11px] font-semibold uppercase text-[#5C4033] text-center border-b border-r border-[#E5D8CC]">
-                                    Keadaan Siswa
-                                </th>
-                            </tr>
-                            <tr class="bg-[#F5EFE8]">
-                                <th class="px-4 py-3 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] text-center">
-                                    Jumlah Hadir
-                                </th>
-                                <th class="px-4 py-3 text-[11px] font-semibold uppercase text-[#5C4033] whitespace-nowrap border-b border-r border-[#E5D8CC] min-w-[170px]">
-                                    Nama Siswa
-                                </th>
-                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] text-center w-10">
-                                    S
-                                </th>
-                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] text-center w-10">
-                                    I
-                                </th>
-                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-r border-[#E5D8CC] text-center w-10">
-                                    A
-                                </th>
-                                <th class="px-3 py-3 text-[11px] font-semibold uppercase text-[#5C4033] border-b border-[#E5D8CC] text-center w-10">
-                                    D
-                                </th>
-                            </tr>
-                        </thead>
-
+                    <table class="min-w-[900px] w-full text-left border-collapse">
+                        <thead><tr class="bg-[#F5EFE8] text-xs text-[#7A6A60]"><th class="px-4 py-3">Jam</th><th class="px-4 py-3">Guru</th><th class="px-4 py-3">Mapel</th><th class="px-4 py-3">Status scan</th><th class="px-4 py-3">Materi</th><th class="px-4 py-3">Kehadiran</th></tr></thead>
                         <tbody>
-
-                            {{-- 1. Bahasa Jepang (Jam 1) - Izin --}}
-                            <tr class="border-b border-[#E5D8CC] align-top">
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    1
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    Sulistyowati, SS.
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    Bahasa Jepang
-                                </td>
-                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
-                                    <span class="text-[#C62828] font-bold">✕</span>
-                                </td>
-                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
-                                    <span class="text-[#2E7D32] font-bold">✓</span>
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
-                                    Mengerjakan latihan Bahasa Jepang halaman 25
-                                </td>
-                                <td class="px-4 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
-                                    -
-                                </td>
-                                <td class="px-4 py-4 text-[13px] text-[#7A6A60] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    -
-                                </td>
-                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4"></td>
+                        @forelse($rekap as $sesi)
+                            @php($jurnalSesi = $sesi->jurnal)
+                            <tr class="border-t border-[#E5D8CC]">
+                                <td class="px-4 py-3">{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai)–{{ $sesi->jam_ke_sampai }}@endif</td>
+                                <td class="px-4 py-3">{{ $sesi->guru }}</td><td class="px-4 py-3">{{ $sesi->mapel }}</td>
+                                <td class="px-4 py-3">{{ $jurnalSesi?->status_verifikasi === 'terverifikasi' ? 'Terverifikasi' : ($jurnalSesi ? 'Menunggu verifikasi' : 'Belum ada jurnal') }}</td>
+                                <td class="px-4 py-3">{{ $jurnalSesi?->materi ?: '—' }}</td><td class="px-4 py-3">{{ $jurnalSesi?->jumlah_hadir ?? '—' }}</td>
                             </tr>
-
-                            {{-- 2. PJOK (Jam 2-4) - Tidak Hadir --}}
-                            <tr class="border-b border-[#E5D8CC] align-top">
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    2 - 4
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    Zainul Arifin, S.Pd.
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    PJOK
-                                </td>
-                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
-                                    <span class="text-[#C62828] font-bold">✕</span>
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#7A6A60] text-center whitespace-nowrap border-r border-[#E5D8CC]">
-                                    -
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#7A6A60] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    -
-                                </td>
-                                <td class="px-4 py-4 text-[13px] text-[#7A6A60] text-center whitespace-nowrap border-r border-[#E5D8CC]">
-                                    -
-                                </td>
-                                <td class="px-4 py-4 text-[13px] text-[#7A6A60] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    -
-                                </td>
-                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4 border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4"></td>
-                            </tr>
-
-                            {{-- 3. Matematika (Jam 5-8) - Hadir --}}
-                            <tr class="border-b border-[#F0E9DF] align-top">
-                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
-                                    5 - 8
-                                </td>
-                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
-                                    Badrus Sulaiman, S.Pd., Gr.
-                                </td>
-                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
-                                    Matematika
-                                </td>
-                                <td rowspan="4" class="px-5 py-4 text-center border-r border-b border-[#E5D8CC] align-top">
-                                    <span class="text-[#2E7D32] font-bold">✓</span>
-                                </td>
-                                <td rowspan="4" class="px-5 py-4 text-center border-r border-b border-[#E5D8CC] align-top">
-                                    <span class="text-[#C62828] font-bold">✕</span>
-                                </td>
-                                <td rowspan="4" class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-b border-[#E5D8CC] align-top">
-                                    Persamaan dan Pertidaksamaan
-                                </td>
-                                <td rowspan="4" class="px-4 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-b border-[#E5D8CC] align-top">
-                                    32
-                                </td>
-                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#F0E9DF]">
-                                    Rizki Pratama
-                                </td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center">
-                                    <span class="text-[#3E3028] font-bold">✓</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[#F0E9DF] align-top">
-                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#F0E9DF]">
-                                    Nadia Putri
-                                </td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center">
-                                    <span class="text-[#3E3028] font-bold">✓</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[#F0E9DF] align-top">
-                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#F0E9DF]">
-                                    Fajar Nugroho
-                                </td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#F0E9DF]"></td>
-                                <td class="px-3 py-2.5 text-center">
-                                    <span class="text-[#3E3028] font-bold">✓</span>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-[#E5D8CC] align-top">
-                                <td class="px-4 py-2.5 text-[13px] text-[#3E3028] border-r border-[#E5D8CC]">
-                                    Andi Saputra
-                                </td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#E5D8CC]">
-                                    <span class="text-[#3E3028] font-bold">✓</span>
-                                </td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-2.5 text-center border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-2.5 text-center"></td>
-                            </tr>
-
-                            {{-- 4. Bahasa Inggris (Jam 9-10) - Hadir --}}
-                            <tr class="align-top">
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    9 - 10
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    Siti Aminah, S.Pd.
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-nowrap border-r border-[#E5D8CC]">
-                                    Bahasa Inggris
-                                </td>
-                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
-                                    <span class="text-[#2E7D32] font-bold">✓</span>
-                                </td>
-                                <td class="px-5 py-4 text-center border-r border-[#E5D8CC]">
-                                    <span class="text-[#C62828] font-bold">✕</span>
-                                </td>
-                                <td class="px-5 py-4 text-[13px] text-[#3E3028] whitespace-normal break-words min-w-[260px] border-r border-[#E5D8CC]">
-                                    Asking and Giving Opinion
-                                </td>
-                                <td class="px-4 py-4 text-[13px] text-[#3E3028] text-center whitespace-nowrap border-r border-[#E5D8CC]">
-                                    35
-                                </td>
-                                <td class="px-4 py-4 text-[13px] text-[#3E3028] border-r border-[#E5D8CC]">
-                                    Nadia Putri
-                                </td>
-                                <td class="px-3 py-4 text-center border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4 text-center border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4 text-center border-r border-[#E5D8CC]"></td>
-                                <td class="px-3 py-4 text-center">
-                                    <span class="text-[#3E3028] font-bold">✓</span>
-                                </td>
-                            </tr>
-
+                        @empty
+                            <tr><td colspan="6" class="px-4 py-8 text-center text-sm text-[#7A6A60]">Tidak ada sesi terjadwal hari ini.</td></tr>
+                        @endforelse
                         </tbody>
                     </table>
                 </div>
 
 
-                {{-- STATUS SEMUA SELESAI --}}
-                <button
-                    type="button"
-                    id="btnStatusSelesai"
-                    onclick="toggleStatusSelesai()"
-                    class="w-full text-left bg-[#F0EBE6] border border-[#D9CDC3] rounded-[10px] p-4 mt-2
-                           transition-all duration-200 hover:bg-[#E8E0D8] active:scale-[0.99]
-                           cursor-pointer select-none">
-
-                    <div class="flex items-start gap-3">
-                        <div id="iconStatus"
-                             class="w-8 h-8 rounded-lg bg-[#B0A59B] flex items-center justify-center shrink-0 transition-colors duration-200">
-                            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3">
-                                <path d="M5 12l4 4L19 6"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p id="judulStatus" class="font-['Poppins'] font-bold text-sm text-[#7A6A60] transition-colors duration-200">
-                                Semua sesi hari ini sudah selesai
-                            </p>
-                            <p id="subStatus" class="text-xs text-[#9C8B80] mt-1 transition-colors duration-200">
-                                Klik untuk konfirmasi bahwa jurnal sudah lengkap.
-                            </p>
-                        </div>
-                    </div>
-                </button>
-
+                <div class="w-full rounded-xl border {{ $semuaSelesai ? 'border-green-200 bg-green-50' : 'border-amber-200 bg-amber-50' }} p-4">
+                    <p class="font-semibold {{ $semuaSelesai ? 'text-green-800' : 'text-amber-800' }}">{{ $pengiriman ? 'Jurnal hari ini sudah dikirim.' : ($semuaSelesai ? 'Semua sesi sudah selesai dan terverifikasi.' : 'Jurnal bisa dikirim setelah semua sesi selesai dan terverifikasi.') }}</p>
+                </div>
 
                 {{-- TOMBOL KIRIM --}}
-                <button
-                    type="button"
+                <form method="POST" action="{{ route('kelas.kirim-jurnal.store') }}">
+                    @csrf
+                    <button
+                    type="submit"
                     id="btnKirimJurnal"
-                    disabled
+                    @disabled(!$semuaSelesai || $pengiriman)
                     class="w-full bg-[#A89B90] text-white py-3.5 rounded-lg font-semibold text-sm
                            transition duration-200 mt-1 cursor-not-allowed opacity-70">
                     <span class="inline-flex items-center justify-center gap-2">
@@ -358,9 +132,10 @@
                             <path d="M22 2L11 13"/>
                             <path d="M22 2l-7 20-4-9-20-7z"/>
                         </svg>
-                        Kirim Jurnal Hari Ini
+                        {{ $pengiriman ? 'Jurnal Sudah Dikirim' : 'Kirim Jurnal Hari Ini' }}
                     </span>
-                </button>
+                    </button>
+                </form>
 
                 <p class="text-center text-[11px] text-[#7A6A60]">
                     Pastikan seluruh jurnal hari ini sudah benar sebelum dikirim.
@@ -408,39 +183,7 @@
     </nav>
 
 
-    <script>
-        let isStatusSelesai = false;
 
-        function toggleStatusSelesai() {
-            isStatusSelesai = !isStatusSelesai;
-
-            const btnStatus   = document.getElementById('btnStatusSelesai');
-            const iconStatus  = document.getElementById('iconStatus');
-            const judulStatus = document.getElementById('judulStatus');
-            const subStatus   = document.getElementById('subStatus');
-            const btnKirim    = document.getElementById('btnKirimJurnal');
-
-            if (isStatusSelesai) {
-                btnStatus.className = "w-full text-left bg-[#E8F5E9] border border-[#C8E6C9] rounded-[10px] p-4 mt-2 transition-all duration-200 hover:bg-[#DFF0E0] active:scale-[0.99] cursor-pointer select-none";
-                iconStatus.className = "w-8 h-8 rounded-lg bg-[#4CAF50] flex items-center justify-center shrink-0 transition-colors duration-200";
-                judulStatus.className = "font-['Poppins'] font-bold text-sm text-[#2E7D32] transition-colors duration-200";
-                judulStatus.textContent = "Semua sesi hari ini sudah selesai";
-                subStatus.className = "text-xs text-[#4E6B50] mt-1 transition-colors duration-200";
-                subStatus.textContent = "Jurnal hari ini sudah lengkap dan siap dikirim.";
-                btnKirim.disabled = false;
-                btnKirim.className = "w-full bg-[#5C4033] hover:bg-[#432D23] text-white py-3.5 rounded-lg font-semibold text-sm transition duration-200 mt-1 cursor-pointer";
-            } else {
-                btnStatus.className = "w-full text-left bg-[#F0EBE6] border border-[#D9CDC3] rounded-[10px] p-4 mt-2 transition-all duration-200 hover:bg-[#E8E0D8] active:scale-[0.99] cursor-pointer select-none";
-                iconStatus.className = "w-8 h-8 rounded-lg bg-[#B0A59B] flex items-center justify-center shrink-0 transition-colors duration-200";
-                judulStatus.className = "font-['Poppins'] font-bold text-sm text-[#7A6A60] transition-colors duration-200";
-                judulStatus.textContent = "Semua sesi hari ini sudah selesai";
-                subStatus.className = "text-xs text-[#9C8B80] mt-1 transition-colors duration-200";
-                subStatus.textContent = "Klik untuk konfirmasi bahwa jurnal sudah lengkap.";
-                btnKirim.disabled = true;
-                btnKirim.className = "w-full bg-[#A89B90] text-white py-3.5 rounded-lg font-semibold text-sm transition duration-200 mt-1 cursor-not-allowed opacity-70";
-            }
-        }
-    </script>
 
 </body>
 </html>

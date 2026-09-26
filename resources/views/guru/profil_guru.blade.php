@@ -84,7 +84,7 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
         </a>
 
@@ -138,11 +138,11 @@
         <div class="flex flex-col divide-y divide-brand-100/80 text-sm">
           <div class="flex flex-wrap justify-between items-center gap-2 py-4 pt-0">
             <span class="text-brand-600 font-medium">Mengampu Mata Pelajaran</span>
-            <span class="font-bold text-[#3E3028]">{{ $user->mapel ?: 'Matematika' }}</span>
+            <span class="font-bold text-[#3E3028]">{{ $mapel->isNotEmpty() ? $mapel->implode(', ') : 'Belum ada jadwal mengajar' }}</span>
           </div>
           <div class="flex flex-wrap justify-between items-center gap-2 py-4">
             <span class="text-brand-600 font-medium">No. HP</span>
-            <span class="font-bold text-[#3E3028]">{{ $user->no_telepon ?: '085735059975' }}</span>
+            <span class="font-bold text-[#3E3028]">{{ $user->no_telepon ?: 'Belum diatur' }}</span>
           </div>
         </div>
 
@@ -211,7 +211,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
       <!-- Active Mobile Link (Profil Guru) -->
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
@@ -251,8 +251,8 @@
         </div>
 
         <div class="flex flex-col gap-1.5">
-          <label for="mapel" class="text-xs font-semibold text-brand-600">Mengampu Mata Pelajaran</label>
-          <input type="text" id="mapel" name="mapel" value="{{ old('mapel', $user->mapel ?: 'Matematika') }}" required class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-colors">
+          <label for="mapel" class="text-xs font-semibold text-brand-600">Mata Pelajaran dari Jadwal Admin</label>
+          <input type="text" id="mapel" value="{{ $mapel->isNotEmpty() ? $mapel->implode(', ') : 'Belum ada jadwal mengajar' }}" readonly class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-sm text-[#3E3028]">
         </div>
 
         <div class="flex flex-col gap-1.5">
@@ -352,8 +352,11 @@
     }
 
     function hubungiAdmin() {
-      const nomorAdmin = '6287782599520';
-      const pesan = 'Hallo Admin\nSaya:\nKendala:';
+      let nomorAdmin = String(@json($adminPhone ?? '')).replace(/\D/g, '');
+      if (!nomorAdmin) { alert('Nomor telepon admin belum diatur.'); return; }
+      if (nomorAdmin.startsWith('0')) nomorAdmin = `62${nomorAdmin.slice(1)}`;
+      else if (!nomorAdmin.startsWith('62')) nomorAdmin = `62${nomorAdmin}`;
+      const pesan = `Hallo Admin\nSaya: ${@json($user->name)}\nKendala:`;
       const url = `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`;
       window.open(url, '_blank');
     }

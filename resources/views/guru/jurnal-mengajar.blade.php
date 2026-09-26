@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 
   <title>Jurnal Mengajar - Piket</title>
 
@@ -99,165 +100,7 @@
 
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
-  {{--
-    VARIABEL DARI CONTROLLER (masih dummy di bawah):
 
-    - $isPiketHariIni : bool
-    - $guruPiketId    : id guru yang login sebagai piket
-    - $daftarJurnal   : 1 ITEM = 1 KIRIMAN JURNAL DARI 1 KELAS (bukan per jam),
-        berisi array 'sesi' untuk tiap jam mengajar hari itu.
-  --}}
-
-  @php
-    $isPiketHariIni = true;
-
-    $guruPiketId = 12;
-
-    $daftarJurnal = [
-
-      [
-        'id' => 101,
-        'kelas' => 'X RPL 1',
-        'tingkat' => 'X',
-        'waktu_kirim' => '10:15',
-        'status' => 'menunggu',
-        'alasan_tolak' => null,
-
-        'sesi' => [
-
-          [
-            'jam' => '1',
-            'mapel' => 'Bahasa Jepang',
-            'guru' => 'Sulistyowati, SS.',
-            'guru_id' => 5,
-            'hadir_guru' => false,
-            'ada_tugas' => true,
-            'materi' => 'Mengerjakan latihan Bahasa Jepang halaman 25',
-            'jumlah_hadir' => null,
-            'siswa' => []
-          ],
-
-          [
-            'jam' => '2 - 4',
-            'mapel' => 'PJOK',
-            'guru' => 'Zainul Arifin, S.Pd.',
-            'guru_id' => 12,
-            'hadir_guru' => false,
-            'ada_tugas' => false,
-            'materi' => null,
-            'jumlah_hadir' => null,
-            'siswa' => []
-          ],
-
-          [
-            'jam' => '5 - 8',
-            'mapel' => 'Matematika',
-            'guru' => 'Badrus Sulaiman, S.Pd., Gr.',
-            'guru_id' => 8,
-            'hadir_guru' => true,
-            'ada_tugas' => false,
-            'materi' => 'Persamaan dan Pertidaksamaan',
-            'jumlah_hadir' => 32,
-
-            'siswa' => [
-              ['nama' => 'Rizki Pratama', 'ket' => 'D'],
-              ['nama' => 'Nadia Putri', 'ket' => 'D'],
-              ['nama' => 'Fajar Nugroho', 'ket' => 'D'],
-              ['nama' => 'Andi Saputra', 'ket' => 'S'],
-            ]
-          ],
-
-          [
-            'jam' => '9 - 10',
-            'mapel' => 'Bahasa Inggris',
-            'guru' => 'Siti Aminah, S.Pd.',
-            'guru_id' => 3,
-            'hadir_guru' => true,
-            'ada_tugas' => false,
-            'materi' => 'Asking and Giving Opinion',
-            'jumlah_hadir' => 35,
-
-            'siswa' => [
-              ['nama' => 'Nadia Putri', 'ket' => 'D'],
-            ]
-          ],
-
-        ],
-      ],
-
-      [
-        'id' => 102,
-        'kelas' => 'X RPL 2',
-        'tingkat' => 'X',
-        'waktu_kirim' => '10:20',
-        'status' => 'menunggu',
-        'alasan_tolak' => null,
-
-        'sesi' => [
-          [
-            'jam' => '1 - 2',
-            'mapel' => 'Matematika',
-            'guru' => 'Budi Santoso, S.Pd.',
-            'guru_id' => 20,
-            'hadir_guru' => true,
-            'ada_tugas' => false,
-            'materi' => 'Fungsi Kuadrat',
-            'jumlah_hadir' => 34,
-            'siswa' => []
-          ],
-        ],
-      ],
-
-      [
-        'id' => 103,
-        'kelas' => 'XI RPL 1',
-        'tingkat' => 'XI',
-        'waktu_kirim' => '09:40',
-        'status' => 'disetujui',
-        'alasan_tolak' => null,
-
-        'sesi' => [
-          [
-            'jam' => '1 - 3',
-            'mapel' => 'Produktif RPL',
-            'guru' => 'Anton Wijaya, S.Kom.',
-            'guru_id' => 15,
-            'hadir_guru' => true,
-            'ada_tugas' => false,
-            'materi' => 'Praktik CRUD Laravel',
-            'jumlah_hadir' => 30,
-            'siswa' => []
-          ],
-        ],
-      ],
-
-      [
-        'id' => 104,
-        'kelas' => 'XII RPL 1',
-        'tingkat' => 'XII',
-        'waktu_kirim' => '08:05',
-        'status' => 'ditolak',
-        'alasan_tolak' => 'Jumlah hadir tidak sesuai presensi kelas, mohon dicek ulang.',
-
-        'sesi' => [
-          [
-            'jam' => '1 - 4',
-            'mapel' => 'Bahasa Inggris',
-            'guru' => 'Siti Aminah, S.Pd.',
-            'guru_id' => 3,
-            'hadir_guru' => true,
-            'ada_tugas' => false,
-            'materi' => 'Report Text',
-            'jumlah_hadir' => 35,
-            'siswa' => []
-          ],
-        ],
-      ],
-
-    ];
-
-    $daftarTingkat = ['X', 'XI', 'XII'];
-  @endphp
 
 
   <!-- ========================================================= -->
@@ -363,7 +206,7 @@
 
         <!-- PIKET - AKTIF -->
         <a
-          href="{{ route('dashboard-guru-piket') }}"
+          @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif style="@if(!auth()->user()->sedangPiket())pointer-events:none;opacity:.5;cursor:not-allowed @endif"
           class="flex items-center gap-3 px-3 py-2.5
                  bg-[#F5EFE8] rounded-lg
                  font-poppins font-bold text-md text-[#5C4033]
@@ -436,7 +279,7 @@
       <div class="flex flex-col gap-1">
 
         <a
-          href="{{ route('dashboard-guru-piket') }}"
+          @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif style="@if(!auth()->user()->sedangPiket())pointer-events:none;opacity:.5;cursor:not-allowed @endif"
           class="text-xs font-semibold text-[#D7B899]
                  hover:text-white flex items-center gap-1 mb-1">
 
@@ -462,12 +305,7 @@
           Jurnal Mengajar
 
         </h1>
-
-        <span class="text-xs sm:text-sm text-[#D7B899]">
-          {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
-          • Review jurnal masuk per kelas
-        </span>
-
+        
       </div>
 
     </header>
@@ -579,6 +417,10 @@
                 'ditolak' => [
                   'bg-rose-50 border-rose-200 text-rose-800',
                   'Ditolak'
+                ],
+                'tidak_hadir' => [
+                  'bg-rose-50 border-rose-200 text-rose-800',
+                  'Guru Tidak Hadir'
                 ],
 
               };
@@ -1378,7 +1220,7 @@
 
 
       <a
-        href="{{ route('dashboard-guru-piket') }}"
+        @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif style="@if(!auth()->user()->sedangPiket())pointer-events:none;opacity:.5;cursor:not-allowed @endif"
         class="flex flex-col items-center gap-1
                text-xs font-bold text-brand-800">
 
@@ -1427,7 +1269,7 @@
 
   <script>
 
-    let tingkatAktif = '{{ $daftarTingkat[0] }}';
+    let tingkatAktif = @js($daftarTingkat[0] ?? '');
 
     let idYangDitolak = null;
 
@@ -1501,26 +1343,29 @@
     }
 
 
-    // TODO: sambungkan ke route backend (POST) saat integrasi, contoh:
-    // fetch(`/piket/jurnal-mengajar/${id}/setujui`, {
-    //   method: 'POST',
-    //   headers: {...csrf}
-    // })
+    async function kirimAksiJurnal(id, aksi, data = {}) {
+      const url = `{{ url('/piket/jurnal-mengajar') }}/${encodeURIComponent(id)}/${aksi}`;
+      const body = new URLSearchParams(data);
+      body.set('_token', document.querySelector('meta[name=csrf-token]').content);
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+        body,
+      });
+      if (!response.ok) {
+        let message = 'Aksi tidak dapat diproses.';
+        try { message = (await response.json()).message || message; } catch (_) {}
+        throw new Error(message);
+      }
+    }
 
-
-    function setujuiKelas(id) {
-
-      const card =
-        document.querySelector(
-          `.kelas-card[data-id="${id}"]`
-        );
-
-      if (!card) return;
-
-      card.remove();
-
-      terapkanFilter();
-
+    async function setujuiKelas(id) {
+      try {
+        await kirimAksiJurnal(id, 'approve');
+        window.location.reload();
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
 
@@ -1537,37 +1382,23 @@
     }
 
 
-    function kirimTolak(e) {
-
+    async function kirimTolak(e) {
       e.preventDefault();
-
-      // TODO: sambungkan ke route backend (POST alasan) saat integrasi
-
-      const card =
-        document.querySelector(
-          `.kelas-card[data-id="${idYangDitolak}"]`
-        );
-
-      if (card) {
-
-        card.remove();
-
-        terapkanFilter();
-
+      const alasan = document.getElementById('alasanTolak').value.trim();
+      if (!alasan || idYangDitolak === null) return false;
+      try {
+        await kirimAksiJurnal(idYangDitolak, 'tolak', {alasan});
+        window.location.reload();
+      } catch (error) {
+        alert(error.message);
       }
-
-      document
-        .getElementById('dialogTolak')
-        .close();
-
       return false;
-
     }
 
 
     document.addEventListener(
       'DOMContentLoaded',
-      () => filterTingkat('{{ $daftarTingkat[0] }}')
+      () => filterTingkat(@js($daftarTingkat[0] ?? ''))
     );
 
   </script>

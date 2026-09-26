@@ -8,6 +8,7 @@
     <link rel="icon" href="/favicon.ico" sizes="any">
     <!-- Menggunakan CDN Tailwind agar tidak error Vite -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="bg-[#F9F6F0] text-[#3E3028] flex p-6 lg:p-8 items-center justify-center min-h-screen flex-col font-sans">
 

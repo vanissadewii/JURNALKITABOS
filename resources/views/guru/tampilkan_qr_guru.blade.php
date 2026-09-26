@@ -83,7 +83,7 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
         </a>
 
@@ -137,7 +137,7 @@
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12 6 12 12 16 14"/>
           </svg>
-          <span>Masa berlaku QR: <strong id="timer-count" class="font-poppins font-bold text-amber-900">05:00</strong></span>
+          <span>Masa berlaku QR: <strong id="timer-count" class="font-poppins font-bold text-amber-900">01:00</strong></span>
         </div>
 
         <!-- Box Gambar QR Code -->
@@ -198,7 +198,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -213,7 +213,7 @@
 
   <!-- Script Timer Hitung Mundur & Redirect Kamera Guru -->
   <script>
-    let durasiDetik = 300; // 5 Menit
+    let durasiDetik = 60; // 1 menit
     let timerInterval;
 
     function startTimer() {
@@ -241,11 +241,7 @@
     }
 
     function resetTimer() {
-      durasiDetik = 300;
-      document.getElementById('qr-expired-overlay').classList.add('hidden');
-      document.getElementById('qr-expired-overlay').classList.remove('flex');
-      document.getElementById('qr-svg').classList.remove('opacity-10');
-      startTimer();
+      window.location.reload();
     }
 
     // Jalankan timer saat halaman terbuka
@@ -258,7 +254,7 @@
       const response = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });
       const result = await response.json();
 
-      if (result.scanned) {
+      if (result.verified) {
         clearInterval(statusInterval);
         window.location.href = homeUrl;
       }

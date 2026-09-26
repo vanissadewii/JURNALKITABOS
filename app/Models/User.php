@@ -8,19 +8,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $username
- * @property string $email
  * @property string $role
  * @property string|null $no_telepon
+ * @property string|null $mapel
  * @property string $status
  * @property int|null $id_kelas
- * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
  * @property Carbon|null $created_at
@@ -40,8 +39,15 @@ class User extends Authenticatable
         'password',
         'role',
         'no_telepon',
+        'mapel',
         'status',
         'id_kelas',
+        'nama_sekretaris',
+        'nama_ketua_kelas',
+        'nama_sekretaris_2',
+        'id_ketua_kelas',
+        'id_sekretaris_1',
+        'id_sekretaris_2',
     ];
 
     /**
@@ -74,6 +80,21 @@ class User extends Authenticatable
         return $this->belongsTo(Kelas::class, 'id_kelas', 'id_kelas');
     }
 
+    public function ketuaKelas(): BelongsTo
+    {
+        return $this->belongsTo(Siswa::class, 'id_ketua_kelas', 'id_siswa');
+    }
+
+    public function sekretarisPertama(): BelongsTo
+    {
+        return $this->belongsTo(Siswa::class, 'id_sekretaris_1', 'id_siswa');
+    }
+
+    public function sekretarisKedua(): BelongsTo
+    {
+        return $this->belongsTo(Siswa::class, 'id_sekretaris_2', 'id_siswa');
+    }
+
     /**
      * Get the user's initials
      */
@@ -94,31 +115,25 @@ class User extends Authenticatable
     /** Dipakai buat nampilin menu "Piket" di navbar — guru ini pernah dijadwal piket. */
     public function isGuruPiket(): bool
     {
-        return $this->jadwalPiket()->exists();
+        return JadwalPiketBulanan::where('id_guru', $this->id)->exists();
     }
 
     /** Dipakai buat validasi approve — guru ini piket TEPAT SEKARANG. */
-    public function sedangPiket(?Carbon $waktu = null): bool
+    public function sedangPiket(?CarbonInterface $waktu = null): bool
     {
         $waktu ??= now();
-
-        $hari = match ($waktu->dayOfWeekIso) {
-            1 => 'Senin',
-            2 => 'Selasa',
-            3 => 'Rabu',
-            4 => 'Kamis',
-            5 => 'Jumat',
-            default => null,
-        };
-
-        if (! $hari) {
-            return false;
-        }
-
-        return $this->jadwalPiket()
-            ->where('hari', $hari)
-            ->whereTime('jam_mulai', '<=', $waktu->format('H:i:s'))
-            ->whereTime('jam_selesai', '>=', $waktu->format('H:i:s'))
+        return JadwalPiketBulanan::query()
+            ->whereDate('tanggal', $waktu->toDateString())
+            ->where('id_guru', $this->id)
+            ->whereIn('sesi', ['pagi', 'siang'])
+            ->where(function ($q) use ($waktu) {
+                $q->where(function ($jam) use ($waktu) {
+                    $jam->where('jam_mulai', '<=', $waktu->format('H:i:s'))
+                        ->where('jam_selesai', '>=', $waktu->format('H:i:s'));
+                })->orWhere(function ($jam) {
+                    $jam->where('jam_mulai', '00:00:00')->where('jam_selesai', '00:00:00');
+                });
+            })
             ->exists();
     }
 }

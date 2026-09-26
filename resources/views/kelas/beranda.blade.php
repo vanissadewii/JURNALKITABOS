@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="[scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
     @vite('resources/css/app.css')
 </head>
 
-<body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
+<body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 
     <div class="md:flex">
 
@@ -32,24 +32,31 @@
                     </svg>
                     Beranda
                 </a>
+
                 <a href="{{ route('kelas.scan') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
                     </svg>
                     Scan
                 </a>
+
                 <a href="{{ route('kelas.kirim-jurnal') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                        <path d="M22 2L11 13"/>
+                        <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
                     </svg>
                     Kirim Jurnal
                 </a>
+
                 <a href="{{ route('kelas.profile') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
                     </svg>
                     Profil
                 </a>
@@ -58,262 +65,106 @@
 
         {{-- KONTEN UTAMA --}}
         <main class="flex-1 w-full pb-24 md:pb-8">
+            @if(($tugasPiket ?? collect())->isNotEmpty())
+                <section class="mx-4 mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:mx-6">
+                    <h2 class="font-poppins font-bold text-base text-[#3E3028]">Materi dari Guru Piket</h2>
+                    <div class="mt-3 space-y-3">
+                        @foreach($tugasPiket as $tugas)
+                            <article class="rounded-xl border border-amber-200 bg-white p-4">
+                                <div class="flex flex-wrap items-center justify-between gap-2"><h3 class="font-semibold">{{ $tugas->mapel }}</h3><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold">Guru {{ $tugas->status_guru }}</span></div>
+                                @if($tugas->alasan_izin)<p class="mt-2 text-sm text-[#7A6A60]">{{ $tugas->alasan_izin }}</p>@endif
+                                <p class="mt-2 whitespace-pre-line text-sm">{{ $tugas->tugas }}</p>
+                                @if($tugas->file_path)<a class="mt-3 inline-flex rounded-lg bg-[#5C4033] px-4 py-2 text-sm font-semibold text-white" href="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($tugas->file_path) }}" target="_blank" rel="noopener">Buka lampiran</a>@endif
+                            </article>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
 
             {{-- HEADER --}}
             <div class="sticky top-0 z-30 bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex flex-col gap-1">
-                <span class="text-[#D7B899] text-xs sm:text-sm font-medium tracking-wide">Selamat Datang,</span>
+                <span class="text-[#D7B899] text-xs sm:text-sm font-medium tracking-wide">
+                    Selamat Datang,
+                </span>
+
                 <span class="text-white text-2xl md:text-3xl font-['Poppins'] font-bold">
                     {{ $kelas->tingkat }} {{ $kelas->jurusan }} {{ $kelas->rombel }}
                 </span>
+
                 <span class="text-[#D7B899] text-xs sm:text-sm font-medium">
                     {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
                 </span>
             </div>
 
+            @if (isset($dispensasiDisetujui) && $dispensasiDisetujui->isNotEmpty())
+                <section class="mx-4 mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:mx-6 md:mx-7 md:p-5">
+                    <h2 class="font-['Poppins'] text-lg font-bold text-[#5C4033]">Dispensasi Disetujui Hari Ini</h2>
+                    <p class="mt-1 text-sm text-[#7A6A60]">Siswa dan rentang jam berikut sudah tercatat untuk kelas ini.</p>
+                    <div class="mt-3 space-y-3">
+                        @foreach ($dispensasiDisetujui as $item)
+                            <div class="rounded-xl border border-amber-100 bg-white p-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
+                                <div><p class="font-semibold">{{ $item->siswa->nama }}</p><p class="mt-1 text-sm text-[#7A6A60]">{{ $item->alasan }}</p></div>
+                                <p class="mt-2 shrink-0 text-sm font-semibold text-[#5C4033] sm:mt-0">{{ $item->labelJam() }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endif
+
+            @if (session('notif_sukses'))
+                <div role="status"
+                     class="mx-4 mt-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800 sm:mx-6 md:mx-7">
+                    {{ session('notif_sukses') }}
+                </div>
+            @endif
+
             {{-- ISI --}}
             <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-3.5">
 
                 <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028] mt-1">
-                    Sesi Mengajar Aktif
+                    Jadwal Mengajar Hari Ini
                 </span>
 
-                {{-- ===== MATEMATIKA ===== --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
-                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-
-                    <div class="flex justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Matematika</div>
-                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Badrus Sulaiman, S.Pd., Gr.</div>
-                        </div>
-                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#FFFDE7] text-[#F57F17]">
-                            Sedang Berjalan
-                        </span>
-                    </div>
-
-                    <hr class="border-t border-[#E5D8CC] w-full m-0">
-
-                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
-                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-                        </svg>
-                        <span>10:00 – 13:50 (Jam ke-5 sampai ke-8)</span>
-                    </div>
-
-                    <div class="flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-[#2E7D32]">
-                        <div class="w-5 h-5 rounded-[5px] bg-[#4CAF50] flex items-center justify-center">
-                            <svg class="w-[13px] h-[13px]" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3">
-                                <path d="M5 12l4 4L19 6"/>
-                            </svg>
-                        </div>
-                        <span>Kehadiran terverifikasi</span>
-                    </div>
-
-
-                    <div class="bg-[#FFF8E1] border border-[#FFE082] rounded-[8px] overflow-hidden">
-                        <button type="button"
-                                onclick="toggleDispen(this)"
-                                class="w-full flex items-center justify-between gap-2 p-3 sm:p-3.5 text-left hover:bg-[#FFF3C4] transition">
-                            <div class="flex items-center gap-2">
-                                <div class="w-5 h-5 rounded-[5px] bg-[#F9A825] flex items-center justify-center shrink-0">
-                                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="9" cy="7" r="4"/>
-                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                    </svg>
-                                </div>
-                                <span class="font-['Inter'] font-semibold text-[13px] text-[#3E3028]">
-                                    Siswa Dispensasi (3)
-                                </span>
+                @forelse (($sesiAktif ?? collect()) as $sesi)
+                    <article class="flex flex-col gap-3 rounded-2xl border border-[#E5D8CC] bg-white p-4 shadow-sm sm:p-5">
+                        <div class="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <h2 class="font-['Poppins'] text-base font-bold text-[#3E3028]">{{ $sesi->mapel }}</h2>
+                                <p class="mt-1 text-sm text-[#7A6A60]">{{ $sesi->guru }}</p>
                             </div>
-                            <svg class="w-4 h-4 text-[#7A6A60] transition-transform duration-200 arrow-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M6 9l6 6 6-6"/>
-                            </svg>
-                        </button>
-
-                        <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
-                            <div class="flex flex-col pt-1 border-t border-[#FFE082]">
-                                <div class="flex flex-col gap-1 pb-2.5">
-                                    <div class="flex items-center justify-between gap-2">
-                                        <span class="text-[13px] font-semibold text-[#3E3028]">Rizki Pratama</span>
-                                        <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 8</span>
-                                    </div>
-                                    <span class="text-[12px] text-[#5C4033]">Ket: Mengikuti Lomba OSN Matematika</span>
-                                    <span class="text-[11px] text-[#7A6A60]">Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Rina</span></span>
-                                    <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
-                                </div>
-                                <div class="flex flex-col gap-1 py-2.5 border-t border-[#FFE082]/60">
-                                    <div class="flex items-center justify-between gap-2">
-                                        <span class="text-[13px] font-semibold text-[#3E3028]">Nadia Putri</span>
-                                        <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 10</span>
-                                    </div>
-                                    <span class="text-[12px] text-[#5C4033]">Ket: Pulang karena sakit</span>
-                                    <span class="text-[11px] text-[#7A6A60]">Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Endah</span></span>
-                                    <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
-                                </div>
-                                <div class="flex flex-col gap-1 pt-2.5 border-t border-[#FFE082]/60">
-                                    <div class="flex items-center justify-between gap-2">
-                                        <span class="text-[13px] font-semibold text-[#3E3028]">Fajar Nugroho</span>
-                                        <span class="text-[11px] font-medium text-[#7A6A60]">Telat 15 menit</span>
-                                    </div>
-                                    <span class="text-[12px] text-[#5C4033]">Ket: Ban motor bocor di jalan</span>
-                                    <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
-                                </div>
+                            <span class="rounded-full border border-[#E5D8CC] bg-[#F5EFE8] px-3 py-1 text-xs font-semibold text-[#5C4033]">{{ $sesi->status }}</span>
+                        </div>
+                        <p class="text-sm text-[#7A6A60]">Jam ke-{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai)–{{ $sesi->jam_ke_sampai }}@endif · {{ $sesi->jam_mulai }}–{{ $sesi->jam_selesai }}</p>
+                        @if ($sesi->jurnal)
+                            <div class="rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-900">
+                                <p class="font-semibold">Jurnal guru terverifikasi</p>
+                                @if ($sesi->jurnal->materi)<p class="mt-1">Materi: {{ $sesi->jurnal->materi }}</p>@endif
+                                <p class="mt-1">Hadir: {{ $sesi->jurnal->jumlah_hadir ?? '—' }} siswa</p>
+                                @if ($sesi->jurnal->absenSiswa->isNotEmpty())
+                                    <ul class="mt-2 list-inside list-disc text-xs">
+                                        @foreach ($sesi->jurnal->absenSiswa as $absen)
+                                            <li>{{ $absen->nama }} — {{ $absen->status }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
                             </div>
-                        </div>
-                    </div>
+                        @else
+                            <p class="rounded-xl bg-[#F5EFE8] p-3 text-xs text-[#7A6A60]">Jurnal sesi ini belum tersedia atau masih menunggu verifikasi guru.</p>
+                        @endif
+                    </article>
+                @empty
+                    <p class="rounded-2xl border border-dashed border-[#D8C9BC] bg-white p-5 text-sm text-[#7A6A60]">Tidak ada jadwal mengajar lagi untuk hari ini.</p>
+                @endforelse
 
-                    <div class="bg-[#FFEBEE] border border-[#FFCDD2] rounded-[8px] overflow-hidden">
-                        <button type="button"
-                                onclick="toggleDispen(this)"
-                                class="w-full flex items-center justify-between gap-2 p-3 sm:p-3.5 text-left hover:bg-[#FFCDD2]/50 transition">
-                            <div class="flex items-center gap-2">
-                                <div class="w-5 h-5 rounded-[5px] bg-[#E53935] flex items-center justify-center shrink-0">
-                                    <span class="text-white text-[11px] font-bold">!</span>
-                                </div>
-                                <span class="font-['Inter'] font-semibold text-[13px] text-[#3E3028]">
-                                    Siswa Tidak Hadir (1)
-                                </span>
-                            </div>
-                            <svg class="w-4 h-4 text-[#7A6A60] transition-transform duration-200 arrow-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M6 9l6 6 6-6"/>
-                            </svg>
-                        </button>
-
-                        <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
-                            <div class="flex flex-col gap-1.5 pt-1 border-t border-[#FFCDD2]">
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="text-[13px] text-[#3E3028]">Andi Saputra</span>
-                                    <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-[#FFCDD2] text-[#C62828]">Sakit</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                {{-- ===== BAHASA INGGRIS (Nadia lanjut dispen) ===== --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
-                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-                    <div class="flex justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Inggris</div>
-                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Siti Aminah, S.Pd.</div>
-                        </div>
-                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#F5F5F5] text-[#7A6A60]">
-                            Belum Dimulai
-                        </span>
-                    </div>
-                    <hr class="border-t border-[#E5D8CC] w-full m-0">
-                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
-                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-                        </svg>
-                        <span>13:00 – 15:00 (Jam ke-9 sampai ke-10)</span>
-                    </div>
-
-                    {{-- NADIA LANJUT DISPEN --}}
-                    <div class="bg-[#FFF8E1] border border-[#FFE082] rounded-[8px] overflow-hidden">
-                        <button type="button"
-                                onclick="toggleDispen(this)"
-                                class="w-full flex items-center justify-between gap-2 p-3 sm:p-3.5 text-left hover:bg-[#FFF3C4] transition">
-                            <div class="flex items-center gap-2">
-                                <div class="w-5 h-5 rounded-[5px] bg-[#F9A825] flex items-center justify-center shrink-0">
-                                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="9" cy="7" r="4"/>
-                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                    </svg>
-                                </div>
-                                <span class="font-['Inter'] font-semibold text-[13px] text-[#3E3028]">
-                                    Siswa Dispensasi (1)
-                                </span>
-                            </div>
-                            <svg class="w-4 h-4 text-[#7A6A60] transition-transform duration-200 arrow-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M6 9l6 6 6-6"/>
-                            </svg>
-                        </button>
-
-                        <div class="dispen-content hidden px-3 sm:px-3.5 pb-3 sm:pb-3.5">
-                            <div class="flex flex-col gap-1 pt-1 border-t border-[#FFE082]">
-                                <div class="flex items-center justify-between gap-2">
-                                    <span class="text-[13px] font-semibold text-[#3E3028]">Nadia Putri</span>
-                                    <span class="text-[11px] font-medium text-[#7A6A60]">Jam ke-5 s/d 10</span>
-                                </div>
-                                <span class="text-[12px] text-[#5C4033]">Ket: Pulang karena sakit</span>
-                                <span class="text-[11px] text-[#7A6A60]">Disetujui oleh Waka: <span class="font-semibold text-[#3E3028]">Bu Endah</span></span>
-                                <span class="text-[11px] text-[#7A6A60]">Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <span class="font-['Poppins'] font-bold text-md uppercase text-[#3E3028] mt-1">
-                    Sesi Mengajar Selesai
-                </span>
-
-
-                {{-- ===== PJOK (Tidak Hadir) ===== --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
-                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-                    <div class="flex justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">PJOK</div>
-                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Zainul Arifin, S.Pd.</div>
-                        </div>
-                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#FFEBEE] text-[#D32F2F]">
-                            Tidak Hadir
-                        </span>
-                    </div>
-                    <hr class="border-t border-[#E5D8CC] w-full m-0">
-                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
-                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-                        </svg>
-                        <span>07:40 – 09:40 (Jam ke-2 sampai ke-4)</span>
-                    </div>
-                    <div class="flex items-center gap-2 font-['Inter'] text-[13px] font-semibold text-[#757575]">
-                        <div class="w-5 h-5 rounded-[5px] bg-[#D32F2F] flex items-center justify-center text-white text-[13px] font-bold">✕</div>
-                        <span>Guru tidak hadir</span>
-                    </div>
-                </div>
-
-
-                {{-- ===== BAHASA JEPANG (Izin + Tugas) ===== --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[18px] md:p-5
-                            flex flex-col gap-4 shadow-[0_4px_12px_rgba(62,48,40,0.03)]">
-                    <div class="flex justify-between items-start sm:items-center gap-3">
-                        <div>
-                            <div class="font-['Poppins'] font-bold text-base sm:text-lg text-[#3E3028]">Bahasa Jepang</div>
-                            <div class="font-['Inter'] font-semibold text-xs sm:text-sm text-[#7A6A60] mt-0.5">Sulistyowati, SS.</div>
-                        </div>
-                        <span class="text-[10px] sm:text-[11px] font-semibold px-2 sm:px-2.5 py-1 rounded-md whitespace-nowrap bg-[#E3F2FD] text-[#1976D2]">
-                            Izin (Disetujui)
-                        </span>
-                    </div>
-                    <hr class="border-t border-[#E5D8CC] w-full m-0">
-                    <div class="flex items-center gap-1.5 text-[13px] text-[#7A6A60] font-['Inter']">
-                        <svg class="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A6A60" stroke-width="2">
-                            <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-                        </svg>
-                        <span>07:00 – 07:40 (Jam ke-1)</span>
-                    </div>
-
-                    <div class="bg-[#FDFBF7] border border-[#E5D8CC] rounded-[8px] p-3 sm:p-4">
-                        <div class="font-['Inter'] font-semibold text-[13px] sm:text-sm text-[#3E3028] mb-1">
-                            Tugas:
-                        </div>
-                        <div class="font-['Inter'] text-[13px] sm:text-sm text-[#7A6A60]">
-                            Mengerjakan latihan Bahasa Jepang halaman 25
-                        </div>
-                        <p class="text-[11px] text-[#7A6A60] mt-2 pt-2 border-t border-[#E5D8CC]">
-                            Diinput oleh Guru Piket: <span class="font-semibold text-[#3E3028]">Pak Ahmad</span>
-                        </p>
-                    </div>
-                </div>
+                @if (($sesiSelesai ?? collect())->isNotEmpty())
+                    <span class="mt-3 font-['Poppins'] text-md font-bold uppercase text-[#3E3028]">Sesi Mengajar Selesai</span>
+                    @foreach ($sesiSelesai as $sesi)
+                        <article class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E5D8CC] bg-white p-4">
+                            <div><h2 class="font-semibold text-[#3E3028]">{{ $sesi->mapel }}</h2><p class="mt-1 text-sm text-[#7A6A60]">{{ $sesi->guru }} · Jam ke-{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai)–{{ $sesi->jam_ke_sampai }}@endif</p></div>
+                            <span class="rounded-full bg-[#F5EFE8] px-3 py-1 text-xs font-semibold text-[#5C4033]">Selesai</span>
+                        </article>
+                    @endforeach
+                @endif
 
             </div>
         </main>
@@ -321,22 +172,44 @@
 
     {{-- BOTTOM NAV --}}
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
-        <a href="{{ route('kelas.beranda') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+
+        <a href="{{ route('kelas.beranda') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12l9-9 9 9"/>
+                <path d="M5 10v10h14V10"/>
+            </svg>
             Dasbor
         </a>
-        <a href="{{ route('kelas.scan') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+
+        <a href="{{ route('kelas.scan') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
+            </svg>
             Scan
         </a>
-        <a href="{{ route('kelas.kirim-jurnal') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+
+        <a href="{{ route('kelas.kirim-jurnal') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 2L11 13"/>
+                <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
             Kirim Jurnal
         </a>
-        <a href="{{ route('kelas.profile') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+
+        <a href="{{ route('kelas.profile') }}"
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+            </svg>
             Profil
         </a>
+
     </nav>
 
     <script>

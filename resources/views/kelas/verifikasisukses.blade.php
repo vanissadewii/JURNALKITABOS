@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     @vite('resources/css/app.css')
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">

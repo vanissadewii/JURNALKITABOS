@@ -83,7 +83,7 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
         </a>
 
@@ -145,15 +145,16 @@
       <div class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs flex flex-col gap-6">
         
         <div class="flex flex-col gap-1 border-b border-brand-100 pb-4">
-          <span class="text-xs font-semibold uppercase tracking-wider text-brand-600">Mata Pelajaran</span>
-          <h3 class="font-poppins font-extrabold text-xl sm:text-2xl text-[#3E3028]">Matematika</h3>
+          <span class="text-xs font-semibold uppercase tracking-wider text-brand-600">Kelas</span>
+          <h3 class="font-poppins font-extrabold text-xl sm:text-2xl text-[#3E3028]">X RPL 1</h3>
+          <p class="text-sm font-medium text-[#8C7B70]">Matematika</p>
         </div>
 
         <!-- Grid Rincian Informasi -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
           <div class="flex flex-col gap-1">
-            <span class="text-brand-600 font-medium">Kelas</span>
-            <span class="font-poppins font-bold text-[#3E3028]">X RPL 1</span>
+            <span class="text-brand-600 font-medium">Mata Pelajaran</span>
+            <span class="font-poppins font-bold text-[#3E3028]">Matematika</span>
           </div>
 
           <div class="flex flex-col gap-1">
@@ -194,24 +195,13 @@
           </span>
         </div>
 
-        <!-- Summary Stat Badges -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div class="p-3 rounded-xl bg-[#E8F5E9] border border-[#C8E6C9] flex flex-col items-center">
-            <span class="text-xs text-[#2E7D32] font-medium">Hadir</span>
-            <span class="font-poppins font-bold text-lg text-[#1B5E20]">30</span>
-          </div>
-          <div class="p-3 rounded-xl bg-[#FFF3E0] border border-[#FFE0B2] flex flex-col items-center">
-            <span class="text-xs text-[#E65100] font-medium">Sakit</span>
-            <span class="font-poppins font-bold text-lg text-[#BF360C]">1</span>
-          </div>
-          <div class="p-3 rounded-xl bg-[#E3F2FD] border border-[#BBDEFB] flex flex-col items-center">
-            <span class="text-xs text-[#1565C0] font-medium">Izin</span>
-            <span class="font-poppins font-bold text-lg text-[#0D47A1]">1</span>
-          </div>
-          <div class="p-3 rounded-xl bg-[#FFEBEE] border border-[#FFCDD2] flex flex-col items-center">
-            <span class="text-xs text-[#C62828] font-medium">Alpha</span>
-            <span class="font-poppins font-bold text-lg text-[#B71C1C]">0</span>
-          </div>
+        <!-- Ringkasan Kehadiran -->
+        <div class="grid grid-cols-5 gap-2 sm:gap-3">
+          <div class="rounded-xl bg-[#E8F5E9] border border-[#C8E6C9] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#2E7D32]">Hadir</span><span class="font-bold text-base text-[#1B5E20]">30</span></div>
+          <div class="rounded-xl bg-[#FFF3E0] border border-[#FFE0B2] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#E65100]">Sakit</span><span class="font-bold text-base text-[#BF360C]">1</span></div>
+          <div class="rounded-xl bg-[#E3F2FD] border border-[#BBDEFB] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#1565C0]">Izin</span><span class="font-bold text-base text-[#0D47A1]">1</span></div>
+          <div class="rounded-xl bg-[#FFEBEE] border border-[#FFCDD2] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#C62828]">Alpa</span><span class="font-bold text-base text-[#B71C1C]">0</span></div>
+          <div class="rounded-xl bg-violet-50 border border-violet-200 px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-violet-700">Dispen</span><span class="font-bold text-base text-violet-900">0</span></div>
         </div>
 
         <!-- Tabel Siswa Absen / Keterangan -->
@@ -281,7 +271,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a href="{{ url('/dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">

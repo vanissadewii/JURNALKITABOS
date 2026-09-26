@@ -16,6 +16,12 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
+        $kelas = Kelas::firstOrCreate([
+            'tingkat' => '11',
+            'jurusan' => 'RPL',
+            'rombel' => 2,
+        ]);
+
         User::firstOrCreate(
             ['username' => 'admin'], // kunci pengecekan, biar tidak duplikat
             [
@@ -24,6 +30,17 @@ class AdminSeeder extends Seeder
                 'role' => 'admin',
                 'status' => 'aktif',
                 'id_kelas' => null,
+            ]
+        );
+
+        User::firstOrCreate(
+            ['username' => 'kelas.xirpl2'],
+            [
+                'name' => 'Ketua Kelas XI RPL 2',
+                'password' => Hash::make('kelas123'),
+                'role' => 'kelas',
+                'status' => 'aktif',
+                'id_kelas' => $kelas->id_kelas,
             ]
         );
 
@@ -41,12 +58,6 @@ class AdminSeeder extends Seeder
         );
 
         $guru = User::where('username', 'badrussulaiman')->firstOrFail();
-        $kelas = Kelas::first();
-
-        if (! $kelas) {
-            return;
-        }
-
         $semester = Semester::firstOrCreate(
             ['nama' => 'Semester 1 2026/2027'],
             [

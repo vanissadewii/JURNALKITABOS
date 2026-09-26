@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     @vite('resources/css/app.css')
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen overflow-x-hidden">
 
@@ -42,160 +43,281 @@
                 Menu Utama
             </p>
 
-            <div class="flex flex-col gap-0.5 mb-5">
 
-                <a href="{{ route('admin.dashboard') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <div class="flex flex-col gap-0.5">
+
+                {{-- BERANDA --}}
+                <a
+                    href="{{ route('admin.dashboard') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.dashboard') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                >
+
+                    <svg
+                        class="w-[18px] h-[18px] shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
                         <path d="M3 12l9-9 9 9"/>
                         <path d="M5 10v10h14V10"/>
                     </svg>
-                    Dashboard
-                </a>
 
-                <a href="{{ route('jadwal.index') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    Beranda
+
+                </button>
+
+
+                {{-- KEHADIRAN GURU --}}
+                <a
+                    href="{{ route('admin.kehadiran') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.kehadiran') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                >
+
+                    <svg
+                        class="w-[18px] h-[18px] shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
                         <rect x="3" y="4" width="18" height="18" rx="2"/>
                         <path d="M16 2v4M8 2v4M3 10h18"/>
                     </svg>
-                    Jadwal
+
+                    Kehadiran Guru
+
                 </a>
 
-                <a href="{{ route('admin.jurnal') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+
+                {{-- JURNAL --}}
+                <a
+                    href="{{ route('admin.jurnal') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.jurnal') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                >
+
+                    <svg
+                        class="w-[18px] h-[18px] shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
                     </svg>
+
                     Jurnal
+
                 </a>
 
-                <a href="{{ route('admin.verifikasi') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+
+                {{-- LIHAT VERIFIKASI --}}
+                <a
+                    href="{{ route('admin.verifikasi') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.verifikasi') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                >
+
+                    <svg
+                        class="w-[18px] h-[18px] shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                         <circle cx="12" cy="12" r="3"/>
                     </svg>
-                    Verifikasi
+
+                    Lihat Verifikasi
+
                 </a>
 
-                <a href="{{ route('admin.rekap') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold bg-[#5C4033] text-white">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+
+                {{-- REKAP --}}
+                <a
+                    href="{{ route('admin.rekap') }}"
+                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.rekap') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                >
+
+                    <svg
+                        class="w-[18px] h-[18px] shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                    >
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
                         <path d="M14 2v6h6"/>
                         <path d="M16 13H8"/>
                         <path d="M16 17H8"/>
                         <path d="M10 9H8"/>
                     </svg>
+
                     Rekap
+
                 </a>
+
+
+                {{-- ================================================= --}}
+                {{-- TAMBAH --}}
+                {{-- ================================================= --}}
+
+                <p class="px-3.5 mt-4 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">PENGATURAN</p>
+
+                <details class="mt-1 group">
+
+                    {{-- TOMBOL TAMBAH --}}
+                    <summary
+                        class="list-none cursor-pointer w-full flex items-center justify-between gap-3
+                               px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.tambah.*', 'jadwal.*', 'jam-pelajaran.*', 'mapel.*', 'admin.kelas.*', 'semester.*', 'admin.siswa.*', 'admin.user.*') ? 'bg-[#5C4033] font-semibold text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }} transition"
+                    >
+
+                        <span class="flex items-center gap-3">
+
+                            <svg
+                                class="w-[18px] h-[18px] shrink-0"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                viewBox="0 0 24 24"
+                            >
+                                <path d="M12 5v14M5 12h14"/>
+                            </svg>
+
+                            <span>
+                                Tambah
+                            </span>
+
+                        </span>
+
+
+                        <svg
+                            class="w-4 h-4 text-[#7A6A60] transition-transform duration-200
+                                   group-open:rotate-180"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                        >
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
+
+                    </summary>
+
+
+                    {{-- SUBMENU TAMBAH --}}
+                    <div class="mt-1 ml-3 pl-3 border-l border-[#E5D8CC] flex flex-col gap-0.5">
+
+                        {{-- ADMIN --}}
+                        <a
+                            href="{{ route('admin.tambah.admin') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.admin') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Admin
+                        </a>
+
+
+                        {{-- JADWAL --}}
+                        <a
+                            href="{{ route('admin.tambah.jadwal') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jadwal', 'jadwal.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Jadwal
+                        </a>
+
+
+                        {{-- JAM PELAJARAN --}}
+                        <a
+                            href="{{ route('admin.tambah.jam') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jam', 'jam-pelajaran.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Jam Pelajaran
+                        </a>
+
+
+                        {{-- MATA PELAJARAN --}}
+                        <a
+                            href="{{ route('admin.tambah.mapel') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.mapel', 'mapel.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Mata Pelajaran
+                        </a>
+
+
+                        {{-- KELAS --}}
+                        <a
+                            href="{{ route('admin.tambah.kelas') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.kelas', 'admin.kelas.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Kelas
+                        </a>
+
+
+                        {{-- SEMESTER --}}
+                        <a
+                            href="{{ route('admin.tambah.semester') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.semester', 'semester.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Semester
+                        </a>
+
+
+                        {{-- PIKET --}}
+                        <a
+                            href="{{ route('admin.tambah.piket') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.piket') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Piket
+                        </a>
+
+
+                        {{-- SISWA --}}
+                        <a
+                            href="{{ route('admin.tambah.siswa') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.siswa', 'admin.siswa.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            Siswa
+                        </a>
+
+
+                        {{-- USER --}}
+                        <a
+                            href="{{ route('admin.tambah.user') }}"
+                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.user', 'admin.user.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
+                        >
+                            User
+                        </a>
+
+                    </div>
+
+                </details>
 
             </div>
 
-            <p class="px-3.5 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">
-                Data
-            </p>
-
-            <div class="flex flex-col gap-0.5 mb-5">
-
-                <a href="{{ route('admin.user.index') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="8" r="4"/>
-                        <path d="M4 21v-1a8 8 0 0 1 16 0v1"/>
-                    </svg>
-                    Guru
-                </a>
-
-                <a href="{{ route('admin.siswa.index') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 3l9 5-9 5-9-5 9-5z"/>
-                        <path d="M6 10.5v4.5c0 1.5 2.5 3 6 3s6-1.5 6-3v-4.5"/>
-                    </svg>
-                    Siswa
-                </a>
-
-                <a href="{{ route('admin.kelas.index') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <rect x="4" y="3" width="16" height="18" rx="1"/>
-                        <path d="M14 12h.01"/>
-                    </svg>
-                    Kelas
-                </a>
-
-                <a href="{{ route('mapel.index') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M2 6c2-1 5-1 7 0v13c-2-1-5-1-7 0V6z"/>
-                        <path d="M22 6c-2-1-5-1-7 0v13c2-1 5-1 7 0V6z"/>
-                    </svg>
-                    Mata Pelajaran
-                </a>
-
-            </div>
-
-            <p class="px-3.5 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">
-                Pengaturan
-            </p>
-
-            <div class="flex flex-col gap-0.5">
-
-                <a href="{{ route('admin.tambah') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M12 5v14M5 12h14"/>
-                    </svg>
-                    Tambah
-                </a>
-
-                <a href="{{ route('semester.index') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <rect x="3" y="4" width="18" height="18" rx="2"/>
-                        <path d="M16 2v4M8 2v4M3 10h18"/>
-                        <path d="M9 15.5l1.8 1.8L15 13.5"/>
-                    </svg>
-                    Semester
-                </a>
-
-                <a href="{{ route('jam-pelajaran.index') }}"
-                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm text-[#3E3028] hover:bg-[#F5EFE8]">
-                    <svg class="w-[18px] h-[18px] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="12" cy="13" r="8"/>
-                        <path d="M12 9v4l3 2"/>
-                        <path d="M5 3L3 5M19 3l2 2"/>
-                    </svg>
-                    Jam Pelajaran
-                </a>
-
-            </div>
         </nav>
 
         <div class="border-t border-[#E5D8CC] px-4 py-4">
 
-            <a href="{{ route('admin.profil') }}"
+            <button type="button" onclick="openAdminProfileModal()"
                class="flex items-center gap-3 px-1.5 mb-3 rounded-lg hover:bg-[#F5EFE8] py-1.5 transition">
 
                 <div class="w-8 h-8 rounded-full bg-[#E8DFD6] flex items-center justify-center shrink-0">
-                    <span class="text-xs font-bold text-[#5C4033]">AT</span>
+                    <span class="text-xs font-bold text-[#5C4033]">{{ auth()->user()->initials() }}</span>
                 </div>
 
                 <div class="min-w-0">
                     <p class="text-sm font-semibold text-[#3E3028] truncate">
-                        Admin Testing
+                        {{ auth()->user()->name }}
                     </p>
                     <p class="text-[11px] text-[#A08978]">
                         Administrator
                     </p>
                 </div>
 
-            </a>
+            </button>
 
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('Apakah Anda yakin ingin logout?')">
                 @csrf
                 <button type="submit"
                         class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold text-[#C62828] hover:bg-[#FFEBEE] text-left">
@@ -207,7 +329,7 @@
     </aside>
 
     <div class="md:ml-[280px] min-h-screen">
-        <div class="bg-[#5C4033] px-4 py-5 sm:px-6 md:px-7">
+        <div class="sticky top-0 z-30 bg-[#5C4033] px-4 py-5 sm:px-6 md:px-7 shadow-sm">
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-[#D7B899] text-xs font-medium">Rekap jurnal & kehadiran</p>
@@ -215,14 +337,14 @@
                 </div>
                 <div class="flex items-center gap-2">
                     {{-- TOMBOL EXPORT EXCEL --}}
-                    <a href="#"
+                    <a href="{{ route('admin.rekap.export', request()->only(['dari', 'sampai', 'id_kelas'])) }}"
                        class="inline-flex items-center gap-2 text-[12px] font-semibold px-3 sm:px-3.5 py-2 rounded-lg bg-white text-[#5C4033] hover:bg-[#F5EFE8]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                             <polyline points="7 10 12 15 17 10"/>
                             <line x1="12" y1="15" x2="12" y2="3"/>
                         </svg>
-                        <span class="hidden xs:inline sm:inline">Export Excel</span>
+                        <span class="hidden xs:inline sm:inline">Export CSV (Excel)</span>
                     </a>
                     <button type="button" onclick="openSidebar()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -231,296 +353,44 @@
             </div>
         </div>
 
-        <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-4">
+        <div class="flex flex-col gap-4 px-4 py-5 sm:p-6 md:p-7">
+            <form method="GET" action="{{ route('admin.rekap') }}" class="grid grid-cols-1 items-end gap-3 rounded-lg border border-[#E5D8CC] bg-white p-4 sm:grid-cols-2 lg:grid-cols-4">
+                <label class="text-[11px] font-semibold uppercase text-[#7A6A60]">Dari tanggal<input type="date" name="dari" value="{{ $dari }}" class="mt-1 w-full rounded-lg border border-[#E5D8CC] bg-[#FDFBF7] px-3 py-2.5 text-sm font-normal text-[#3E3028]"></label>
+                <label class="text-[11px] font-semibold uppercase text-[#7A6A60]">Sampai tanggal<input type="date" name="sampai" value="{{ $sampai }}" class="mt-1 w-full rounded-lg border border-[#E5D8CC] bg-[#FDFBF7] px-3 py-2.5 text-sm font-normal text-[#3E3028]"></label>
+                <label class="text-[11px] font-semibold uppercase text-[#7A6A60]">Kelas<select name="id_kelas" class="mt-1 w-full rounded-lg border border-[#E5D8CC] bg-[#FDFBF7] px-3 py-2.5 text-sm font-normal text-[#3E3028]"><option value="">Semua kelas</option>@foreach($kelas as $pilihanKelas)<option value="{{ $pilihanKelas->id_kelas }}" @selected(($filters['id_kelas'] ?? '') == $pilihanKelas->id_kelas)>{{ $pilihanKelas->nama_kelas }}</option>@endforeach</select></label>
+                <div class="flex gap-2"><button type="submit" class="flex-1 rounded-lg bg-[#5C4033] px-4 py-2.5 text-sm font-semibold text-white">Tampilkan</button><a href="{{ route('admin.rekap') }}" class="rounded-lg border border-[#D8C9BC] px-4 py-2.5 text-sm font-semibold text-[#5C4033]">Reset</a></div>
+            </form>
 
-            {{-- FILTER --}}
-            <div class="bg-white border border-[#E5D8CC] rounded-lg p-4">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                    <div>
-                        <label class="text-[11px] font-semibold text-[#7A6A60] uppercase">Periode</label>
-                        <select id="periode" onchange="handlePeriodeChange()"
-                                class="mt-1 w-full border border-[#E5D8CC] rounded-lg px-3 py-2.5 text-sm bg-[#FDFBF7]">
-                            <option value="hari" selected>Hari Ini</option>
-                            <option value="custom">Custom</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-[11px] font-semibold text-[#7A6A60] uppercase">Dari Tanggal</label>
-                        <div class="relative mt-1">
-                            <input type="text" id="dariTanggal" readonly
-                                   value="{{ \Carbon\Carbon::now()->format('d/m/Y') }}"
-                                   class="w-full border border-[#E5D8CC] rounded-lg pl-3 pr-9 py-2.5 text-sm bg-[#F0EAE2] text-[#7A6A60] cursor-not-allowed">
-                            <svg id="dariTanggalIcon" class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#A08978] pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-[11px] font-semibold text-[#7A6A60] uppercase">Sampai Tanggal</label>
-                        <div class="relative mt-1">
-                            <input type="text" id="sampaiTanggal" readonly
-                                   value="{{ \Carbon\Carbon::now()->format('d/m/Y') }}"
-                                   class="w-full border border-[#E5D8CC] rounded-lg pl-3 pr-9 py-2.5 text-sm bg-[#F0EAE2] text-[#7A6A60] cursor-not-allowed">
-                            <svg id="sampaiTanggalIcon" class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[#A08978] pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div>
-
-                        <label class="text-[11px] font-semibold text-[#7A6A60] uppercase">Kelas</label>
-                        <div class="mt-1">
-                            <input type="text" id="cariKelas" list="daftarKelas" placeholder="Cari kelas..."
-                                   autocomplete="off" oninput="terapkanFilter()"
-                                   class="w-full border border-[#E5D8CC] rounded-lg px-3 py-2.5 text-sm bg-[#FDFBF7]">
-                            <datalist id="daftarKelas">
-                                <option value="X RPL 1"></option>
-                                <option value="X RPL 2"></option>
-                                <option value="XI RPL 2"></option>
-                                <option value="X TKI 1"></option>
-                            </datalist>
-                        </div>
-                    </div>
-                </div>
-                {{-- tombol Tampilkan sengaja dihapus: saat Periode "Custom" & tanggal diganti, --}}
-                {{-- hasil rekap langsung ke-update otomatis (auto-submit), ga perlu tombol manual --}}
+            <div class="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+                @foreach ([['Jurnal Masuk',$jurnals->count(),'text-[#3E3028]'],['Dicek Piket',$jurnals->whereIn('status_piket',['disetujui','ditolak'])->count(),'text-[#2E7D32]'],['Belum Dicek',$jurnals->where('status_piket','menunggu')->count(),'text-[#F57F17]'],['Guru Tidak Hadir',$jurnals->where('status_kehadiran_guru','tidak_hadir')->count(),'text-[#C62828]']] as [$label,$jumlah,$warna])
+                    <div class="rounded-lg border border-[#E5D8CC] bg-white p-3.5"><p class="text-[11px] font-semibold uppercase text-[#7A6A60]">{{ $label }}</p><p class="mt-1 font-['Poppins'] text-[22px] font-extrabold {{ $warna }}">{{ $jumlah }}</p></div>
+                @endforeach
             </div>
 
-            {{-- RINGKASAN --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-                <div class="bg-white rounded-lg p-3.5 border border-[#E5D8CC]">
-                    <p class="text-[11px] font-semibold text-[#7A6A60] uppercase">Jurnal Masuk</p>
-                    <p class="font-['Poppins'] font-extrabold text-[22px] mt-1">86</p>
-                </div>
-                <div class="bg-white rounded-lg p-3.5 border border-[#E5D8CC]">
-                    <p class="text-[11px] font-semibold text-[#2E7D32] uppercase">Dicek Piket</p>
-                    <p class="font-['Poppins'] font-extrabold text-[22px] text-[#2E7D32] mt-1">79</p>
-                </div>
-                <div class="bg-white rounded-lg p-3.5 border border-[#E5D8CC]">
-                    <p class="text-[11px] font-semibold text-[#F57F17] uppercase">Belum Dicek</p>
-                    <p class="font-['Poppins'] font-extrabold text-[22px] text-[#F57F17] mt-1">7</p>
-                </div>
-                <div class="bg-white rounded-lg p-3.5 border border-[#E5D8CC]">
-                    <p class="text-[11px] font-semibold text-[#C62828] uppercase">Guru Tidak Hadir</p>
-                    <p class="font-['Poppins'] font-extrabold text-[22px] text-[#C62828] mt-1">12</p>
-                </div>
-            </div>
+            <section class="overflow-hidden rounded-lg border border-[#E5D8CC] bg-white">
+                <div class="flex items-center justify-between border-b border-[#E5D8CC] bg-[#F5EFE8] px-4 py-3"><h2 class="font-['Poppins'] text-sm font-bold uppercase">Rekap per Kelas</h2><span class="text-xs text-[#7A6A60]">{{ $dari }} — {{ $sampai }}</span></div>
+                <div class="overflow-x-auto"><table class="min-w-[650px] w-full text-left text-[13px]"><thead class="bg-[#FDFBF7] text-[11px] uppercase text-[#5C4033]"><tr><th class="border border-[#E5D8CC] px-4 py-3">Kelas</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Jurnal</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Dicek Piket</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Belum Dicek</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Guru Tidak Hadir</th></tr></thead><tbody>
+                    @forelse($byClass as $baris)<tr><td class="border border-[#E5D8CC] px-4 py-3 font-semibold">{{ $baris->kelas->nama_kelas }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->jumlah }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#2E7D32]">{{ $baris->dicek }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#F57F17]">{{ $baris->belum }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#C62828]">{{ $baris->tidak_hadir }}</td></tr>
+                    @empty<tr><td colspan="5" class="px-4 py-8 text-center text-sm text-[#7A6A60]">Belum ada jurnal pada periode ini.</td></tr>@endforelse
+                </tbody></table></div>
+            </section>
 
-            {{-- REKAP PER KELAS & REKAP KEHADIRAN GURU (BERSANDINGAN) --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
-
-                {{-- REKAP PER KELAS --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-lg overflow-hidden">
-                    <div class="px-4 py-3 border-b border-[#E5D8CC] bg-[#F5EFE8] flex items-center justify-between gap-2">
-                        <h2 class="font-['Poppins'] font-bold text-sm uppercase">Rekap per Kelas</h2>
-                        <span class="text-[11px] text-[#7A6A60]">{{ \Carbon\Carbon::now()->format('d/m/Y') }}</span>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-[460px] w-full text-left text-[13px] border-collapse">
-                            <thead>
-                                <tr class="bg-[#FDFBF7]">
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033]">Kelas</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Jurnal</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Dicek Piket</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Belum</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Guru TH</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033]">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] font-semibold">X RPL 1</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">12</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#2E7D32] font-semibold">11</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#F57F17] font-semibold">1</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">2</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">
-                                        <a href="{{ route('admin.jurnal') }}"
-                                           class="inline-flex items-center px-3 py-1.5 rounded-md text-[12px] font-semibold bg-[#5C4033] text-white hover:bg-[#432D23]">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] font-semibold">X RPL 2</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">12</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#2E7D32] font-semibold">12</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">0</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">1</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">
-                                        <a href="{{ route('admin.jurnal') }}"
-                                           class="inline-flex items-center px-3 py-1.5 rounded-md text-[12px] font-semibold bg-[#5C4033] text-white hover:bg-[#432D23]">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] font-semibold">XI RPL 2</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">11</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#2E7D32] font-semibold">10</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#F57F17] font-semibold">1</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">3</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">
-                                        <a href="{{ route('admin.jurnal') }}"
-                                           class="inline-flex items-center px-3 py-1.5 rounded-md text-[12px] font-semibold bg-[#5C4033] text-white hover:bg-[#432D23]">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] font-semibold">X TKI 1</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">10</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#2E7D32] font-semibold">9</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#F57F17] font-semibold">1</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">0</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">
-                                        <a href="{{ route('admin.jurnal') }}"
-                                           class="inline-flex items-center px-3 py-1.5 rounded-md text-[12px] font-semibold bg-[#5C4033] text-white hover:bg-[#432D23]">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                {{-- REKAP KEHADIRAN GURU --}}
-                <div class="bg-white border border-[#E5D8CC] rounded-lg overflow-hidden">
-                    <div class="px-4 py-3 border-b border-[#E5D8CC] bg-[#F5EFE8]">
-                        <h2 class="font-['Poppins'] font-bold text-sm uppercase">Rekap Kehadiran Guru</h2>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-[460px] w-full text-left text-[13px] border-collapse">
-                            <thead>
-                                <tr class="bg-[#FDFBF7]">
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033]">Nama Guru</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Hadir</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Izin</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Tidak Hadir</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033] text-center">Total Sesi</th>
-                                    <th class="px-4 py-3 border border-[#E5D8CC] text-[11px] font-semibold uppercase text-[#5C4033]">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">Budi Santoso, S.Pd.</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#2E7D32] font-semibold">18</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">1</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">0</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">19</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">
-                                        <a href="{{ route('admin.sesi') }}"
-                                           class="inline-flex items-center px-3 py-1.5 rounded-md text-[12px] font-semibold bg-[#5C4033] text-white hover:bg-[#432D23]">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">Siti Aminah, S.Pd.</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#2E7D32] font-semibold">15</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">0</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#C62828] font-semibold">2</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">17</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">
-                                        <a href="{{ route('admin.sesi') }}"
-                                           class="inline-flex items-center px-3 py-1.5 rounded-md text-[12px] font-semibold bg-[#5C4033] text-white hover:bg-[#432D23]">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">Zainul Arifin, S.Pd.</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#2E7D32] font-semibold">12</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">2</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center text-[#C62828] font-semibold">3</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC] text-center">17</td>
-                                    <td class="px-4 py-3 border border-[#E5D8CC]">
-                                        <a href="{{ route('admin.sesi') }}"
-                                           class="inline-flex items-center px-3 py-1.5 rounded-md text-[12px] font-semibold bg-[#5C4033] text-white hover:bg-[#432D23]">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-
+            <section class="overflow-hidden rounded-lg border border-[#E5D8CC] bg-white">
+                <div class="border-b border-[#E5D8CC] bg-[#F5EFE8] px-4 py-3"><h2 class="font-['Poppins'] text-sm font-bold uppercase">Rekap Kehadiran Guru</h2></div>
+                <div class="overflow-x-auto"><table class="min-w-[680px] w-full text-left text-[13px]"><thead class="bg-[#FDFBF7] text-[11px] uppercase text-[#5C4033]"><tr><th class="border border-[#E5D8CC] px-4 py-3">Nama Guru</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Hadir</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Izin</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Sakit</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Tidak Hadir</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Total Sesi</th></tr></thead><tbody>
+                    @forelse($byTeacher as $baris)<tr><td class="border border-[#E5D8CC] px-4 py-3 font-semibold">{{ $baris->guru->name }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#2E7D32]">{{ $baris->hadir }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->izin }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->sakit }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#C62828]">{{ $baris->tidak_hadir }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->jumlah }}</td></tr>
+                    @empty<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-[#7A6A60]">Belum ada data kehadiran guru pada periode ini.</td></tr>@endforelse
+                </tbody></table></div>
+            </section>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        function openSidebar() {
-            document.getElementById('sidebar').classList.remove('-translate-x-full');
-            document.getElementById('sidebarOverlay').classList.remove('hidden');
-        }
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.add('-translate-x-full');
-            document.getElementById('sidebarOverlay').classList.add('hidden');
-        }
-
-        // Format tanggal dipaksa dd/mm/yyyy oleh flatpickr sendiri (bukan ikut locale browser)
-        let fpDari, fpSampai;
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const opsi = {
-                dateFormat: 'd/m/Y',
-                defaultDate: 'today',
-                allowInput: false,
-                disableMobile: true,
-                onChange: function () {
-                    // begitu tanggal custom diganti, langsung terapkan filter otomatis
-                    terapkanFilter();
-                },
-            };
-            fpDari = flatpickr('#dariTanggal', opsi);
-            fpSampai = flatpickr('#sampaiTanggal', opsi);
-            handlePeriodeChange();
-        });
-
-        // TODO (backend): panggil endpoint/rekap sesuai periode, dariTanggal, sampaiTanggal, cariKelas,
-        // lalu update angka ringkasan & isi kedua tabel. Untuk sekarang cuma placeholder.
-        function terapkanFilter() {
-            console.log('Terapkan filter otomatis:', {
-                periode: document.getElementById('periode').value,
-                dari: document.getElementById('dariTanggal').value,
-                sampai: document.getElementById('sampaiTanggal').value,
-                kelas: document.getElementById('cariKelas').value,
-            });
-        }
-
-        function handlePeriodeChange() {
-            const periode = document.getElementById('periode').value;
-            const isHariIni = periode === 'hari';
-
-            [fpDari, fpSampai].forEach(fp => {
-                fp.set('clickOpens', !isHariIni);
-                fp.input.disabled = isHariIni;
-                fp.input.classList.toggle('bg-[#F0EAE2]', isHariIni);
-                fp.input.classList.toggle('text-[#7A6A60]', isHariIni);
-                fp.input.classList.toggle('cursor-not-allowed', isHariIni);
-                fp.input.classList.toggle('bg-[#FDFBF7]', !isHariIni);
-                fp.input.classList.toggle('text-[#3E3028]', !isHariIni);
-                fp.input.classList.toggle('cursor-pointer', !isHariIni);
-
-                if (isHariIni) {
-                    fp.setDate(new Date(), true);
-                }
-            });
-
-            terapkanFilter();
-
-            const iconDari = document.getElementById('dariTanggalIcon');
-            const iconSampai = document.getElementById('sampaiTanggalIcon');
-            [iconDari, iconSampai].forEach(icon => {
-                icon.classList.toggle('text-[#A08978]', isHariIni);
-                icon.classList.toggle('text-[#5C4033]', !isHariIni);
-            });
-        }
+        function openSidebar(){document.getElementById('sidebar').classList.remove('-translate-x-full');document.getElementById('sidebarOverlay').classList.remove('hidden')}
+        function closeSidebar(){document.getElementById('sidebar').classList.add('-translate-x-full');document.getElementById('sidebarOverlay').classList.add('hidden')}
+        function closeTambahMenu(){const menu=document.getElementById('tambahMenu');if(menu)menu.open=false}
     </script>
+    @include('admin.partials.admin_profile_modal')
+    @include('shared.preserve_search_scroll')
 </body>
 </html>

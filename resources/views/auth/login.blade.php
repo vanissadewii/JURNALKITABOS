@@ -11,6 +11,7 @@
         body { font-family: 'Inter', sans-serif; }
         .font-heading { font-family: 'Poppins', sans-serif; }
     </style>
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="bg-[#F5EFE8] min-h-screen flex flex-col">
 
@@ -40,11 +41,15 @@
 
                 @if ($errors->any())
                     <div class="bg-red-50 border border-red-200 text-red-600 text-sm rounded-md p-3">
-                        <ul class="list-disc list-inside">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                        @if ($errors->has('username'))
+                            <p>Username atau password yang kamu masukkan salah. Silakan coba lagi.</p>
+                        @else
+                            <ul class="list-disc list-inside">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
                 @endif
 
@@ -80,9 +85,11 @@
                     </div>
 
                     {{-- Lupa password → hubungi admin, taruh di atas tombol login --}}
+                    @php($nomorAdminWhatsapp = preg_replace('/\D/', '', config('jurnal.admin_phone')))
+                    @php($nomorAdminWhatsapp = str_starts_with($nomorAdminWhatsapp, '0') ? '62'.substr($nomorAdminWhatsapp, 1) : $nomorAdminWhatsapp)
                     <p class="text-xs text-center text-[#7A6A60]">
                         Lupa password?
-                        <a href="#" class="font-semibold text-[#5C4033] hover:underline">
+                        <a href="https://wa.me/{{ $nomorAdminWhatsapp }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-[#5C4033] hover:underline">
                             Hubungi admin
                         </a>
                     </p>
