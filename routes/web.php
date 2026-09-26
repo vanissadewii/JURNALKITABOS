@@ -22,7 +22,6 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\MasterKelasController;
 use App\Http\Controllers\QrSesiController;
-use App\Http\Controllers\RiwayatJurnalController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
