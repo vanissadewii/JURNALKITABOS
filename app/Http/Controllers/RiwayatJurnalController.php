@@ -13,18 +13,11 @@ class RiwayatJurnalController extends Controller
 {
     public function index(): View
     {
-<<<<<<< HEAD
-        $semuaJurnal = Jurnal::whereHas('jadwal', function ($q) {
-            $q->where('id_guru', Auth::id());
-        })
-            ->with(['jadwal.kelas', 'jadwal.mapel', 'jadwal.jamPelajaran'])
-=======
         $semuaJurnal = Jurnal::where('status_verifikasi', 'terverifikasi')
             ->whereHas('jadwal', function ($q) {
                 $q->where('id_guru', Auth::id());
             })
             ->with(['jadwal.kelas', 'jadwal.mapel', 'jadwal.jamPelajaran', 'absenSiswa'])
->>>>>>> putri/tampilan-admin
             ->get()
             ->sort(function ($a, $b) {
                 if ($a->tanggal->ne($b->tanggal)) {
@@ -46,10 +39,7 @@ class RiwayatJurnalController extends Controller
         $jadwal = $jurnal->jadwal;
 
         abort_if((int) $jadwal->id_guru !== (int) Auth::id(), 403);
-<<<<<<< HEAD
-=======
         abort_unless($jurnal->status_verifikasi === 'terverifikasi', 404);
->>>>>>> putri/tampilan-admin
 
         // rentang jam berurutan (kelas, guru, mapel sama) di hari itu, mis. jam ke-1 sampai 3
         $jam = $jadwal->jamPelajaran;

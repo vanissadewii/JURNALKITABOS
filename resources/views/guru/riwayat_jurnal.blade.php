@@ -45,6 +45,18 @@
     .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
     .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
     .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+    @media print {
+      @page { margin: 12mm; }
+      html, body { min-height: 0 !important; height: auto !important; overflow: visible !important; }
+      body { display: block !important; background: #fff !important; }
+      .guru-sidebar, header, body > nav, #filter-kalender { display: none !important; }
+      body > div { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      body > div > main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+      #jurnal-grid { display: block !important; width: 100% !important; }
+      .jurnal-card { display: block !important; width: 100% !important; margin: 0 0 8mm !important; box-shadow: none !important; break-inside: auto; page-break-inside: auto; }
+      .jurnal-card a { display: none !important; }
+      button { display: none !important; }
+    }
   </style>
 </head>
 
@@ -106,13 +118,15 @@
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
 
     <!-- Top Header Bar -->
-    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between print:hidden">
       <div class="w-full flex items-center justify-between">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           </svg>
         </a>
         <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Riwayat Jurnal Mengajar</h1>
-        <div class="w-9"></div>
+        <button onclick="window.print()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all" aria-label="Cetak riwayat jurnal" title="Cetak riwayat jurnal">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </button>
       </div>
     </header>
 
@@ -120,7 +134,7 @@
     <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex flex-col gap-6 flex-1">
 
       <!-- KALENDER GRID KOTAK (BULAN 1-12 & HARI 1-30/31) -->
-      <section class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex flex-col gap-4">
+      <section id="filter-kalender" class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex flex-col gap-4">
 
         <!-- Header Pilih Bulan & Tahun + Tombol Tampilkan Semua -->
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-brand-50 pb-3">

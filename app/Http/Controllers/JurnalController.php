@@ -4,11 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
-<<<<<<< HEAD
-use App\Models\Siswa;
-use App\Services\VerifikasiSesiService;
-use App\Support\Waktu;
-=======
 use App\Models\PengaturanJurnalSusulan;
 use App\Models\Siswa;
 use App\Models\Dispen;
@@ -16,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use App\Services\VerifikasiSesiService;
 use App\Support\Waktu;
 use Carbon\Carbon;
->>>>>>> putri/tampilan-admin
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,43 +21,11 @@ class JurnalController extends Controller
     public function create(Request $request, VerifikasiSesiService $sesi): View|RedirectResponse
     {
         $guru = Auth::user();
-<<<<<<< HEAD
-
-        $jadwalAktif = $request->query('jadwal')
-            ? JadwalPelajaran::with(['kelas', 'mapel', 'jamPelajaran'])
-                ->where('id_guru', $guru->id)
-                ->where('id_jadwal', (int) $request->query('jadwal'))
-                ->first()
-            : $sesi->jadwalBerlangsung(idGuru: (int) $guru->id);
-
-        if (! $jadwalAktif) {
-            return redirect()->route('dashboard-guru')
-                ->with('error', 'Tidak ada sesi mengajar yang sedang berlangsung.');
-        }
-
-        if (! $sesi->masihBerjalan($jadwalAktif)) {
-            return redirect()->route('dashboard-guru')
-                ->with('error', 'Sesi pelajaran ini sudah selesai, jurnal tidak bisa diisi lagi.');
-        }
-
-        $jurnal = $sesi->jurnalSesi($jadwalAktif); // draft yang sudah pernah diisi (kalau ada)
-
-        if ($jurnal && $jurnal->status_verifikasi === 'terverifikasi') {
-            return redirect()->route('guru.verifikasisukses', $jurnal);
-        }
-
-        if ($jurnal) {
-            return redirect()->route('guru.scan')
-                ->with('info', 'Jurnal sudah terkirim, tinggal verifikasi kehadiran lewat scan QR kelas.');
-        }
-
-        $daftarSiswa = Siswa::where('id_kelas', $jadwalAktif->id_kelas)->orderBy('nama')->get();
-        $rentang = $sesi->rentang($jadwalAktif);
-
-        return view('guru.form_jurnal', compact('jadwalAktif', 'daftarSiswa', 'rentang'));
-=======
         $isSusulan = $request->boolean('susulan');
+        $isPulangCepat = $request->boolean('pulang_cepat');
         $tanggalJurnal = Carbon::parse(Waktu::sekarang()->toDateTimeString());
+        $hariMap = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'];
+        $hariIni = $hariMap[$tanggalJurnal->dayOfWeekIso] ?? null;
         $jadwalPilihan = collect();
 
         if ($isSusulan) {
@@ -100,7 +62,8 @@ class JurnalController extends Controller
                 $jadwalAktif = JadwalPelajaran::with(['kelas', 'mapel', 'jamPelajaran.semester'])
                     ->where('id_guru', $guru->id)
                     ->where('id_jadwal', (int) $request->query('jadwal'))
-                    ->whereHas('jamPelajaran.semester', fn ($q) => $q->where('status', 'aktif'))
+                    ->whereHas('jamPelajaran', fn ($q) => $q->where('hari', $hariIni)
+                        ->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')))
                     ->first();
             } else {
                 $jadwalAktif = $sesi->jadwalBerlangsung(idGuru: (int) $guru->id);
@@ -150,40 +113,31 @@ class JurnalController extends Controller
         $rentang = $sesi->rentang($jadwalAktif);
 
         return view('guru.form_jurnal', compact(
-            'jadwalAktif', 'jadwalPilihan', 'daftarSiswa', 'daftarSiswaJson', 'rentang', 'jurnal', 'isSusulan', 'tanggalJurnal'
+            'jadwalAktif', 'jadwalPilihan', 'daftarSiswa', 'daftarSiswaJson', 'rentang', 'jurnal', 'isSusulan', 'tanggalJurnal', 'isPulangCepat'
         ));
->>>>>>> putri/tampilan-admin
     }
 
     public function store(Request $request, VerifikasiSesiService $sesi): RedirectResponse
     {
         $validated = $request->validate([
             'id_jadwal' => 'required|exists:jadwal_pelajaran,id_jadwal',
-<<<<<<< HEAD
-=======
             'susulan' => 'nullable|boolean',
->>>>>>> putri/tampilan-admin
+            'pulang_cepat' => 'nullable|boolean',
             'materi' => 'nullable|string',
             'catatan' => 'nullable|string',
             'jumlah_hadir' => 'nullable|integer|min:0',
             'siswa_absen' => 'nullable|array',
             'siswa_absen.*.nama' => 'required_with:siswa_absen|string',
-<<<<<<< HEAD
-            'siswa_absen.*.status' => 'required_with:siswa_absen|in:Sakit,Izin,Alpha',
-=======
             'siswa_absen.*.id_siswa' => 'nullable|exists:siswa,id_siswa',
             'siswa_absen.*.status' => 'required_with:siswa_absen|in:Sakit,Izin,Dispen,Alpha',
->>>>>>> putri/tampilan-admin
         ]);
 
         $isSusulan = $request->boolean('susulan');
+        $isPulangCepat = $request->boolean('pulang_cepat');
         if ($isSusulan && ! PengaturanJurnalSusulan::forGuru((int) Auth::id())->aktif) {
             return redirect()->route('dashboard-guru')->with('error', 'Pengisian jurnal susulan sedang ditutup oleh admin.');
         }
 
-<<<<<<< HEAD
-        if (! $sesi->masihBerjalan($jadwal)) {
-=======
         $tanggalJurnal = Carbon::parse(Waktu::sekarang()->toDateTimeString());
         if ($isSusulan) {
             $tanggalJurnal->subDay();
@@ -194,7 +148,7 @@ class JurnalController extends Controller
         $jadwalQuery = JadwalPelajaran::with(['jamPelajaran.semester'])
             ->where('id_jadwal', $validated['id_jadwal'])
             ->where('id_guru', Auth::id());
-        if ($isSusulan) {
+        if ($isSusulan || $isPulangCepat) {
             $jadwalQuery->whereHas('jamPelajaran', fn ($q) => $q
                 ->where('hari', $hariTarget)
                 ->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')));
@@ -205,22 +159,15 @@ class JurnalController extends Controller
             return redirect()->route('dashboard-guru')->with('error', 'Jadwal tersebut tidak terdaftar untuk tanggal jurnal yang dipilih.');
         }
 
-        if (! $isSusulan && ! $sesi->masihBerjalan($jadwal)) {
->>>>>>> putri/tampilan-admin
+        if (! $isSusulan && ! $isPulangCepat && ! $sesi->masihBerjalan($jadwal)) {
             return redirect()->route('dashboard-guru')
                 ->with('error', 'Sesi pelajaran ini sudah selesai, jurnal tidak bisa dikirim lagi.');
         }
 
-<<<<<<< HEAD
-        if ($sesi->jurnalSesi($jadwal)) {
-            return redirect()->route('guru.scan')
-                ->with('info', 'Jurnal sesi ini sudah terkirim, tinggal verifikasi.');
-=======
         $jurnalAda = $sesi->jurnalSesi($jadwal, $tanggalJurnal->toDateString());
         if ($jurnalAda && $jurnalAda->status_verifikasi === 'terverifikasi') {
             return redirect()->route('dashboard-guru')
                 ->with('success', 'Jurnal sesi ini sudah terverifikasi.');
->>>>>>> putri/tampilan-admin
         }
 
         $keterangan = $validated['catatan'] ?? '';
@@ -231,13 +178,6 @@ class JurnalController extends Controller
             $keterangan = trim($keterangan."\nTidak hadir: ".$daftarAbsen);
         }
 
-<<<<<<< HEAD
-        $jurnal = Jurnal::create([
-            'id_jadwal' => $jadwal->id_jadwal,
-            'tanggal' => Waktu::sekarang()->toDateString(),
-            'status_kehadiran_guru' => 'hadir',
-            'status_verifikasi' => 'belum_verifikasi',
-=======
         $dataJurnal = [
             'id_jadwal' => $jadwal->id_jadwal,
             'tanggal' => $tanggalJurnal->toDateString(),
@@ -248,22 +188,10 @@ class JurnalController extends Controller
             'alasan_tolak' => null,
             'id_diperiksa_oleh' => null,
             'diperiksa_at' => null,
->>>>>>> putri/tampilan-admin
             'materi' => $validated['materi'] ?? null,
             'keterangan' => $keterangan ?: null,
             'jumlah_hadir' => $validated['jumlah_hadir'] ?? null,
             'waktu_submit' => Waktu::sekarang(),
-<<<<<<< HEAD
-        ]);
-        foreach ($validated['siswa_absen'] ?? [] as $s) {
-            $jurnal->absenSiswa()->create(['nama' => $s['nama'], 'status' => $s['status']]);
-        }
-
-        return redirect()->route('guru.scan')
-            ->with('success', 'Jurnal terkirim. Verifikasi kehadiran dengan scan QR kelas sekarang.');
-    }
-
-=======
         ];
         $jurnal = $jurnalAda ?? Jurnal::create($dataJurnal);
         if ($jurnalAda) {
@@ -276,6 +204,9 @@ class JurnalController extends Controller
 
         if ($isSusulan) {
             return redirect()->route('dashboard-guru')->with('success', 'Jurnal kemarin berhasil dikirim sebagai jurnal susulan.');
+        }
+        if ($isPulangCepat) {
+            return redirect()->route('dashboard-guru')->with('success', 'Jurnal pulang cepat dikirim ke antrean guru piket untuk ditinjau.');
         }
 
         return redirect()->route('guru.scan-kelas', $jurnal)
@@ -368,7 +299,6 @@ class JurnalController extends Controller
         return view('admin.jurnal', compact('jurnalSusulan', 'jurnalSemua', 'jumlahJurnal', 'jumlahDisetujui', 'jumlahDitolak'));
     }
 
->>>>>>> putri/tampilan-admin
     public function verifikasiSukses(Request $request, Jurnal $jurnal): View
     {
         $jurnal->load('jadwal.kelas', 'jadwal.mapel');

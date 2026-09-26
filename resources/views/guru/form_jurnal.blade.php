@@ -103,7 +103,7 @@
         <a href="{{ route('dashboard-guru') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white">
           <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12.5 4.5L7 10l5.5 5.5"/></svg><span class="hidden sm:inline">Beranda</span>
         </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">{{ $isSusulan ? 'Isi Jurnal Kemarin' : 'Lengkapi Jurnal Mengajar' }}</h1>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">{{ $isSusulan ? 'Isi Jurnal Kemarin' : (($isPulangCepat ?? false) ? 'Kirim Jurnal Pulang Cepat' : 'Lengkapi Jurnal Mengajar') }}</h1>
         <div class="w-16"></div>
       </div>
     </header>
@@ -194,6 +194,10 @@
         @csrf
         <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif->id_jadwal }}">
         @if ($isSusulan)<input type="hidden" name="susulan" value="1">@endif
+        @if ($isPulangCepat ?? false)
+          <input type="hidden" name="pulang_cepat" value="1">
+          <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Jurnal akan langsung masuk ke antrean guru piket untuk ditinjau karena sekolah pulang cepat.</div>
+        @endif
 
         <!-- FORM ISIAN UTAMA -->
         <div id="section-form-utama" class="flex flex-col gap-5">
@@ -268,7 +272,7 @@
         </div>
 
         <button type="submit" class="w-full h-12 mt-2 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
-          Simpan Jurnal
+          {{ ($isPulangCepat ?? false) ? 'Kirim ke Guru Piket' : 'Simpan Jurnal' }}
         </button>
 
       </form>

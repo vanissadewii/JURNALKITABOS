@@ -421,7 +421,7 @@
                     <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>
                 @endif
                 @if(session('link_wa'))
-                    <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-green-700 px-4 py-3 text-center font-semibold text-white hover:bg-green-800">Kirim tautan persetujuan ke 0877 8259 9520 via WhatsApp</a>
+                    <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-green-700 px-4 py-3 text-center font-semibold text-white hover:bg-green-800">Kirim tautan persetujuan ke {{ config('jurnal.admin_phone') }} via WhatsApp</a>
                 @endif
                 @if($errors->any())
                     <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ $errors->first() }}</div>

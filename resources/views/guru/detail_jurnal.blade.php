@@ -33,6 +33,15 @@
     .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
     .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
     .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+    @media print {
+      @page { margin: 12mm; }
+      html, body { min-height: 0 !important; height: auto !important; overflow: visible !important; }
+      body { display: block !important; background: #fff !important; }
+      .guru-sidebar, header, body > nav { display: none !important; }
+      body > div { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      body > div > main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+      main > section, main > div { break-inside: auto; page-break-inside: auto; }
+    }
   </style>
 </head>
 
