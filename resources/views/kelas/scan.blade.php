@@ -9,10 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
     @vite('resources/css/app.css')
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <style>
-        #qr-reader video { width: 100% !important; height: 100% !important; object-fit: cover !important; }
-    </style>
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen">
@@ -34,7 +31,7 @@
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>
                     </svg>
-                    Dasbor
+                    Beranda
                 </a>
                 <a href="{{ route('kelas.scan') }}"
                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
@@ -63,27 +60,71 @@
         {{-- KONTEN UTAMA --}}
         <main class="flex-1 w-full pb-24 md:pb-8">
 
-            {{-- HEADER --}}
             <div class="w-full bg-[#5C4033] px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7 flex items-center justify-center text-white">
-                <h1 class="m-0 font-['Poppins'] text-[15px] sm:text-[17px] font-semibold text-center">
-                    Scan Sesi Mengajar
-                </h1>
+
+            <h1 class="m-0 font-['Poppins'] text-xl sm:text-[17px] font-bold text-center">
+                Scan Sesi Mengajar
+            </h1>
+
             </div>
 
             {{-- ISI: QR / SCANNER DINAMIS --}}
             <div class="w-full max-w-[500px] mx-auto px-4 py-6 sm:px-5 md:pt-10 pb-10 flex flex-col items-center">
 
-                <h2 id="judul" class="m-0 mb-1.5 font-['Poppins'] text-lg sm:text-xl md:text-2xl font-bold text-center text-[#3E3028]">Memuat...</h2>
-                <p id="teks" class="m-0 mb-6 text-xs leading-relaxed text-center text-[#7A6A60]"></p>
+                <h2 class="m-0 mb-1.5 font-['Poppins'] text-lg sm:text-xl md:text-2xl font-bold text-center text-[#3E3028]">
+                    QR Code Kelas
+                </h2>
+
+                <p class="m-0 mb-6 text-xs leading-relaxed text-center text-[#7A6A60]">
+                    Tunjukkan QR Code ini kepada guru Anda
+                    untuk memulai verifikasi sesi.
+                </p>
+
+                {{-- QR kelas untuk dipindai guru --}}
+                <div class="w-[190px] h-[190px] sm:w-[210px] sm:h-[210px] md:w-[220px] md:h-[220px]
+                            bg-white border border-[#E5D8CC] rounded-2xl flex items-center justify-center
+                            p-[18px] shadow-[0_4px_15px_rgba(62,48,40,0.06)]">
+                    <img id="qr-kelas-image" src="{{ $qrImage ?? '' }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain {{ $qrImage ? '' : 'hidden' }}">
+                    <p id="qr-kelas-status" class="text-center text-xs text-[#7A6A60]">{{ session('error', 'Memeriksa sesi mengajar...') }}</p>
 
                 {{-- tampilan QR kelas (buat di-scan guru) --}}
                 <div id="panel-qr" class="hidden w-[220px] h-[220px] bg-white border border-[#E5D8CC] rounded-2xl items-center justify-center p-[14px] shadow-[0_4px_15px_rgba(62,48,40,0.06)] select-none">
                     <img id="gambar-qr" alt="QR Code" class="w-full h-full pointer-events-none select-none" draggable="false">
                 </div>
 
-                {{-- tampilan pemindai (buat scan QR guru) --}}
-                <div id="panel-scan" class="hidden">
-                    <div id="qr-reader" class="w-[260px] h-[260px] mx-auto rounded-2xl overflow-hidden border-4 border-dashed border-[#D7B899]"></div>
+                {{-- INFO SESI --}}
+                <div class="w-full bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[14px] mt-6
+                            shadow-[0_4px_12px_rgba(62,48,40,0.04)]">
+
+                    <div class="mb-3 font-['Poppins'] text-sm font-bold text-[#3E3028]">
+                        Detail Sesi Mengajar
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Guru Pengajar</span>
+                        <span id="sesi-guru" class="text-[#3E3028] font-semibold text-right">—</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Mata Pelajaran</span>
+                        <span id="sesi-mapel" class="text-[#3E3028] font-semibold text-right">—</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Kelas</span>
+                        <span id="sesi-kelas" class="text-[#3E3028] font-semibold text-right">{{ $kelas?->nama_kelas ?? '-' }}</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Jam</span>
+                        <span id="sesi-jam" class="text-[#3E3028] font-semibold text-right">—</span>
+                    </div>
+
+                    <div class="flex justify-between gap-4 pt-2.5 text-[13px] sm:text-xs">
+                        <span class="text-[#7A6A60]">Status</span>
+                        <span id="sesi-status" class="text-[#3E3028] font-semibold text-right">—</span>
+                    </div>
+
                 </div>
 
                 <p id="pesan" class="mt-5 text-center text-xs leading-relaxed text-[#3E3028]"></p>
@@ -93,11 +134,10 @@
 
     </div>
 
-    {{-- BOTTOM NAV (mobile) --}}
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
         <a href="{{ route('kelas.beranda') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
-            Dasbor
+            Beranda
         </a>
         <a href="{{ route('kelas.scan') }}" class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -114,118 +154,53 @@
     </nav>
 
     <script>
-        (() => {
-            const statusUrl = "{{ route('kelas.scan.status') }}";
-            const scanUrl = "{{ route('kelas.qr.scan-guru') }}";
-            const teks = {
-                qr: { judul: "QR Code Kelas", isi: "Tunjukkan QR ini ke layar guru untuk memulai verifikasi sesi mengajar." },
-                scan: { judul: "Scan QR Guru", isi: "Arahkan kamera ke QR Code yang ditampilkan oleh guru." },
-            };
+        const qrImage = document.getElementById('qr-kelas-image');
+        const qrStatus = document.getElementById('qr-kelas-status');
 
-            const el = (id) => document.getElementById(id);
-            const scanner = new Html5Qrcode('qr-reader');
-            let tahap = null;
-            let sedangKirim = false;
-            let kameraAktif = false;
-            let qrTerakhir = null;
-
-            function pesan(isi, error = false) {
-                el('pesan').textContent = isi || '';
-                el('pesan').className = 'mt-5 text-center text-xs leading-relaxed ' + (error ? 'text-red-600 font-bold' : 'text-[#3E3028]');
+        function perbaruiDetailSesi(sesi) {
+            if (!sesi) {
+                document.getElementById('sesi-guru').textContent = '—';
+                document.getElementById('sesi-mapel').textContent = '—';
+                document.getElementById('sesi-jam').textContent = '—';
+                document.getElementById('sesi-status').textContent = '—';
+                return;
             }
+            document.getElementById('sesi-guru').textContent = sesi.guru || '—';
+            document.getElementById('sesi-mapel').textContent = sesi.mapel || '—';
+            document.getElementById('sesi-kelas').textContent = sesi.kelas || '—';
+            document.getElementById('sesi-jam').textContent = sesi.jam || '—';
+            document.getElementById('sesi-status').textContent = sesi.status || '—';
+        }
 
-            function tampil(mode) {
-                el('panel-qr').classList.toggle('hidden', mode !== 'qr');
-                el('panel-qr').classList.toggle('flex', mode === 'qr');
-                el('panel-scan').classList.toggle('hidden', mode !== 'scan');
+        async function perbaruiStatusQrKelas() {
+            try {
+                const response = await fetch("{{ route('qr.status-kelas') }}", {
+                    headers: { 'Accept': 'application/json' },
+                });
+                const data = await response.json();
 
-                if (mode) {
-                    el('judul').textContent = teks[mode].judul;
-                    el('teks').textContent = teks[mode].isi;
-                }
-            }
-
-            async function nyalakanKamera() {
-                if (kameraAktif) return;
-                kameraAktif = true;
-                try {
-                    await scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: 220 }, kirim, () => {});
-                } catch (e) {
-                    kameraAktif = false;
-                    pesan('Gagal mengakses kamera: ' + e, true);
-                }
-            }
-
-            async function matikanKamera() {
-                if (!kameraAktif) return;
-                kameraAktif = false;
-                try { await scanner.stop(); } catch (e) {}
-            }
-
-            async function kirim(kode) {
-                if (sedangKirim) return;
-                sedangKirim = true;
-                pesan('Memverifikasi...');
-
-                try {
-                    const res = await fetch(scanUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': "{{ csrf_token() }}",
-                        },
-                        body: JSON.stringify({ kode_qr: kode }),
-                    });
-                    const data = await res.json();
-
-                    if (data.success) {
-                        window.location.href = data.redirect;
-                        return;
-                    } else {
-                        pesan(data.message ?? 'Verifikasi gagal.', true);
-                    }
-                } catch (e) {
-                    pesan('Terjadi kesalahan, coba lagi.', true);
-                }
-
-                setTimeout(() => { sedangKirim = false; }, 2000);
-            }
-
-            async function muat() {
-                let data;
-                try {
-                    const res = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });
-                    data = await res.json();
-                } catch (e) {
-                    return;
-                }
-
+                perbaruiDetailSesi(data.sesi);
                 if (data.tahap === 'tampil_qr') {
-                    if (tahap !== 'tampil_qr') await matikanKamera();
-                    tampil('qr');
-                    if (qrTerakhir !== data.qr) {
-                        qrTerakhir = data.qr;
-                        el('gambar-qr').src = data.qr;
-                    }
+                    qrImage.src = data.qr;
+                    qrImage.classList.remove('hidden');
+                    qrStatus.classList.add('hidden');
                 } else if (data.tahap === 'scan') {
-                    tampil('scan');
-                    await nyalakanKamera();
+                    window.location.href = "{{ route('kelas.verifikasiguru') }}";
+                    return;
                 } else {
-                    await matikanKamera();
-                    tampil(null);
-                    el('judul').textContent = 'Informasi';
-                    el('teks').textContent = '';
-                    pesan(data.pesan ?? '');
+                    qrImage.classList.add('hidden');
+                    qrStatus.classList.remove('hidden');
+                    qrStatus.textContent = data.pesan || 'Belum ada sesi mengajar aktif.';
                 }
-
-                tahap = data.tahap;
+            } catch (error) {
+                qrImage.classList.add('hidden');
+                qrStatus.classList.remove('hidden');
+                qrStatus.textContent = 'Status QR belum dapat dimuat. Coba muat ulang halaman.';
             }
+        }
 
-            muat();
-            setInterval(muat, 3000);
-        })();
+        perbaruiStatusQrKelas();
+        setInterval(perbaruiStatusQrKelas, 5000);
     </script>
-
 </body>
 </html>

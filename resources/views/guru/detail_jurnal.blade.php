@@ -25,6 +25,15 @@
       }
     }
   </script>
+  <style>
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+    .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; }
+    .guru-sidebar-nav a svg { color: #7A6A60 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
+    .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+  </style>
 </head>
 
 @php
@@ -50,48 +59,79 @@
 
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
-  <!-- SIDEBAR (Desktop) -->
-  <aside class="print:hidden w-64 bg-white border-r border-brand-100 min-h-screen flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
-    <div class="p-6 flex flex-col gap-8">
+  <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
+  <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="py-6 px-4 flex flex-col gap-8">
+
+      <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
       </div>
 
-      <nav class="flex flex-col gap-1.5">
-        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
-          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/></svg>
+      <!-- Navigation Links -->
+      <nav class="guru-sidebar-nav flex flex-col gap-1">
+
+        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          </svg>
           <span>Beranda</span>
         </a>
-        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
-          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M7 3v14"/></svg>
+
+        <a href="{{ route('jurnal.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
+            <path d="M7 3v14"/>
+          </svg>
           <span>Isi Jurnal</span>
         </a>
-        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
-          <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 4h14M3 8h14M3 12h10M3 16h6"/></svg>
+
+        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
+          <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          </svg>
           <span>Riwayat Jurnal</span>
         </a>
-        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
-          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/><circle cx="10" cy="6.5" r="3.5"/></svg>
+
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
+        </a>
+
+        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
+            <circle cx="10" cy="6.5" r="3.5"/>
+          </svg>
           <span>Profil</span>
         </a>
       </nav>
     </div>
   </aside>
 
-  <!-- MAIN -->
-  <div class="flex-1 md:ml-64 print:ml-0 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
-
-    <header class="print:hidden w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
-      <a href="{{ url('/riwayat-jurnal') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-      </a>
-      <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Detail Sesi Mengajar</h1>
-      <button onclick="window.print()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Cetak">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      </button>
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
+    
+    <!-- Top Header Bar -->
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
+      <div class="w-full flex items-center justify-between">
+        <a href="{{ url('/riwayat-jurnal') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+        </a>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Detail Sesi Mengajar</h1>
+        <button onclick="window.print()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" title="Cetak / Download PDF">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+        </button>
+      </div>
     </header>
 
+    <!-- Main Content Container -->
     <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex flex-col gap-6 flex-1">
 
       <!-- STATUS VERIFIKASI -->
@@ -110,13 +150,7 @@
           </div>
           <div>
             <h2 class="font-poppins font-bold text-base text-[#3E3028]">Sesi Mengajar Terverifikasi</h2>
-            <p class="text-xs sm:text-sm text-brand-600">
-              @if ($qr && $qr->dipindai_at)
-                Dipindai oleh {{ $pemindai->name ?? 'akun kelas' }} pada {{ $tglIndo($qr->dipindai_at) }} • {{ $qr->dipindai_at->format('H:i') }} WIB
-              @else
-                Diverifikasi oleh kelas.
-              @endif
-            </p>
+            <p class="text-xs text-brand-600">Disetujui oleh Tim Kurikulum pada 21 Juli 2026 • 09:30 WIB</p>
           </div>
         </div>
       @else
@@ -129,14 +163,21 @@
         </div>
       @endif
 
-      <!-- INFO SESI -->
-      <section class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs flex flex-col gap-6">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-brand-600">Mata Pelajaran</p>
-          <h2 class="font-poppins font-bold text-2xl sm:text-3xl text-[#3E3028]">{{ $jadwal->mapel->nama_mapel ?? '-' }}</h2>
+      <!-- Detail Informasi Utama -->
+      <div class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs flex flex-col gap-6">
+        
+        <div class="flex flex-col gap-1 border-b border-brand-100 pb-4">
+          <span class="text-xs font-semibold uppercase tracking-wider text-brand-600">Kelas</span>
+          <h3 class="font-poppins font-extrabold text-xl sm:text-2xl text-[#3E3028]">X RPL 1</h3>
+          <p class="text-sm font-medium text-[#8C7B70]">Matematika</p>
         </div>
 
-        <div class="w-full h-px bg-brand-50"></div>
+        <!-- Grid Rincian Informasi -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm">
+          <div class="flex flex-col gap-1">
+            <span class="text-brand-600 font-medium">Mata Pelajaran</span>
+            <span class="font-poppins font-bold text-[#3E3028]">Matematika</span>
+          </div>
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 text-sm">
           <div>
@@ -182,6 +223,7 @@
 
         <div class="w-full h-px bg-brand-50"></div>
 
+        <!-- Materi Pembelajaran -->
         <div class="flex flex-col gap-2">
           <h3 class="font-poppins font-bold text-sm uppercase tracking-wider text-brand-600">Materi Pembelajaran</h3>
           <div class="bg-brand-50 border border-brand-100 rounded-xl p-4 text-sm">
@@ -189,24 +231,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <h3 class="font-poppins font-bold text-sm uppercase tracking-wider text-brand-600">Catatan KBM & Kendala Kelas</h3>
-          <div class="bg-brand-50 border border-brand-100 rounded-xl p-4 text-sm flex flex-col gap-2">
-            @forelse ($catatan as $baris)
-              <p>• {{ $baris }}</p>
-            @empty
-              <p class="text-brand-600">Tidak ada catatan.</p>
-            @endforelse
-          </div>
-        </div>
-      </section>
-
-      <!-- SISWA TIDAK HADIR -->
-      @if ($guruHadir)
-      <section class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs flex flex-col gap-4">
-        <h3 class="font-poppins font-bold text-sm uppercase tracking-wider text-brand-600">
-          Siswa Tidak Hadir ({{ count($tidakHadir) }})
-        </h3>
+      </div>
 
         @forelse ($tidakHadir as $s)
           <div class="flex items-center justify-between gap-3 p-3 bg-brand-50/60 border border-brand-100 rounded-xl text-sm">
@@ -224,17 +249,51 @@
       </section>
       @endif
 
-      <!-- DISPEN -->
-      @if (count($dispen) > 0)
-      <section class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-6 flex flex-col gap-3">
-        <h3 class="font-poppins font-bold text-sm uppercase tracking-wider text-amber-900">Siswa Dispen ({{ count($dispen) }})</h3>
-        <ul class="list-disc pl-5 text-sm text-amber-900/90 space-y-1">
-          @foreach ($dispen as $d)
-            <li>{{ $d }}</li>
-          @endforeach
-        </ul>
-      </section>
-      @endif
+        <!-- Ringkasan Kehadiran -->
+        <div class="grid grid-cols-5 gap-2 sm:gap-3">
+          <div class="rounded-xl bg-[#E8F5E9] border border-[#C8E6C9] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#2E7D32]">Hadir</span><span class="font-bold text-base text-[#1B5E20]">30</span></div>
+          <div class="rounded-xl bg-[#FFF3E0] border border-[#FFE0B2] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#E65100]">Sakit</span><span class="font-bold text-base text-[#BF360C]">1</span></div>
+          <div class="rounded-xl bg-[#E3F2FD] border border-[#BBDEFB] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#1565C0]">Izin</span><span class="font-bold text-base text-[#0D47A1]">1</span></div>
+          <div class="rounded-xl bg-[#FFEBEE] border border-[#FFCDD2] px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-[#C62828]">Alpa</span><span class="font-bold text-base text-[#B71C1C]">0</span></div>
+          <div class="rounded-xl bg-violet-50 border border-violet-200 px-2 py-2 text-center"><span class="block text-[10px] sm:text-xs text-violet-700">Dispen</span><span class="font-bold text-base text-violet-900">0</span></div>
+        </div>
+
+        <!-- Tabel Siswa Absen / Keterangan -->
+        <div class="flex flex-col gap-2 mt-2">
+          <span class="text-xs font-semibold text-brand-600 uppercase tracking-wider">Daftar Siswa Tidak Hadir</span>
+          <div class="overflow-x-auto rounded-xl border border-brand-100">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-brand-50 text-brand-800 font-poppins font-semibold border-b border-brand-100">
+                <tr>
+                  <th class="p-3">No</th>
+                  <th class="p-3">Nama Siswa</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3">Keterangan</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-brand-100 text-[#3E3028]">
+                <tr>
+                  <td class="p-3 font-medium">1</td>
+                  <td class="p-3 font-semibold">Ahmad Dani</td>
+                  <td class="p-3">
+                    <span class="px-2 py-0.5 bg-[#E3F2FD] text-[#1565C0] rounded font-semibold text-xs">Izin</span>
+                  </td>
+                  <td class="p-3 text-brand-600">Acara keluarga terlampir</td>
+                </tr>
+                <tr>
+                  <td class="p-3 font-medium">2</td>
+                  <td class="p-3 font-semibold">Siti Nurhaliza</td>
+                  <td class="p-3">
+                    <span class="px-2 py-0.5 bg-[#FFF3E0] text-[#E65100] rounded font-semibold text-xs">Sakit</span>
+                  </td>
+                  <td class="p-3 text-brand-600">Surat dari dokter terlampir</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
 
     </main>
   </div>
@@ -254,8 +313,14 @@
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 4h14M3 8h14M3 12h10M3 16h6"/></svg>
         <span>Riwayat</span>
       </a>
-      <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83]">
-        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/><circle cx="10" cy="6.5" r="3.5"/></svg>
+
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+
+      <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
+          <circle cx="10" cy="6.5" r="3.5"/>
+        </svg>
         <span>Profil</span>
       </a>
     </div>

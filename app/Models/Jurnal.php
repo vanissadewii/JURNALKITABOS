@@ -15,17 +15,25 @@ class Jurnal extends Model
 
     protected $fillable = [
         'id_jadwal',
+        'status_kehadiran_guru',
         'tanggal',
         'materi',
         'keterangan',
         'jumlah_hadir',
         'status_verifikasi',
+        'status_piket',
+        'alasan_tolak',
+        'id_diperiksa_oleh',
+        'diperiksa_at',
+        'is_susulan',
         'waktu_submit',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
+        'is_susulan' => 'boolean',
         'waktu_submit' => 'datetime',
+        'diperiksa_at' => 'datetime',
     ];
 
     /**

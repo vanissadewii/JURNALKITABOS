@@ -25,6 +25,8 @@ class DispenController extends Controller
         3 => 'Rabu',
         4 => 'Kamis',
         5 => 'Jumat',
+        6 => 'Sabtu',
+        7 => 'Minggu',
     ];
 
     public function index(): View
@@ -33,7 +35,7 @@ class DispenController extends Controller
             ->orderByDesc('created_at')
             ->paginate(15);
 
-        return view('guru-piket.dispen', compact('riwayat'));
+        return view('guru.dispensasi-siswa', compact('riwayat'));
     }
 
     public function cariSiswa(Request $request): JsonResponse
@@ -78,6 +80,7 @@ class DispenController extends Controller
 
         $jamList = JamPelajaran::where('tingkat', $kelas->tingkat)
             ->where('hari', $hari)
+            ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
             ->orderBy('jam_ke')
             ->get(['id_jam', 'jam_ke', 'jam_mulai', 'jam_selesai']);
 
@@ -93,10 +96,22 @@ class DispenController extends Controller
             'id_siswa' => 'required|exists:siswa,id_siswa',
             'id_kelas' => 'required|exists:kelas,id_kelas',
             'tanggal' => 'required|date',
-            'jam_ke_mulai' => 'required|integer|min:1',
-            'jam_ke_selesai' => 'nullable|integer|min:1|gte:jam_ke_mulai',
+            'jam_ke_mulai' => 'required|integer|between:1,13',
+            'jam_ke_selesai' => 'required|integer|between:1,13|gte:jam_ke_mulai',
             'alasan' => 'required|string|max:500',
         ]);
+
+        $kelas = Kelas::findOrFail($validated['id_kelas']);
+        $siswa = Siswa::findOrFail($validated['id_siswa']);
+        abort_if((int) $siswa->id_kelas !== (int) $kelas->id_kelas, 422, 'Kelas siswa tidak sesuai.');
+        $hari = $this->namaHari[Carbon::parse($validated['tanggal'])->dayOfWeekIso] ?? null;
+        abort_if(! $hari, 422, 'Dispensasi hanya dapat diajukan pada hari sekolah.');
+        $jamTersedia = JamPelajaran::where('tingkat', $kelas->tingkat)
+            ->where('hari', $hari)
+            ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
+            ->whereIn('jam_ke', [$validated['jam_ke_mulai'], $validated['jam_ke_selesai']])
+            ->pluck('jam_ke');
+        abort_unless($jamTersedia->contains((int) $validated['jam_ke_mulai']) && $jamTersedia->contains((int) $validated['jam_ke_selesai']), 422, 'Rentang jam tidak sesuai dengan jadwal kelas.');
 
         $dispen = Dispen::create([
             ...$validated,
@@ -114,6 +129,7 @@ class DispenController extends Controller
 
     private function linkWaWaka(Dispen $dispen): ?string
     {
+<<<<<<< HEAD
         $nomor = (string) preg_replace('/\D/', '', (string) config('waka.wa_number'));
 
         if ($nomor === '') {
@@ -127,6 +143,15 @@ class DispenController extends Controller
         $dispen->loadMissing('siswa');
 
         $linkApproval = rtrim((string) config('app.url'), '/')
+=======
+        $nomor = config('jurnal.admin_phone', '087782599520');
+        $nomor = (string) preg_replace('/\D/', '', $nomor);
+        $nomor = str_starts_with($nomor, '0') ? '62'.substr($nomor, 1) : $nomor;
+
+        $dispen->loadMissing('siswa');
+
+        $linkApproval = request()->getSchemeAndHttpHost()
+>>>>>>> putri/tampilan-admin
             .route('dispen.approval', $dispen->token_approval, false);
         $namaWaka = config('waka.nama');
 
@@ -143,6 +168,7 @@ class DispenController extends Controller
             ->where('token_approval', $token)
             ->firstOrFail();
 
+<<<<<<< HEAD
         $user = auth()->user();
 
         $alasanTidakBisa = match (true) {
@@ -151,6 +177,10 @@ class DispenController extends Controller
             ! $user->sedangPiket() => 'bukan_piket',
             default => null,
         };
+=======
+        // Link berisi token acak unik yang dikirim langsung ke Waka; token hanya berlaku sekali.
+        $alasanTidakBisa = $dispen->status !== 'menunggu' ? 'sudah_diproses' : null;
+>>>>>>> putri/tampilan-admin
 
         return view('guru-piket.dispen-approval', [
             'dispen' => $dispen,
@@ -162,6 +192,7 @@ class DispenController extends Controller
     public function setujui(string $token): RedirectResponse
     {
         $dispen = Dispen::where('token_approval', $token)->where('status', 'menunggu')->firstOrFail();
+<<<<<<< HEAD
 
         if ($respon = $this->tolakJikaTakBerhak($dispen)) {
             return $respon;
@@ -172,6 +203,11 @@ class DispenController extends Controller
             'disetujui_at' => now(),
             'id_waka' => auth()->id(), // sekarang: id guru piket yang approve
         ]);
+=======
+
+        // Otorisasi berasal dari token persetujuan sekali pakai yang hanya dikirim ke Waka.
+        $dispen->update(['status' => 'disetujui', 'disetujui_at' => now()]);
+>>>>>>> putri/tampilan-admin
 
         $this->salurkanKeJurnal($dispen);
 
@@ -181,10 +217,13 @@ class DispenController extends Controller
     public function tolak(string $token): RedirectResponse
     {
         $dispen = Dispen::where('token_approval', $token)->where('status', 'menunggu')->firstOrFail();
+<<<<<<< HEAD
 
         if ($respon = $this->tolakJikaTakBerhak($dispen)) {
             return $respon;
         }
+=======
+>>>>>>> putri/tampilan-admin
 
         $dispen->update(['status' => 'ditolak']);
 
@@ -249,6 +288,7 @@ class DispenController extends Controller
 
         $idJamTerdampak = JamPelajaran::where('tingkat', $dispen->kelas->tingkat)
             ->where('hari', $hari)
+            ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
             ->whereIn('jam_ke', $jamTerdampak)
             ->pluck('id_jam');
 
@@ -271,6 +311,13 @@ class DispenController extends Controller
             }
 
             $jurnal->save();
+
+            $absensi = $jurnal->absenSiswa()->where('id_siswa', $dispen->id_siswa)->first();
+            if ($absensi) {
+                $absensi->update(['nama' => $dispen->siswa->nama, 'status' => 'Dispen']);
+            } else {
+                $jurnal->absenSiswa()->create(['id_siswa' => $dispen->id_siswa, 'nama' => $dispen->siswa->nama, 'status' => 'Dispen']);
+            }
 
             DispenJurnal::updateOrCreate(
                 ['id_dispen' => $dispen->id_dispen, 'id_jadwal' => $jadwal->id_jadwal],

@@ -35,26 +35,38 @@
       }
     }
   </script>
+  <style>
+    @media (max-width: 767px) {
+      input, select, textarea { font-size: 16px !important; }
+    }
+    @media (max-width: 767px) {
+      html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+    }
+    html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; } .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; } .guru-sidebar-nav { gap: .25rem !important; } .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a svg { width: 1.25rem !important; height: 1.25rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a.bg-brand-50, .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; } .guru-sidebar-nav a.bg-brand-50 svg, .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }</style>
 </head>
 
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
-  <!-- SIDEBAR (Desktop) -->
-  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
-    <div class="p-6 flex flex-col gap-8">
+  <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
+  <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="py-6 px-4 flex flex-col gap-8">
+
+      <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+        <span class="text-md font-medium text-brand-600">Akun Guru</span>
       </div>
 
-      <nav class="flex flex-col gap-1.5">
+      <!-- Navigation Links -->
+      <nav class="guru-sidebar-nav flex flex-col gap-1">
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
           <span>Beranda</span>
         </a>
-
+        
+        <!-- Active Link (Isi Jurnal) -->
         <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
@@ -70,6 +82,8 @@
           <span>Riwayat Jurnal</span>
         </a>
 
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
@@ -81,22 +95,41 @@
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
-  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+  <!-- MAIN CONTENT AREA -->
+  <div class="flex-1 min-w-0 max-w-full md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
 
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
-        <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6" />
-          </svg>
+        <a href="{{ route('dashboard-guru') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12.5 4.5L7 10l5.5 5.5"/></svg><span class="hidden sm:inline">Beranda</span>
         </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Lengkapi Jurnal Mengajar</h1>
-        <div class="w-9"></div>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">{{ $isSusulan ? 'Isi Jurnal Kemarin' : 'Lengkapi Jurnal Mengajar' }}</h1>
+        <div class="w-16"></div>
       </div>
     </header>
 
-    <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
+    <!-- Main Content Container -->
+    <main class="w-full min-w-0 max-w-full px-4 sm:px-6 md:px-10 py-6 sm:py-8 flex-1 flex flex-col items-center gap-6">
+
+      @if ($isSusulan)
+        <div class="w-full rounded-2xl border border-amber-200 bg-[#FFFCF4] p-5 text-sm">
+          <p class="font-poppins font-bold text-[#5C4033]">Jurnal susulan • {{ $tanggalJurnal->locale('id')->translatedFormat('l, d F Y') }}</p>
+          <p class="mt-1 text-xs leading-5 text-[#7A6A60]">Pilih jadwal yang terlewat kemarin. Daftar ini berdasarkan jadwal pada hari kemarin, bukan jadwal hari ini.</p>
+          @if ($jadwalPilihan->count() > 1)
+            <form method="GET" action="{{ route('jurnal.create') }}" class="mt-4 flex flex-col gap-2 sm:flex-row">
+              <input type="hidden" name="susulan" value="1">
+              <select name="jadwal" onchange="this.form.submit()" class="h-11 flex-1 rounded-lg border border-[#D8C9BC] bg-white px-3.5 text-sm">
+                @foreach ($jadwalPilihan as $pilihan)
+                  <option value="{{ $pilihan->id_jadwal }}" @selected($jadwalAktif->id_jadwal === $pilihan->id_jadwal)>
+                    {{ $pilihan->jamPelajaran->jam_ke }} • {{ $pilihan->mapel->nama_mapel }} • {{ $pilihan->kelas->nama_kelas }} ({{ substr($pilihan->jamPelajaran->jam_mulai, 0, 5) }}–{{ substr($pilihan->jamPelajaran->jam_selesai, 0, 5) }})
+                  </option>
+                @endforeach
+              </select>
+              <noscript><button type="submit" class="rounded-lg bg-[#5C4033] px-4 py-2 text-white">Pilih Jadwal</button></noscript>
+            </form>
+          @endif
+        </div>
+      @endif
 
       @if ($errors->any())
       <ul class="w-full text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl p-4 list-disc list-inside">
@@ -145,65 +178,48 @@
 
       <!-- Card Ringkasan Info Sesi -->
       <div class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs w-full flex flex-col gap-3 text-sm">
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Mata Pelajaran</span>
-          <span class="font-bold text-[#3E3028]">{{ $jadwalAktif->mapel->nama_mapel ?? '-' }}</span>
-        </div>
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Mata Pelajaran</span><span class="font-bold text-[#3E3028]">{{ $jadwalAktif->mapel->nama_mapel }}</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Guru</span>
-          <span class="font-bold text-[#3E3028]">{{ auth()->user()->name }}</span>
-        </div>
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Guru</span><span class="font-bold text-[#3E3028]">{{ auth()->user()->name }}</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Kelas</span>
-          <span class="font-bold text-[#3E3028]">{{ $jadwalAktif->kelas->nama_kelas ?? '-' }}</span>
-        </div>
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Kelas</span><span class="font-bold text-[#3E3028]">{{ $jadwalAktif->kelas->nama_kelas }}</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Jam Ke</span>
-          <span class="font-bold text-[#3E3028]">{{ $labelJam }}</span>
-        </div>
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Jam Ke</span><span class="font-bold text-[#3E3028]">Jam Ke {{ $rentang->first()->jamPelajaran->jam_ke }}@if ($rentang->count() > 1) – {{ $rentang->last()->jamPelajaran->jam_ke }}@endif</span></div>
         <div class="w-full h-px bg-brand-50"></div>
-
-        <div class="flex justify-between items-center">
-          <span class="text-brand-600 font-medium">Waktu Kerja</span>
-          <span class="font-bold text-[#3E3028]">{{ $labelWaktu }}</span>
-        </div>
+        <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">{{ $isSusulan ? 'Tanggal Jurnal' : 'Waktu Pelajaran' }}</span><span class="font-bold text-[#3E3028]">{{ $isSusulan ? $tanggalJurnal->locale('id')->translatedFormat('d F Y') : substr($rentang->first()->jamPelajaran->jam_mulai, 0, 5).' – '.substr($rentang->last()->jamPelajaran->jam_selesai, 0, 5) }}</span></div>
       </div>
 
-      <!-- FORM -->
+      <!-- Form Inputs Container -->
       <form action="{{ route('jurnal.store') }}" method="POST" class="w-full flex flex-col gap-5">
         @csrf
         <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif->id_jadwal }}">
+        @if ($isSusulan)<input type="hidden" name="susulan" value="1">@endif
 
         <!-- FORM ISIAN UTAMA -->
         <div id="section-form-utama" class="flex flex-col gap-5">
 
           <div class="flex flex-col gap-1.5">
             <label for="materi" class="text-xs font-semibold text-brand-600">Materi Pembelajaran</label>
-            <input
-              type="text"
-              id="materi"
-              name="materi"
-              value="{{ old('materi') }}"
-              placeholder="Tulis materi yang diajarkan..."
-              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200">
+            <input 
+              type="text" 
+              id="materi" 
+              name="materi" 
+              value="{{ old('materi', $jurnal?->materi ?? '') }}"
+              class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
+            >
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
               <label for="jumlah_hadir" class="text-xs font-semibold text-brand-600">Jumlah Hadir</label>
-              <input
-                type="number"
-                id="jumlah_hadir"
-                name="jumlah_hadir"
-                value="{{ $daftarSiswa->count() }}"
+              <input 
+                type="number" 
+                id="jumlah_hadir" 
+                name="jumlah_hadir" 
+                value="{{ old('jumlah_hadir', $jurnal?->jumlah_hadir ?? $daftarSiswa->count()) }}"
                 readonly
-                class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-xs sm:text-sm font-bold text-[#3E3028] focus:outline-none disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:border-gray-200">
+                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
+              >
             </div>
 
             <div class="flex flex-col gap-1.5">
@@ -213,11 +229,12 @@
                 id="jumlah_absen"
                 value="0"
                 readonly
-                class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-xs sm:text-sm font-bold text-[#3E3028] focus:outline-none">
+                class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-xs sm:text-sm font-bold text-[#3E3028] focus:outline-none"
+              >
             </div>
           </div>
 
-          <!-- PRESENSI SISWA -->
+          <!-- FITUR PRESENSI SISWA SIMPEL -->
           <div id="box-presensi-siswa" class="bg-white border border-brand-100 rounded-2xl p-5 flex flex-col gap-4 shadow-xs transition-all">
             <div class="flex flex-col gap-2">
               <label for="search-siswa" class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028] flex items-center gap-2">
@@ -235,8 +252,9 @@
                   type="text"
                   id="search-siswa"
                   oninput="filterSiswa(this.value)"
-                  placeholder="Ketik nama / no. absen siswa..."
-                  class="w-full h-10 pl-9 pr-3.5 bg-brand-50/50 border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all disabled:bg-gray-100 disabled:cursor-not-allowed">
+                  placeholder="Ketik nama / no. absen siswa..." 
+                  class="w-full h-10 pl-9 pr-3.5 bg-brand-50/50 border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
+                >
                 <svg class="w-4 h-4 text-brand-600 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -285,6 +303,8 @@
         <span>Riwayat</span>
       </a>
 
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
@@ -295,11 +315,14 @@
     </div>
   </nav>
 
-  @if ($jadwalAktif)
+  <!-- SCRIPT LOGIKA JAVASCRIPT SIMPEL -->
+    @include('shared.preserve_search_scroll')
   <script>
-    // Daftar siswa asli dari database (kelas jadwal ini)
-    const daftarSiswa = @json($siswaJs);
-    let searchKeyword = '';
+    // Data Siswa beserta Status Default ("Hadir")
+    const daftarSiswa = {!! $daftarSiswaJson !!};
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+
+    let searchKeyword = "";
 
     function filterSiswa(val) {
       searchKeyword = val.toLowerCase();
@@ -307,10 +330,10 @@
     }
 
     function setStatusSiswa(key, newStatus) {
-      const target = daftarSiswa.find(s => s.key === key);
-      if (target) {
-        // klik status yang sama lagi = kembali ke Hadir
-        target.status = (target.status === newStatus) ? 'Hadir' : newStatus;
+      const targetSiswa = daftarSiswa.find(s => s.key === key);
+      if (targetSiswa && !targetSiswa.otomatis) {
+        // Status dari surat piket dan dispensasi disetujui berasal dari sumber resmi.
+        targetSiswa.status = (targetSiswa.status === newStatus) ? 'Hadir' : newStatus;
       }
       renderListSiswa();
       renderHiddenInputs();
@@ -321,8 +344,8 @@
       const container = document.getElementById('list-siswa-container');
       container.innerHTML = '';
 
-      const filtered = daftarSiswa.filter(s =>
-        s.nama.toLowerCase().includes(searchKeyword) || s.absen.includes(searchKeyword)
+      const filtered = daftarSiswa.filter(s => 
+        window.matchesAllSearchTerms(searchKeyword, 'nama ' + s.nama, 'absen ' + s.absen)
       );
 
       if (filtered.length === 0) {
@@ -335,23 +358,36 @@
 
       filtered.forEach(siswa => {
         const isSakit = siswa.status === 'Sakit';
-        const isIzin = siswa.status === 'Izin';
+        const isIzin  = siswa.status === 'Izin';
+        const isDispen = siswa.status === 'Dispen';
         const isAlpha = siswa.status === 'Alpha';
 
-        const row = document.createElement('div');
-        row.className = 'flex items-center justify-between p-2.5 bg-brand-50/60 border border-brand-100 rounded-xl text-xs sm:text-sm';
-        row.innerHTML = `
-          <div class="flex items-center gap-2.5 overflow-hidden">
-            <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-800 font-bold text-xs flex items-center justify-center shrink-0">${siswa.absen}</span>
-            <span class="nama-siswa font-semibold text-[#3E3028] truncate"></span>
-          </div>
-          <div class="flex items-center gap-1 shrink-0">
-            <button type="button" data-status="Sakit"
-              class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isSakit ? 'bg-amber-500 text-white shadow-xs scale-105' : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-50'}">S</button>
-            <button type="button" data-status="Izin"
-              class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isIzin ? 'bg-blue-500 text-white shadow-xs scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'}">I</button>
-            <button type="button" data-status="Alpha"
-              class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isAlpha ? 'bg-rose-500 text-white shadow-xs scale-105' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}">A</button>
+        const itemHTML = `
+          <div class="flex min-w-0 items-center justify-between gap-2 p-2.5 bg-brand-50/60 border border-brand-100 rounded-xl text-xs sm:text-sm">
+            <div class="flex min-w-0 flex-1 items-center gap-2.5 overflow-hidden">
+              <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-800 font-bold text-xs flex items-center justify-center shrink-0">
+                ${siswa.absen}
+              </span>
+              <span class="font-semibold text-[#3E3028] truncate">${escapeHtml(siswa.nama)}</span>
+            </div>
+            ${siswa.alasan ? `<span class="min-w-0 max-w-full truncate text-[11px] text-violet-800 sm:ml-2">${escapeHtml(siswa.alasan)}</span>` : ''}
+
+            <!-- Tombol Pilihan S I A Langsung -->
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Sakit')"
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isSakit ? 'bg-amber-500 text-white shadow-xs scale-105' : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-50'}">
+                S
+              </button>
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Izin')"
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isIzin ? 'bg-blue-500 text-white shadow-xs scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'}">
+                I
+              </button>
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Dispen')" class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isDispen ? 'bg-violet-500 text-white shadow-xs scale-105' : 'bg-white text-violet-700 border border-violet-200 hover:bg-violet-50'}">D</button>
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Alpha')"
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isAlpha ? 'bg-rose-500 text-white shadow-xs scale-105' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}">
+                A
+              </button>
+            </div>
           </div>
         `;
 
@@ -366,9 +402,10 @@
     }
 
     function updateRingkasanJumlah() {
-      const tidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir').length;
-      document.getElementById('jumlah_absen').value = tidakHadir;
-      document.getElementById('jumlah_hadir').value = daftarSiswa.length - tidakHadir;
+      const totalTidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir').length;
+      const totalSiswa = daftarSiswa.length;
+      document.getElementById('jumlah_hadir').value = totalSiswa - totalTidakHadir;
+      document.getElementById('jumlah_absen').value = totalTidakHadir;
     }
 
     // Input tersembunyi yang dibaca controller: siswa_absen[i][nama] & siswa_absen[i][status]
@@ -376,25 +413,19 @@
       const box = document.getElementById('hidden-inputs-container');
       box.innerHTML = '';
 
-      daftarSiswa.filter(s => s.status !== 'Hadir').forEach((s, i) => {
-        const nama = document.createElement('input');
-        nama.type = 'hidden';
-        nama.name = `siswa_absen[${i}][nama]`;
-        nama.value = s.nama;
-
-        const status = document.createElement('input');
-        status.type = 'hidden';
-        status.name = `siswa_absen[${i}][status]`;
-        status.value = s.status;
-
-        box.appendChild(nama);
-        box.appendChild(status);
+      const tidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir');
+      tidakHadir.forEach((item, index) => {
+        hiddenContainer.innerHTML += `
+          <input type="hidden" name="siswa_absen[${index}][key]" value="${item.key}">
+          <input type="hidden" name="siswa_absen[${index}][id_siswa]" value="${item.id_siswa}">
+          <input type="hidden" name="siswa_absen[${index}][nama]" value="${item.nama}">
+          <input type="hidden" name="siswa_absen[${index}][status]" value="${item.status}">
+        `;
       });
     }
 
     renderListSiswa();
     updateRingkasanJumlah();
-    renderHiddenInputs();
   </script>
   @endif
 

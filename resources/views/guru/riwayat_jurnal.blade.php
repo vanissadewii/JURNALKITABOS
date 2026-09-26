@@ -37,31 +37,40 @@
       }
     }
   </script>
+  <style>
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+    .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; }
+    .guru-sidebar-nav a svg { color: #7A6A60 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
+    .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+  </style>
 </head>
 
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
-  <aside class="w-64 bg-white border-r border-brand-100 min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
-    <div class="p-6 flex flex-col gap-8">
-
+  <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
+    <div class="py-6 px-4 flex flex-col gap-8">
+      
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-        <span class="text-xs font-medium text-brand-600">Akun Guru</span>
+          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
       </div>
 
       <!-- Navigation Links -->
-      <nav class="flex flex-col gap-1.5">
-
-        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+      <nav class="guru-sidebar-nav flex flex-col gap-1">
+        
+        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
           <span>Beranda</span>
         </a>
 
-        <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a href="{{ route('jurnal.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
             <path d="M7 3v14" />
@@ -69,15 +78,18 @@
           <span>Isi Jurnal</span>
         </a>
 
-        <!-- Active Link (Riwayat Jurnal) -->
-        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
+        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
+        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
+        </a>
+
+        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
             <circle cx="10" cy="6.5" r="3.5" />
@@ -96,9 +108,7 @@
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
-        <a href="{{ url('/dashboard-guru') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M15 18l-6-6 6-6" />
           </svg>
         </a>
         <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Riwayat Jurnal Mengajar</h1>
@@ -128,26 +138,26 @@
 
           <div class="flex items-center gap-2">
             <!-- Select Bulan (1-12) -->
-            <select id="month-select" onchange="generateGridCalendar()" class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
-              <option value="1">Januari</option>
-              <option value="2">Februari</option>
-              <option value="3">Maret</option>
-              <option value="4">April</option>
-              <option value="5">Mei</option>
-              <option value="6">Juni</option>
-              <option value="7">Juli</option>
-              <option value="8">Agustus</option>
-              <option value="9">September</option>
-              <option value="10">Oktober</option>
-              <option value="11">November</option>
-              <option value="12">Desember</option>
+            <select id="month-select" onchange="generateGridCalendar(new Date().getDate())" class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
+              <option value="1" @selected(now()->month === 1)>Januari</option>
+              <option value="2" @selected(now()->month === 2)>Februari</option>
+              <option value="3" @selected(now()->month === 3)>Maret</option>
+              <option value="4" @selected(now()->month === 4)>April</option>
+              <option value="5" @selected(now()->month === 5)>Mei</option>
+              <option value="6" @selected(now()->month === 6)>Juni</option>
+              <option value="7" @selected(now()->month === 7)>Juli</option>
+              <option value="8" @selected(now()->month === 8)>Agustus</option>
+              <option value="9" @selected(now()->month === 9)>September</option>
+              <option value="10" @selected(now()->month === 10)>Oktober</option>
+              <option value="11" @selected(now()->month === 11)>November</option>
+              <option value="12" @selected(now()->month === 12)>Desember</option>
             </select>
 
             <!-- Select Tahun -->
-            <select id="year-select" onchange="generateGridCalendar()" class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
-              <option value="2025">2025</option>
-              <option value="2026" selected>2026</option>
-              <option value="2027">2027</option>
+            <select id="year-select" onchange="generateGridCalendar(new Date().getDate())" class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
+@foreach(range(now()->year - 2, now()->year + 2) as $tahunPilihan)
+              <option value="{{ $tahunPilihan }}" @selected(now()->year === $tahunPilihan)>{{ $tahunPilihan }}</option>
+            @endforeach
             </select>
 
             <!-- Tombol Tampilkan Semua -->
@@ -179,10 +189,6 @@
             <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
             <span>Ada Sesi Jurnal</span>
           </div>
-          <div class="flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-brand-800 inline-block"></span>
-            <span>Tanggal Terpilih</span>
-          </div>
         </div>
 
       </section>
@@ -193,7 +199,7 @@
           Sesi Mengajar
         </h2>
         <span id="session-count-badge" class="text-xs font-semibold text-brand-700 bg-white border border-brand-100 px-3 py-1 rounded-full shadow-xs">
-          0 Sesi Tersimpan
+          {{ $semuaJurnal->count() }} Sesi Terverifikasi
         </span>
       </div>
 
@@ -204,79 +210,43 @@
 
       <!-- Container Card Jurnal -->
       <div id="jurnal-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-
-        @foreach ($semuaJurnal as $j)
-        @php
-        $jadwal = $j->jadwal;
-        $jam = $jadwal->jamPelajaran;
-        $guruHadir = $j->status_kehadiran_guru === 'hadir';
-        $ket = trim((string) $j->keterangan);
-        @endphp
-
-        <div class="jurnal-card bg-white border border-brand-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4" data-date="{{ $j->tanggal->format('Y-m-d') }}">
-          <div class="flex flex-col gap-3">
-            <div class="flex justify-between items-start gap-2">
-              <div class="flex flex-col gap-0.5">
-                <h3 class="font-poppins font-bold text-base sm:text-lg text-[#3E3028]">{{ $jadwal->mapel->nama_mapel ?? '-' }}</h3>
-                <span class="text-xs sm:text-sm font-medium text-brand-600">
-                  {{ $jadwal->kelas->nama_kelas ?? '-' }} • {{ $tglIndo($j->tanggal) }}@if ($jam) (Jam ke-{{ $jam->jam_ke }})@endif
-                </span>
+        
+        @forelse($semuaJurnal as $jurnal)
+          @php
+            $jadwal = $jurnal->jadwal;
+            $jam = $jadwal->jamPelajaran;
+            $absen = $jurnal->absenSiswa;
+          @endphp
+          <div class="jurnal-card bg-white border border-brand-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4" data-date="{{ $jurnal->tanggal->format('Y-m-d') }}">
+            <div class="flex flex-col gap-3">
+              <div class="flex justify-between items-start gap-2">
+                <div class="flex flex-col gap-0.5">
+                  <h3 class="font-poppins font-bold text-base sm:text-lg text-[#3E3028]">{{ $jadwal->kelas->nama_kelas ?? 'Kelas' }}</h3>
+                  <span class="text-xs sm:text-sm font-medium text-brand-600">{{ $jadwal->mapel->nama_mapel ?? 'Mapel' }} · {{ $jurnal->tanggal->locale('id')->translatedFormat('d F Y') }} (Jam ke-{{ $jam->jam_ke ?? '-' }})</span>
+                </div>
+                <span class="px-2.5 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-md font-semibold text-xs shrink-0">Terverifikasi</span>
               </div>
-
-              @if (! $guruHadir)
-              <span class="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-md font-semibold text-xs shrink-0">
-                Guru {{ ucfirst($j->status_kehadiran_guru) }}
-              </span>
-              @elseif ($j->status_verifikasi === 'terverifikasi')
-              <span class="px-2.5 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-md font-semibold text-xs shrink-0">
-                Terverifikasi
-              </span>
-              @else
-              <span class="px-2.5 py-1 bg-amber-50 text-amber-800 rounded-md font-semibold text-xs shrink-0">
-                Belum Diverifikasi
-              </span>
+              <div class="w-full h-px bg-brand-50"></div>
+              <div class="flex flex-col gap-1.5 text-xs sm:text-sm text-brand-600">
+                <p><strong class="font-semibold text-[#3E3028]">Materi:</strong> {{ $jurnal->materi ?: 'Belum dicatat' }}</p>
+                <p><strong class="font-semibold text-[#3E3028]">Kehadiran:</strong> {{ $jurnal->jumlah_hadir ?? '—' }} hadir / {{ $absen->count() }} absen · <span class="text-brand-700 font-medium">{{ substr($jam->jam_mulai ?? '', 0, 5) }} – {{ substr($jam->jam_selesai ?? '', 0, 5) }}</span></p>
+              </div>
+              @if($absen->isNotEmpty())
+                <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-3 flex flex-col gap-1.5 mt-1">
+                  <span class="text-amber-900 font-semibold text-xs">Siswa tidak hadir ({{ $absen->count() }}):</span>
+                  <ul class="text-xs text-amber-900/90 pl-5 list-disc space-y-0.5">
+                    @foreach($absen as $baris)<li>{{ $baris->nama }} <span class="text-amber-700 font-medium">({{ $baris->status }})</span></li>@endforeach
+                  </ul>
+                </div>
               @endif
             </div>
-
-            <div class="w-full h-px bg-brand-50"></div>
-
-            <div class="flex flex-col gap-1.5 text-xs sm:text-sm text-brand-600">
-              <p><strong class="font-semibold text-[#3E3028]">Materi:</strong> {{ $j->materi ?: '-' }}</p>
-              @if ($guruHadir)
-              <p>
-                <strong class="font-semibold text-[#3E3028]">Kehadiran:</strong>
-                {{ $j->jumlah_hadir ?? '-' }} Hadir
-                @if ($jam)
-                • <span class="text-brand-700 font-medium">{{ substr($jam->jam_mulai, 0, 5) }} – {{ substr($jam->jam_selesai, 0, 5) }}</span>
-                @endif
-              </p>
-              @endif
+            <div class="flex justify-end pt-2 border-t border-brand-50">
+              <a href="{{ route('riwayat-jurnal.detail', $jurnal) }}" class="w-full sm:w-auto text-center px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">Lihat Detail</a>
             </div>
-
-            @if ($ket !== '')
-            <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-3 flex flex-col gap-1.5 mt-1">
-              <div class="flex items-center gap-1.5 text-amber-900 font-semibold text-xs">
-                <svg class="w-4 h-4 text-amber-700 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                </svg>
-                <span>Keterangan:</span>
-              </div>
-              <p class="text-xs text-amber-900/90 whitespace-pre-line">{{ $ket }}</p>
-            </div>
-            @else
-            <div class="bg-brand-50 border border-brand-100/80 rounded-xl p-3 flex items-center gap-2 mt-1">
-              <span class="text-xs text-brand-700 font-medium">Nihil / Seluruh siswa hadir</span>
-            </div>
-            @endif
           </div>
-
-          <div class="flex justify-end pt-2 border-t border-brand-50">
-            <a href="{{ route('jurnal.detail', $j->id_jurnal) }}" class="w-full sm:w-auto text-center px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
-              Lihat Detail
-            </a>
-          </div>
-        </div>
-        @endforeach
+        @empty
+          <p class="col-span-full rounded-2xl border border-brand-100 bg-white p-8 text-center text-sm text-brand-600">Belum ada jurnal terverifikasi.</p>
+        @endforelse
 
       </div>
 
@@ -320,6 +290,8 @@
         <span>Riwayat</span>
       </a>
 
+      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
@@ -334,14 +306,11 @@
   <script>
     const monthsName = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-    const today = new Date();
-    let selectedDateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    let selectedDateString = @js(now()->format('Y-m-d'));
 
     // Inisialisasi kalender saat dokumen siap
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('month-select').value = today.getMonth() + 1; // getMonth() itu 0-indexed
-      document.getElementById('year-select').value = today.getFullYear();
-      generateGridCalendar(today.getDate());
+      generateGridCalendar(new Date().getDate());
     });
 
     function generateGridCalendar(targetDay = 21) {
@@ -456,7 +425,7 @@
       const label = document.getElementById('selected-date-label');
       const emptyState = document.getElementById('empty-state');
 
-      badge.innerText = `${visibleCount} Sesi Tersimpan`;
+      badge.innerText = `${visibleCount} Sesi Terverifikasi`;
 
       if (selectedDate === 'all') {
         label.innerText = 'Semua Sesi Mengajar';
