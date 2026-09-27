@@ -86,21 +86,7 @@ class QrSesiController extends Controller
         $qrSesi = $this->qrAktif($jurnal->jadwal, 'guru');
         $qrImage = (new SvgWriter)->write(new QrCode($qrSesi->kode_qr))->getDataUri();
 
-        if (! $jadwal) {
-            return $this->pesan('Tidak ada sesi pelajaran yang sedang berlangsung.');
-        }
-
-        $jurnal = $this->sesi->jurnalSesi($jadwal);
-
-        if ($jurnal && $jurnal->status_verifikasi === 'terverifikasi') {
-            return $this->pesan('Kehadiran guru pada sesi ini sudah terverifikasi.');
-        }
-
-        if ($this->guruSudahScan($jadwal)) {
-            return response()->json(['tahap' => 'scan']);
-        }
-
-        return $this->tampilQr($this->qrAktif($jadwal, 'kelas'));
+        return view('guru.tampilkan_qr_guru', compact('jurnal', 'qrSesi', 'qrImage'));
     }
 
     public function cekStatusGuru(Jurnal $jurnal): JsonResponse
@@ -265,84 +251,8 @@ class QrSesiController extends Controller
 
         return response()->json([
             'success' => true,
-            'redirect' => route('kelas.beranda'), // ⚠️ cek: ini nama route dashboard kelas kamu?
+            'redirect' => route('kelas.beranda'),
         ]);
-    }
-
-    // ================= GURU =================
-
-    /** Ditanya terus oleh halaman scan guru. */
-    public function guruStatus(): JsonResponse
-    {
-        $jadwal = $this->sesi->jadwalBerlangsung(idGuru: (int) Auth::id());
-
-        if (! $jadwal) {
-            return $this->pesan('Anda tidak memiliki sesi mengajar yang sedang berlangsung.');
-        }
-
-        $jurnal = $this->sesi->jurnalSesi($jadwal);
-
-        if (! $jurnal) {
-            return response()->json([
-                'tahap' => 'selesai',
-                'redirect' => route('jurnal.create', ['jadwal' => $jadwal->id_jadwal]),
-            ]);
-        }
-
-        if ($jurnal->status_verifikasi === 'terverifikasi') {
-            session()->flash('notif_sukses', 'Verifikasi berhasil! Sesi mengajar tercatat.');
-
-            return response()->json([
-                'tahap' => 'selesai',
-                'redirect' => route('dashboard-guru'),
-            ]);
-        }
-
-        if ($this->guruSudahScan($jadwal)) {
-            return $this->tampilQr($this->qrAktif($jadwal, 'guru'));
-        }
-
-        return response()->json(['tahap' => 'scan']);
-    }
-
-    /** Guru memindai QR kelas (langkah pertama proses verifikasi). */
-    public function guruScanKelas(Request $request): JsonResponse
-    {
-        $request->validate(['kode_qr' => 'required|string']);
-
-        $qr = QrSesi::with('jadwal')
-            ->where('kode_qr', $request->kode_qr)
-            ->where('tipe', 'kelas')
-            ->first();
-
-        if (! $qr) {
-            return $this->gagal('QR tidak dikenali.', 404);
-        }
-
-        if ($qr->sudahExpired()) {
-            return $this->gagal('QR kelas sudah kedaluwarsa. Tunggu QR yang baru muncul di layar kelas.', 410);
-        }
-
-        if ($qr->sudahDipindai()) {
-            return $this->gagal('QR ini sudah pernah dipindai.', 409);
-        }
-
-        $berlangsung = $this->sesi->jadwalBerlangsung(
-            idKelas: (int) $qr->jadwal->id_kelas,
-            idGuru: (int) Auth::id(),
-        );
-
-        if (! $berlangsung) {
-            return $this->gagal('Anda tidak memiliki sesi di kelas ini pada jam ini.', 403);
-        }
-
-        if (! $this->sesi->jurnalSesi($berlangsung)) {
-            return $this->gagal('Isi dan kirim jurnal terlebih dahulu sebelum verifikasi.', 422);
-        }
-
-        $qr->update(['dipindai_at' => now(), 'dipindai_oleh' => Auth::id()]);
-
-        return response()->json(['success' => true]);
     }
 
     // ================= BANTUAN =================

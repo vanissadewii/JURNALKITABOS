@@ -49,7 +49,14 @@ class AdminJadwalPiketController extends Controller
 
     public function storeWaka(Request $request): RedirectResponse
     {
-        $data = $request->validate(['nama' => 'required|string|max:100']);
+        $data = $request->validate(['nama' => 'required|string|max:100', 'no_hp' => ['required', 'string', 'max:25', 'regex:/^[0-9+() -]{8,25}$/']]);
+        $waka = Waka::whereRaw('LOWER(nama) = ?', [Str::lower(trim($data['nama']))])->first();
+        if ($waka) {
+            $waka->update($data);
+
+            return back()->with('success', 'Nomor HP Waka berhasil diperbarui.');
+        }
+
         Waka::create($data);
 
         return back()->with('success', 'Data Waka berhasil ditambahkan.');

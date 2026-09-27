@@ -86,10 +86,6 @@
                             p-[18px] shadow-[0_4px_15px_rgba(62,48,40,0.06)]">
                     <img id="qr-kelas-image" src="{{ $qrImage ?? '' }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain {{ $qrImage ? '' : 'hidden' }}">
                     <p id="qr-kelas-status" class="text-center text-xs text-[#7A6A60]">{{ session('error', 'Memeriksa sesi mengajar...') }}</p>
-
-                {{-- tampilan QR kelas (buat di-scan guru) --}}
-                <div id="panel-qr" class="hidden w-[220px] h-[220px] bg-white border border-[#E5D8CC] rounded-2xl items-center justify-center p-[14px] shadow-[0_4px_15px_rgba(62,48,40,0.06)] select-none">
-                    <img id="gambar-qr" alt="QR Code" class="w-full h-full pointer-events-none select-none" draggable="false">
                 </div>
 
                 {{-- INFO SESI --}}

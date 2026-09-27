@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dispen;
 use App\Models\DispenJurnal;
 use App\Models\JadwalPelajaran;
+use App\Models\JadwalPiketBulanan;
 use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Models\Kelas;
@@ -114,24 +115,34 @@ class DispenController extends Controller
             ->pluck('jam_ke');
         abort_unless($jamTersedia->contains((int) $validated['jam_ke_mulai']) && $jamTersedia->contains((int) $validated['jam_ke_selesai']), 422, 'Rentang jam tidak sesuai dengan jadwal kelas.');
 
+        $jadwalWaka = JadwalPiketBulanan::with('waka')
+            ->whereDate('tanggal', $validated['tanggal'])
+            ->where('sesi', 'waka')
+            ->first();
+        abort_unless($jadwalWaka?->waka && filled($jadwalWaka->waka->no_hp), 422, 'Jadwal Waka atau nomor WhatsApp Waka untuk tanggal pengajuan belum tersedia. Hubungi admin.');
+
         $dispen = Dispen::create([
             ...$validated,
+            'id_waka_piket' => $jadwalWaka->id_waka,
             'nomor_surat' => $this->generateNomorSurat(),
             'id_guru_piket' => auth()->id(),
             'status' => 'menunggu',
             'token_approval' => Str::random(40),
         ]);
 
-        return redirect()
-            ->route('dispen.index')
-            ->with('success', "Surat dispen {$dispen->nomor_surat} berhasil dibuat.")
-            ->with('link_wa', $this->linkWaWaka($dispen));
+        $linkWa = $this->linkWaWaka($dispen);
+        if ($linkWa) {
+            return redirect()->away($linkWa);
+        }
+
+        return redirect()->route('dispen.index')
+            ->with('error', 'Surat dibuat, tetapi nomor WhatsApp Waka belum valid.');
     }
 
     private function linkWaWaka(Dispen $dispen): ?string
     {
-        $nomor = config('jurnal.admin_phone', '087782599520');
-        $nomor = (string) preg_replace('/\D/', '', $nomor);
+        $dispen->loadMissing(['siswa', 'waka']);
+        $nomor = (string) preg_replace('/\D/', '', (string) $dispen->waka?->no_hp);
         if ($nomor === '') {
             return null;
         }
@@ -141,15 +152,12 @@ class DispenController extends Controller
             $nomor = '62'.$nomor;
         }
 
-        $dispen->loadMissing('siswa');
-
         $linkApproval = request()->getSchemeAndHttpHost()
             .route('dispen.approval', $dispen->token_approval, false);
-        $namaWaka = config('waka.nama');
-
+        $namaWaka = $dispen->waka->nama;
         $pesan = "Yth. {$namaWaka},\n\n"
             ."Ada surat dispen {$dispen->nomor_surat} untuk {$dispen->siswa->nama} yang menunggu persetujuan Anda.\n\n"
-            ."Buka: {$linkApproval}";
+            ."Buka tautan berikut untuk melihat kartu dan memproses pengajuan: {$linkApproval}";
 
         return 'https://wa.me/'.$nomor.'?text='.urlencode($pesan);
     }

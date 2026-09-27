@@ -376,7 +376,7 @@
                 <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>
             @endif
             @if(session('link_wa'))
-                <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="mb-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-green-700 px-5 py-3 font-semibold text-white">Kirim tautan persetujuan ke Admin via WhatsApp</a>
+                <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="mb-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-green-700 px-5 py-3 font-semibold text-white">Buka WhatsApp untuk mengirim ke Waka yang bertugas</a>
             @endif
             @if($errors->any())<div class="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800">{{ $errors->first() }}</div>@endif
             <form
@@ -421,7 +421,7 @@
                     <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>
                 @endif
                 @if(session('link_wa'))
-                    <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-green-700 px-4 py-3 text-center font-semibold text-white hover:bg-green-800">Kirim tautan persetujuan ke {{ config('jurnal.admin_phone') }} via WhatsApp</a>
+                    <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-green-700 px-4 py-3 text-center font-semibold text-white hover:bg-green-800">Buka WhatsApp untuk mengirim ke Waka yang bertugas</a>
                 @endif
                 @if($errors->any())
                     <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ $errors->first() }}</div>
@@ -543,7 +543,8 @@
                         type="date"
                         name="tanggal"
                         value="{{ date('Y-m-d') }}"
-                        readonly
+                        required
+                        onchange="muatJam()"
                         class="w-full
                                h-11
                                px-3
@@ -552,7 +553,7 @@
                                rounded-xl
                                text-sm
                                text-[#7A6A60]
-                               cursor-not-allowed"
+                               focus:outline-none focus:ring-2 focus:ring-[#D7B899]"
                     >
 
 
@@ -998,13 +999,22 @@
             const idKelas = document.getElementById('id_kelas').value;
             const tanggal = document.querySelector('[name="tanggal"]').value;
             resetJam('Memuat jam...');
-            const response = await fetch(`/dispen/opsi-jam?id_kelas=${encodeURIComponent(idKelas)}&tanggal=${encodeURIComponent(tanggal)}`, {headers:{'Accept':'application/json'}});
-            const data = await response.json();
-            daftarJam = data.jam || [];
+            if (!idKelas || !tanggal) return;
+            let data;
+            try {
+                const response = await fetch(`/dispen/opsi-jam?id_kelas=${encodeURIComponent(idKelas)}&tanggal=${encodeURIComponent(tanggal)}`, {headers:{'Accept':'application/json'}});
+                if (!response.ok) throw new Error('Jam pelajaran tidak dapat dimuat. Muat ulang halaman atau hubungi admin.');
+                data = await response.json();
+                daftarJam = data.jam || [];
+            } catch (error) {
+                resetJam(error.message || 'Gagal memuat jam');
+                return;
+            }
             const mulai = document.getElementById('jam_ke_mulai');
             mulai.innerHTML = '<option value="">Pilih jam mulai</option>';
             daftarJam.forEach(item => mulai.add(new Option(`Jam ke-${item.jam_ke} · ${item.jam_mulai.slice(0,5)}–${item.jam_selesai.slice(0,5)}`, item.jam_ke)));
             mulai.disabled = daftarJam.length === 0;
+            if (!daftarJam.length) mulai.options[0].textContent = data.pesan || 'Jadwal jam tidak tersedia';
             document.getElementById('jam_ke_selesai').innerHTML = '<option value="">Pilih jam mulai dahulu</option>';
         }
 

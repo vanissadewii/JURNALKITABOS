@@ -105,12 +105,12 @@
 
                     Beranda
 
-                </button>
+                </a>
 
 
                 {{-- KEHADIRAN GURU --}}
                 <a
-                    href="{{ route('admin.jurnal') }}"
+                    href="{{ route('admin.kehadiran') }}"
                     class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.kehadiran') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                 >
 
@@ -495,7 +495,7 @@
                 <h2 class="mb-2.5 font-['Poppins'] text-[13px] font-bold uppercase">Ringkasan Jurnal Guru Hari Ini</h2>
                 <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
                     @foreach ([['Hadir','hadir','#2E7D32'],['Izin','izin','#1565C0'],['Sakit','sakit','#F57F17'],['Tidak Hadir','tidak_hadir','#C62828']] as [$label,$key,$warna])
-                        <a href="{{ route('admin.jurnal') }}" class="rounded-xl border border-[#E5D8CC] border-l-4 bg-white p-3.5 hover:shadow-md" style="border-left-color: {{ $warna }}">
+                        <a href="{{ route('admin.kehadiran') }}" class="rounded-xl border border-[#E5D8CC] border-l-4 bg-white p-3.5 hover:shadow-md" style="border-left-color: {{ $warna }}">
                             <p class="text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">{{ $label }}</p>
                             <p class="mt-1 font-['Poppins'] text-xl font-extrabold" style="color: {{ $warna }}">{{ $ringkasanKehadiran[$key] }}</p>
                         </a>

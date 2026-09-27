@@ -23,6 +23,7 @@ class Dispen extends Model
         'id_guru_piket',
         'status',
         'id_waka',
+        'id_waka_piket',
         'disetujui_at',
         'token_approval',
     ];
@@ -53,7 +54,7 @@ class Dispen extends Model
     /** @return BelongsTo<User, $this> */
     public function waka(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_waka');
+        return $this->belongsTo(Waka::class, 'id_waka_piket');
     }
 
     /** @return HasMany<DispenJurnal, $this> */
