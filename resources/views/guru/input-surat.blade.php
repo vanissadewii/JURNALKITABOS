@@ -28,7 +28,7 @@
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center rounded-lg font-medium hover:bg-[#F5EFE8] transition-all"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/></svg><span>Beranda</span></a>
         <a href="{{ route('jurnal.create') }}" class="flex items-center rounded-lg font-medium hover:bg-[#F5EFE8] transition-all"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M7 3v14"/></svg><span>Isi Jurnal</span></a>
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center rounded-lg font-medium hover:bg-[#F5EFE8] transition-all"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h14M3 8h14M3 12h10M3 16h6"/></svg><span>Riwayat Jurnal</span></a>
-        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+        <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
         <a href="{{ url('/profil-guru') }}" class="flex items-center rounded-lg font-medium hover:bg-[#F5EFE8] transition-all"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/><circle cx="10" cy="6.5" r="3.5"/></svg><span>Profil</span></a>
       </nav>
     </div>
@@ -38,7 +38,7 @@
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
     <header class="sticky top-0 z-30 w-full bg-[#5C4033] shadow-md px-6 md:px-10 py-6 flex flex-col justify-between items-start gap-3">
       <div class="flex flex-col gap-1">
-        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="text-xs font-semibold text-[#D7B899] hover:text-white flex items-center gap-1 mb-1">
+        <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="text-xs font-semibold text-[#D7B899] hover:text-white flex items-center gap-1 mb-1">
           <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-5-5 5-5"/></svg>
           Kembali ke Piket
         </a>
@@ -59,8 +59,8 @@
         <div class="mb-4 flex items-center justify-between border-b border-brand-100 pb-4"><div><h2 class="font-poppins font-bold text-lg">Form Input Surat</h2><p class="mt-1 text-xs text-brand-600">Status otomatis diteruskan ke form jurnal kelas.</p></div><span class="rounded-lg bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800 border border-amber-200">SAKIT / IZIN</span></div>
         <form method="post" action="{{ route('piket.input-surat.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-5">@csrf
           <div><label for="tanggal" class="mb-2 block text-sm font-semibold text-[#5C4033]">Tanggal</label><input id="tanggal" name="tanggal" type="date" value="{{ old('tanggal', $tanggal) }}" required class="w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-sm"></div>
-          <div><label for="kelas" class="mb-2 block text-sm font-semibold text-[#5C4033]">Kelas dan Rombel</label><select id="kelas" name="id_kelas" required class="w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-800 focus:ring-2 focus:ring-brand-100"><option value="">Pilih kelas</option>@foreach($kelasList as $kelas)<option value="{{ $kelas->id_kelas }}" @selected(old('id_kelas') == $kelas->id_kelas)>{{ $kelas->tingkat }} {{ $kelas->jurusan }} · Rombel {{ $kelas->rombel }}</option>@endforeach</select></div>
-          <div><label for="siswa" class="mb-2 block text-sm font-semibold text-[#5C4033]">Nama Siswa</label><select id="siswa" name="id_siswa" required class="w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-800 focus:ring-2 focus:ring-brand-100"><option value="">Pilih siswa</option>@foreach($siswaList as $siswa)<option value="{{ $siswa->id_siswa }}" data-kelas="{{ $siswa->id_kelas }}" @selected(old('id_siswa') == $siswa->id_siswa)>{{ $siswa->nama }}</option>@endforeach</select></div>
+          <div><label for="kelasSearch" class="mb-2 block text-sm font-semibold text-[#5C4033]">Cari Kelas dan Rombel</label><input id="kelasSearch" list="kelasOptions" autocomplete="off" required placeholder="Ketik tingkat, jurusan, atau rombel" class="w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-800 focus:ring-2 focus:ring-brand-100"><datalist id="kelasOptions">@foreach($kelasList as $kelas)<option value="{{ $kelas->tingkat }} {{ $kelas->jurusan }} · Rombel {{ $kelas->rombel }}"></option>@endforeach</datalist><input type="hidden" id="kelas" name="id_kelas" value="{{ old('id_kelas') }}"><p id="kelasSearchHint" class="mt-1 text-xs text-brand-600">Pilih kelas dari saran pencarian.</p></div>
+          <div><label for="siswaSearch" class="mb-2 block text-sm font-semibold text-[#5C4033]">Cari Nama Siswa</label><input id="siswaSearch" list="siswaOptions" autocomplete="off" required placeholder="Ketik nama siswa" class="w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-800 focus:ring-2 focus:ring-brand-100"><datalist id="siswaOptions"></datalist><input type="hidden" id="siswa" name="id_siswa" value="{{ old('id_siswa') }}"><p id="siswaSearchHint" class="mt-1 text-xs text-brand-600">Pilih kelas terlebih dahulu, lalu cari nama siswa.</p></div>
           <div><label for="status" class="mb-2 block text-sm font-semibold text-[#5C4033]">Status Surat</label><select id="status" name="status" required class="w-full rounded-xl border border-brand-200 bg-white px-4 py-3 text-sm outline-none focus:border-brand-800 focus:ring-2 focus:ring-brand-100"><option value="Sakit" @selected(old('status') === 'Sakit')>Sakit</option><option value="Izin" @selected(old('status') === 'Izin')>Izin</option></select></div>
           <div class="flex items-end"><button type="submit" class="w-full md:w-auto rounded-xl bg-[#5C4033] px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-[#3E2B22] transition">Simpan Status</button></div>
         </form>
@@ -81,7 +81,7 @@
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/></svg><span>Beranda</span></a>
       <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M7 3v14"/></svg><span>Isi Jurnal</span></a>
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h14M3 8h14M3 12h10M3 16h6"/></svg><span>Riwayat</span></a>
-      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/><circle cx="10" cy="6.5" r="3.5"/></svg><span>Profil</span></a>
     </div>
   </nav>
@@ -89,13 +89,37 @@
   <script>
     const kelas = document.getElementById('kelas');
     const siswa = document.getElementById('siswa');
-    function filterSiswa() {
-      [...siswa.options].forEach((option, index) => { if (index > 0) option.hidden = !!kelas.value && option.dataset.kelas !== kelas.value; });
-      if (siswa.selectedOptions[0]?.hidden) siswa.value = '';
+    const kelasSearch = document.getElementById('kelasSearch');
+    const siswaSearch = document.getElementById('siswaSearch');
+    const siswaOptions = document.getElementById('siswaOptions');
+    const daftarKelas = @json($kelasSearchOptions);
+    const daftarSiswa = @json($siswaSearchOptions);
+    function isiPilihanSiswa() {
+      siswaOptions.replaceChildren();
+      daftarSiswa.filter(item => !kelas.value || String(item.kelas) === String(kelas.value)).forEach(item => {
+        const option = document.createElement('option'); option.value = `${item.nama} · ${item.kelasLabel}`; siswaOptions.append(option);
+      });
     }
-    kelas.addEventListener('change', filterSiswa);
-    siswa.addEventListener('change', () => { const selectedClass = siswa.selectedOptions[0]?.dataset.kelas; if (selectedClass) { kelas.value = selectedClass; filterSiswa(); siswa.value = [...siswa.options].find(o => o.value === siswa.value)?.value || siswa.value; } });
-    filterSiswa();
+    function pilihKelasDariTeks() {
+      const selected = daftarKelas.find(item => item.label === kelasSearch.value);
+      kelas.value = selected?.id ?? '';
+      if (!selected) { siswa.value = ''; siswaSearch.value = ''; }
+      isiPilihanSiswa();
+      document.getElementById('kelasSearchHint').textContent = selected ? 'Kelas terpilih.' : 'Pilih kelas dari saran pencarian.';
+    }
+    kelasSearch.addEventListener('input', pilihKelasDariTeks);
+    kelasSearch.addEventListener('change', pilihKelasDariTeks);
+    siswaSearch.addEventListener('input', () => {
+      const selected = daftarSiswa.find(item => `${item.nama} · ${item.kelasLabel}` === siswaSearch.value && (!kelas.value || String(item.kelas) === String(kelas.value)));
+      siswa.value = selected?.id ?? '';
+      if (selected && !kelas.value) { kelas.value = selected.kelas; const matchingClass = daftarKelas.find(item => String(item.id) === String(selected.kelas)); if (matchingClass) kelasSearch.value = matchingClass.label; isiPilihanSiswa(); }
+      document.getElementById('siswaSearchHint').textContent = selected ? 'Nama siswa terpilih.' : 'Pilih nama siswa dari saran pencarian.';
+    });
+    const kelasAwal = daftarKelas.find(item => String(item.id) === String(kelas.value));
+    if (kelasAwal) kelasSearch.value = kelasAwal.label;
+    const siswaAwal = daftarSiswa.find(item => String(item.id) === String(siswa.value));
+    if (siswaAwal) siswaSearch.value = `${siswaAwal.nama} · ${siswaAwal.kelasLabel}`;
+    isiPilihanSiswa();
     const filterKelas = document.getElementById('filter-kelas');
     const barisRiwayat = [...document.querySelectorAll('.baris-riwayat')];
     filterKelas.addEventListener('change', () => {

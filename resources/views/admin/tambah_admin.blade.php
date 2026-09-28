@@ -8,7 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 
@@ -347,7 +347,7 @@
                         <label class="flex flex-col gap-2"><span class="text-sm font-semibold text-[#3E3028]">Nama Admin</span><input name="name" value="{{ old('name') }}" type="text" required maxlength="255" placeholder="Contoh: Admin Sekolah" class="h-11 rounded-lg border border-[#D8C9BC] bg-[#FFFCF9] px-3.5 text-sm outline-none transition focus:border-[#5C4033] focus:ring-2 focus:ring-[#5C4033]/10"></label>
                         <label class="flex flex-col gap-2">
                             <span class="text-sm font-semibold text-[#3E3028]">Username</span>
-                            <input id="username" name="username" type="text" required placeholder="Contoh: admin_sekolah" class="h-11 rounded-lg border border-[#D8C9BC] bg-[#FFFCF9] px-3.5 text-sm outline-none transition focus:border-[#5C4033] focus:ring-2 focus:ring-[#5C4033]/10">
+                            <input id="username" name="username" type="text" pattern="[A-Za-z0-9](?:[A-Za-z0-9._]*[A-Za-z0-9])?" title="Gunakan huruf, angka, titik, atau garis bawah. Titik dan garis bawah tidak boleh di awal atau akhir." data-username-input required placeholder="Contoh: admin_sekolah" class="h-11 rounded-lg border border-[#D8C9BC] bg-[#FFFCF9] px-3.5 text-sm outline-none transition focus:border-[#5C4033] focus:ring-2 focus:ring-[#5C4033]/10">
                         </label>
                         <label class="flex flex-col gap-2">
                             <span class="text-sm font-semibold text-[#3E3028]">Password</span>
@@ -422,6 +422,8 @@
     </div>
 
     <script>
+        document.querySelectorAll('[data-username-input]').forEach(input => input.addEventListener('input', () => { input.value = input.value.replace(/\s+/g, '_'); }));
+
         function openSidebar() {
             document.getElementById('sidebar').classList.remove('-translate-x-full');
             document.getElementById('sidebarOverlay').classList.remove('hidden');

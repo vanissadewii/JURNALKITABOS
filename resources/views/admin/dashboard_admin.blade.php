@@ -7,13 +7,15 @@
 
     <title>Dashboard Admin</title>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet"
     >
 
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; }</style>
 </head>
 
@@ -110,7 +112,7 @@
 
                 {{-- KEHADIRAN GURU --}}
                 <a
-                    href="{{ route('admin.jurnal') }}"
+                    href="{{ route('admin.kehadiran') }}"
                     class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.kehadiran') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
                 >
 
@@ -456,7 +458,7 @@
             <div class="flex items-center gap-2 mt-3">
 
                 <span class="text-white text-[13px] font-medium">
-                    {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
+                    {{ \App\Support\Waktu::sekarang()->locale('id')->translatedFormat('l, d F Y') }}
                 </span>
 
             </div>
@@ -480,9 +482,9 @@
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#1565C0]/10 text-[#1565C0]">K</div>
                     <div><p class="truncate text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">Total Kelas</p><p class="font-['Poppins'] text-xl font-extrabold">{{ $jumlahKelas }}</p></div>
                 </a>
-                <a href="{{ route('admin.jurnal') }}" class="group flex items-center gap-3 rounded-xl border border-[#E5D8CC] bg-white p-4 transition hover:border-[#F57F17] hover:shadow-md">
+                <a href="{{ route('admin.rekap', ['dari' => \App\Support\Waktu::sekarang()->toDateString(), 'sampai' => \App\Support\Waktu::sekarang()->toDateString()]) }}" class="group flex items-center gap-3 rounded-xl border border-[#E5D8CC] bg-white p-4 transition hover:border-[#F57F17] hover:shadow-md">
                     <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#F57F17]/10 text-[#F57F17]">J</div>
-                    <div><p class="truncate text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">Total Jurnal</p><p class="font-['Poppins'] text-xl font-extrabold">{{ $jumlahJurnal }}</p></div>
+                    <div><p class="truncate text-[11px] font-semibold uppercase tracking-wide text-[#7A6A60]">Jurnal Hari Ini</p><p class="font-['Poppins'] text-xl font-extrabold">{{ $jumlahJurnal }}</p></div>
                 </a>
             </div>
 

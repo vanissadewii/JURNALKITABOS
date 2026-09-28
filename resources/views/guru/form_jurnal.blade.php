@@ -43,6 +43,7 @@
       html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
     }
     html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; } .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; } .guru-sidebar-nav { gap: .25rem !important; } .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a svg { width: 1.25rem !important; height: 1.25rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a.bg-brand-50, .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; } .guru-sidebar-nav a.bg-brand-50 svg, .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }</style>
+  <style>input.no-spinner::-webkit-outer-spin-button,input.no-spinner::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input.no-spinner{-moz-appearance:textfield;appearance:textfield}</style>
 </head>
 
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
@@ -82,7 +83,7 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+        <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
 
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -190,6 +191,16 @@
       </div>
 
       <!-- Form Inputs Container -->
+      @if ($jurnal && ! $isSusulan)
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          @if ($jurnal->status_verifikasi === 'terverifikasi')
+            Jurnal sudah terverifikasi. Anda masih bisa memperbarui isinya selama sesi berlangsung, selama akun kelas belum mengirim rekap ke Jurnal Mengajar dan jurnal belum disetujui guru piket.
+          @else
+            Jurnal sesi ini sudah tersimpan tetapi belum terverifikasi. Anda masih bisa memperbaruinya selama jam pelajaran berlangsung.
+          @endif
+        </div>
+      @endif
+
       <form action="{{ route('jurnal.store') }}" method="POST" class="w-full flex flex-col gap-5">
         @csrf
         <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif->id_jadwal }}">
@@ -205,8 +216,11 @@
               id="materi" 
               name="materi" 
               value="{{ old('materi', $jurnal?->materi ?? '') }}"
+              required
+              maxlength="5000"
               class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
             >
+            @error('materi')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -215,10 +229,10 @@
               <input 
                 type="number" 
                 id="jumlah_hadir" 
-                name="jumlah_hadir" 
+                name="jumlah_hadir"
+                class="no-spinner w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
                 value="{{ old('jumlah_hadir', $jurnal?->jumlah_hadir ?? $daftarSiswa->count()) }}"
                 readonly
-                class="w-full h-11 px-3.5 bg-white border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
               >
             </div>
 
@@ -268,7 +282,7 @@
         </div>
 
         <button type="submit" class="w-full h-12 mt-2 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
-          Simpan Jurnal
+          {{ $jurnal && ! $isSusulan ? 'Perbarui Jurnal' : 'Simpan Jurnal' }}
         </button>
 
       </form>
@@ -303,7 +317,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Support\Username;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -18,9 +19,10 @@ class AdminAccountController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $request->merge(['username' => Username::normalisasi($request->input('username'))]);
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:50', 'unique:users,username'],
+            'username' => ['required', 'string', 'max:50', 'regex:'.Username::FORMAT, 'unique:users,username'],
             'password' => ['required', 'string', 'min:8'],
         ]);
 

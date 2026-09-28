@@ -35,8 +35,10 @@ class AdminDashboardController extends Controller
             ->with(['jadwal', 'jadwal.guru'])
             ->whereDate('tanggal', $sekarang->toDateString())
             ->whereNotNull('waktu_submit')
+            ->latest('id_jurnal')
             ->get()
-            ->keyBy('id_jadwal');
+            ->groupBy('id_jadwal')
+            ->map(fn ($items) => $items->first());
 
         $jadwalHariIni->each(function ($jadwal) use ($jurnalHariIni) {
             $jadwal->jurnalHariIni = $jurnalHariIni->get($jadwal->id_jadwal);
@@ -49,15 +51,16 @@ class AdminDashboardController extends Controller
         $jadwalPerKelas = $jadwalHariIni->groupBy('id_kelas');
 
         $jurnalTerkirim = Jurnal::whereNotNull('waktu_submit')
+            ->where('status_verifikasi', 'terverifikasi')
             ->where(function ($query) {
                 $query->whereNull('status_kehadiran_guru')->orWhere('status_kehadiran_guru', '!=', 'tidak_hadir');
             });
         $jurnalHariIniTerkirim = (clone $jurnalTerkirim)->whereDate('tanggal', $sekarang->toDateString());
 
-        $jumlahGuru = User::where('role', 'guru')->count();
+        $jumlahGuru = User::whereIn('role', ['guru', 'wali_kelas'])->count();
         $jumlahSiswa = Siswa::count();
         $jumlahKelas = $kelas->count();
-        $jumlahJurnal = $jurnalTerkirim->count();
+        $jumlahJurnal = (clone $jurnalHariIniTerkirim)->count();
         $menungguVerifikasi = (clone $jurnalHariIniTerkirim)
             ->where('status_verifikasi', 'belum_verifikasi')->count();
 

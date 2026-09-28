@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use App\Models\User;
 use App\Models\Siswa;
+use App\Support\NamaWaliKelas;
+use App\Support\Username;
 use Illuminate\Validation\Rule;
 use App\Imports\UserImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -16,11 +18,11 @@ class UserController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = User::with(['kelas', 'ketuaKelas', 'sekretarisPertama', 'sekretarisKedua'])->whereIn('role', ['guru', 'kelas']);
+        $query = User::with(['kelas', 'ketuaKelas', 'sekretarisPertama', 'sekretarisKedua'])->whereIn('role', ['guru', 'kelas', 'wali_kelas']);
         $role = $request->input('role');
         $kataKunci = trim((string) $request->input('q', ''));
 
-        if (in_array($role, ['guru', 'kelas'], true)) {
+        if (in_array($role, ['guru', 'kelas', 'wali_kelas'], true)) {
             $query->where('role', $role);
         }
 
@@ -57,7 +59,7 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->orderByRaw("CASE role WHEN 'guru' THEN 1 WHEN 'kelas' THEN 2 ELSE 3 END")
+        $users = $query->orderByRaw("CASE role WHEN 'guru' THEN 1 WHEN 'wali_kelas' THEN 2 WHEN 'kelas' THEN 3 ELSE 4 END")
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
@@ -65,8 +67,9 @@ class UserController extends Controller
         $siswa = Siswa::with('kelas')->orderBy('nama')->get(['id_siswa', 'nama', 'no_absen', 'id_kelas']);
         $jumlahGuru = User::where('role', 'guru')->count();
         $jumlahKelas = User::where('role', 'kelas')->count();
+        $jumlahWaliKelas = User::where('role', 'wali_kelas')->count();
 
-        return view('admin.tambah_user', compact('users', 'kelas', 'siswa', 'jumlahGuru', 'jumlahKelas'));
+        return view('admin.tambah_user', compact('users', 'kelas', 'siswa', 'jumlahGuru', 'jumlahKelas', 'jumlahWaliKelas'));
     }
 
     public function create(): RedirectResponse
@@ -77,15 +80,16 @@ class UserController extends Controller
     public function update(Request $request, User $user): RedirectResponse
     {
         abort_if($user->role === 'admin', 404);
+        $request->merge(['username' => Username::normalisasi($request->input('username'))]);
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:50', 'unique:users,username,'.$user->id],
+            'username' => ['required', 'string', 'max:50', 'regex:'.Username::FORMAT, 'unique:users,username,'.$user->id],
             'password' => ['nullable', 'string', 'min:8'],
-            'role' => ['required', 'in:kelas,guru'],
+            'role' => ['required', 'in:kelas,guru,wali_kelas'],
             'no_telepon' => ['nullable', 'string', 'max:20'],
             'status' => ['required', 'in:aktif,nonaktif,pending'],
-            'id_kelas' => ['nullable', 'exists:kelas,id_kelas', 'required_if:role,kelas'],
+            'id_kelas' => ['nullable', 'exists:kelas,id_kelas', 'required_if:role,kelas,wali_kelas'],
             'id_ketua_kelas' => ['nullable', 'integer', ...($request->input('role') === 'kelas' ? [Rule::exists('siswa', 'id_siswa')->where('id_kelas', $request->input('id_kelas'))] : [])],
             'id_sekretaris_1' => ['nullable', 'integer', ...($request->input('role') === 'kelas' ? [Rule::exists('siswa', 'id_siswa')->where('id_kelas', $request->input('id_kelas'))] : [])],
             'id_sekretaris_2' => ['nullable', 'integer', ...($request->input('role') === 'kelas' ? [Rule::exists('siswa', 'id_siswa')->where('id_kelas', $request->input('id_kelas'))] : [])],
@@ -98,11 +102,18 @@ class UserController extends Controller
             }
         }
 
+        if ($validated['role'] === 'wali_kelas' && ! empty($validated['id_kelas'])) {
+            $kelasWali = Kelas::find($validated['id_kelas']);
+            $validated['name'] = NamaWaliKelas::untukKelas($kelasWali->tingkat, $kelasWali->jurusan, $kelasWali->rombel) ?? $validated['name'];
+        }
+
         if (empty($validated['password'])) {
             unset($validated['password']);
         }
         if ($validated['role'] !== 'kelas') {
-            $validated['id_kelas'] = null;
+            if ($validated['role'] !== 'wali_kelas') {
+                $validated['id_kelas'] = null;
+            }
             $validated['id_ketua_kelas'] = null;
             $validated['id_sekretaris_1'] = null;
             $validated['id_sekretaris_2'] = null;
@@ -153,14 +164,15 @@ class UserController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        $request->merge(['username' => Username::normalisasi($request->input('username'))]);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:50|unique:users,username',
+            'username' => ['required', 'string', 'max:50', 'regex:'.Username::FORMAT, 'unique:users,username'],
             'password' => 'required|min:8',
-            'role' => 'required|in:kelas,guru',
+            'role' => 'required|in:kelas,guru,wali_kelas',
             'no_telepon' => 'nullable|string|max:20',
             'status' => 'required|in:aktif,nonaktif,pending',
-            'id_kelas' => 'nullable|exists:kelas,id_kelas',
+            'id_kelas' => 'nullable|exists:kelas,id_kelas|required_if:role,kelas,wali_kelas',
             'id_ketua_kelas' => ['nullable', 'integer', ...($request->input('role') === 'kelas' ? [Rule::exists('siswa', 'id_siswa')->where('id_kelas', $request->input('id_kelas'))] : [])],
             'id_sekretaris_1' => ['nullable', 'integer', ...($request->input('role') === 'kelas' ? [Rule::exists('siswa', 'id_siswa')->where('id_kelas', $request->input('id_kelas'))] : [])],
             'id_sekretaris_2' => ['nullable', 'integer', ...($request->input('role') === 'kelas' ? [Rule::exists('siswa', 'id_siswa')->where('id_kelas', $request->input('id_kelas'))] : [])],
@@ -174,7 +186,9 @@ class UserController extends Controller
         }
 
         if ($validated['role'] !== 'kelas') {
-            $validated['id_kelas'] = null;
+            if ($validated['role'] !== 'wali_kelas') {
+                $validated['id_kelas'] = null;
+            }
             $validated['id_ketua_kelas'] = null;
             $validated['id_sekretaris_1'] = null;
             $validated['id_sekretaris_2'] = null;
@@ -182,6 +196,11 @@ class UserController extends Controller
             $validated['nama_ketua_kelas'] = null;
             $validated['nama_sekretaris'] = null;
             $validated['nama_sekretaris_2'] = null;
+        }
+
+        if ($validated['role'] === 'wali_kelas' && ! empty($validated['id_kelas'])) {
+            $kelasWali = Kelas::find($validated['id_kelas']);
+            $validated['name'] = NamaWaliKelas::untukKelas($kelasWali->tingkat, $kelasWali->jurusan, $kelasWali->rombel) ?? $validated['name'];
         }
 
         $validated['password'] = bcrypt($validated['password']);

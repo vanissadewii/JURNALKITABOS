@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\PiketRekapExport;
 use Carbon\Carbon;
+use App\Support\Waktu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -51,9 +52,15 @@ class PiketRekapController extends Controller
             'mulai' => ['nullable', 'date'],
             'sampai' => ['nullable', 'date', 'after_or_equal:mulai'],
             'jenis' => ['nullable', 'in:semua,jurnal,dispen,surat,tugas'],
+        ], [
+            'mulai.date' => 'Tanggal awal tidak valid. Pilih tanggal yang benar.',
+            'sampai.date' => 'Tanggal akhir tidak valid. Pilih tanggal yang benar.',
+            'sampai.after_or_equal' => 'Tanggal sampai harus sama dengan atau setelah tanggal mulai.',
+            'jenis.in' => 'Jenis rekap tidak valid.',
         ]);
-        $mulai = Carbon::parse($data['mulai'] ?? now()->startOfMonth())->toDateString();
-        $sampai = Carbon::parse($data['sampai'] ?? now())->toDateString();
+        $hariIni = Waktu::sekarang()->toDateString();
+        $mulai = Carbon::parse($data['mulai'] ?? Waktu::sekarang()->startOfMonth())->toDateString();
+        $sampai = Carbon::parse($data['sampai'] ?? $hariIni)->toDateString();
 
         return [$mulai, $sampai, $data['jenis'] ?? 'semua'];
     }
@@ -70,11 +77,12 @@ class PiketRekapController extends Controller
             ->join('mapel as m', 'm.id_mapel', '=', 'jp.id_mapel')
             ->join('users as u', 'u.id', '=', 'jp.id_guru')
             ->whereNotNull('j.waktu_submit')
+            ->where('j.status_verifikasi', 'terverifikasi')
             ->whereBetween('j.tanggal', [$mulai, $sampai])
             ->orderBy('j.tanggal')->orderBy('k.tingkat')->orderBy('k.jurusan')->orderBy('k.rombel')->orderBy('jam.jam_ke')
             ->get(['j.tanggal', 'k.tingkat', 'k.jurusan', 'k.rombel', 'u.name as guru', 'm.nama_mapel', 'jam.jam_ke', 'j.materi', 'j.keterangan', 'j.jumlah_hadir', 'j.status_verifikasi', 'j.status_kehadiran_guru']);
         foreach ($jurnal as $item) {
-            $result[] = [$item->tanggal, 'Jurnal Mengajar', $this->kelas($item), null, $item->guru, $item->nama_mapel,
+            $result[] = [Carbon::parse($item->tanggal)->format('d/m/Y'), 'Jurnal Mengajar', $this->kelas($item), null, $item->guru, $item->nama_mapel,
                 trim(implode(' | ', array_filter(['Jam ke-'.$item->jam_ke, $item->materi, $item->keterangan, $item->jumlah_hadir !== null ? 'Hadir '.$item->jumlah_hadir.' siswa' : null, $item->status_kehadiran_guru === 'tidak_hadir' ? 'Guru Tidak Hadir' : null]))),
                 $item->status_kehadiran_guru === 'tidak_hadir' ? 'Guru Tidak Hadir' : ($item->status_verifikasi === 'terverifikasi' ? 'Terverifikasi' : 'Belum diverifikasi')];
         }
@@ -85,7 +93,7 @@ class PiketRekapController extends Controller
             ->get(['d.tanggal', 's.nama as siswa', 'k.tingkat', 'k.jurusan', 'k.rombel', 'u.name as guru', 'd.nomor_surat', 'd.jam_ke_mulai', 'd.jam_ke_selesai', 'd.alasan', 'd.status']);
         foreach ($dispen as $item) {
             $rentang = $item->jam_ke_selesai ? 'Jam ke-'.$item->jam_ke_mulai.' s/d '.$item->jam_ke_selesai : 'Jam ke-'.$item->jam_ke_mulai.' s/d selesai';
-            $result[] = [$item->tanggal, 'Dispensasi Siswa', $this->kelas($item), $item->siswa, $item->guru,
+            $result[] = [Carbon::parse($item->tanggal)->format('d/m/Y'), 'Dispensasi Siswa', $this->kelas($item), $item->siswa, $item->guru,
                 null, trim($item->nomor_surat.' | '.$rentang.' | '.$item->alasan), ucfirst($item->status)];
         }
 
@@ -94,7 +102,7 @@ class PiketRekapController extends Controller
             ->whereBetween('ss.tanggal', [$mulai, $sampai])->orderBy('ss.tanggal')->orderBy('s.nama')
             ->get(['ss.tanggal', 's.nama as siswa', 'k.tingkat', 'k.jurusan', 'k.rombel', 'u.name as guru', 'ss.status']);
         foreach ($surat as $item) {
-            $result[] = [$item->tanggal, 'Input Surat', $this->kelas($item), $item->siswa, $item->guru, null, 'Surat/status siswa', $item->status];
+            $result[] = [Carbon::parse($item->tanggal)->format('d/m/Y'), 'Input Surat', $this->kelas($item), $item->siswa, $item->guru, null, 'Surat/status siswa', $item->status];
         }
 
         $tugas = DB::table('upload_tugas as t')->join('kelas as k', 'k.id_kelas', '=', 't.id_kelas')
@@ -102,8 +110,8 @@ class PiketRekapController extends Controller
             ->whereBetween('t.created_at', [$mulai.' 00:00:00', $sampai.' 23:59:59'])->orderBy('t.created_at')
             ->get(['t.created_at', 'k.tingkat', 'k.jurusan', 'k.rombel', 'u.name as guru', 't.mapel', 't.status_guru', 't.alasan_izin', 't.tugas']);
         foreach ($tugas as $item) {
-            $result[] = [Carbon::parse($item->created_at)->toDateString(), 'Upload Tugas', $this->kelas($item), null, $item->guru,
-                $item->mapel, trim(implode(' | ', array_filter([$item->status_guru, $item->alasan_izin, $item->tugas]))), $item->status_guru];
+            $result[] = [Carbon::parse($item->created_at)->format('d/m/Y'), 'Upload Tugas', $this->kelas($item), null, $item->guru,
+                $item->mapel, trim(implode(' | ', array_filter(['Status guru: '.$item->status_guru, $item->alasan_izin ? 'Alasan izin: '.$item->alasan_izin : null, 'Tugas: '.$item->tugas]))), $item->status_guru];
         }
 
         usort($result, fn ($a, $b) => [$a[0], $a[1], $a[2]] <=> [$b[0], $b[1], $b[2]]);

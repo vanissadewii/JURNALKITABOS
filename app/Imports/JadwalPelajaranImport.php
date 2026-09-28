@@ -37,7 +37,7 @@ class JadwalPelajaranImport implements SkipsOnFailure, ToModel, WithHeadingRow, 
             ->first();
 
         $guru = User::where('name', $row['nama_guru'])
-            ->where('role', 'guru')
+            ->whereIn('role', ['guru', 'wali_kelas'])
             ->first();
 
         $mapel = Mapel::where('nama_mapel', $row['nama_mapel'])->first();

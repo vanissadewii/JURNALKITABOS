@@ -224,7 +224,7 @@
 
           </svg>
 
-          <span>Piket</span>
+          <span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
 
         </a>
 
@@ -354,6 +354,45 @@
 
       @else
 
+        @if($pengirimanKelas->isNotEmpty())
+          <section class="rounded-2xl border border-brand-100 bg-white p-5 shadow-sm">
+            <div class="mb-4">
+              <h2 class="font-poppins text-lg font-bold">Rekap Jurnal dari Akun Kelas</h2>
+              <p class="mt-1 text-sm text-[#7A6A60]">Kiriman parsial boleh masuk. Periksa sesi yang belum memiliki jurnal atau tugas, lalu setujui atau tolak kiriman.</p>
+            </div>
+            <div class="grid gap-3">
+              @foreach($pengirimanKelas as $kiriman)
+                @php
+                  $statusKiriman = $kiriman->status ?? 'menunggu';
+                @endphp
+                <article class="rounded-xl border border-[#E5D8CC] bg-[#FFFCF9] p-4">
+                  <div class="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h3 class="font-bold">{{ $kiriman->kelas?->nama_kelas ?? 'Kelas' }}</h3>
+                      <p class="mt-1 text-xs text-[#7A6A60]">Dikirim {{ $kiriman->dikirim_at?->format('H:i') ?? '—' }} · {{ $kiriman->jumlah_lengkap }}/{{ $kiriman->jumlah_sesi }} sesi tercatat · {{ $kiriman->jumlah_kurang }} sesi belum ada jurnal/tugas</p>
+                      <p class="mt-1 text-xs font-semibold {{ $statusKiriman === 'menunggu' ? 'text-amber-700' : ($statusKiriman === 'ditolak' ? 'text-rose-700' : 'text-emerald-700') }}">{{ ucfirst($statusKiriman) }}</p>
+                      @if($statusKiriman === 'ditolak' && $kiriman->alasan_tolak)<p class="mt-2 text-sm text-rose-700">Alasan: {{ $kiriman->alasan_tolak }}</p>@endif
+                    </div>
+                    @if($statusKiriman === 'menunggu')
+                      <div class="flex flex-wrap items-end gap-2">
+                        <form method="POST" action="{{ route('piket.kirim-jurnal-kelas.approve', $kiriman) }}" onsubmit="return confirm('Setujui rekap {{ addslashes($kiriman->kelas?->nama_kelas ?? 'kelas') }}?')">
+                          @csrf
+                          <button class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Setujui</button>
+                        </form>
+                        <form method="POST" action="{{ route('piket.kirim-jurnal-kelas.reject', $kiriman) }}" class="flex flex-wrap items-end gap-2">
+                          @csrf
+                          <label class="sr-only" for="alasan-kiriman-{{ $kiriman->id_pengiriman }}">Alasan penolakan</label>
+                          <input id="alasan-kiriman-{{ $kiriman->id_pengiriman }}" name="alasan" required maxlength="2000" placeholder="Alasan penolakan" class="min-w-48 rounded-lg border border-rose-200 px-3 py-2 text-sm">
+                          <button class="rounded-lg border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50">Tolak</button>
+                        </form>
+                      </div>
+                    @endif
+                  </div>
+                </article>
+              @endforeach
+            </div>
+          </section>
+        @endif
 
         <!-- FILTER TINGKAT KELAS -->
 
@@ -835,6 +874,8 @@
                                          align-top">
 
                                   {{ $s['materi'] ?? '-' }}
+                                  @if(!empty($s['tugas']))<p class="mt-1 text-xs font-semibold">{{ $s['status_guru'] ?? 'Tugas pengganti' }}</p><p class="mt-1 whitespace-pre-line text-xs">Tugas: {{ $s['tugas'] }}</p>@endif
+                                  @if(!empty($s['file_path']))<a class="mt-1 inline-block text-xs font-semibold text-blue-700 underline" href="{{ route('piket.upload-tugas.download', $s['id_upload_tugas']) }}">Buka lampiran</a>@endif
 
                                 </td>
 
@@ -1236,7 +1277,7 @@
 
         </svg>
 
-        <span>Piket</span>
+        <span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
 
       </a>
 

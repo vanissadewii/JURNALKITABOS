@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jurnal;
-use App\Models\Dispen;
 use App\Models\PengirimanJurnalKelas;
 use App\Models\Siswa;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Services\SesiKelasService;
-use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +19,7 @@ class KelasController extends Controller
     /** Satu tempat untuk waktu "sekarang" (gampang dipalsukan saat tes). */
     private function sekarang(): CarbonInterface
     {
-        return Carbon::now();
+        return \App\Support\Waktu::sekarang();
     }
 
     public function beranda(Request $request, SesiKelasService $service): View
@@ -34,21 +33,15 @@ class KelasController extends Controller
         $tugasPiket = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
             ->whereDate('tanggal', $sekarang->toDateString())->latest('id_upload_tugas')->get();
 
-        $dispensasiDisetujui = Dispen::with('siswa')
-            ->where('id_kelas', $kelas->id_kelas)
-            ->whereDate('tanggal', $sekarang->toDateString())
-            ->where('status', 'disetujui')
-            ->orderBy('jam_ke_mulai')
-            ->get();
-
-        $jurnalHariIni = Jurnal::with(['absenSiswa', 'dispensasi.siswa'])
+        $jurnalHariIni = Jurnal::with(['absenSiswa', 'dispensasi.siswa', 'dispensasi.waka', 'dispensasi.guruPiket'])
             ->whereIn('id_jadwal', $sesi->pluck('ids')->flatten()->all())
             ->whereDate('tanggal', $sekarang->toDateString())
             ->where('status_verifikasi', 'terverifikasi')
             ->get();
 
-        $sesi = $sesi->map(function ($s) use ($jurnalHariIni) {
+        $sesi = $sesi->map(function ($s) use ($jurnalHariIni, $tugasPiket) {
             $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->last();
+            $s->tugas = $tugasPiket->first(fn ($tugas) => $tugas->id_jadwal && in_array((int) $tugas->id_jadwal, $s->ids));
 
             return $s;
         });
@@ -56,7 +49,7 @@ class KelasController extends Controller
         $sesiAktif = $sesi->where('status', '!=', 'Selesai')->values();
         $sesiSelesai = $sesi->where('status', 'Selesai')->values();
 
-        return view('kelas.beranda', compact('kelas', 'sesiAktif', 'sesiSelesai', 'dispensasiDisetujui', 'tugasPiket'));
+        return view('kelas.beranda', compact('kelas', 'sesiAktif', 'sesiSelesai', 'tugasPiket'));
     }
 
     public function scan(Request $request): View
@@ -80,23 +73,29 @@ class KelasController extends Controller
         $jurnalHariIni = Jurnal::with('absenSiswa')
             ->whereIn('id_jadwal', $sesi->pluck('ids')->flatten()->all())
             ->whereDate('tanggal', $sekarang->toDateString())
+            ->whereNotNull('waktu_submit')
             ->where('status_verifikasi', 'terverifikasi')
             ->orderBy('id_jurnal')
             ->get();
+        $tugasHariIni = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
+            ->whereDate('tanggal', $sekarang->toDateString())
+            ->orderByDesc('created_at')
+            ->get();
 
-        $rekap = $sesi->map(function ($s) use ($jurnalHariIni) {
-            $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->last(); // yang terbaru
+        $rekap = $sesi->map(function ($s) use ($jurnalHariIni, $tugasHariIni) {
+            $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->last();
+            $s->tugas = $tugasHariIni->first(fn ($tugas) => $tugas->id_jadwal && in_array((int) $tugas->id_jadwal, $s->ids));
 
             return $s;
         });
-
-        $semuaSelesai = $rekap->isNotEmpty() && $rekap->every(fn ($s) => $s->status === 'Selesai' && $s->jurnal?->status_verifikasi === 'terverifikasi');
+        $totalSiswa = Siswa::where('id_kelas', $kelas->id_kelas)->count();
 
         $pengiriman = PengirimanJurnalKelas::where('id_kelas', $kelas->id_kelas)
             ->whereDate('tanggal', $sekarang->toDateString())
             ->first();
+        $bisaKirim = $rekap->isNotEmpty() && (! $pengiriman || $pengiriman->status === 'ditolak');
 
-        return view('kelas.kirim-jurnal', compact('kelas', 'rekap', 'semuaSelesai', 'pengiriman'));
+        return view('kelas.kirim-jurnal', compact('kelas', 'rekap', 'bisaKirim', 'pengiriman', 'totalSiswa'));
     }
 
     public function kirimJurnalStore(Request $request, SesiKelasService $service): RedirectResponse
@@ -108,23 +107,39 @@ class KelasController extends Controller
         $sekarang = $this->sekarang();
         $sesi = $service->sesiHariIni($kelas, $sekarang);
 
-        $idJadwal = $sesi->pluck('ids')->flatten()->all();
-        $terverifikasi = Jurnal::whereIn('id_jadwal', $idJadwal)
-            ->whereDate('tanggal', $sekarang->toDateString())
-            ->where('status_verifikasi', 'terverifikasi')->pluck('id_jadwal')->unique()->all();
-        $siapDikirim = $sesi->isNotEmpty() && $sesi->every(fn ($item) =>
-            $item->status === 'Selesai' && collect($item->ids)->diff($terverifikasi)->isEmpty()
-        );
-        if (! $siapDikirim) {
-            return back()->with('error', 'Semua sesi harus selesai dan terverifikasi sebelum jurnal dikirim.');
+        if ($sesi->isEmpty()) {
+            return back()->with('error', 'Tidak ada sesi pelajaran hari ini untuk dikirim.');
         }
 
-        PengirimanJurnalKelas::firstOrCreate(
-            ['id_kelas' => $kelas->id_kelas, 'tanggal' => $sekarang->toDateString()],
-            ['dikirim_oleh' => $request->user()->id, 'dikirim_at' => now()],
-        );
+        $pengiriman = PengirimanJurnalKelas::firstOrNew([
+            'id_kelas' => $kelas->id_kelas,
+            'tanggal' => $sekarang->toDateString(),
+        ]);
+        if ($pengiriman->exists && $pengiriman->status !== 'ditolak') {
+            return back()->with('error', 'Rekap jurnal hari ini sudah dikirim dan sedang menunggu atau sudah selesai diperiksa.');
+        }
 
-        return redirect()->route('kelas.kirim-jurnal')->with('success', 'Jurnal hari ini berhasil dikirim.');
+        $pengiriman->fill([
+            'dikirim_oleh' => $request->user()->id,
+            'dikirim_at' => now(),
+            'status' => 'menunggu',
+            'alasan_tolak' => null,
+            'id_diperiksa_oleh' => null,
+            'diperiksa_at' => null,
+        ])->save();
+
+        return redirect()->route('kelas.kirim-jurnal')->with('success', 'Rekap jurnal hari ini berhasil dikirim untuk diperiksa guru piket.');
+    }
+
+    public function unduhTugas(Request $request, int $id): \Symfony\Component\HttpFoundation\Response
+    {
+        $tugas = DB::table('upload_tugas')->where('id_upload_tugas', $id)
+            ->where('id_kelas', $request->user()->id_kelas)
+            ->first();
+        abort_if(! $tugas || ! $tugas->file_path, 404);
+        abort_unless(Storage::disk('public')->exists($tugas->file_path), 404, 'Lampiran tidak ditemukan.');
+
+        return Storage::disk('public')->response($tugas->file_path);
     }
 
     public function updateProfile(Request $request): RedirectResponse

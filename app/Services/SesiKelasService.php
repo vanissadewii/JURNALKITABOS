@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\JamPelajaran;
 use App\Models\JadwalPelajaran;
 use App\Models\Kelas;
 use Carbon\CarbonInterface;
 use App\Support\RentangJam;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 
 class SesiKelasService
@@ -37,20 +39,43 @@ class SesiKelasService
             ->sortBy(fn ($j) => $j->jamPelajaran->jam_ke)
             ->values();
 
+        $kegiatanDitiadakan = in_array($hari, ['Senin', 'Jumat'], true)
+            && (bool) DB::table('pengaturan_kegiatan_harian')->where('hari', $hari)->value('kegiatan_ditiadakan');
+        $slotPerHari = $kegiatanDitiadakan
+            ? JamPelajaran::where('tingkat', $kelas->tingkat)
+                ->where('hari', $hari)
+                ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
+                ->get()
+                ->keyBy('jam_ke')
+            : collect();
         $sesi = collect();
 
         foreach ($jadwal as $j) {
-            $jam = $j->jamPelajaran;
+            $jamAsli = $j->jamPelajaran;
+            $jamKe = (int) $jamAsli->jam_ke;
+            $jam = $jamAsli;
+            $jamTampilan = $jamKe;
+
+            if ($kegiatanDitiadakan && $jamKe > 1) {
+                $slotSebelumnya = $slotPerHari->get($jamKe - 1);
+                if ($slotSebelumnya) {
+                    $jam = $slotSebelumnya;
+                    $jamTampilan = $jamKe - 1;
+                }
+            }
+
+            $jamMulai = substr($jam->jam_mulai, 0, 5);
+            $jamSelesai = substr($jam->jam_selesai, 0, 5);
             $last = $sesi->last();
 
             if (
                 $last
                 && $last->id_guru == $j->id_guru
                 && $last->id_mapel == $j->id_mapel
-                && $last->jam_ke_sampai + 1 === (int) $jam->jam_ke
+                && $last->jam_ke_sampai + 1 === $jamTampilan
             ) {
-                $last->jam_ke_sampai = (int) $jam->jam_ke;
-                $last->jam_selesai = substr($jam->jam_selesai, 0, 5);
+                $last->jam_ke_sampai = $jamTampilan;
+                $last->jam_selesai = $jamSelesai;
                 $last->ids[] = $j->id_jadwal;
 
                 continue;
@@ -62,10 +87,10 @@ class SesiKelasService
                 'id_mapel' => $j->id_mapel,
                 'mapel' => $j->mapel->nama_mapel ?? '-',
                 'guru' => $j->guru->name ?? '-',
-                'jam_ke_mulai' => (int) $jam->jam_ke,
-                'jam_ke_sampai' => (int) $jam->jam_ke,
-                'jam_mulai' => substr($jam->jam_mulai, 0, 5),
-                'jam_selesai' => substr($jam->jam_selesai, 0, 5),
+                'jam_ke_mulai' => $jamTampilan,
+                'jam_ke_sampai' => $jamTampilan,
+                'jam_mulai' => $jamMulai,
+                'jam_selesai' => $jamSelesai,
                 'status' => '',
             ]);
         }
