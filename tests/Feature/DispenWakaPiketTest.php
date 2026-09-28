@@ -73,4 +73,22 @@ class DispenWakaPiketTest extends TestCase
         JadwalPiketBulanan::query()->delete();
         $this->assertNull(WakaPiket::bertugas(self::HARI_INI));
     }
+
+    private function buatWaka(string $nama, ?string $noHp): Waka
+    {
+        return Waka::query()->create([
+            'nama' => $nama,
+            'no_hp' => $noHp,
+        ]);
+    }
+
+    private function jadwalkanWaka(string $tanggal, Waka $waka): JadwalPiketBulanan
+    {
+        return JadwalPiketBulanan::query()->create([
+            'tanggal' => $tanggal,
+            'sesi' => 'waka',
+            'urutan' => 1,
+            'id_waka' => $waka->id,
+        ]);
+    }
 }
