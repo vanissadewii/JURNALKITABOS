@@ -542,7 +542,7 @@
                     <!-- VALUE YANG DIKIRIM -->
                     <input
                         type="hidden"
-                        name="kelas"
+                        name="id_kelas"
                         id="kelas"
                     >
 
@@ -655,6 +655,20 @@
                 </div>
 
 
+                <div class="flex flex-col gap-2">
+                    <label for="jadwalSelect" class="text-sm font-semibold text-[#3E3028]">Sesi / Jam Ke</label>
+                    <select id="jadwalSelect" name="id_jadwal" required disabled class="w-full h-11 px-3 bg-white border border-[#E5D8CC] rounded-xl text-sm text-[#3E3028] disabled:bg-[#F5EFE8]">
+                        <option value="">Pilih kelas dan mata pelajaran terlebih dahulu</option>
+                    </select>
+                    @error('id_jadwal')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <label for="materi" class="text-sm font-semibold text-[#3E3028]">Materi Pembelajaran</label>
+                    <textarea id="materi" name="materi" rows="2" required maxlength="5000" placeholder="Materi yang seharusnya dipelajari pada sesi ini..." class="w-full px-3 py-3 bg-white border border-[#E5D8CC] rounded-xl text-sm text-[#3E3028] resize-y focus:outline-none focus:ring-2 focus:ring-[#D7B899]">{{ old('materi') }}</textarea>
+                    @error('materi')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
+                </div>
+
                 <!-- ================================================= -->
                 <!-- CATATAN GURU -->
                 <!-- ================================================= -->
@@ -691,7 +705,7 @@
 
                 <div class="flex flex-col gap-2">
                     <label for="file" class="text-sm font-semibold text-[#3E3028]">Lampiran materi / tugas (opsional)</label>
-                    <input id="file" name="file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" class="w-full rounded-xl border border-[#E5D8CC] bg-white px-3 py-3 text-sm">
+                    <input id="file" name="file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.zip" class="w-full rounded-xl border border-[#E5D8CC] bg-white px-3 py-3 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-[#5C4033] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#452F26]">
                     <p class="text-xs text-[#7A6A60]">Lampiran opsional: PDF, dokumen Office, atau ZIP; maksimal 20 MB.</p>
                 </div>
 
@@ -866,7 +880,7 @@
                     <path d="M7 10l2 2 4-4"/>
                 </svg>
 
-                <span>Piket</span>
+                <span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
 
             </a>
 
@@ -912,203 +926,115 @@
 
         const daftarKelas = @json($kelasOptions);
         const daftarMapel = @json($mapelList->values());
+        const daftarJadwal = @json($jadwalOptions);
+        const inputKelas = document.getElementById('kelas');
+        const inputMapel = document.getElementById('mapel');
+        const jadwalSelect = document.getElementById('jadwalSelect');
+
+        function cariKelas() {
+            const keyword = document.getElementById('kelasSearch').value.toLowerCase().trim();
+            const hasil = document.getElementById('hasilKelas');
+            const filtered = daftarKelas.filter(kelas => window.matchesAllSearchTerms(keyword, 'kelas ' + kelas.label));
+            hasil.replaceChildren();
+            filtered.forEach((kelas, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'w-full text-left px-4 py-3 text-sm text-[#3E3028] hover:bg-[#F9F6F0]' + (index < filtered.length - 1 ? ' border-b border-[#EFE6DD]' : '');
+                button.textContent = kelas.label;
+                button.addEventListener('click', () => pilihKelas(kelas.id, kelas.label));
+                hasil.append(button);
+            });
+            if (!filtered.length) hasil.innerHTML = '<div class="px-4 py-3 text-sm text-[#9E8E83]">Kelas tidak ditemukan.</div>';
+        }
+
+        function pilihKelas(id, label) {
+            document.getElementById('kelasSearch').value = label;
+            inputKelas.value = id;
+            document.getElementById('hasilKelas').replaceChildren();
+            document.getElementById('mapelSearch').value = '';
+            inputMapel.value = '';
+            jadwalSelect.value = '';
+            cariMapel();
+            perbaruiJadwal();
+        }
+
+        function cariMapel() {
+            const keyword = document.getElementById('mapelSearch').value.toLowerCase().trim();
+            const idKelas = inputKelas.value;
+            const mapelTerjadwal = [...new Set(daftarJadwal.filter(j => !idKelas || String(j.id_kelas) === String(idKelas)).map(j => j.mapel))];
+            const filtered = daftarMapel.filter(mapel => mapelTerjadwal.includes(mapel) && window.matchesAllSearchTerms(keyword, 'mapel ' + mapel));
+            const hasil = document.getElementById('hasilMapel');
+            hasil.replaceChildren();
+            filtered.forEach((mapel, index) => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'w-full text-left px-4 py-3 text-sm text-[#3E3028] hover:bg-[#F9F6F0]' + (index < filtered.length - 1 ? ' border-b border-[#EFE6DD]' : '');
+                button.textContent = mapel;
+                button.addEventListener('click', () => pilihMapel(mapel));
+                hasil.append(button);
+            });
+            if (!filtered.length) hasil.innerHTML = '<div class="px-4 py-3 text-sm text-[#9E8E83]">Tidak ada mapel terjadwal untuk kelas ini hari ini.</div>';
+        }
+
+        function pilihMapel(mapel) {
+            document.getElementById('mapelSearch').value = mapel;
+            inputMapel.value = mapel;
+            document.getElementById('hasilMapel').replaceChildren();
+            perbaruiJadwal();
+        }
+
+        function perbaruiJadwal() {
+            const tersedia = daftarJadwal.filter(j => String(j.id_kelas) === String(inputKelas.value) && j.mapel === inputMapel.value);
+            jadwalSelect.replaceChildren();
+            const awal = document.createElement('option');
+            awal.value = '';
+            awal.textContent = tersedia.length ? 'Pilih jam pelajaran' : 'Tidak ada sesi untuk pilihan ini';
+            jadwalSelect.append(awal);
+            tersedia.forEach(j => {
+                const option = document.createElement('option');
+                option.value = j.id;
+                option.textContent = `Jam ke-${j.jam_ke} · ${j.jam_mulai}–${j.jam_selesai}`;
+                jadwalSelect.append(option);
+            });
+            jadwalSelect.disabled = !tersedia.length;
+        }
+
         cariKelas();
         cariMapel();
 
         function pilihStatus(status) {
-
             document.getElementById('status').value = status;
             document.getElementById('statusWarning').classList.add('hidden');
-
             const btnIzin = document.getElementById('btnIzin');
             const btnSakit = document.getElementById('btnSakit');
             const alasanWrapper = document.getElementById('alasanIzinWrapper');
-
             [btnIzin, btnSakit].forEach(btn => {
                 btn.classList.remove('bg-[#5C4033]', 'text-white', 'border-[#5C4033]');
                 btn.classList.add('bg-white', 'text-[#3E3028]', 'border-[#E5D8CC]');
             });
-
             const tombolAktif = status === 'izin' ? btnIzin : btnSakit;
             tombolAktif.classList.remove('bg-white', 'text-[#3E3028]', 'border-[#E5D8CC]');
             tombolAktif.classList.add('bg-[#5C4033]', 'text-white', 'border-[#5C4033]');
-
             if (status === 'izin') {
                 alasanWrapper.classList.remove('hidden');
                 alasanWrapper.classList.add('flex');
+                document.getElementById('alasanIzin').required = true;
             } else {
                 alasanWrapper.classList.add('hidden');
                 alasanWrapper.classList.remove('flex');
+                document.getElementById('alasanIzin').required = false;
                 document.getElementById('alasanIzin').value = '';
             }
-
         }
 
-
-        /* =======================================================
-           VALIDASI SEBELUM SUBMIT
-           ======================================================= */
-
         function validasiStatus() {
-
             const status = document.getElementById('status').value;
-
             if (!status) {
                 document.getElementById('statusWarning').classList.remove('hidden');
                 document.getElementById('statusWarning').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return false;
             }
-
             return true;
-
-        }
-
-
-        /* =======================================================
-           CARI KELAS
-           ======================================================= */
-
-        function cariKelas() {
-
-            const keyword =
-                document
-                    .getElementById('kelasSearch')
-                    .value
-                    .toLowerCase()
-                    .trim();
-
-            const hasil =
-                document.getElementById('hasilKelas');
-
-
-            const filtered =
-                daftarKelas.filter(kelas =>
-                    window.matchesAllSearchTerms(keyword, 'kelas ' + kelas)
-                );
-
-
-            hasil.innerHTML = '';
-
-
-            filtered.forEach((kelas, index) => {
-
-                hasil.innerHTML += `
-                    <button
-                        type="button"
-                        onclick="pilihKelas('${kelas}')"
-                        class="w-full text-left px-4 py-3
-                               text-sm text-[#3E3028]
-                               hover:bg-[#F9F6F0]
-                               ${index < filtered.length - 1
-                                   ? 'border-b border-[#EFE6DD]'
-                                   : ''}"
-                    >
-                        ${kelas}
-                    </button>
-                `;
-
-            });
-
-
-            if (filtered.length === 0) {
-
-                hasil.innerHTML = `
-                    <div class="px-4 py-3 text-sm text-[#9E8E83]">
-                        Kelas tidak ditemukan.
-                    </div>
-                `;
-
-            }
-
-        }
-
-
-        /* =======================================================
-           PILIH KELAS
-           ======================================================= */
-
-        function pilihKelas(kelas) {
-
-            document.getElementById('kelasSearch').value = kelas;
-
-            document.getElementById('kelas').value = kelas;
-
-            document.getElementById('hasilKelas').innerHTML = '';
-
-        }
-
-
-        /* =======================================================
-           CARI MAPEL
-           ======================================================= */
-
-        function cariMapel() {
-
-            const keyword =
-                document
-                    .getElementById('mapelSearch')
-                    .value
-                    .toLowerCase()
-                    .trim();
-
-            const hasil =
-                document.getElementById('hasilMapel');
-
-
-            const filtered =
-                daftarMapel.filter(mapel =>
-                    window.matchesAllSearchTerms(keyword, 'mapel ' + mapel)
-                );
-
-
-            hasil.innerHTML = '';
-
-
-            filtered.forEach((mapel, index) => {
-
-                hasil.innerHTML += `
-                    <button
-                        type="button"
-                        onclick="pilihMapel('${mapel}')"
-                        class="w-full text-left px-4 py-3
-                               text-sm text-[#3E3028]
-                               hover:bg-[#F9F6F0]
-                               ${index < filtered.length - 1
-                                   ? 'border-b border-[#EFE6DD]'
-                                   : ''}"
-                    >
-                        ${mapel}
-                    </button>
-                `;
-
-            });
-
-
-            if (filtered.length === 0) {
-
-                hasil.innerHTML = `
-                    <div class="px-4 py-3 text-sm text-[#9E8E83]">
-                        Mata pelajaran tidak ditemukan.
-                    </div>
-                `;
-
-            }
-
-        }
-
-
-        /* =======================================================
-           PILIH MAPEL
-           ======================================================= */
-
-        function pilihMapel(mapel) {
-
-            document.getElementById('mapelSearch').value = mapel;
-
-            document.getElementById('mapel').value = mapel;
-
-            document.getElementById('hasilMapel').innerHTML = '';
-
         }
 
     </script>

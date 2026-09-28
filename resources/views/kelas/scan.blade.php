@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 
@@ -87,6 +87,10 @@
                     <img id="qr-kelas-image" src="{{ $qrImage ?? '' }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain {{ $qrImage ? '' : 'hidden' }}">
                     <p id="qr-kelas-status" class="text-center text-xs text-[#7A6A60]">{{ session('error', 'Memeriksa sesi mengajar...') }}</p>
 
+                </div>
+                <div class="mt-3 w-full max-w-[300px] rounded-xl border border-dashed border-[#D8C9BC] bg-white px-3 py-2 text-center">
+                    <span class="block text-[10px] font-semibold text-[#7A6A60]">Kode 6 angka untuk guru</span>
+                    <code id="qr-kelas-code" class="break-all text-xs font-mono text-[#3E3028]">Menyiapkan kode...</code>
                 </div>
 
                 {{-- INFO SESI --}}
@@ -167,6 +171,7 @@
     <script>
         const qrImage = document.getElementById('qr-kelas-image');
         const qrStatus = document.getElementById('qr-kelas-status');
+        const qrCode = document.getElementById('qr-kelas-code');
 
         function perbaruiDetailSesi(sesi) {
             if (!sesi) {
@@ -185,7 +190,7 @@
 
         async function perbaruiStatusQrKelas() {
             try {
-                const response = await fetch("{{ route('qr.status-kelas') }}", {
+                const response = await fetch("{{ route('qr.status-kelas', [], false) }}", {
                     headers: { 'Accept': 'application/json' },
                 });
                 const data = await response.json();
@@ -193,13 +198,15 @@
                 perbaruiDetailSesi(data.sesi);
                 if (data.tahap === 'tampil_qr') {
                     qrImage.src = data.qr;
+                    qrCode.textContent = data.kode || 'Kode belum tersedia';
                     qrImage.classList.remove('hidden');
                     qrStatus.classList.add('hidden');
                 } else if (data.tahap === 'scan') {
-                    window.location.href = "{{ route('kelas.verifikasiguru') }}";
+                    window.location.assign("{{ route('kelas.verifikasiguru', [], false) }}");
                     return;
                 } else {
                     qrImage.classList.add('hidden');
+                    qrCode.textContent = 'Kode muncul saat sesi tersedia';
                     qrStatus.classList.remove('hidden');
                     qrStatus.textContent = data.pesan || 'Belum ada sesi mengajar aktif.';
                 }

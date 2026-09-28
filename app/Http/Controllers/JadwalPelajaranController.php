@@ -69,7 +69,7 @@ class JadwalPelajaranController extends Controller
         }
 
         $kelas = Kelas::orderBy('tingkat')->orderBy('jurusan')->orderBy('rombel')->get();
-        $guru = User::where('role', 'guru')->orderBy('name')->get();
+        $guru = User::whereIn('role', ['guru', 'wali_kelas'])->orderBy('name')->get();
         $mapel = Mapel::orderBy('nama_mapel')->get();
 
         return view('admin.tambah_jadwal', compact('jadwalGrup', 'kelas', 'guru', 'mapel'));
@@ -90,7 +90,7 @@ class JadwalPelajaranController extends Controller
     public function create(): View
     {
         $kelas = Kelas::orderBy('tingkat')->orderBy('jurusan')->orderBy('rombel')->get();
-        $guru = User::where('role', 'guru')->orderBy('name')->get();
+        $guru = User::whereIn('role', ['guru', 'wali_kelas'])->orderBy('name')->get();
         $mapel = Mapel::orderBy('nama_mapel')->get();
 
         return view('admin.tambah_jadwal', compact('kelas', 'guru', 'mapel'));

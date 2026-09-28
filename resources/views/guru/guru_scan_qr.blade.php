@@ -50,7 +50,7 @@
     #webcam-preview video { width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 1rem; }
     #webcam-preview canvas { display: none; }
   </style>
-  <script src="https://unpkg.com/html5-qrcode" defer></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
   <style>
     html { scrollbar-width: none; }
     html::-webkit-scrollbar { display: none; }
@@ -97,8 +97,8 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
-          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
+        <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
         </a>
 
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
@@ -171,6 +171,10 @@
           <div id="scan-status" role="status" aria-live="polite" class="w-full max-w-lg rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 text-sm text-brand-700">
             Menunggu kamera siap...
           </div>
+          <form id="manual-qr-form" class="w-full max-w-lg rounded-xl border border-brand-100 bg-white p-4 text-left">
+            <label for="manual-qr-code" class="block text-sm font-semibold text-[#5C4033]">Atau masukkan 6 angka dari QR kelas</label>
+            <div class="mt-2 flex gap-2"><input id="manual-qr-code" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="off" placeholder="Masukkan 6 angka di layar kelas" class="min-w-0 flex-1 rounded-lg border border-brand-200 px-3 py-2 text-sm"><button type="button" onclick="kirimKodeManualGuru()" class="shrink-0 rounded-lg bg-brand-800 px-4 py-2 text-sm font-semibold text-white">Periksa kode</button></div>
+          </form>
         </div>
       </section>
     </main>
@@ -202,7 +206,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -234,7 +238,7 @@
       tampilkanStatus('QR terbaca. Memeriksa kode kelas...');
 
       try {
-        const response = await fetch("{{ route('guru.scan-kelas.process', $jurnal) }}", {
+        const response = await fetch("{{ route('guru.scan-kelas.process', $jurnal, false) }}", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -245,8 +249,8 @@
         });
         const result = await response.json();
         if (response.ok && result.success && result.redirect) {
-          tampilkanStatus('QR kelas valid. Membuka QR guru...');
-          window.location.href = result.redirect;
+          tampilkanStatus('Kode benar. Membuka QR guru...');
+          window.location.assign(result.redirect);
           return;
         }
         tampilkanStatus(result.message || 'QR kelas tidak valid. Arahkan kamera ke QR kelas yang sesuai.', true);
@@ -254,6 +258,13 @@
         tampilkanStatus('Tidak dapat memeriksa QR. Periksa koneksi lalu coba pindai lagi.', true);
       }
       scanFinished = false;
+    }
+
+    function kirimKodeManualGuru() {
+      const kode = document.getElementById('manual-qr-code').value.trim();
+      if (!/^\d{6}$/.test(kode)) { tampilkanStatus('Masukkan 6 angka yang tampil di layar kelas.', true); return; }
+      tampilkanStatus('Kode dimasukkan. Sedang diperiksa ke server...');
+      onScanSuccess(kode);
     }
 
     function startScanner() {

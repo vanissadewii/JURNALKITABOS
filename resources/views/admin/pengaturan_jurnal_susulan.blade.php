@@ -6,7 +6,7 @@
     <title>Izin Jurnal Susulan - Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="min-h-screen overflow-x-hidden bg-[#F5EFE8] font-['Inter'] text-[#3E3028]">
@@ -21,7 +21,7 @@
             @if ($errors->any())<div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-800">{{ $errors->first() }}</div>@endif
             <article class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white shadow-sm">
                 <div class="flex items-center justify-between gap-3 border-b border-[#E5D8CC] bg-[#FFFCF9] px-4 py-3">
-                    <div><h2 class="font-['Poppins'] text-base font-bold">Atur Izin Jurnal Guru</h2><p class="mt-0.5 text-xs text-[#7A6A60]">Cari nama, pilih guru, lalu atur izin jurnal kemarin.</p></div>
+                    <div><h2 class="font-['Poppins'] text-base font-bold">Atur Izin Jurnal Guru</h2><p class="mt-0.5 text-xs text-[#7A6A60]">Ketik nama guru untuk menampilkan hasil pencarian.</p></div>
                     <a href="{{ route('admin.jurnal') }}" class="shrink-0 rounded-lg border border-[#D8C9BC] bg-white px-3 py-2 text-xs font-semibold text-[#5C4033] hover:bg-[#F5EFE8]">Lihat Jurnal</a>
                 </div>
                 <div class="relative border-b border-[#E5D8CC] px-4 py-3">
@@ -61,11 +61,17 @@
         inputGuru?.addEventListener('input', () => {
             const query = inputGuru.value.trim().toLocaleLowerCase('id');
             let jumlahCocok = 0;
-            opsiGuru.forEach(opsi => { const cocok = window.matchesAllSearchTerms(query, 'nama ' + opsi.dataset.nama, opsi.textContent); opsi.hidden = !cocok; if (cocok) jumlahCocok++; });
+            opsiGuru.forEach(opsi => {
+                const cocok = opsi.textContent.toLocaleLowerCase('id').includes(query);
+                opsi.classList.toggle('hidden', !cocok);
+                if (cocok) jumlahCocok++;
+            });
             guruTidakDitemukan?.classList.toggle('hidden', jumlahCocok > 0);
             hasilGuru.classList.toggle('hidden', !query);
         });
-        inputGuru?.addEventListener('focus', () => { if (inputGuru.value.trim()) hasilGuru.classList.remove('hidden'); });
+        inputGuru?.addEventListener('focus', () => {
+            if (inputGuru.value.trim()) hasilGuru.classList.remove('hidden');
+        });
         document.addEventListener('click', event => { if (!event.target.closest('#cari-guru') && !event.target.closest('#hasil-guru')) hasilGuru?.classList.add('hidden'); });
     </script>
     @include('shared.preserve_search_scroll')

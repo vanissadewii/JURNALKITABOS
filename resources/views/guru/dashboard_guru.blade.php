@@ -90,9 +90,15 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
-          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
-        </a>
+        @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket())
+        <a href="{{ route('piket.rekap') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        @elseif(auth()->user()->sedangPiket())
+        <a href="{{ route('dashboard-guru-piket') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        @else
+        <span aria-disabled="true" title="Menu tersedia saat jadwal piket Anda aktif" class="pointer-events-none flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#9E8E83] opacity-50">
+        @endif
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
+        @if((auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) || auth()->user()->sedangPiket())</a>@else</span>@endif
 
         <!-- Menu Profil Guru -->
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
@@ -121,7 +127,7 @@
           <span class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-[#D7B899]">
             <span>Guru</span>
             <span class="text-white/40">•</span>
-            <span>{{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}</span>
+            <span>{{ \App\Support\Waktu::sekarang()->locale('id')->translatedFormat('l, d F Y') }}</span>
           </span>
         </div>
       </div>
@@ -135,6 +141,9 @@
       @endif
       @if (session('error'))
         <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800">{{ session('error') }}</div>
+      @endif
+      @if (session('notif_sukses'))
+        <div role="status" class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-800">{{ session('notif_sukses') }}</div>
       @endif
 
       @if (($izinJurnalSusulan ?? false) && ($adaJadwalKemarin ?? false))
@@ -252,10 +261,16 @@
         <span>Riwayat</span>
       </a>
 
-      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket())
+      <a href="{{ route('piket.rekap') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      @elseif(auth()->user()->sedangPiket())
+      <a href="{{ route('dashboard-guru-piket') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      @else
+      <span aria-disabled="true" title="Menu tersedia saat jadwal piket Anda aktif" class="pointer-events-none flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] opacity-50">
+      @endif
         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg>
-        <span>Piket</span>
-      </a>
+        <span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
+      @if((auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) || auth()->user()->sedangPiket())</a>@else</span>@endif
 
       <!-- Inactive Mobile Link (Profil Guru) -->
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">

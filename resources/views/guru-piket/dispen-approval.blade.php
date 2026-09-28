@@ -14,17 +14,21 @@
                 <p class="text-xs font-semibold uppercase tracking-[.16em] text-[#8c7568]">Jurnal Guru · Piket</p>
                 <h1 class="mt-2 text-xl font-bold sm:text-2xl">Persetujuan Surat Dispen</h1>
                 <p class="mt-1 text-sm text-[#806e64]">No. Surat: {{ $dispen->nomor_surat }}</p>
+                <p class="mt-2 text-sm text-[#806e64]">Ditujukan kepada: <span class="font-semibold text-[#382c27]">{{ $dispen->waka?->nama ?? 'Waka Piket' }}</span></p>
+                <p class="mt-1 inline-flex rounded-lg bg-[#e8f5e9] px-3 py-1.5 text-xs font-semibold text-[#2e7d32]">Anda tidak perlu login — cukup tekan tombol di bawah.</p>
             </div>
 
             @if(session('success'))
                 <div class="mb-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>
+            @elseif(session('warning'))
+                <div class="mb-5 rounded-xl border border-amber-200 bg-[#fff8e7] px-4 py-3 text-sm text-[#a16207]">{{ session('warning') }}</div>
             @elseif(session('error'))
                 <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ session('error') }}</div>
             @endif
 
             <dl class="space-y-4 rounded-xl bg-[#f8f6f3] p-4 text-sm sm:p-6">
-                <div class="grid grid-cols-[6.5rem_1fr] gap-2"><dt class="font-semibold">Nama</dt><dd>{{ $dispen->siswa->nama }}</dd></div>
-                <div class="grid grid-cols-[6.5rem_1fr] gap-2"><dt class="font-semibold">Kelas</dt><dd>{{ $dispen->kelas->tingkat }} {{ $dispen->kelas->jurusan }} {{ $dispen->kelas->rombel }}</dd></div>
+                <div class="grid grid-cols-[6.5rem_1fr] gap-2"><dt class="font-semibold">Nama</dt><dd>{{ $dispen->siswa?->nama ?? '-' }}</dd></div>
+                <div class="grid grid-cols-[6.5rem_1fr] gap-2"><dt class="font-semibold">Kelas</dt><dd>{{ $dispen->kelas ? $dispen->kelas->tingkat.' '.$dispen->kelas->jurusan.' '.$dispen->kelas->rombel : '-' }}</dd></div>
                 <div class="grid grid-cols-[6.5rem_1fr] gap-2"><dt class="font-semibold">Tanggal</dt><dd>{{ $dispen->tanggal->format('d/m/Y') }}</dd></div>
                 <div class="grid grid-cols-[6.5rem_1fr] gap-2"><dt class="font-semibold">Jam</dt><dd>{{ $dispen->labelJam() }}</dd></div>
                 <div class="grid grid-cols-[6.5rem_1fr] gap-2"><dt class="font-semibold">Alasan</dt><dd class="break-words">{{ $dispen->alasan }}</dd></div>

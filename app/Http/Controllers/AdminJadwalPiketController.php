@@ -35,7 +35,7 @@ class AdminJadwalPiketController extends Controller
         $jadwalPerTanggal = $jadwal->groupBy(fn (JadwalPiketBulanan $item) => $item->tanggal->format('Y-m-d'));
 
         return view('admin.tambah_piket', [
-            'guru' => User::where('role', 'guru')->orderBy('name')->get(['id', 'name']),
+            'guru' => User::whereIn('role', ['guru', 'wali_kelas'])->orderBy('name')->get(['id', 'name']),
             'wakas' => Waka::orderBy('nama')->get(),
             'jadwal' => $jadwal,
             'jadwalPerTanggal' => $jadwalPerTanggal,
@@ -49,10 +49,53 @@ class AdminJadwalPiketController extends Controller
 
     public function storeWaka(Request $request): RedirectResponse
     {
-        $data = $request->validate(['nama' => 'required|string|max:100']);
-        Waka::create($data);
+        $data = $request->validate([
+            'nama' => 'required|string|max:100',
+            'no_hp' => 'required|string|max:20',
+        ], [], ['no_hp' => 'nomor HP Waka']);
 
-        return back()->with('success', 'Data Waka berhasil ditambahkan.');
+        $waka = new Waka(['nama' => $data['nama']]);
+        $waka->no_hp = $data['no_hp'];
+
+        if (! $waka->nomorValid()) {
+            return back()->withInput()->withErrors(['no_hp' => 'Nomor HP Waka tidak valid. Contoh: 0812-3456-7890.']);
+        }
+
+        $waka->save();
+
+        return back()->with('success', "Waka {$waka->nama} berhasil ditambahkan dengan nomor {$waka->nomorTampilan()}.");
+    }
+
+    public function updateWaka(Request $request, Waka $waka): RedirectResponse
+    {
+        $data = $request->validate([
+            'nama' => 'required|string|max:100',
+            'no_hp' => 'required|string|max:20',
+        ], [], ['no_hp' => 'nomor HP Waka']);
+
+        $waka->nama = $data['nama'];
+        $waka->no_hp = $data['no_hp'];
+
+        if (! $waka->nomorValid()) {
+            return back()->withInput()->withErrors(['no_hp' => 'Nomor HP Waka tidak valid. Contoh: 0812-3456-7890.']);
+        }
+
+        $waka->save();
+
+        return back()->with('success', "Data Waka {$waka->nama} diperbarui dengan nomor {$waka->nomorTampilan()}.");
+    }
+
+
+    public function destroyWaka(Waka $waka): RedirectResponse
+    {
+        if ($waka->jadwalPiket()->exists() || DB::table('dispens')->where('id_waka', $waka->id)->exists()) {
+            return back()->withErrors(['waka' => 'Waka ini masih tercatat pada jadwal piket atau dispensasi dan tidak dapat dihapus.']);
+        }
+
+        $nama = $waka->nama;
+        $waka->delete();
+
+        return back()->with('success', "Waka {$nama} berhasil dihapus.");
     }
 
     public function store(Request $request): RedirectResponse
@@ -67,6 +110,7 @@ class AdminJadwalPiketController extends Controller
             'jadwal.siang' => 'required|array|size:3',
             'jadwal.siang.*' => 'required|integer|exists:users,id',
             'jadwal.waka' => 'required|integer|exists:waka,id',
+            'mode_24_jam' => 'nullable|boolean',
         ]);
 
         $tanggal = Carbon::createFromFormat('!Y-m-d', $data['tanggal']);
@@ -74,15 +118,15 @@ class AdminJadwalPiketController extends Controller
             return back()->withInput()->withErrors(['tanggal' => 'Pilih tanggal pada bulan dan tahun yang dipilih.']);
         }
 
-        $guruIds = User::where('role', 'guru')->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $guruIds = User::whereIn('role', ['guru', 'wali_kelas'])->pluck('id')->map(fn ($id) => (int) $id)->all();
         foreach (['pagi', 'siang'] as $sesi) {
             $terpilih = $data['jadwal'][$sesi];
             if (count(array_unique(array_map('intval', $terpilih))) !== 3 || count(array_diff(array_map('intval', $terpilih), $guruIds))) {
-                return back()->withInput()->withErrors(["jadwal.{$sesi}" => "Pilih 3 guru berbeda yang memiliki role Guru untuk sesi {$sesi} tanggal {$data['tanggal']}."]);
+                return back()->withInput()->withErrors(["jadwal.{$sesi}" => "Pilih 3 guru berbeda yang memiliki role Guru atau Wali Kelas untuk sesi {$sesi} tanggal {$data['tanggal']}."]);
             }
         }
 
-        $tanggalUji24Jam = in_array($data['tanggal'], ['2026-09-26', '2026-09-27'], true);
+        $tanggalUji24Jam = (bool) ($data['mode_24_jam'] ?? false);
         $rentangSesi = $tanggalUji24Jam
             ? ['pagi' => ['00:00:00', '00:00:00'], 'siang' => ['00:00:00', '00:00:00']]
             : ['pagi' => ['07:00:00', '11:00:00'], 'siang' => ['11:00:00', '15:00:00']];
@@ -129,7 +173,7 @@ class AdminJadwalPiketController extends Controller
             return back()->withErrors(['file_jadwal' => 'File tidak memiliki baris data.']);
         }
 
-        $guru = User::where('role', 'guru')->get()->keyBy(fn ($user) => Str::lower(trim($user->name)));
+        $guru = User::whereIn('role', ['guru', 'wali_kelas'])->get()->keyBy(fn ($user) => Str::lower(trim($user->name)));
         $wakas = Waka::all()->keyBy(fn ($waka) => Str::lower(trim($waka->nama)));
         $items = [];
         $tanggalTerisi = [];
@@ -155,6 +199,7 @@ class AdminJadwalPiketController extends Controller
             }
 
             $dateKey = $tanggal->toDateString();
+            $mode24Jam = in_array(Str::lower(trim((string) ($row['mode_24_jam'] ?? ''))), ['1', 'ya', 'yes', 'true', '24 jam'], true);
             if (in_array($dateKey, $tanggalTerisi, true)) {
                 return back()->withErrors(['file_jadwal' => 'Tanggal '.$dateKey.' muncul lebih dari sekali.']);
             }
@@ -177,8 +222,8 @@ class AdminJadwalPiketController extends Controller
                         'sesi' => $sesi,
                         'urutan' => $slot,
                         'id_guru' => $idGuru,
-                        'jam_mulai' => in_array($dateKey, ['2026-09-26', '2026-09-27'], true) ? '00:00:00' : ($sesi === 'pagi' ? '07:00:00' : '11:00:00'),
-                        'jam_selesai' => in_array($dateKey, ['2026-09-26', '2026-09-27'], true) ? '00:00:00' : ($sesi === 'pagi' ? '11:00:00' : '15:00:00'),
+                        'jam_mulai' => $mode24Jam ? '00:00:00' : ($sesi === 'pagi' ? '07:00:00' : '11:00:00'),
+                        'jam_selesai' => $mode24Jam ? '00:00:00' : ($sesi === 'pagi' ? '11:00:00' : '15:00:00'),
                     ];
                 }
             }

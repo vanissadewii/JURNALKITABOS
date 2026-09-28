@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
+use App\Support\Waktu;
 
 /**
  * @property int $id
@@ -121,7 +122,7 @@ class User extends Authenticatable
     /** Dipakai buat validasi approve — guru ini piket TEPAT SEKARANG. */
     public function sedangPiket(?CarbonInterface $waktu = null): bool
     {
-        $waktu ??= now();
+        $waktu ??= Waktu::sekarang();
         return JadwalPiketBulanan::query()
             ->whereDate('tanggal', $waktu->toDateString())
             ->where('id_guru', $this->id)

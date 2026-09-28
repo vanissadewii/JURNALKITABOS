@@ -19,7 +19,17 @@ class EnsureUserHasRole
     {
         $user = $request->user();
 
-        if (! $user || ! in_array($user->role, $roles, true)) {
+        if (! $user) {
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
+        }
+
+        if (! in_array($user->role, $roles, true)) {
+            // Akun wali kelas yang membuka halaman guru/admin di luar menu yang
+            // diizinkan selalu diarahkan ke rekap, bukan berhenti di halaman 403.
+            if ($user->role === 'wali_kelas' && $request->routeIs('piket.rekap', 'piket.rekap.export') === false) {
+                return redirect()->route('piket.rekap');
+            }
+
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 

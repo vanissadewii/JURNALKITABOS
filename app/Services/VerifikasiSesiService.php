@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Models\JadwalPelajaran;
+use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Support\Waktu;
 use App\Support\RentangJam;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class VerifikasiSesiService
 {
@@ -23,6 +25,9 @@ class VerifikasiSesiService
             return null;
         }
 
+        $kegiatanDitiadakan = (bool) DB::table('pengaturan_kegiatan_harian')->where('hari', $hari)->value('kegiatan_ditiadakan');
+        $slotPerHari = $kegiatanDitiadakan ? $this->slotPerHari($hari) : collect();
+
         return JadwalPelajaran::with(['kelas', 'mapel', 'guru', 'jamPelajaran'])
             ->when($idKelas !== null, fn ($q) => $q->where('id_kelas', $idKelas))
             ->when($idGuru !== null, fn ($q) => $q->where('id_guru', $idGuru))
@@ -30,8 +35,14 @@ class VerifikasiSesiService
                 ->where('hari', $hari)
                 ->whereHas('semester', fn ($s) => $s->where('status', 'aktif')))
             ->get()
-            ->first(fn ($jadwal) => $jadwal->jamPelajaran
-                && RentangJam::sedangBerjalan($jadwal->jamPelajaran->jam_mulai, $jadwal->jamPelajaran->jam_selesai, $sekarang));
+            ->first(function ($jadwal) use ($sekarang, $kegiatanDitiadakan, $slotPerHari) {
+                if (! $jadwal->jamPelajaran) {
+                    return false;
+                }
+                $jam = $this->jamEfektif($jadwal->jamPelajaran, $kegiatanDitiadakan, $slotPerHari);
+
+                return RentangJam::sedangBerjalan($jam->jam_mulai, $jam->jam_selesai, $sekarang);
+            });
     }
 
     /** Jurnal hari ini untuk sesi (kelas + guru + mapel yang sama), status apa pun. */
@@ -71,6 +82,34 @@ class VerifikasiSesiService
             ->values();
     }
 
+    /** Rentang sesi dengan nomor dan waktu jam maju untuk ditampilkan ke pengguna. */
+    public function rentangEfektif(JadwalPelajaran $jadwal): Collection
+    {
+        $rentang = $this->rentang($jadwal);
+        $jamPertama = $rentang->first()?->jamPelajaran;
+
+        if (! $jamPertama) {
+            return $rentang;
+        }
+
+        $hari = $jamPertama->hari;
+        $maju = in_array($hari, ['Senin', 'Jumat'], true)
+            && (bool) DB::table('pengaturan_kegiatan_harian')->where('hari', $hari)->value('kegiatan_ditiadakan');
+        $slotPerHari = $maju ? $this->slotPerHari($hari) : collect();
+
+        return $rentang->map(function (JadwalPelajaran $item) use ($maju, $slotPerHari) {
+            if (! $item->jamPelajaran) {
+                return $item;
+            }
+
+            $jamTampilan = $this->jamEfektif($item->jamPelajaran, $maju, $slotPerHari);
+            $jamTampilan = clone $jamTampilan;
+            $item->setRelation('jamPelajaran', $jamTampilan);
+
+            return $item;
+        });
+    }
+
     /** Apakah sekarang masih di dalam waktu sesi (hari dan jam) ini. */
     public function masihBerjalan(JadwalPelajaran $jadwal): bool
     {
@@ -86,10 +125,30 @@ class VerifikasiSesiService
             return false;
         }
 
-        return RentangJam::sedangBerjalan(
-            $rentang->first()->jamPelajaran->jam_mulai,
-            $rentang->last()->jamPelajaran->jam_selesai,
-            $sekarang
-        );
+        $hari = $rentang->first()->jamPelajaran->hari;
+        $kegiatanDitiadakan = (bool) DB::table('pengaturan_kegiatan_harian')->where('hari', $hari)->value('kegiatan_ditiadakan');
+        $slotPerHari = $kegiatanDitiadakan ? $this->slotPerHari($hari) : collect();
+        $jamMulai = $this->jamEfektif($rentang->first()->jamPelajaran, $kegiatanDitiadakan, $slotPerHari);
+        $jamSelesai = $this->jamEfektif($rentang->last()->jamPelajaran, $kegiatanDitiadakan, $slotPerHari);
+
+        return RentangJam::sedangBerjalan($jamMulai->jam_mulai, $jamSelesai->jam_selesai, $sekarang);
+    }
+
+    /** @return Collection<string, JamPelajaran> */
+    private function slotPerHari(string $hari): Collection
+    {
+        return JamPelajaran::where('hari', $hari)
+            ->whereHas('semester', fn ($query) => $query->where('status', 'aktif'))
+            ->get()
+            ->keyBy(fn ($jam) => $jam->id_semester.'|'.$jam->tingkat.'|'.$jam->jam_ke);
+    }
+
+    private function jamEfektif(JamPelajaran $jam, bool $maju, Collection $slotPerHari): JamPelajaran
+    {
+        if (! $maju || (int) $jam->jam_ke <= 1) {
+            return $jam;
+        }
+
+        return $slotPerHari->get($jam->id_semester.'|'.$jam->tingkat.'|'.((int) $jam->jam_ke - 1)) ?? $jam;
     }
 }

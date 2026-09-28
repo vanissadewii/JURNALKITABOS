@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen overflow-x-hidden">
@@ -337,14 +337,14 @@
                 </div>
                 <div class="flex items-center gap-2">
                     {{-- TOMBOL EXPORT EXCEL --}}
-                    <a href="{{ route('admin.rekap.export', request()->only(['dari', 'sampai', 'id_kelas'])) }}"
+                    <a href="{{ route('admin.rekap.export', ['dari' => $dari, 'sampai' => $sampai, 'id_kelas' => $filters['id_kelas'] ?? null]) }}"
                        class="inline-flex items-center gap-2 text-[12px] font-semibold px-3 sm:px-3.5 py-2 rounded-lg bg-white text-[#5C4033] hover:bg-[#F5EFE8]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                             <polyline points="7 10 12 15 17 10"/>
                             <line x1="12" y1="15" x2="12" y2="3"/>
                         </svg>
-                        <span class="hidden xs:inline sm:inline">Export CSV (Excel)</span>
+                        <span class="hidden xs:inline sm:inline">Export Excel</span>
                     </a>
                     <button type="button" onclick="openSidebar()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -362,13 +362,13 @@
             </form>
 
             <div class="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-                @foreach ([['Jurnal Masuk',$jurnals->count(),'text-[#3E3028]'],['Dicek Piket',$jurnals->whereIn('status_piket',['disetujui','ditolak'])->count(),'text-[#2E7D32]'],['Belum Dicek',$jurnals->where('status_piket','menunggu')->count(),'text-[#F57F17]'],['Guru Tidak Hadir',$jurnals->where('status_kehadiran_guru','tidak_hadir')->count(),'text-[#C62828]']] as [$label,$jumlah,$warna])
+                @foreach ([['Jurnal Masuk',$jurnals->whereNotNull('waktu_submit')->count(),'text-[#3E3028]'],['Dicek Piket',$jurnals->whereIn('status_piket',['disetujui','ditolak'])->count(),'text-[#2E7D32]'],['Belum Dicek',$jurnals->where('status_piket','menunggu')->count(),'text-[#F57F17]'],['Guru Tidak Hadir',$jumlahTidakHadirPerJadwalTanggal->count(),'text-[#C62828]']] as [$label,$jumlah,$warna])
                     <div class="rounded-lg border border-[#E5D8CC] bg-white p-3.5"><p class="text-[11px] font-semibold uppercase text-[#7A6A60]">{{ $label }}</p><p class="mt-1 font-['Poppins'] text-[22px] font-extrabold {{ $warna }}">{{ $jumlah }}</p></div>
                 @endforeach
             </div>
 
             <section class="overflow-hidden rounded-lg border border-[#E5D8CC] bg-white">
-                <div class="flex items-center justify-between border-b border-[#E5D8CC] bg-[#F5EFE8] px-4 py-3"><h2 class="font-['Poppins'] text-sm font-bold uppercase">Rekap per Kelas</h2><span class="text-xs text-[#7A6A60]">{{ $dari }} — {{ $sampai }}</span></div>
+                <div class="flex items-center justify-between border-b border-[#E5D8CC] bg-[#F5EFE8] px-4 py-3"><h2 class="font-['Poppins'] text-sm font-bold uppercase">Rekap per Kelas</h2><span class="text-xs text-[#7A6A60]">{{ \Carbon\Carbon::parse($dari)->format('d/m/Y') }} — {{ \Carbon\Carbon::parse($sampai)->format('d/m/Y') }}</span></div>
                 <div class="overflow-x-auto"><table class="min-w-[650px] w-full text-left text-[13px]"><thead class="bg-[#FDFBF7] text-[11px] uppercase text-[#5C4033]"><tr><th class="border border-[#E5D8CC] px-4 py-3">Kelas</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Jurnal</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Dicek Piket</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Belum Dicek</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Guru Tidak Hadir</th></tr></thead><tbody>
                     @forelse($byClass as $baris)<tr><td class="border border-[#E5D8CC] px-4 py-3 font-semibold">{{ $baris->kelas->nama_kelas }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->jumlah }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#2E7D32]">{{ $baris->dicek }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#F57F17]">{{ $baris->belum }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#C62828]">{{ $baris->tidak_hadir }}</td></tr>
                     @empty<tr><td colspan="5" class="px-4 py-8 text-center text-sm text-[#7A6A60]">Belum ada jurnal pada periode ini.</td></tr>@endforelse

@@ -375,13 +375,24 @@
             @if(session('success'))
                 <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>
             @endif
-            @if(session('link_wa'))
-                <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="mb-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-green-700 px-5 py-3 font-semibold text-white">Kirim tautan persetujuan ke Admin via WhatsApp</a>
+            @if(session('warning'))
+                <div class="mb-4 rounded-xl border border-amber-200 bg-[#FFF8E7] px-4 py-3 text-sm text-[#A16207]">{{ session('warning') }}</div>
             @endif
+            @if(session('link_approval'))
+                <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+                    <p class="font-semibold">WhatsApp Waka belum tersedia. Tautan persetujuan:</p>
+                    <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+                        <input readonly value="{{ session('link_approval') }}" onclick="this.select()" class="min-h-11 min-w-0 flex-1 rounded-lg border border-amber-200 bg-white px-3 text-xs sm:text-sm">
+                        <button type="button" onclick="salinTautan(this.dataset.tautan, this)" data-tautan="{{ session('link_approval') }}" class="min-h-11 rounded-lg border border-amber-500 px-4 text-sm font-semibold text-amber-900 hover:bg-amber-100">Salin Tautan</button>
+                    </div>
+                </div>
+            @endif
+            <p id="dispenAjaxStatus" role="status" aria-live="polite" class="hidden rounded-xl border px-4 py-3 text-sm"></p>
             @if($errors->any())<div class="mb-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800">{{ $errors->first() }}</div>@endif
             <form
+                id="formAjukanDispen"
                 method="POST"
-                action="{{ route('dispen.store') }}"
+                action="{{ route('dispen.store', [], false) }}"
                 class="bg-white
                        border border-[#EFE6DD]
                        rounded-2xl
@@ -417,12 +428,6 @@
                 </div>
 
 
-                @if(session('success'))
-                    <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{{ session('success') }}</div>
-                @endif
-                @if(session('link_wa'))
-                    <a href="{{ session('link_wa') }}" target="_blank" rel="noopener" class="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-green-700 px-4 py-3 text-center font-semibold text-white hover:bg-green-800">Kirim tautan persetujuan ke 0877 8259 9520 via WhatsApp</a>
-                @endif
                 @if($errors->any())
                     <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ $errors->first() }}</div>
                 @endif
@@ -697,16 +702,31 @@
                             </p>
 
 
-                            <p
-                                class="text-xs
-                                       text-[#7A6A60]
-                                       mt-1
-                                       leading-relaxed"
-                            >
-                                Setelah diajukan, sistem akan mencari
-                                Waka berdasarkan jadwal yang telah
-                                ditentukan oleh Admin.
-                            </p>
+                            @if($waka)
+
+                                <p
+                                    class="text-xs
+                                           text-[#7A6A60]
+                                           mt-1
+                                           leading-relaxed"
+                                >
+                                    Surat akan otomatis dikirim ke
+                                    <span class="font-semibold text-[#3E3028]">{{ $waka->nama }}</span>
+                                    ({{ $waka->nomorTampilan() ?? 'nomor belum diisi admin' }})
+                                </p>
+
+                            @else
+
+                                <p
+                                    class="text-xs
+                                           text-[#A16207]
+                                           mt-1
+                                           leading-relaxed"
+                                >
+                                    Jadwal Waka piket belum tersedia. Minta Admin mengatur jadwal Waka pada menu Tambah Piket agar surat terkirim otomatis.
+                                </p>
+
+                            @endif
 
                         </div>
 
@@ -779,7 +799,7 @@
                             <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
                         </svg>
 
-                        Ajukan Dispensasi
+                        Ajukan & Kirim ke WhatsApp
 
                     </button>
 
@@ -909,7 +929,7 @@
                     <path d="M7 10l2 2 4-4"/>
                 </svg>
 
-                <span>Piket</span>
+                <span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
 
             </a>
 
@@ -1014,6 +1034,62 @@
             selesai.innerHTML = '<option value="">Pilih jam selesai</option>';
             daftarJam.filter(item => Number(item.jam_ke) >= awal).forEach(item => selesai.add(new Option(`Jam ke-${item.jam_ke} · ${item.jam_mulai.slice(0,5)}–${item.jam_selesai.slice(0,5)}`, item.jam_ke)));
             selesai.disabled = !awal;
+        });
+
+        function salinTautan(tautan, tombol) {
+            navigator.clipboard?.writeText(tautan).then(() => {
+                if (tombol) tombol.textContent = 'Tautan Disalin';
+            });
+        }
+
+        const formAjukanDispen = document.getElementById('formAjukanDispen');
+        const statusAjukanDispen = document.getElementById('dispenAjaxStatus');
+        formAjukanDispen.addEventListener('submit', async event => {
+            event.preventDefault();
+            if (!formAjukanDispen.reportValidity()) return;
+
+            const tombol = event.submitter || formAjukanDispen.querySelector('[type="submit"]');
+            const tabWa = window.open('about:blank', '_blank');
+            tombol.disabled = true;
+            tombol.classList.add('opacity-60');
+            statusAjukanDispen.textContent = 'Menyimpan dispensasi dan menyiapkan WhatsApp...';
+            statusAjukanDispen.className = 'rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm text-brand-800';
+
+            try {
+                const response = await fetch(formAjukanDispen.action, {
+                    method: 'POST',
+                    body: new FormData(formAjukanDispen),
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                    credentials: 'same-origin',
+                });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    tabWa?.close();
+                    const errorText = result.errors ? Object.values(result.errors).flat()[0] : (result.message || 'Dispensasi belum berhasil disimpan.');
+                    statusAjukanDispen.textContent = errorText;
+                    statusAjukanDispen.className = 'rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800';
+                    tombol.disabled = false;
+                    tombol.classList.remove('opacity-60');
+                    return;
+                }
+
+                if (result.link_wa) {
+                    if (tabWa) tabWa.location.replace(result.link_wa);
+                    else {
+                        window.location.assign(result.link_wa);
+                        return;
+                    }
+                } else {
+                    tabWa?.close();
+                }
+                window.location.assign(result.redirect || window.location.pathname);
+            } catch (error) {
+                tabWa?.close();
+                statusAjukanDispen.textContent = 'Koneksi gagal saat mengirim dispensasi. Periksa internet, lalu coba lagi.';
+                statusAjukanDispen.className = 'rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800';
+                tombol.disabled = false;
+                tombol.classList.remove('opacity-60');
+            }
         });
 
     </script>

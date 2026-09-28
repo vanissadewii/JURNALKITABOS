@@ -6,7 +6,7 @@
     <title>Semester - Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html,#semesterTableViewport{scrollbar-width:none}html::-webkit-scrollbar,#semesterTableViewport::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="min-h-screen overflow-x-hidden bg-[#F5EFE8] font-['Inter'] text-[#3E3028]">

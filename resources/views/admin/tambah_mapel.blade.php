@@ -6,7 +6,7 @@
     <title>Mata Pelajaran - Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         html, #mapelTableViewport { scrollbar-width: none; }
         html::-webkit-scrollbar, #mapelTableViewport::-webkit-scrollbar { display: none; }

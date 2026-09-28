@@ -7,6 +7,7 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Models\User;
+use App\Support\Username;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -51,7 +52,8 @@ class FortifyServiceProvider extends ServiceProvider
 
         // Login pakai email ATAU username, sama-sama dari kolom "username" di form.
         Fortify::authenticateUsing(function (Request $request) {
-            $login = $request->input('username');
+            $login = Username::normalisasi($request->input('username'));
+            $request->merge(['username' => $login]);
 
             $user = filter_var($login, FILTER_VALIDATE_EMAIL)
                 ? User::where('email', $login)->first()
