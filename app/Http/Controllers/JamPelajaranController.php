@@ -299,4 +299,14 @@ class JamPelajaranController extends Controller
 
         return redirect()->route('jam-pelajaran.index')->with('success', "{$jumlah} jam pelajaran berhasil dihapus.");
     }
+
+    /** @return array<int, string> */
+    private function daftarHari(string $kelompok): array
+    {
+        return match ($kelompok) {
+            'senin_kamis' => ['Senin', 'Selasa', 'Rabu', 'Kamis'],
+            'jumat' => ['Jumat'],
+            'senin_jumat' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+        };
+    }
 }

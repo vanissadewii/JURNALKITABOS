@@ -88,7 +88,21 @@ class QrSesiController extends Controller
         $qrSesi = $this->qrAktif($jurnal->jadwal, 'guru');
         $qrImage = (new SvgWriter)->write(new QrCode($qrSesi->kode_qr))->getDataUri();
 
-        return view('guru.tampilkan_qr_guru', compact('jurnal', 'qrSesi', 'qrImage'));
+        if (! $jadwal) {
+            return $this->pesan('Tidak ada sesi pelajaran yang sedang berlangsung.');
+        }
+
+        $jurnal = $this->sesi->jurnalSesi($jadwal);
+
+        if ($jurnal && $jurnal->status_verifikasi === 'terverifikasi') {
+            return $this->pesan('Kehadiran guru pada sesi ini sudah terverifikasi.');
+        }
+
+        if ($this->guruSudahScan($jadwal)) {
+            return response()->json(['tahap' => 'scan']);
+        }
+
+        return $this->tampilQr($this->qrAktif($jadwal, 'kelas'));
     }
 
     public function cekStatusGuru(Jurnal $jurnal): JsonResponse

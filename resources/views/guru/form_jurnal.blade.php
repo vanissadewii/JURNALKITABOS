@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lengkapi Jurnal Mengajar</title>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -46,6 +45,7 @@
     html { scrollbar-width: none; } html::-webkit-scrollbar { display: none; } .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; } .guru-sidebar-nav { gap: .25rem !important; } .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a svg { width: 1.25rem !important; height: 1.25rem !important; color: #7A6A60 !important; } .guru-sidebar-nav a.bg-brand-50, .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; } .guru-sidebar-nav a.bg-brand-50 svg, .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }</style>
   <style>input.no-spinner::-webkit-outer-spin-button,input.no-spinner::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}input.no-spinner{-moz-appearance:textfield;appearance:textfield}</style>
 </head>
+
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
@@ -62,7 +62,7 @@
       <nav class="guru-sidebar-nav flex flex-col gap-1">
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
           <span>Beranda</span>
         </a>
@@ -70,15 +70,15 @@
         <!-- Active Link (Isi Jurnal) -->
         <a href="{{ url('/form-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 bg-brand-50 rounded-xl font-poppins font-bold text-sm text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-            <path d="M7 3v14"/>
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+            <path d="M7 3v14" />
           </svg>
           <span>Isi Jurnal</span>
         </a>
 
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
@@ -87,20 +87,18 @@
 
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-brand-600 hover:bg-brand-50 hover:text-[#3E3028] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-            <circle cx="10" cy="6.5" r="3.5"/>
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+            <circle cx="10" cy="6.5" r="3.5" />
           </svg>
           <span>Profil</span>
         </a>
       </nav>
-
     </div>
   </aside>
 
   <!-- MAIN CONTENT AREA -->
   <div class="flex-1 min-w-0 max-w-full md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
 
-    <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
         <a href="{{ route('dashboard-guru') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white">
@@ -134,6 +132,51 @@
         </div>
       @endif
 
+      @if ($errors->any())
+      <ul class="w-full text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl p-4 list-disc list-inside">
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+      @endif
+
+      @if (! $jadwalAktif)
+      <div class="w-full bg-white border border-brand-100 rounded-2xl p-6 text-sm text-brand-700 flex flex-col gap-3">
+        <p class="font-semibold">Tidak ada jadwal mengajar yang dipilih.</p>
+        <p>Buka jurnal dari tombol "Isi Jurnal" atau "Mulai Sesi Mengajar" di Beranda.</p>
+        <a href="{{ url('/dashboard-guru') }}" class="font-poppins font-semibold text-brand-800 underline underline-offset-2">← Kembali ke Beranda</a>
+      </div>
+      @else
+      @if (session('error'))
+      <div class="w-full bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-xl p-4">
+        {{ session('error') }}
+      </div>
+      @endif
+      @if (session('success'))
+      <div class="w-full bg-green-50 border border-green-200 text-green-700 text-sm font-medium rounded-xl p-4">
+        {{ session('success') }}
+      </div>
+      @endif
+      @php
+      $awal = ($rentang ?? collect())->first()?->jamPelajaran ?? $jadwalAktif->jamPelajaran;
+      $akhir = ($rentang ?? collect())->last()?->jamPelajaran ?? $awal;
+      $labelJam = $awal
+      ? 'Jam Ke '.$awal->jam_ke.($akhir->jam_ke != $awal->jam_ke ? ' - '.$akhir->jam_ke : '')
+      : '-';
+      $labelWaktu = $awal
+      ? substr($awal->jam_mulai, 0, 5).' – '.substr($akhir->jam_selesai, 0, 5)
+      : '-';
+
+      $siswaJs = $daftarSiswa->values()->map(function ($s, $i) {
+      return [
+      'key' => 'siswa-'.$s->id_siswa,
+      'nama' => $s->nama,
+      'absen' => str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT),
+      'status' => 'Hadir',
+      ];
+      });
+      @endphp
+
       <!-- Card Ringkasan Info Sesi -->
       <div class="bg-white border border-brand-100 rounded-2xl p-6 shadow-xs w-full flex flex-col gap-3 text-sm">
         <div class="flex justify-between items-center"><span class="text-brand-600 font-medium">Mata Pelajaran</span><span class="font-bold text-[#3E3028]">{{ $jadwalAktif->mapel->nama_mapel }}</span></div>
@@ -166,7 +209,6 @@
         <!-- FORM ISIAN UTAMA -->
         <div id="section-form-utama" class="flex flex-col gap-5">
 
-          <!-- Input Materi Pembelajaran -->
           <div class="flex flex-col gap-1.5">
             <label for="materi" class="text-xs font-semibold text-brand-600">Materi Pembelajaran</label>
             <input 
@@ -181,7 +223,6 @@
             @error('materi')<p class="text-xs text-red-700">{{ $message }}</p>@enderror
           </div>
 
-          <!-- Input Grid: Jumlah Hadir & Absen -->
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-1.5">
               <label for="jumlah_hadir" class="text-xs font-semibold text-brand-600">Jumlah Hadir</label>
@@ -197,11 +238,10 @@
 
             <div class="flex flex-col gap-1.5">
               <label for="jumlah_absen" class="text-xs font-semibold text-brand-600">Jumlah Tidak Hadir</label>
-              <input 
-                type="number" 
-                id="jumlah_absen" 
-                name="jumlah_absen" 
-                value="0" 
+              <input
+                type="number"
+                id="jumlah_absen"
+                value="0"
                 readonly
                 class="w-full h-11 px-3.5 bg-brand-50 border border-brand-100 rounded-xl text-xs sm:text-sm font-bold text-[#3E3028] focus:outline-none"
               >
@@ -213,69 +253,66 @@
             <div class="flex flex-col gap-2">
               <label for="search-siswa" class="font-poppins font-bold text-xs sm:text-sm text-[#3E3028] flex items-center gap-2">
                 <svg class="w-4 h-4 text-brand-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                  <path d="M16 3.13a4 4 0 010 7.75" />
                 </svg>
                 <span>Presensi Siswa Tidak Hadir:</span>
               </label>
 
-              <!-- Input Cari Nama Siswa -->
               <div class="relative">
-                <input 
-                  type="text" 
-                  id="search-siswa" 
+                <input
+                  type="text"
+                  id="search-siswa"
                   oninput="filterSiswa(this.value)"
                   placeholder="Ketik nama / no. absen siswa..." 
                   class="w-full h-10 pl-9 pr-3.5 bg-brand-50/50 border border-brand-100 rounded-xl text-xs sm:text-sm text-[#3E3028] focus:outline-none focus:border-brand-800 transition-all"
                 >
                 <svg class="w-4 h-4 text-brand-600 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
             </div>
 
-            <!-- List Siswa dengan Tombol Aksi Langsung (S, I, A) -->
-            <div id="list-siswa-container" class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
-              <!-- Render otomatis via JavaScript -->
-            </div>
+            <div id="list-siswa-container" class="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1"></div>
 
-            <!-- Container Tersembunyi untuk Input Form Laravel/Backend -->
             <div id="hidden-inputs-container"></div>
           </div>
-
         </div>
 
-        <!-- Submit Button -->
         <button type="submit" class="w-full h-12 mt-2 bg-[#5C4033] hover:bg-[#3E2B22] text-white font-poppins font-semibold text-sm rounded-xl flex items-center justify-center shadow-md active:scale-[0.99] transition-all">
           {{ $jurnal && ! $isSusulan ? 'Perbarui Jurnal' : 'Simpan Jurnal' }}
         </button>
 
       </form>
 
-    </main>
+      @endif
 
+    </main>
   </div>
 
-  <!-- Bottom Navigation Bar (Mobile) -->
+  <!-- Bottom Navigation (Mobile) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
     <div class="flex justify-between items-center">
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
         </svg>
         <span>Beranda</span>
       </a>
 
       <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-          <path d="M7 3v14"/>
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+          <path d="M7 3v14" />
         </svg>
         <span>Isi Jurnal</span>
       </a>
 
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
         </svg>
         <span>Riwayat</span>
       </a>
@@ -284,8 +321,8 @@
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-          <circle cx="10" cy="6.5" r="3.5"/>
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+          <circle cx="10" cy="6.5" r="3.5" />
         </svg>
         <span>Profil</span>
       </a>
@@ -313,6 +350,7 @@
         targetSiswa.status = (targetSiswa.status === newStatus) ? 'Hadir' : newStatus;
       }
       renderListSiswa();
+      renderHiddenInputs();
       updateRingkasanJumlah();
     }
 
@@ -366,10 +404,15 @@
             </div>
           </div>
         `;
-        container.innerHTML += itemHTML;
-      });
 
-      renderHiddenInputs();
+        // nama diisi lewat textContent supaya aman dari tanda kutip / karakter khusus
+        row.querySelector('.nama-siswa').textContent = siswa.nama;
+        row.querySelectorAll('button[data-status]').forEach(btn => {
+          btn.addEventListener('click', () => setStatusSiswa(siswa.key, btn.dataset.status));
+        });
+
+        container.appendChild(row);
+      });
     }
 
     function updateRingkasanJumlah() {
@@ -379,9 +422,10 @@
       document.getElementById('jumlah_absen').value = totalTidakHadir;
     }
 
+    // Input tersembunyi yang dibaca controller: siswa_absen[i][nama] & siswa_absen[i][status]
     function renderHiddenInputs() {
-      const hiddenContainer = document.getElementById('hidden-inputs-container');
-      hiddenContainer.innerHTML = '';
+      const box = document.getElementById('hidden-inputs-container');
+      box.innerHTML = '';
 
       const tidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir');
       tidakHadir.forEach((item, index) => {
@@ -394,10 +438,10 @@
       });
     }
 
-    // Inisialisasi Pertama
     renderListSiswa();
     updateRingkasanJumlah();
   </script>
-
+  
 </body>
+
 </html>

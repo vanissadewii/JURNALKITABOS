@@ -68,7 +68,7 @@
 
             </div>
 
-            {{-- ISI KONTEN --}}
+            {{-- ISI: QR / SCANNER DINAMIS --}}
             <div class="w-full max-w-[500px] mx-auto px-4 py-6 sm:px-5 md:pt-10 pb-10 flex flex-col items-center">
 
                 <h2 class="m-0 mb-1.5 font-['Poppins'] text-lg sm:text-xl md:text-2xl font-bold text-center text-[#3E3028]">
@@ -87,6 +87,9 @@
                     <img id="qr-kelas-image" src="{{ $qrImage ?? '' }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain {{ $qrImage ? '' : 'hidden' }}">
                     <p id="qr-kelas-status" class="text-center text-xs text-[#7A6A60]">{{ session('error', 'Memeriksa sesi mengajar...') }}</p>
 
+                {{-- tampilan QR kelas (buat di-scan guru) --}}
+                <div id="panel-qr" class="hidden w-[220px] h-[220px] bg-white border border-[#E5D8CC] rounded-2xl items-center justify-center p-[14px] shadow-[0_4px_15px_rgba(62,48,40,0.06)] select-none">
+                    <img id="gambar-qr" alt="QR Code" class="w-full h-full pointer-events-none select-none" draggable="false">
                 </div>
                 <div class="mt-3 w-full max-w-[300px] rounded-xl border border-dashed border-[#D8C9BC] bg-white px-3 py-2 text-center">
                     <span class="block text-[10px] font-semibold text-[#7A6A60]">Kode 6 angka untuk guru</span>
@@ -128,21 +131,7 @@
 
                 </div>
 
-                {{-- PERINGATAN --}}
-                <div class="w-full mt-4 p-[13px] bg-[#EAF4FF] border border-[#B8D8F5] rounded-lg
-                            flex items-start gap-2.5">
-
-                    <div class="w-5 h-5 shrink-0 rounded-full bg-[#4A90C2] text-white
-                                flex items-center justify-center text-xs font-bold">
-                        !
-                    </div>
-
-                    <p class="m-0 text-xs leading-relaxed text-[#245A7A]">
-                        Pastikan Anda berada di kelas dan guru tersebut
-                        benar sedang mengajar sebelum melakukan konfirmasi.
-                    </p>
-
-                </div>
+                <p id="pesan" class="mt-5 text-center text-xs leading-relaxed text-[#3E3028]"></p>
 
             </div>
         </main>

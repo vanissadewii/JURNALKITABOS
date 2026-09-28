@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminMonitoringController;
 use App\Http\Controllers\AdminRekapController;
 use App\Http\Controllers\JadwalPelajaranController;
+use App\Http\Controllers\JadwalPiketController;
 use App\Http\Controllers\JamPelajaranController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\GuruPiketController;

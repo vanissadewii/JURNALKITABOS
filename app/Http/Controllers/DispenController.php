@@ -275,6 +275,25 @@ class DispenController extends Controller
         return back()->with('success', 'Dispen ditolak.');
     }
 
+    private function tolakJikaTakBerhak(Dispen $dispen): ?RedirectResponse
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return back()->with('error', 'Anda harus login sebagai guru piket terlebih dahulu.');
+        }
+
+        if ($user->id === $dispen->id_guru_piket) {
+            return back()->with('error', 'Tidak bisa memproses pengajuan yang Anda buat sendiri. Minta guru piket lain.');
+        }
+
+        if (! $user->sedangPiket()) {
+            return back()->with('error', 'Hanya guru yang sedang bertugas piket saat ini yang bisa memproses surat ini.');
+        }
+
+        return null;
+    }
+
     private function salurkanKeJurnal(Dispen $dispen): void
     {
         $tanggal = Carbon::parse($dispen->tanggal);
