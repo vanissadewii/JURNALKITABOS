@@ -739,12 +739,6 @@ parameters:
 			path: app/Services/VerifikasiSesiService.php
 
 		-
-			message: '#^Method App\\Support\\WakaPiket\:\:bertugas\(\) should return App\\Models\\Waka\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Support/WakaPiket.php
-
-		-
 			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
 			identifier: argument.type
 			count: 1
