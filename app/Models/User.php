@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Support\Waktu;
+use Carbon\CarbonInterface;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
-use App\Support\Waktu;
 
 /**
  * @property int $id
@@ -123,6 +123,7 @@ class User extends Authenticatable
     public function sedangPiket(?CarbonInterface $waktu = null): bool
     {
         $waktu ??= Waktu::sekarang();
+
         return JadwalPiketBulanan::query()
             ->whereDate('tanggal', $waktu->toDateString())
             ->where('id_guru', $this->id)

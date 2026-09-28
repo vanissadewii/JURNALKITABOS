@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PiketRekapExport;
-use Carbon\Carbon;
 use App\Support\Waktu;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -121,7 +121,9 @@ class PiketRekapController extends Controller
 
     private function kelas(object $item): string
     {
-        $tingkat = match ((int) $item->tingkat) { 10 => 'X', 11 => 'XI', 12 => 'XII', default => (string) $item->tingkat };
+        $tingkat = match ((int) $item->tingkat) {
+            10 => 'X', 11 => 'XI', 12 => 'XII', default => (string) $item->tingkat
+        };
 
         return trim($tingkat.' '.$item->jurusan.' '.$item->rombel);
     }

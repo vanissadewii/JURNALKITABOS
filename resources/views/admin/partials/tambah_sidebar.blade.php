@@ -3,8 +3,7 @@
     id="sidebar"
     class="fixed top-0 left-0 z-50 h-full w-[280px] bg-white border-r border-[#E5D8CC]
            transform -translate-x-full md:translate-x-0
-           transition-transform duration-300 flex flex-col"
->
+           transition-transform duration-300 flex flex-col">
 
     {{-- LOGO --}}
     <div class="px-5 pt-6 pb-5">
@@ -18,10 +17,9 @@
                     fill="none"
                     stroke="currentColor"
                     stroke-width="2"
-                    viewBox="0 0 24 24"
-                >
-                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    viewBox="0 0 24 24">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                 </svg>
 
             </div>
@@ -49,271 +47,256 @@
     {{-- MENU --}}
     <nav class="flex-1 overflow-y-auto py-4 px-3 flex flex-col">
 
-            <p class="px-3.5 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">
-                Menu Utama
-            </p>
+        <p class="px-3.5 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">
+            Menu Utama
+        </p>
 
 
-            <div class="flex flex-col gap-0.5">
+        <div class="flex flex-col gap-0.5">
 
-                {{-- BERANDA --}}
-                <a
-                    href="{{ route('admin.dashboard') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.dashboard') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                >
+            {{-- BERANDA --}}
+            <a
+                href="{{ route('admin.dashboard') }}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.dashboard') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
 
-                    <svg
-                        class="w-[18px] h-[18px] shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M3 12l9-9 9 9"/>
-                        <path d="M5 10v10h14V10"/>
-                    </svg>
+                <svg
+                    class="w-[18px] h-[18px] shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path d="M3 12l9-9 9 9" />
+                    <path d="M5 10v10h14V10" />
+                </svg>
 
-                    Beranda
+                Beranda
 
-                </a>
+            </a>
 
 
-                {{-- KEHADIRAN GURU --}}
-                <a
-                    href="{{ route('admin.kehadiran') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.kehadiran') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                >
+            {{-- KEHADIRAN GURU --}}
+            <a
+                href="{{ route('admin.kehadiran') }}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.kehadiran') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
 
-                    <svg
-                        class="w-[18px] h-[18px] shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                    >
-                        <rect x="3" y="4" width="18" height="18" rx="2"/>
-                        <path d="M16 2v4M8 2v4M3 10h18"/>
-                    </svg>
+                <svg
+                    class="w-[18px] h-[18px] shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
 
-                    Kehadiran Guru
+                Kehadiran Guru
 
-                </a>
+            </a>
 
 
-                {{-- JURNAL --}}
-                <a
-                    href="{{ route('admin.jurnal') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.jurnal') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                >
+            {{-- JURNAL --}}
+            <a
+                href="{{ route('admin.jurnal') }}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.jurnal') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
 
-                    <svg
-                        class="w-[18px] h-[18px] shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                    </svg>
+                <svg
+                    class="w-[18px] h-[18px] shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                </svg>
 
-                    Jurnal
+                Jurnal
 
-                </a>
+            </a>
 
 
-                {{-- LIHAT VERIFIKASI --}}
-                <a
-                    href="{{ route('admin.verifikasi') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.verifikasi') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                >
+            {{-- LIHAT VERIFIKASI --}}
+            <a
+                href="{{ route('admin.verifikasi') }}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.verifikasi') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
 
-                    <svg
-                        class="w-[18px] h-[18px] shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
+                <svg
+                    class="w-[18px] h-[18px] shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                </svg>
 
-                    Lihat Verifikasi
+                Lihat Verifikasi
 
-                </a>
+            </a>
 
 
-                {{-- REKAP --}}
-                <a
-                    href="{{ route('admin.rekap') }}"
-                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.rekap') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                >
+            {{-- REKAP --}}
+            <a
+                href="{{ route('admin.rekap') }}"
+                class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.rekap') ? 'font-semibold bg-[#5C4033] text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
 
-                    <svg
-                        class="w-[18px] h-[18px] shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                    >
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <path d="M14 2v6h6"/>
-                        <path d="M16 13H8"/>
-                        <path d="M16 17H8"/>
-                        <path d="M10 9H8"/>
-                    </svg>
+                <svg
+                    class="w-[18px] h-[18px] shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <path d="M14 2v6h6" />
+                    <path d="M16 13H8" />
+                    <path d="M16 17H8" />
+                    <path d="M10 9H8" />
+                </svg>
 
-                    Rekap
+                Rekap
 
-                </a>
+            </a>
 
 
-                {{-- ================================================= --}}
-                {{-- TAMBAH --}}
-                {{-- ================================================= --}}
+            {{-- ================================================= --}}
+            {{-- TAMBAH --}}
+            {{-- ================================================= --}}
 
-                <p class="px-3.5 mt-4 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">PENGATURAN</p>
+            <p class="px-3.5 mt-4 mb-2 text-[14px] font-semibold uppercase tracking-wider text-[#5C4033]">PENGATURAN</p>
 
-                <details class="mt-1 group" {{ request()->routeIs('admin.aturan-jurnal-susulan.*') ? 'open' : '' }}>
+            <details class="mt-1 group" {{ request()->routeIs('admin.tambah.*', 'jadwal.*', 'jam-pelajaran.*', 'mapel.*', 'admin.kelas.*', 'semester.*', 'admin.siswa.*', 'admin.user.*', 'admin.aturan-jurnal-susulan.*', 'admin.aturan-qr.*') ? 'open' : '' }}>
 
-                    {{-- TOMBOL TAMBAH --}}
-                    <summary
-                        class="list-none cursor-pointer w-full flex items-center justify-between gap-3
-                               px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.tambah.*', 'jadwal.*', 'jam-pelajaran.*', 'mapel.*', 'admin.kelas.*', 'semester.*', 'admin.siswa.*', 'admin.user.*', 'admin.aturan-jurnal-susulan.*') ? 'bg-[#5C4033] font-semibold text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }} transition"
-                    >
+                {{-- TOMBOL TAMBAH --}}
+                <summary
+                    class="list-none cursor-pointer w-full flex items-center justify-between gap-3
+                               px-3.5 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.tambah.*', 'jadwal.*', 'jam-pelajaran.*', 'mapel.*', 'admin.kelas.*', 'semester.*', 'admin.siswa.*', 'admin.user.*', 'admin.aturan-jurnal-susulan.*', 'admin.aturan-qr.*') ? 'bg-[#5C4033] font-semibold text-white' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }} transition">
 
-                        <span class="flex items-center gap-3">
-
-                            <svg
-                                class="w-[18px] h-[18px] shrink-0"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                viewBox="0 0 24 24"
-                            >
-                                <path d="M12 5v14M5 12h14"/>
-                            </svg>
-
-                            <span>
-                                Tambah
-                            </span>
-
-                        </span>
-
+                    <span class="flex items-center gap-3">
 
                         <svg
-                            class="w-4 h-4 text-[#7A6A60] transition-transform duration-200
-                                   group-open:rotate-180"
+                            class="w-[18px] h-[18px] shrink-0"
                             fill="none"
                             stroke="currentColor"
                             stroke-width="2"
-                            viewBox="0 0 24 24"
-                        >
-                            <path d="M6 9l6 6 6-6"/>
+                            viewBox="0 0 24 24">
+                            <path d="M12 5v14M5 12h14" />
                         </svg>
 
-                    </summary>
+                        <span>
+                            Tambah
+                        </span>
+
+                    </span>
 
 
-                    {{-- SUBMENU TAMBAH --}}
-                    <div class="mt-1 ml-3 pl-3 border-l border-[#E5D8CC] flex flex-col gap-0.5">
+                    <svg
+                        class="w-4 h-4 text-[#7A6A60] transition-transform duration-200
+                                   group-open:rotate-180"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
 
-                        {{-- ADMIN --}}
-                        <a
-                            href="{{ route('admin.tambah.admin') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.admin') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Admin
-                        </a>
-
-
-                        {{-- JADWAL --}}
-                        <a
-                            href="{{ route('admin.tambah.jadwal') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jadwal', 'jadwal.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Jadwal
-                        </a>
+                </summary>
 
 
-                        {{-- JAM PELAJARAN --}}
-                        <a
-                            href="{{ route('admin.tambah.jam') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jam', 'jam-pelajaran.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Jam Pelajaran
-                        </a>
+                {{-- SUBMENU TAMBAH --}}
+                <div class="mt-1 ml-3 pl-3 border-l border-[#E5D8CC] flex flex-col gap-0.5">
+
+                    {{-- ADMIN --}}
+                    <a
+                        href="{{ route('admin.tambah.admin') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.admin') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Admin
+                    </a>
 
 
-                        {{-- MATA PELAJARAN --}}
-                        <a
-                            href="{{ route('admin.tambah.mapel') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.mapel', 'mapel.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Mata Pelajaran
-                        </a>
+                    {{-- JADWAL --}}
+                    <a
+                        href="{{ route('admin.tambah.jadwal') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jadwal', 'jadwal.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Jadwal
+                    </a>
 
 
-                        {{-- KELAS --}}
-                        <a
-                            href="{{ route('admin.tambah.kelas') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.kelas', 'admin.kelas.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Kelas
-                        </a>
+                    {{-- JAM PELAJARAN --}}
+                    <a
+                        href="{{ route('admin.tambah.jam') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.jam', 'jam-pelajaran.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Jam Pelajaran
+                    </a>
 
 
-                        {{-- SEMESTER --}}
-                        <a
-                            href="{{ route('admin.tambah.semester') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.semester', 'semester.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Semester
-                        </a>
+                    {{-- MATA PELAJARAN --}}
+                    <a
+                        href="{{ route('admin.tambah.mapel') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.mapel', 'mapel.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Mata Pelajaran
+                    </a>
 
 
-                        {{-- PIKET --}}
-                        <a
-                            href="{{ route('admin.tambah.piket') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.piket') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Piket
-                        </a>
+                    {{-- KELAS --}}
+                    <a
+                        href="{{ route('admin.tambah.kelas') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.kelas', 'admin.kelas.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Kelas
+                    </a>
 
 
-                        {{-- SISWA --}}
-                        <a
-                            href="{{ route('admin.tambah.siswa') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.siswa', 'admin.siswa.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Siswa
-                        </a>
+                    {{-- SEMESTER --}}
+                    <a
+                        href="{{ route('admin.tambah.semester') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.semester', 'semester.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Semester
+                    </a>
 
 
-                        {{-- ATURAN JURNAL SUSULAN --}}
-                        <a
-                            href="{{ route('admin.aturan-jurnal-susulan.edit') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.aturan-jurnal-susulan.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            Aturan Jurnal Susulan
-                        </a>
+                    {{-- PIKET --}}
+                    <a
+                        href="{{ route('admin.tambah.piket') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.piket') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Piket
+                    </a>
 
-                        {{-- USER --}}
-                        <a
-                            href="{{ route('admin.tambah.user') }}"
-                            class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.user', 'admin.user.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}"
-                        >
-                            User
-                        </a>
 
-                    </div>
+                    {{-- SISWA --}}
+                    <a
+                        href="{{ route('admin.tambah.siswa') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.siswa', 'admin.siswa.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Siswa
+                    </a>
 
-                </details>
 
-            </div>
+                    {{-- ATURAN JURNAL SUSULAN --}}
+                    <a
+                        href="{{ route('admin.aturan-jurnal-susulan.edit') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.aturan-jurnal-susulan.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Aturan Jurnal Susulan
+                    </a>
 
-        </nav>
+
+                    {{-- PENGATURAN QR --}}
+
+                    <a href="{{ route('admin.aturan-qr.edit') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.aturan-qr.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        Pengaturan QR
+                    </a>
+
+                    {{-- USER --}}
+                    <a
+                        href="{{ route('admin.tambah.user') }}"
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.tambah.user', 'admin.user.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        User
+                    </a>
+
+                </div>
+
+            </details>
+
+        </div>
+
+    </nav>
 
 
     {{-- PROFILE --}}

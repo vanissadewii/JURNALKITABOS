@@ -22,7 +22,9 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $columns = array_filter(['nama_ketua_kelas', 'nama_sekretaris_2'], fn ($column) => Schema::hasColumn('users', $column));
-            if ($columns) $table->dropColumn($columns);
+            if ($columns) {
+                $table->dropColumn($columns);
+            }
         });
     }
 };

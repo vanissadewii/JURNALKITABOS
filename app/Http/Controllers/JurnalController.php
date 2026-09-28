@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dispen;
 use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
-use App\Models\PengirimanJurnalKelas;
 use App\Models\PengaturanJurnalSusulan;
+use App\Models\PengirimanJurnalKelas;
 use App\Models\Siswa;
-use App\Models\Dispen;
-use Illuminate\Support\Facades\DB;
-use App\Services\VerifikasiSesiService;
 use App\Services\SesiKelasService;
+use App\Services\VerifikasiSesiService;
 use App\Support\Waktu;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class JurnalController extends Controller
@@ -24,7 +24,10 @@ class JurnalController extends Controller
     {
         $guru = Auth::user();
         $isSusulan = $request->boolean('susulan');
+        $isPulangCepat = $request->boolean('pulang_cepat');
         $tanggalJurnal = Carbon::parse(Waktu::sekarang()->toDateTimeString());
+        $hariMap = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'];
+        $hariIni = $hariMap[$tanggalJurnal->dayOfWeekIso] ?? null;
         $jadwalPilihan = collect();
 
         if ($isSusulan) {
@@ -61,7 +64,8 @@ class JurnalController extends Controller
                 $jadwalAktif = JadwalPelajaran::with(['kelas', 'mapel', 'jamPelajaran.semester'])
                     ->where('id_guru', $guru->id)
                     ->where('id_jadwal', (int) $request->query('jadwal'))
-                    ->whereHas('jamPelajaran.semester', fn ($q) => $q->where('status', 'aktif'))
+                    ->whereHas('jamPelajaran', fn ($q) => $q->where('hari', $hariIni)
+                        ->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')))
                     ->first();
             } else {
                 $jadwalAktif = $sesi->jadwalBerlangsung(idGuru: (int) $guru->id);
@@ -88,7 +92,9 @@ class JurnalController extends Controller
         $statusPiket = DB::table('surat_siswa')->where('id_kelas', $jadwalAktif->id_kelas)->whereDate('tanggal', $tanggalString)->get()->keyBy('id_siswa');
         $statusDispen = Dispen::where('id_kelas', $jadwalAktif->id_kelas)->whereDate('tanggal', $tanggalString)->where('status', 'disetujui')
             ->where('jam_ke_mulai', '<=', $jadwalAktif->jamPelajaran->jam_ke)
-            ->where(function ($q) use ($jadwalAktif) { $q->whereNull('jam_ke_selesai')->orWhere('jam_ke_selesai', '>=', $jadwalAktif->jamPelajaran->jam_ke); })
+            ->where(function ($q) use ($jadwalAktif) {
+                $q->whereNull('jam_ke_selesai')->orWhere('jam_ke_selesai', '>=', $jadwalAktif->jamPelajaran->jam_ke);
+            })
             ->get()->keyBy('id_siswa');
         $statusJurnal = $jurnal?->absenSiswa()->get()->keyBy('id_siswa') ?? collect();
         $daftarSiswaJson = json_encode($daftarSiswa->map(function ($siswa) use ($statusPiket, $statusDispen, $statusJurnal) {
@@ -104,6 +110,7 @@ class JurnalController extends Controller
                 $alasan = $statusDispen->get($siswa->id_siswa)->alasan;
                 $otomatis = true;
             }
+
             return ['key' => (string) $siswa->id_siswa, 'id_siswa' => $siswa->id_siswa, 'nama' => $siswa->nama,
                 'absen' => str_pad((string) ($siswa->no_absen ?? '-'), 2, '0', STR_PAD_LEFT), 'status' => $status,
                 'otomatis' => $otomatis, 'alasan' => $alasan];
@@ -111,7 +118,7 @@ class JurnalController extends Controller
         $rentang = $sesi->rentangEfektif($jadwalAktif);
 
         return view('guru.form_jurnal', compact(
-            'jadwalAktif', 'jadwalPilihan', 'daftarSiswa', 'daftarSiswaJson', 'rentang', 'jurnal', 'isSusulan', 'tanggalJurnal'
+            'jadwalAktif', 'jadwalPilihan', 'daftarSiswa', 'daftarSiswaJson', 'rentang', 'jurnal', 'isSusulan', 'tanggalJurnal', 'isPulangCepat'
         ));
     }
 
@@ -130,6 +137,7 @@ class JurnalController extends Controller
         ]);
 
         $isSusulan = $request->boolean('susulan');
+        $isPulangCepat = $request->boolean('pulang_cepat');
         if ($isSusulan && ! PengaturanJurnalSusulan::forGuru((int) Auth::id())->aktif) {
             return redirect()->route('dashboard-guru')->with('error', 'Pengisian jurnal susulan sedang ditutup oleh admin.');
         }
@@ -144,7 +152,7 @@ class JurnalController extends Controller
         $jadwalQuery = JadwalPelajaran::with(['jamPelajaran.semester'])
             ->where('id_jadwal', $validated['id_jadwal'])
             ->where('id_guru', Auth::id());
-        if ($isSusulan) {
+        if ($isSusulan || $isPulangCepat) {
             $jadwalQuery->whereHas('jamPelajaran', fn ($q) => $q
                 ->where('hari', $hariTarget)
                 ->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')));
@@ -210,6 +218,9 @@ class JurnalController extends Controller
         if ($isSusulan) {
             return redirect()->route('dashboard-guru')->with('success', 'Jurnal kemarin berhasil dikirim sebagai jurnal susulan.');
         }
+        if ($isPulangCepat) {
+            return redirect()->route('dashboard-guru')->with('success', 'Jurnal pulang cepat dikirim ke antrean guru piket untuk ditinjau.');
+        }
 
         if ($sudahTerverifikasi) {
             return redirect()->route('dashboard-guru')->with('success', 'Jurnal berhasil diperbarui dan perubahan langsung terlihat di rekap akun kelas.');
@@ -261,7 +272,9 @@ class JurnalController extends Controller
                     'file_path' => $tugas?->file_path,
                     'materi' => $tugas?->materi ?? $j->materi,
                     'jumlah_hadir' => $j->jumlah_hadir,
-                    'siswa' => $j->absenSiswa->map(fn ($a) => ['nama' => $a->nama, 'ket' => match ($a->status) { 'Sakit' => 'S', 'Izin' => 'I', 'Dispen' => 'D', default => 'A' }])->all(),
+                    'siswa' => $j->absenSiswa->map(fn ($a) => ['nama' => $a->nama, 'ket' => match ($a->status) {
+                        'Sakit' => 'S', 'Izin' => 'I', 'Dispen' => 'D', default => 'A'
+                    }])->all(),
                 ]],
             ];
         })->all();

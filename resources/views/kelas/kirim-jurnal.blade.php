@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,38 +30,38 @@
             <nav class="flex flex-col gap-1">
 
                 <a href="{{ route('kelas.beranda') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12l9-9 9 9" />
-                        <path d="M5 10v10h14V10" />
+                        <path d="M3 12l9-9 9 9"/>
+                        <path d="M5 10v10h14V10"/>
                     </svg>
                     Beranda
                 </a>
 
                 <a href="{{ route('kelas.scan') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7" />
-                        <rect x="14" y="3" width="7" height="7" />
-                        <rect x="3" y="14" width="7" height="7" />
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
                     </svg>
                     Scan
                 </a>
 
                 <a href="{{ route('kelas.kirim-jurnal') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 2L11 13" />
-                        <path d="M22 2l-7 20-4-9-20-7z" />
+                        <path d="M22 2L11 13"/>
+                        <path d="M22 2l-7 20-4-9-20-7z"/>
                     </svg>
                     Kirim Jurnal
                 </a>
 
                 <a href="{{ route('kelas.profile') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
                     </svg>
                     Profil
                 </a>
@@ -241,35 +240,35 @@
 
     <nav class="md:hidden fixed bottom-0 inset-x-0 h-[72px] bg-white border-t border-[#E5D8CC] flex z-50">
         <a href="{{ route('kelas.beranda') }}"
-            class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 12l9-9 9 9" />
-                <path d="M5 10v10h14V10" />
+                <path d="M3 12l9-9 9 9"/>
+                <path d="M5 10v10h14V10"/>
             </svg>
             Beranda
         </a>
         <a href="{{ route('kelas.scan') }}"
-            class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
             </svg>
             Scan
         </a>
         <a href="{{ route('kelas.kirim-jurnal') }}"
-            class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#5C4033] font-semibold">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M22 2L11 13" />
-                <path d="M22 2l-7 20-4-9-20-7z" />
+                <path d="M22 2L11 13"/>
+                <path d="M22 2l-7 20-4-9-20-7z"/>
             </svg>
             Kirim Jurnal
         </a>
         <a href="{{ route('kelas.profile') }}"
-            class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
+           class="flex-1 flex flex-col items-center justify-center gap-1 text-[11px] text-[#7A6A60]">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21c0-4 4-6 8-6s8 2 8 6" />
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
             </svg>
             Profil
         </a>
@@ -279,5 +278,4 @@
 
 
 </body>
-
 </html>

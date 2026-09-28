@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\Waktu;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Support\Waktu;
 
 class QrSesi extends Model
 {

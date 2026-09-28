@@ -1,20 +1,22 @@
 <?php
 
+use App\Models\JadwalPelajaran;
+use App\Models\Jurnal;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-
 // Tandai jadwal yang sudah berakhir lebih dari 15 menit tanpa jurnal sebagai guru tidak hadir.
-\Illuminate\Support\Facades\Schedule::call(function () {
+Schedule::call(function () {
     $sekarang = now();
     $batasAkhir = $sekarang->copy()->subMinutes((int) config('jurnal.toleransi_tidak_hadir', 15));
     $hari = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'][$sekarang->dayOfWeekIso];
 
-    \App\Models\JadwalPelajaran::query()
+    JadwalPelajaran::query()
         ->with('jamPelajaran')
         ->whereHas('jamPelajaran', fn ($q) => $q
             ->where('hari', $hari)
@@ -22,13 +24,13 @@ Artisan::command('inspire', function () {
             ->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')))
         ->get()
         ->each(function ($jadwal) use ($sekarang) {
-            $jurnalAda = \App\Models\Jurnal::where('id_jadwal', $jadwal->id_jadwal)
+            $jurnalAda = Jurnal::where('id_jadwal', $jadwal->id_jadwal)
                 ->whereDate('tanggal', $sekarang->toDateString())
                 ->whereNotNull('waktu_submit')->exists();
             if (! $jurnalAda) {
-                $jurnal = \App\Models\Jurnal::where('id_jadwal', $jadwal->id_jadwal)
+                $jurnal = Jurnal::where('id_jadwal', $jadwal->id_jadwal)
                     ->whereDate('tanggal', $sekarang->toDateString())
-                    ->whereNull('waktu_submit')->latest('id_jurnal')->first() ?? new \App\Models\Jurnal();
+                    ->whereNull('waktu_submit')->latest('id_jurnal')->first() ?? new Jurnal;
                 $jurnal->fill([
                     'id_jadwal' => $jadwal->id_jadwal,
                     'status_kehadiran_guru' => 'tidak_hadir',

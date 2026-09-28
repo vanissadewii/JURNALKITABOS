@@ -197,7 +197,6 @@ class JamPelajaranController extends Controller
         return redirect()->back()->with('success', "{$ditambahkan} jam baru ditambahkan; {$dilewati} jam yang sudah ada dilewati tanpa diubah.");
     }
 
-
     public function edit($id): View
     {
         $jamPelajaran = JamPelajaran::findOrFail($id);

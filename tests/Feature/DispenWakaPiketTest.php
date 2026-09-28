@@ -2,17 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\Dispen;
 use App\Models\JadwalPiketBulanan;
-use App\Models\JamPelajaran;
-use App\Models\Kelas;
-use App\Models\Semester;
-use App\Models\Siswa;
-use App\Models\User;
 use App\Models\Waka;
 use App\Support\WakaPiket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 /**
@@ -79,5 +72,23 @@ class DispenWakaPiketTest extends TestCase
         // Tanpa satu pun jadwal Waka, sistem tidak mengarang penerima.
         JadwalPiketBulanan::query()->delete();
         $this->assertNull(WakaPiket::bertugas(self::HARI_INI));
+    }
+
+    private function buatWaka(string $nama, ?string $noHp): Waka
+    {
+        return Waka::query()->create([
+            'nama' => $nama,
+            'no_hp' => $noHp,
+        ]);
+    }
+
+    private function jadwalkanWaka(string $tanggal, Waka $waka): JadwalPiketBulanan
+    {
+        return JadwalPiketBulanan::query()->create([
+            'tanggal' => $tanggal,
+            'sesi' => 'waka',
+            'urutan' => 1,
+            'id_waka' => $waka->id,
+        ]);
     }
 }

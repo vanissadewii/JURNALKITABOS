@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('id_siswa')->nullable()->after('id_jurnal')->constrained('siswa', 'id_siswa')->nullOnDelete();
         });
         if (DB::getDriverName() === 'mysql') {
-            DB::statement("ALTER TABLE jurnal_siswa_absen MODIFY status VARCHAR(20) NOT NULL");
+            DB::statement('ALTER TABLE jurnal_siswa_absen MODIFY status VARCHAR(20) NOT NULL');
         } else {
             Schema::table('jurnal_siswa_absen', fn (Blueprint $table) => $table->string('status', 20)->change());
         }

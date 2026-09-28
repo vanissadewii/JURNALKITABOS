@@ -85,7 +85,6 @@ class AdminJadwalPiketController extends Controller
         return back()->with('success', "Data Waka {$waka->nama} diperbarui dengan nomor {$waka->nomorTampilan()}.");
     }
 
-
     public function destroyWaka(Waka $waka): RedirectResponse
     {
         if ($waka->jadwalPiket()->exists() || DB::table('dispens')->where('id_waka', $waka->id)->exists()) {
@@ -166,7 +165,7 @@ class AdminJadwalPiketController extends Controller
     public function import(Request $request): RedirectResponse
     {
         $request->validate(['file_jadwal' => 'required|file|mimes:xlsx,xls,csv,txt|max:5120']);
-        $import = new JadwalPiketImport();
+        $import = new JadwalPiketImport;
         Excel::import($import, $request->file('file_jadwal'));
         $rows = $import->rows ?? collect();
         if ($rows->isEmpty()) {
@@ -264,6 +263,6 @@ class AdminJadwalPiketController extends Controller
 
     private function namaBulan(int $bulan): string
     {
-        return [1=>'Januari',2=>'Februari',3=>'Maret',4=>'April',5=>'Mei',6=>'Juni',7=>'Juli',8=>'Agustus',9=>'September',10=>'Oktober',11=>'November',12=>'Desember'][$bulan];
+        return [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'][$bulan];
     }
 }

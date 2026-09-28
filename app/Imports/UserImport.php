@@ -2,8 +2,8 @@
 
 namespace App\Imports;
 
-use App\Models\User;
 use App\Models\Kelas;
+use App\Models\User;
 use App\Support\NamaWaliKelas;
 use App\Support\Username;
 use Illuminate\Database\Eloquent\Model;

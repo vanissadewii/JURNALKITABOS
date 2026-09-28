@@ -25,3 +25,6 @@ yarn-error.log
 *.csv
 *.xlsx
 *.csv
+backup.sql
+backup*.sql
+backup (1).sql

@@ -88,6 +88,7 @@ class DispenController extends Controller
         $jamList = JamPelajaran::where('tingkat', $kelas->tingkat)
             ->where('hari', $hari)
             ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
+            ->whereBetween('jam_ke', [1, 13])
             ->orderBy('jam_ke')
             ->get(['id_jam', 'jam_ke', 'jam_mulai', 'jam_selesai']);
 
@@ -138,6 +139,7 @@ class DispenController extends Controller
 
         $dispen = Dispen::create([
             ...$validated,
+            'id_waka_piket' => $jadwalWaka->id_waka,
             'nomor_surat' => $this->generateNomorSurat(),
             'id_guru_piket' => auth()->id(),
             'id_waka' => $waka?->id,

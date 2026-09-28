@@ -23,6 +23,7 @@ class Dispen extends Model
         'id_guru_piket',
         'status',
         'id_waka',
+        'id_waka_piket',
         'disetujui_at',
         'token_approval',
     ];
