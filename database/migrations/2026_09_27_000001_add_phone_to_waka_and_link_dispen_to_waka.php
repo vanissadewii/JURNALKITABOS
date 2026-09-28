@@ -8,9 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('waka', function (Blueprint $table) {
-            $table->string('no_hp', 25)->nullable()->after('nama');
-        });
+        if (! Schema::hasColumn('waka', 'no_hp')) {
+            Schema::table('waka', function (Blueprint $table) {
+                $table->string('no_hp', 25)->nullable()->after('nama');
+            });
+        }
 
         Schema::table('dispens', function (Blueprint $table) {
             $table->foreignId('id_waka_piket')->nullable()->after('id_waka')->constrained('waka')->nullOnDelete();
