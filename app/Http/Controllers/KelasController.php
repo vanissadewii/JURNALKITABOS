@@ -5,21 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Jurnal;
 use App\Models\PengirimanJurnalKelas;
 use App\Models\Siswa;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use App\Services\SesiKelasService;
+use App\Support\Waktu;
 use Carbon\CarbonInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class KelasController extends Controller
 {
     /** Satu tempat untuk waktu "sekarang" (gampang dipalsukan saat tes). */
     private function sekarang(): CarbonInterface
     {
-        return \App\Support\Waktu::sekarang();
+        return Waktu::sekarang();
     }
 
     public function beranda(Request $request, SesiKelasService $service): View
@@ -131,7 +133,7 @@ class KelasController extends Controller
         return redirect()->route('kelas.kirim-jurnal')->with('success', 'Rekap jurnal hari ini berhasil dikirim untuk diperiksa guru piket.');
     }
 
-    public function unduhTugas(Request $request, int $id): \Symfony\Component\HttpFoundation\Response
+    public function unduhTugas(Request $request, int $id): Response
     {
         $tugas = DB::table('upload_tugas')->where('id_upload_tugas', $id)
             ->where('id_kelas', $request->user()->id_kelas)

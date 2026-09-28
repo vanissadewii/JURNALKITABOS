@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\UserImport;
 use App\Models\Kelas;
-use App\Models\User;
 use App\Models\Siswa;
+use App\Models\User;
 use App\Support\NamaWaliKelas;
 use App\Support\Username;
-use Illuminate\Validation\Rule;
-use App\Imports\UserImport;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -156,6 +156,7 @@ class UserController extends Controller
 
         if ($failures->isNotEmpty()) {
             $pesan = $failures->take(5)->map(fn ($failure) => 'Baris '.$failure->row().': '.implode(', ', $failure->errors()))->implode(' | ');
+
             return redirect()->route('admin.user.index')->with('error', 'Sebagian baris tidak dapat diimpor. '.$pesan);
         }
 

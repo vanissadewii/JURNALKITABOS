@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\JamPelajaran;
 use App\Models\JadwalPelajaran;
+use App\Models\JamPelajaran;
 use App\Models\Kelas;
-use Carbon\CarbonInterface;
 use App\Support\RentangJam;
-use Illuminate\Support\Facades\DB;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class SesiKelasService
 {

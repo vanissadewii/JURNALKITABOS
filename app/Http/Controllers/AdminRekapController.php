@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jurnal;
 use App\Exports\AdminRekapExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use App\Models\Kelas;
 use App\Models\JadwalPelajaran;
+use App\Models\Jurnal;
+use App\Models\Kelas;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use App\Support\Waktu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminRekapController extends Controller
 {
@@ -58,6 +57,7 @@ class AdminRekapController extends Controller
         })->values();
         $byTeacher = User::whereIn('role', ['guru', 'wali_kelas'])->get()->keyBy('id')->map(function ($guru) use ($jurnals, $tidakHadirPerGuru) {
             $items = $jurnals->filter(fn ($j) => (int) $j->jadwal?->id_guru === (int) $guru->id);
+
             return (object) [
                 'guru' => $guru,
                 'hadir' => $items->where('status_kehadiran_guru', 'hadir')->count(),

@@ -2,17 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\Dispen;
 use App\Models\JadwalPiketBulanan;
-use App\Models\JamPelajaran;
-use App\Models\Kelas;
-use App\Models\Semester;
-use App\Models\Siswa;
-use App\Models\User;
 use App\Models\Waka;
 use App\Support\WakaPiket;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 /**

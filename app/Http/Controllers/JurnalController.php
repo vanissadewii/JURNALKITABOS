@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dispen;
 use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
-use App\Models\PengirimanJurnalKelas;
 use App\Models\PengaturanJurnalSusulan;
+use App\Models\PengirimanJurnalKelas;
 use App\Models\Siswa;
-use App\Models\Dispen;
-use Illuminate\Support\Facades\DB;
-use App\Services\VerifikasiSesiService;
 use App\Services\SesiKelasService;
+use App\Services\VerifikasiSesiService;
 use App\Support\Waktu;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class JurnalController extends Controller
@@ -92,7 +92,9 @@ class JurnalController extends Controller
         $statusPiket = DB::table('surat_siswa')->where('id_kelas', $jadwalAktif->id_kelas)->whereDate('tanggal', $tanggalString)->get()->keyBy('id_siswa');
         $statusDispen = Dispen::where('id_kelas', $jadwalAktif->id_kelas)->whereDate('tanggal', $tanggalString)->where('status', 'disetujui')
             ->where('jam_ke_mulai', '<=', $jadwalAktif->jamPelajaran->jam_ke)
-            ->where(function ($q) use ($jadwalAktif) { $q->whereNull('jam_ke_selesai')->orWhere('jam_ke_selesai', '>=', $jadwalAktif->jamPelajaran->jam_ke); })
+            ->where(function ($q) use ($jadwalAktif) {
+                $q->whereNull('jam_ke_selesai')->orWhere('jam_ke_selesai', '>=', $jadwalAktif->jamPelajaran->jam_ke);
+            })
             ->get()->keyBy('id_siswa');
         $statusJurnal = $jurnal?->absenSiswa()->get()->keyBy('id_siswa') ?? collect();
         $daftarSiswaJson = json_encode($daftarSiswa->map(function ($siswa) use ($statusPiket, $statusDispen, $statusJurnal) {
@@ -108,6 +110,7 @@ class JurnalController extends Controller
                 $alasan = $statusDispen->get($siswa->id_siswa)->alasan;
                 $otomatis = true;
             }
+
             return ['key' => (string) $siswa->id_siswa, 'id_siswa' => $siswa->id_siswa, 'nama' => $siswa->nama,
                 'absen' => str_pad((string) ($siswa->no_absen ?? '-'), 2, '0', STR_PAD_LEFT), 'status' => $status,
                 'otomatis' => $otomatis, 'alasan' => $alasan];
@@ -269,7 +272,9 @@ class JurnalController extends Controller
                     'file_path' => $tugas?->file_path,
                     'materi' => $tugas?->materi ?? $j->materi,
                     'jumlah_hadir' => $j->jumlah_hadir,
-                    'siswa' => $j->absenSiswa->map(fn ($a) => ['nama' => $a->nama, 'ket' => match ($a->status) { 'Sakit' => 'S', 'Izin' => 'I', 'Dispen' => 'D', default => 'A' }])->all(),
+                    'siswa' => $j->absenSiswa->map(fn ($a) => ['nama' => $a->nama, 'ket' => match ($a->status) {
+                        'Sakit' => 'S', 'Izin' => 'I', 'Dispen' => 'D', default => 'A'
+                    }])->all(),
                 ]],
             ];
         })->all();

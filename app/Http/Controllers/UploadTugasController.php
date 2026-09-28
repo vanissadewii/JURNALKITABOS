@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class UploadTugasController extends Controller
 {
@@ -52,7 +53,7 @@ class UploadTugasController extends Controller
         ]);
     }
 
-    public function unduhLampiran(int $id): \Symfony\Component\HttpFoundation\Response
+    public function unduhLampiran(int $id): Response
     {
         $tugas = DB::table('upload_tugas')->where('id_upload_tugas', $id)->first();
         abort_if(! $tugas || ! $tugas->file_path, 404);
