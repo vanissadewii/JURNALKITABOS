@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Support\Username;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
@@ -21,9 +22,10 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        $input['username'] = Username::normalisasi($input['username'] ?? '');
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:50', Rule::unique(User::class)],
+            'username' => ['required', 'string', 'max:50', 'regex:'.Username::FORMAT, Rule::unique(User::class)],
             'password' => $this->passwordRules(),
         ])->validate();
 

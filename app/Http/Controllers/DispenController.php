@@ -10,12 +10,16 @@ use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Models\Kelas;
 use App\Models\Siswa;
+use App\Support\WakaPiket;
+use App\Support\Waktu;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Throwable;
 
 class DispenController extends Controller
 {
@@ -32,11 +36,14 @@ class DispenController extends Controller
 
     public function index(): View
     {
-        $riwayat = Dispen::with(['siswa', 'kelas', 'guruPiket'])
+        $riwayat = Dispen::with(['siswa', 'kelas', 'guruPiket', 'waka'])
             ->orderByDesc('created_at')
             ->paginate(15);
 
-        return view('guru.dispensasi-siswa', compact('riwayat'));
+        return view('guru.dispensasi-siswa', [
+            'riwayat' => $riwayat,
+            'waka' => WakaPiket::bertugas(Waktu::sekarang()->toDateString()),
+        ]);
     }
 
     public function cariSiswa(Request $request): JsonResponse
@@ -86,13 +93,26 @@ class DispenController extends Controller
             ->orderBy('jam_ke')
             ->get(['id_jam', 'jam_ke', 'jam_mulai', 'jam_selesai']);
 
+        if ($tanggal->isSameDay(Waktu::sekarang())) {
+            $sekarang = Waktu::sekarang();
+            $jamList = $jamList->filter(function ($jam) use ($tanggal, $sekarang) {
+                $mulai = Carbon::parse($tanggal->toDateString().' '.$jam->jam_mulai, $sekarang->timezone);
+                $selesai = Carbon::parse($tanggal->toDateString().' '.$jam->jam_selesai, $sekarang->timezone);
+                if ($selesai->lessThanOrEqualTo($mulai)) {
+                    $selesai->addDay();
+                }
+
+                return $selesai->greaterThan($sekarang);
+            })->values();
+        }
+
         return response()->json([
             'hari' => $hari,
             'jam' => $jamList,
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse|JsonResponse
     {
         $validated = $request->validate([
             'id_siswa' => 'required|exists:siswa,id_siswa',
@@ -115,60 +135,110 @@ class DispenController extends Controller
             ->pluck('jam_ke');
         abort_unless($jamTersedia->contains((int) $validated['jam_ke_mulai']) && $jamTersedia->contains((int) $validated['jam_ke_selesai']), 422, 'Rentang jam tidak sesuai dengan jadwal kelas.');
 
-        $jadwalWaka = JadwalPiketBulanan::with('waka')
-            ->whereDate('tanggal', $validated['tanggal'])
-            ->where('sesi', 'waka')
-            ->first();
-        abort_unless($jadwalWaka?->waka && filled($jadwalWaka->waka->no_hp), 422, 'Jadwal Waka atau nomor WhatsApp Waka untuk tanggal pengajuan belum tersedia. Hubungi admin.');
+        // Waka penerima ditentukan otomatis dari jadwal piket yang dibuat admin.
+        $waka = WakaPiket::bertugas(Carbon::parse($validated['tanggal'])->toDateString());
 
         $dispen = Dispen::create([
             ...$validated,
             'id_waka_piket' => $jadwalWaka->id_waka,
             'nomor_surat' => $this->generateNomorSurat(),
             'id_guru_piket' => auth()->id(),
+            'id_waka' => $waka?->id,
             'status' => 'menunggu',
             'token_approval' => Str::random(40),
         ]);
 
+        $dispen->loadMissing(['siswa', 'kelas', 'guruPiket', 'waka']);
+
+        $redirect = redirect()
+            ->route('dispen.index')
+            ->with('success', "Surat dispen {$dispen->nomor_surat} berhasil dibuat.")
+            ->with('waka_dituju', $waka?->nama)
+            ->with('nomor_waka', $waka?->nomorTampilan());
+
         $linkWa = $this->linkWaWaka($dispen);
+        $pesanBerhasil = "Surat dispen {$dispen->nomor_surat} berhasil dibuat.";
+
         if ($linkWa) {
-            return redirect()->away($linkWa);
+            if ($request->expectsJson()) {
+                session()->flash('success', $pesanBerhasil);
+
+                return response()->json([
+                    'success' => true,
+                    'link_wa' => $linkWa,
+                    'redirect' => route('dispen.index', [], false),
+                ]);
+            }
+
+            return $redirect;
         }
 
-        return redirect()->route('dispen.index')
-            ->with('error', 'Surat dibuat, tetapi nomor WhatsApp Waka belum valid.');
+        $pesanPeringatan = $waka
+            ? "Nomor WhatsApp Waka {$waka->nama} belum diisi admin, jadi persetujuan belum bisa dikirim otomatis."
+            : 'Jadwal Waka pada tanggal tersebut belum tersedia, jadi persetujuan belum bisa dikirim otomatis.';
+
+        if ($request->expectsJson()) {
+            session()->flash('success', $pesanBerhasil);
+            session()->flash('warning', $pesanPeringatan);
+            session()->flash('link_approval', $this->linkApproval($dispen));
+
+            return response()->json([
+                'success' => true,
+                'warning' => $pesanPeringatan,
+                'link_approval' => $this->linkApproval($dispen),
+                'redirect' => route('dispen.index', [], false),
+            ]);
+        }
+
+        return $redirect
+            ->with('link_approval', $this->linkApproval($dispen))
+            ->with('warning', $pesanPeringatan);
+    }
+
+    /** Tautan persetujuan lengkap (absolut) agar bisa langsung diklik di WhatsApp. */
+    private function linkApproval(Dispen $dispen): string
+    {
+        return route('dispen.approval', ['token' => $dispen->token_approval]);
     }
 
     private function linkWaWaka(Dispen $dispen): ?string
     {
         $dispen->loadMissing(['siswa', 'waka']);
-        $nomor = (string) preg_replace('/\D/', '', (string) $dispen->waka?->no_hp);
-        if ($nomor === '') {
+
+        $nomor = $dispen->waka?->nomorWa();
+
+        if (! $nomor || ! $dispen->waka->nomorValid()) {
             return null;
         }
-        if (str_starts_with($nomor, '0')) {
-            $nomor = '62'.substr($nomor, 1);
-        } elseif (str_starts_with($nomor, '8')) {
-            $nomor = '62'.$nomor;
-        }
 
-        $linkApproval = request()->getSchemeAndHttpHost()
-            .route('dispen.approval', $dispen->token_approval, false);
-        $namaWaka = $dispen->waka->nama;
-        $pesan = "Yth. {$namaWaka},\n\n"
-            ."Ada surat dispen {$dispen->nomor_surat} untuk {$dispen->siswa->nama} yang menunggu persetujuan Anda.\n\n"
-            ."Buka tautan berikut untuk melihat kartu dan memproses pengajuan: {$linkApproval}";
+        $kelas = $dispen->kelas
+            ? "{$dispen->kelas->tingkat} {$dispen->kelas->jurusan} {$dispen->kelas->rombel}"
+            : '-';
+
+        $pesan = "Yth. {$dispen->waka->nama},\n\n"
+            ."Ada surat dispen {$dispen->nomor_surat} yang menunggu persetujuan Anda.\n\n"
+            ."Nama: {$dispen->siswa->nama}\n"
+            ."Kelas: {$kelas}\n"
+            ."Tanggal: {$dispen->tanggal->format('d/m/Y')}\n"
+            ."{$dispen->labelJam()}\n"
+            ."Pengaju: {$dispen->guruPiket?->name}\n\n"
+            ."Silakan klik tautan berikut untuk menyetujui (tanpa login):\n"
+            .$this->linkApproval($dispen);
 
         return 'https://wa.me/'.$nomor.'?text='.urlencode($pesan);
     }
 
+    /**
+     * Halaman persetujuan Waka. Dibuka lewat tautan bertoken pada pesan
+     * WhatsApp, sehingga Waka tidak perlu login dan card langsung muncul.
+     */
     public function halamanApproval(string $token): View
     {
-        $dispen = Dispen::with(['siswa', 'kelas', 'guruPiket'])
+        $dispen = Dispen::with(['siswa', 'kelas', 'guruPiket', 'waka'])
             ->where('token_approval', $token)
             ->firstOrFail();
 
-        // Link berisi token acak unik yang dikirim langsung ke Waka; token hanya berlaku sekali.
+        // Token acak unik hanya berlaku sekali; setelah diproses tombol hilang.
         $alasanTidakBisa = $dispen->status !== 'menunggu' ? 'sudah_diproses' : null;
 
         return view('guru-piket.dispen-approval', [
@@ -183,11 +253,20 @@ class DispenController extends Controller
         $dispen = Dispen::where('token_approval', $token)->where('status', 'menunggu')->firstOrFail();
 
         // Otorisasi berasal dari token persetujuan sekali pakai yang hanya dikirim ke Waka.
-        $dispen->update(['status' => 'disetujui', 'disetujui_at' => now()]);
+        $dispen->update(['status' => 'disetujui', 'disetujui_at' => Waktu::sekarang()]);
 
-        $this->salurkanKeJurnal($dispen);
+        $peringatan = null;
 
-        return back()->with('success', 'Dispen disetujui dan otomatis tercatat di jurnal guru terkait.');
+        try {
+            $this->salurkanKeJurnal($dispen);
+        } catch (Throwable $e) {
+            Log::error('Gagal menyalurkan dispen ke jurnal: '.$e->getMessage(), ['id_dispen' => $dispen->id_dispen]);
+            $peringatan = 'Dispen disetujui, tetapi pencatatan otomatis ke jurnal gagal. Silakan hubungi admin.';
+        }
+
+        $redirect = back()->with('success', 'Dispen disetujui dan otomatis tercatat di jurnal guru terkait.');
+
+        return $peringatan ? $redirect->with('warning', $peringatan) : $redirect;
     }
 
     public function tolak(string $token): RedirectResponse

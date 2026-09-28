@@ -11,7 +11,7 @@ class Waktu
     {
         $uji = config('jurnal.waktu_uji');
 
-// Jam sekolah mengikuti zona waktu Indonesia barat.
+        // Jadwal piket dan jurnal mengikuti waktu sekolah, bukan timezone server.
         return $uji ? Carbon::parse($uji, 'Asia/Jakarta')->setTimezone('Asia/Jakarta') : Carbon::now('Asia/Jakarta');
     }
 }

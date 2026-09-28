@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 
@@ -342,7 +342,7 @@
             if (!nomorAdmin) { alert('Nomor telepon admin belum diatur.'); return; }
             if (nomorAdmin.startsWith('0')) nomorAdmin = `62${nomorAdmin.slice(1)}`;
             else if (!nomorAdmin.startsWith('62')) nomorAdmin = `62${nomorAdmin}`;
-            const pesan = `Hallo Admin\nSaya dari kelas {{ $kelas->nama_kelas }}\nKendala:`;
+            const pesan = `Halo admin, saya dari kelas {{ $kelas->nama_kelas }}.\nKendala:`;
             window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
         }
 

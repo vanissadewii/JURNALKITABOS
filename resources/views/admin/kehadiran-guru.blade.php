@@ -6,7 +6,7 @@
     <title>Kehadiran Guru - Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
             #sidebar, #sidebarOverlay, .no-print { display: none !important; }
@@ -374,7 +374,7 @@
                             <button type="button" data-status-btn="{{ $key }}" onclick="filterStatus('{{ $key }}', this)" class="status-tab-btn rounded-lg border border-[#D8C9BC] bg-white px-3 py-2 text-xs font-bold text-[#5C4033] transition">{{ $label }} <span class="opacity-80">({{ $ringkasan[$key] ?? 0 }})</span></button>
                         @endforeach
                     </div>
-                    <button type="button" onclick="exportExcel()" class="rounded-lg border border-[#B7DDBB] bg-[#E8F5E9] px-3.5 py-2 text-xs font-bold text-[#2E7D32] hover:bg-[#D7EFDA]">Export CSV</button>
+                    <a href="{{ route('admin.kehadiran.export', ['tanggal' => $tanggal->format('Y-m-d')]) }}" class="rounded-lg border border-[#D8C9BC] bg-[#5C4033] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#452F26]">Export Excel</a>
                 </div>
             </form>
             <div class="overflow-hidden rounded-lg border border-[#E5D8CC] bg-white">
@@ -429,30 +429,7 @@
             btn.classList.add('bg-[#5C4033]', 'text-white');
         }
 
-        // ===== EXPORT KE EXCEL (CSV, terbuka otomatis di Excel) =====
-        function exportExcel() {
 
-            const rows = [['Guru', 'Mata Pelajaran', 'Status', 'Materi / Tugas', 'Kelengkapan']];
-
-            document.querySelectorAll('#tabelKehadiran tbody tr').forEach(function (row) {
-                if (row.classList.contains('hidden')) return;
-                const cells = Array.from(row.children).map(td => td.innerText.trim().replace(/\s+/g, ' '));
-                rows.push(cells);
-            });
-
-            const csvContent = rows.map(r => r.map(v => `"${v.replace(/"/g, '""')}"`).join(',')).join('\n');
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const tanggal = document.getElementById('tanggalPicker').value;
-
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Kehadiran-Guru-${tanggal}.csv`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
     </script>
     @include('admin.partials.admin_profile_modal')
 </body>

@@ -6,6 +6,7 @@ use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
 use App\Models\QrSesi;
 use App\Models\User;
+use App\Models\Siswa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -35,7 +36,7 @@ class RiwayatJurnalController extends Controller
 
     public function show(Jurnal $jurnal): View
     {
-        $jurnal->load(['jadwal.kelas', 'jadwal.mapel', 'jadwal.jamPelajaran']);
+        $jurnal->load(['jadwal.kelas', 'jadwal.mapel', 'jadwal.jamPelajaran', 'absenSiswa']);
         $jadwal = $jurnal->jadwal;
 
         abort_if((int) $jadwal->id_guru !== (int) Auth::id(), 403);
@@ -118,6 +119,12 @@ class RiwayatJurnalController extends Controller
             ->latest('id_qr')
             ->first();
         $pemindai = $qr?->dipindai_oleh ? User::find($qr->dipindai_oleh) : null;
+        $jumlahSiswa = Siswa::where('id_kelas', $jadwal->id_kelas)->count();
+        $jumlahSakit = collect($tidakHadir)->where('status', 'Sakit')->count();
+        $jumlahIzin = collect($tidakHadir)->where('status', 'Izin')->count();
+        $jumlahAlpha = collect($tidakHadir)->where('status', 'Alpha')->count();
+        $jumlahDispen = count($dispen);
+        $jumlahHadir = $jurnal->jumlah_hadir ?? max(0, $jumlahSiswa - count($tidakHadir) - $jumlahDispen);
 
         return view('guru.detail_jurnal', compact(
             'jurnal',
@@ -128,7 +135,13 @@ class RiwayatJurnalController extends Controller
             'tidakHadir',
             'dispen',
             'qr',
-            'pemindai'
+            'pemindai',
+            'jumlahSiswa',
+            'jumlahHadir',
+            'jumlahSakit',
+            'jumlahIzin',
+            'jumlahAlpha',
+            'jumlahDispen'
         ));
     }
 }

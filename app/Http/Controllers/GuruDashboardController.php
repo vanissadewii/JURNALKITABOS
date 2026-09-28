@@ -22,7 +22,7 @@ class GuruDashboardController extends Controller
         /** @var User $guru */
         $guru = Auth::user();
         $sekarang = Waktu::sekarang();
-        $hari = $this->namaHari[$sekarang->dayOfWeekIso] ?? null;
+        $hari = $this->namaHari[$sekarang->copy()->setTimezone(config('app.timezone', 'Asia/Jakarta'))->dayOfWeekIso] ?? null;
         $pengaturan = $hari
             ? DB::table('pengaturan_kegiatan_harian')->where('hari', $hari)->value('kegiatan_ditiadakan')
             : false;

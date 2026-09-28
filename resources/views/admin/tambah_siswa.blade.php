@@ -6,7 +6,7 @@
     <title>Data Siswa - Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
 </head>
 <body class="min-h-screen overflow-x-hidden bg-[#F5EFE8] font-['Inter'] text-[#3E3028]">
@@ -54,7 +54,7 @@
                     @csrf
                     <label class="flex min-w-0 flex-1 flex-col gap-2">
                         <span class="text-sm font-semibold">Pilih file siswa</span>
-                        <input id="fileExcel" type="file" name="file_excel" accept=".xlsx,.xls,.csv" required class="w-full rounded-lg border border-[#D8C9BC] bg-[#FFFCF9] text-sm file:mr-4 file:border-0 file:bg-[#F5EFE8] file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-[#5C4033] hover:file:bg-[#EDE2D8]">
+                        <input id="fileExcel" type="file" name="file_excel" accept=".xlsx,.xls,.csv" required class="w-full rounded-lg border border-[#D8C9BC] bg-[#FFFCF9] text-sm file:mr-4 file:border-0 file:bg-[#5C4033] file:px-4 file:py-2.5 file:text-sm file:font-semibold file:text-white hover:file:bg-[#452F26]">
                     </label>
                     <button type="submit" class="h-11 shrink-0 rounded-lg bg-[#5C4033] px-5 text-sm font-semibold text-white hover:bg-[#452F26]">Impor Data</button>
                 </form>

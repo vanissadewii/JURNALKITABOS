@@ -83,8 +83,8 @@
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
-          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span>
+        <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
         </a>
 
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
@@ -128,7 +128,7 @@
             <span>Jurnal Berhasil Disimpan</span>
           </span>
           <h2 class="font-poppins font-bold text-xl sm:text-2xl text-[#3E3028] mt-2">{{ $jurnal->jadwal->mapel->nama_mapel ?? 'Mata Pelajaran' }} — {{ $jurnal->jadwal->kelas->nama_kelas }}</h2>
-          <p class="text-xs text-brand-600">Tunjukkan QR ini ke kelas untuk diverifikasi.</p>
+          <p class="text-xs text-brand-600">Tunjukkan QR ini ke kelas untuk diverifikasi. Jika memasukkan kode manual, gunakan kode 6 angka di bawah QR.</p>
         </div>
 
         <!-- Box Display Timer Masa Berlaku QR -->
@@ -145,7 +145,8 @@
           
           <!-- Ilustrasi QR Code SVG -->
           <img id="qr-svg" class="w-48 h-48 transition-opacity duration-300" src="{{ $qrImage }}" alt="QR code verifikasi sesi">
-          <span class="text-[11px] font-mono text-brand-600">ID Sesi: {{ $qrSesi->kode_qr }}</span>
+          <span class="text-[11px] font-mono text-brand-600">Kode sesi: {{ $qrSesi->kode_qr }}</span>
+          <p class="max-w-xs text-xs text-brand-600">Jika kamera kelas tidak bisa memindai, minta perwakilan kelas memasukkan kode ini secara manual.</p>
 
           <!-- Overlay Kadaluarsa (Muncul jika waktu habis) -->
           <div id="qr-expired-overlay" class="hidden absolute inset-0 bg-white/90 backdrop-blur-xs rounded-2xl flex-col items-center justify-center p-4 gap-2">
@@ -198,7 +199,7 @@
         <span>Riwayat</span>
       </a>
 
-      <a @if(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(!auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>Piket</span></a>
+      <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -247,8 +248,8 @@
     // Jalankan timer saat halaman terbuka
     window.onload = startTimer;
 
-    const statusUrl = "{{ route('qr.status-guru', $jurnal) }}";
-    const homeUrl = "{{ url('/dashboard-guru') }}";
+    const statusUrl = "{{ route('qr.status-guru', $jurnal, false) }}";
+    const homeUrl = "{{ route('dashboard-guru', [], false) }}";
 
     const statusInterval = setInterval(async () => {
       const response = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });

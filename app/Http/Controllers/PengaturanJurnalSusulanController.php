@@ -12,7 +12,7 @@ class PengaturanJurnalSusulanController extends Controller
 {
     public function edit(Request $request): View
     {
-        $guruList = User::whereIn('role', ['guru', 'guru_piket'])->orderBy('name')->get();
+        $guruList = User::whereIn('role', ['guru', 'guru_piket', 'wali_kelas'])->orderBy('name')->get();
         $idGuru = $request->query('id_guru');
         $guruDipilih = $idGuru ? $guruList->firstWhere('id', (int) $idGuru) : null;
         $pengaturan = $guruDipilih ? PengaturanJurnalSusulan::forGuru((int) $guruDipilih->id) : null;

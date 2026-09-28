@@ -51,10 +51,10 @@ class Dispen extends Model
         return $this->belongsTo(User::class, 'id_guru_piket');
     }
 
-    /** @return BelongsTo<User, $this> */
+    /** @return BelongsTo<Waka, $this> */
     public function waka(): BelongsTo
     {
-        return $this->belongsTo(Waka::class, 'id_waka_piket');
+        return $this->belongsTo(Waka::class, 'id_waka', 'id');
     }
 
     /** @return HasMany<DispenJurnal, $this> */

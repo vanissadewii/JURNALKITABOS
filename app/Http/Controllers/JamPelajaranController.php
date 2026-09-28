@@ -309,6 +309,4 @@ class JamPelajaranController extends Controller
             'senin_jumat' => ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
         };
     }
-
-
 }

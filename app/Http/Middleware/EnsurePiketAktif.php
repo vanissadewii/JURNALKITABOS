@@ -28,7 +28,13 @@ class EnsurePiketAktif
             })
             ->exists();
 
-        abort_unless($piket, 403, 'Menu ini hanya dapat digunakan saat Anda bertugas piket.');
+        if (! $piket) {
+            if ($user?->role === 'wali_kelas') {
+                return redirect()->route('piket.rekap');
+            }
+
+            abort(403, 'Menu ini hanya dapat digunakan saat Anda bertugas piket.');
+        }
 
         return $next($request);
     }
