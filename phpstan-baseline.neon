@@ -1,0 +1,751 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/Fortify/UpdateUserProfileInformation.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\JadwalPelajaran\:\:\$jurnalHariIni\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/AdminDashboardController.php
+
+		-
+			message: '#^Cannot call method format\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/AdminJadwalPiketController.php
+
+		-
+			message: '#^Cannot call method translatedFormat\(\) on Carbon\\Carbon\|string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/AdminJadwalPiketController.php
+
+		-
+			message: '#^Unable to resolve the template type TGroupKey in call to method Illuminate\\Support\\Collection\<int,App\\Models\\JadwalPiketBulanan\>\:\:groupBy\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Http/Controllers/AdminJadwalPiketController.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 2
+			path: app/Http/Controllers/AdminJadwalPiketController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\JadwalPiketBulanan\:\:\$statusTampilan\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/AdminMonitoringController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$jam_ke\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/AdminMonitoringController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$jam_mulai\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/AdminMonitoringController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$jam_selesai\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/AdminMonitoringController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$status_guru\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/AdminMonitoringController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminMonitoringController\:\:terapkanJamMaju\(\) has parameter \$jadwal with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/AdminMonitoringController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminMonitoringController\:\:terapkanJamMaju\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/AdminMonitoringController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\AdminRekapController\:\:data\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/AdminRekapController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,App\\Models\\Jurnal\>\:\:filter\(\) expects \(callable\(App\\Models\\Jurnal, int\)\: bool\)\|null, Closure\(mixed\)\: \(App\\Models\\Kelas\|null\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminRekapController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>jam_ke" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/AdminRekapController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>nama_kelas" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/AdminRekapController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>nama_mapel" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/AdminRekapController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/AdminRekapController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$id_kelas\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DispenController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$tingkat\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DispenController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Siswa\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Siswa\>\:\:\$id_kelas\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DispenController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\DispenController\:\:tolakJikaTakBerhak\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Http/Controllers/DispenController.php
+
+		-
+			message: '#^Undefined variable\: \$jadwalWaka$#'
+			identifier: variable.undefined
+			count: 1
+			path: app/Http/Controllers/DispenController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$kelas\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$mapel\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$nama\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\GuruPiketController\:\:siswaTidakHadir\(\) should return Illuminate\\Support\\Collection\<int, object\> but returns Illuminate\\Support\\Collection\<int, object\{nama\: mixed, status\: mixed, id_kelas\: int\<0, max\>, kelas\: string, mapel\: string\}&stdClass\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,App\\Models\\Jurnal\>\:\:filter\(\) expects \(callable\(App\\Models\\Jurnal, int\)\: bool\)\|null, Closure\(mixed\)\: \(Carbon\\CarbonImmutable\|null\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,App\\Models\\Jurnal\>\:\:flatMap\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,object\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,object\{nama\: mixed, kelas\: mixed, status\: mixed, keterangan\: string\}&stdClass\>\:\:sortBy\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,App\\Models\\Jurnal\>\:\:flatMap\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,object\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,object\{nama\: mixed, kelas\: mixed, status\: mixed, keterangan\: string\}&stdClass\>\:\:values\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/GuruPiketController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\JamPelajaran\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\JamPelajaran\>\:\:\$hari\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/JadwalPelajaranController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\JamPelajaran\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\JamPelajaran\>\:\:\$id_semester\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JadwalPelajaranController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\JamPelajaran\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\JamPelajaran\>\:\:\$jam_ke\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/JadwalPelajaranController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\JamPelajaran\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\JamPelajaran\>\:\:\$tingkat\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/JadwalPelajaranController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$id_kelas\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/JadwalPelajaranController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$tingkat\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JadwalPelajaranController.php
+
+		-
+			message: '#^Parameter \#1 \$kelas of method App\\Http\\Controllers\\JadwalPelajaranController\:\:kelasUjiWeekend\(\) expects App\\Models\\Kelas, App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/JadwalPelajaranController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JadwalPiketController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\JadwalPiket\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/JadwalPiketController.php
+
+		-
+			message: '#^Parameter \#1 \$sekarang of method App\\Http\\Controllers\\JadwalPiketController\:\:statusSesi\(\) expects Carbon\\Carbon, Carbon\\CarbonImmutable given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/JadwalPiketController.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/JadwalPiketController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Database\\Eloquent\\Collection\<int,App\\Models\\JadwalPiket\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/JadwalPiketController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\JamPelajaran\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\JamPelajaran\>\:\:delete\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/JamPelajaranController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\JamPelajaran\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\JamPelajaran\>\:\:update\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Controllers/JamPelajaranController.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: app/Http/Controllers/JamPelajaranController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\JamPelajaranController\:\:daftarHari\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: app/Http/Controllers/JamPelajaranController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\JamPelajaranController\:\:destroy\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/JamPelajaranController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\JamPelajaranController\:\:edit\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/JamPelajaranController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\JamPelajaranController\:\:update\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/JamPelajaranController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\PengirimanJurnalKelas\:\:\$jumlah_kurang\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\PengirimanJurnalKelas\:\:\$jumlah_lengkap\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\PengirimanJurnalKelas\:\:\$jumlah_sesi\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\PengirimanJurnalKelas\:\:\$kelas\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\PengirimanJurnalKelas\:\:\$rekap\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$ids\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$jumlah_siswa\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$jurnal\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$tugas\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Relation ''kelas'' is not found in App\\Models\\PengirimanJurnalKelas model\.$#'
+			identifier: larastan.relationExistence
+			count: 2
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Relation ''pemeriksa'' is not found in App\\Models\\PengirimanJurnalKelas model\.$#'
+			identifier: larastan.relationExistence
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Unable to resolve the template type TKey in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Unable to resolve the template type TValue in call to function collect$#'
+			identifier: argument.templateType
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>jurusan" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>materi" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>rombel" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>status" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/JurnalController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$ids\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Http/Controllers/KelasController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$jurnal\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/KelasController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$tugas\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/KelasController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PengaturanQrController\:\:edit\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PengaturanQrController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PengaturanQrController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/PengaturanQrController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$jurusan\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/PiketRekapController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$rombel\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/PiketRekapController.php
+
+		-
+			message: '#^Access to an undefined property object\:\:\$tingkat\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/PiketRekapController.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ProfilGuruController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\QrSesiController\:\:detailSesi\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/QrSesiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>nama_kelas" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/QrSesiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>nama_mapel" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/QrSesiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/QrSesiController.php
+
+		-
+			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 2
+			path: app/Http/Controllers/RiwayatJurnalController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Semester\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Semester\>\:\:update\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/SemesterController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\SemesterController\:\:activate\(\) has parameter \$id with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Http/Controllers/SemesterController.php
+
+		-
+			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Http/Controllers/SiswaController.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, list\<string\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/SiswaController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Siswa\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Siswa\>\:\:\$id_kelas\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/SuratSiswaController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Siswa\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Siswa\>\:\:\$id_siswa\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SuratSiswaController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$jurusan\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$rombel\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$tingkat\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Argument of an invalid type list\<string\>\|false supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Parameter \#1 \$value of function count expects array\|Countable, list\<string\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/UserController.php
+
+		-
+			message: '#^Property App\\Imports\\JadwalPiketImport\:\:\$rows with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Imports/JadwalPiketImport.php
+
+		-
+			message: '#^Method App\\Imports\\SiswaImport\:\:prepareForValidation\(\) has parameter \$data with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Imports/SiswaImport.php
+
+		-
+			message: '#^Method App\\Imports\\SiswaImport\:\:prepareForValidation\(\) has parameter \$index with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Imports/SiswaImport.php
+
+		-
+			message: '#^Method App\\Imports\\SiswaImport\:\:prepareForValidation\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Imports/SiswaImport.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$jurusan\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Imports/UserImport.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$rombel\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Imports/UserImport.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Kelas\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Kelas\>\:\:\$tingkat\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Imports/UserImport.php
+
+		-
+			message: '#^Method App\\Imports\\UserImport\:\:prepareForValidation\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Imports/UserImport.php
+
+		-
+			message: '#^Method App\\Imports\\UserImport\:\:prepareForValidation\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Imports/UserImport.php
+
+		-
+			message: '#^Class App\\Models\\JadwalPiket uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/JadwalPiket.php
+
+		-
+			message: '#^Method App\\Models\\JadwalPiket\:\:guru\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/JadwalPiket.php
+
+		-
+			message: '#^Method App\\Models\\JadwalPiketBulanan\:\:guru\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/JadwalPiketBulanan.php
+
+		-
+			message: '#^Method App\\Models\\JadwalPiketBulanan\:\:waka\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/JadwalPiketBulanan.php
+
+		-
+			message: '#^Method App\\Models\\Jurnal\:\:dispensasi\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasManyThrough does not specify its types\: TRelatedModel, TIntermediateModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Jurnal.php
+
+		-
+			message: '#^Method App\\Models\\PengirimanJurnalKelas\:\:kelas\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/PengirimanJurnalKelas.php
+
+		-
+			message: '#^Method App\\Models\\PengirimanJurnalKelas\:\:pemeriksa\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/PengirimanJurnalKelas.php
+
+		-
+			message: '#^Method App\\Models\\PengirimanJurnalKelas\:\:pengirim\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Models/PengirimanJurnalKelas.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:jadwalPiket\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:ketuaKelas\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:sekretarisKedua\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:sekretarisPertama\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc tag @property for property App\\Models\\User\:\:\$created_at contains unknown class App\\Models\\Carbon\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^PHPDoc tag @property for property App\\Models\\User\:\:\$updated_at contains unknown class App\\Models\\Carbon\.$#'
+			identifier: class.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Services\\VerifikasiSesiService\:\:jamEfektif\(\) has parameter \$slotPerHari with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/VerifikasiSesiService.php
+
+		-
+			message: '#^Method App\\Services\\VerifikasiSesiService\:\:rentang\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/VerifikasiSesiService.php
+
+		-
+			message: '#^Method App\\Services\\VerifikasiSesiService\:\:rentangEfektif\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/VerifikasiSesiService.php
+
+		-
+			message: '#^Method App\\Support\\WakaPiket\:\:bertugas\(\) should return App\\Models\\Waka\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Support/WakaPiket.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: routes/web.php
