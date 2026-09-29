@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,8 +45,21 @@
     .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
     .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
     .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+    @media print {
+      @page { margin: 12mm; }
+      html, body { min-height: 0 !important; height: auto !important; overflow: visible !important; }
+      body { display: block !important; background: #fff !important; }
+      .guru-sidebar, header, body > nav, #filter-kalender { display: none !important; }
+      body > div { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+      body > div > main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
+      #jurnal-grid { display: block !important; width: 100% !important; }
+      .jurnal-card { display: block !important; width: 100% !important; margin: 0 0 8mm !important; box-shadow: none !important; break-inside: auto; page-break-inside: auto; }
+      .jurnal-card a { display: none !important; }
+      button { display: none !important; }
+    }
   </style>
 </head>
+
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
@@ -63,22 +77,22 @@
         
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
           <span>Beranda</span>
         </a>
 
         <a href="{{ route('jurnal.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-            <path d="M7 3v14"/>
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+            <path d="M7 3v14" />
           </svg>
           <span>Isi Jurnal</span>
         </a>
 
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
@@ -89,8 +103,8 @@
 
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-            <circle cx="10" cy="6.5" r="3.5"/>
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+            <circle cx="10" cy="6.5" r="3.5" />
           </svg>
           <span>Profil</span>
         </a>
@@ -102,30 +116,32 @@
 
   <!-- MAIN CONTENT AREA -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
-    
+
     <!-- Top Header Bar -->
-    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between print:hidden">
       <div class="w-full flex items-center justify-between">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           </svg>
         </a>
         <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Riwayat Jurnal Mengajar</h1>
-        <div class="w-9"></div>
+        <button onclick="window.print()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all" aria-label="Cetak riwayat jurnal" title="Cetak riwayat jurnal">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </button>
       </div>
     </header>
 
     <!-- Main Content Container -->
     <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex flex-col gap-6 flex-1">
-      
+
       <!-- KALENDER GRID KOTAK (BULAN 1-12 & HARI 1-30/31) -->
-      <section class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex flex-col gap-4">
-        
+      <section id="filter-kalender" class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex flex-col gap-4">
+
         <!-- Header Pilih Bulan & Tahun + Tombol Tampilkan Semua -->
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-brand-50 pb-3">
           <div class="flex items-center gap-2.5">
             <div class="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center text-brand-800 shrink-0">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
             </div>
             <div>
@@ -194,12 +210,17 @@
       <!-- Section Title -->
       <div class="flex items-center justify-between">
         <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600" id="selected-date-label">
-          Sesi Mengajar — 21 Juli 2026
+          Sesi Mengajar
         </h2>
         <span id="session-count-badge" class="text-xs font-semibold text-brand-700 bg-white border border-brand-100 px-3 py-1 rounded-full shadow-xs">
           {{ $semuaJurnal->count() }} Sesi Terverifikasi
         </span>
       </div>
+
+      @php
+      $bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      $tglIndo = fn ($t) => $t->format('j').' '.$bulan[$t->month - 1].' '.$t->format('Y');
+      @endphp
 
       <!-- Container Card Jurnal -->
       <div id="jurnal-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
@@ -263,22 +284,22 @@
     <div class="flex justify-between items-center">
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
         </svg>
         <span>Beranda</span>
       </a>
 
       <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-          <path d="M7 3v14"/>
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+          <path d="M7 3v14" />
         </svg>
         <span>Isi Jurnal</span>
       </a>
 
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
         </svg>
         <span>Riwayat</span>
       </a>
@@ -287,8 +308,8 @@
 
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-          <circle cx="10" cy="6.5" r="3.5"/>
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+          <circle cx="10" cy="6.5" r="3.5" />
         </svg>
         <span>Profil</span>
       </a>
@@ -309,13 +330,13 @@
     function generateGridCalendar(targetDay = 21) {
       const month = parseInt(document.getElementById('month-select').value);
       const year = parseInt(document.getElementById('year-select').value);
-      
+
       const gridContainer = document.getElementById('calendar-grid');
       gridContainer.innerHTML = '';
 
       // Hari pertama dalam bulan ini (0 = Minggu, 1 = Senin, dst.)
       const firstDayIndex = new Date(year, month - 1, 1).getDay();
-      
+
       // Total jumlah hari dalam bulan terpilih (28, 29, 30, atau 31)
       const totalDays = new Date(year, month, 0).getDate();
 
@@ -378,10 +399,10 @@
       document.querySelectorAll('.calendar-cell').forEach(cell => {
         cell.classList.remove('bg-brand-800', 'text-white', 'shadow-md');
         cell.classList.add('bg-brand-50/70', 'text-[#3E3028]', 'border', 'border-brand-100');
-        
+
         // Sesuaikan warna titik indikator
         const dot = cell.querySelector('.rounded-full');
-        if(dot) {
+        if (dot) {
           dot.classList.remove('bg-amber-300');
           dot.classList.add('bg-amber-500');
         }
@@ -393,7 +414,7 @@
         element.classList.add('bg-brand-800', 'text-white', 'shadow-md');
 
         const dot = element.querySelector('.rounded-full');
-        if(dot) {
+        if (dot) {
           dot.classList.remove('bg-amber-500');
           dot.classList.add('bg-amber-300');
         }
@@ -436,7 +457,7 @@
 
     function formatDateString(dateStr) {
       const parts = dateStr.split('-');
-      if(parts.length !== 3) return dateStr;
+      if (parts.length !== 3) return dateStr;
       const day = parseInt(parts[2], 10);
       const monthIndex = parseInt(parts[1], 10) - 1;
       const year = parts[0];
@@ -445,4 +466,5 @@
   </script>
 
 </body>
+
 </html>

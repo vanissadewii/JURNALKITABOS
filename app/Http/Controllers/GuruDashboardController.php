@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JamPelajaran;
 use App\Models\JadwalPelajaran;
+use App\Models\JamPelajaran;
 use App\Models\PengaturanJurnalSusulan;
 use App\Models\User;
-use App\Support\Waktu;
 use App\Support\RentangJam;
+use App\Support\Waktu;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -79,6 +79,7 @@ class GuruDashboardController extends Controller
             ) {
                 $last->jam_ke_sampai = $baris->jam_ke;
                 $last->jam_selesai = $baris->jam_selesai;
+
                 continue;
             }
 

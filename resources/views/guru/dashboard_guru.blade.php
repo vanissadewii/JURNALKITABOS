@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,8 +47,28 @@
     .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
   </style>
 </head>
+
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
+
+  @if (session('notif_sukses'))
+  <div id="toast-notif"
+    class="fixed top-4 left-1/2 -translate-x-1/2 z-[999] bg-[#E8F5E9] border border-[#258A3E] text-[#258A3E]
+            text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-[90%]
+            transition-opacity duration-500">
+    <span class="w-5 h-5 rounded-full bg-[#258A3E] text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+    {{ session('notif_sukses') }}
+  </div>
+  <script>
+    setTimeout(() => {
+      const toast = document.getElementById('toast-notif');
+      if (toast) {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+      }
+    }, 4000);
+  </script>
+  @endif
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
   <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
     <div class="py-6 px-4 flex flex-col gap-8">
@@ -64,7 +85,7 @@
         <!-- Active Link (Dashboard) -->
         <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+            <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
           <span>Beranda</span>
         </a>
@@ -76,8 +97,8 @@
         <span aria-disabled="true" title="Isi jurnal tersedia saat sesi mengajar berlangsung" class="pointer-events-none flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#9E8E83] opacity-50">
         @endif
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-            <path d="M7 3v14"/>
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+            <path d="M7 3v14" />
           </svg>
           <span>Isi Jurnal</span>
         @if ($sesiSaatIni)</a>@else</span>@endif
@@ -85,7 +106,7 @@
         <!-- MENU LIST/RIWAYAT JURNAL -->
         <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+            <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
           </svg>
           <span>Riwayat Jurnal</span>
         </a>
@@ -103,8 +124,8 @@
         <!-- Menu Profil Guru -->
         <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-            <circle cx="10" cy="6.5" r="3.5"/>
+            <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+            <circle cx="10" cy="6.5" r="3.5" />
           </svg>
           <span>Profil</span>
         </a>
@@ -116,7 +137,7 @@
 
   <!-- MAIN CONTENT AREA (Full Width Desktop) -->
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
-    
+
     <!-- Top Header Bar -->
     <header class="sticky top-0 z-30 w-full bg-[#5C4033] shadow-md px-6 md:px-10 py-6 sm:py-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       
@@ -175,7 +196,8 @@
               <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <span class="rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-medium text-brand-700">Jam ke-{{ $sesiUtama->jam_ke_mulai }}@if($sesiUtama->jam_ke_sampai !== $sesiUtama->jam_ke_mulai)–{{ $sesiUtama->jam_ke_sampai }}@endif · {{ $sesiUtama->jam_mulai }}–{{ $sesiUtama->jam_selesai }}</span>
                 @if ($sesiSaatIni)
-                  <a href="{{ route('jurnal.create') }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#5C4033] px-6 text-sm font-semibold text-white shadow-md hover:bg-[#3E2B22]">Mulai Sesi Mengajar</a>
+                  <a href="{{ route('jurnal.create', ['jadwal' => $sesiUtama->id_jadwal]) }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#5C4033] px-6 text-sm font-semibold text-white shadow-md hover:bg-[#3E2B22]">Mulai Sesi Mengajar</a>
+                  <a href="{{ route('jurnal.create', ['jadwal' => $sesiUtama->id_jadwal, 'pulang_cepat' => 1]) }}" class="inline-flex h-12 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-5 text-sm font-semibold text-amber-900 hover:bg-amber-100">Pulang cepat · Kirim ke piket</a>
                 @else
                   <span aria-disabled="true" class="inline-flex h-12 cursor-not-allowed items-center justify-center rounded-xl bg-[#E5D8CC] px-6 text-sm font-semibold text-[#7A6A60]">Menunggu sesi dimulai</span>
                 @endif
@@ -212,9 +234,12 @@
                 </div>
                 <div class="flex items-center justify-between gap-2 border-t border-brand-50 pt-3 text-xs">
                   <span class="font-medium text-brand-600">Jam ke-{{ $item->jam_ke_mulai }}@if($item->jam_ke_sampai !== $item->jam_ke_mulai)–{{ $item->jam_ke_sampai }}@endif · {{ $item->jam_mulai }}–{{ $item->jam_selesai }}</span>
-                  @if ($item->status === 'Berlangsung')
-                    <a href="{{ route('jurnal.create') }}" class="shrink-0 font-poppins font-semibold text-brand-800 underline underline-offset-2">Isi Jurnal</a>
-                  @endif
+                  <div class="flex shrink-0 items-center gap-3">
+                    @if ($item->status === 'Berlangsung')
+                      <a href="{{ route('jurnal.create', ['jadwal' => $item->id_jadwal]) }}" class="font-poppins font-semibold text-brand-800 underline underline-offset-2">Isi Jurnal</a>
+                    @endif
+                    <a href="{{ route('jurnal.create', ['jadwal' => $item->id_jadwal, 'pulang_cepat' => 1]) }}" class="font-poppins font-semibold text-amber-800 underline underline-offset-2">Pulang cepat</a>
+                  </div>
                 </div>
               </article>
             @endforeach
@@ -231,11 +256,11 @@
   <!-- Bottom Navigation Bar (Mobile HP) -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
     <div class="flex justify-between items-center">
-      
+
       <!-- Active Mobile Link -->
       <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
         </svg>
         <span>Beranda</span>
       </a>
@@ -247,8 +272,8 @@
       <span aria-disabled="true" title="Isi jurnal tersedia saat sesi mengajar berlangsung" class="pointer-events-none flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] opacity-50">
       @endif
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-          <path d="M7 3v14"/>
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+          <path d="M7 3v14" />
         </svg>
         <span>Isi Jurnal</span>
       @if ($sesiSaatIni)</a>@else</span>@endif
@@ -256,7 +281,7 @@
       <!-- LIST RIWAYAT JURNAL MOBILE -->
       <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
+          <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
         </svg>
         <span>Riwayat</span>
       </a>
@@ -275,8 +300,8 @@
       <!-- Inactive Mobile Link (Profil Guru) -->
       <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-          <circle cx="10" cy="6.5" r="3.5"/>
+          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
+          <circle cx="10" cy="6.5" r="3.5" />
         </svg>
         <span>Profil</span>
       </a>
@@ -285,6 +310,6 @@
   </nav>
 
 
-
 </body>
+
 </html>

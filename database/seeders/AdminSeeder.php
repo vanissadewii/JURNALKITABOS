@@ -8,8 +8,8 @@ use App\Models\Kelas;
 use App\Models\Mapel;
 use App\Models\Semester;
 use App\Models\User;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder

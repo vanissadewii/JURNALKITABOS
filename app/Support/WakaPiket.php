@@ -74,6 +74,8 @@ class WakaPiket
     /** Waka yang tercantum pada jadwal Tambah Piket untuk tanggal tersebut. */
     public static function bertugas(?string $tanggal): ?Waka
     {
-        return static::jadwal($tanggal)?->waka;
+        return static::kandidat($tanggal)->first(
+            fn (Waka $waka): bool => $waka->nomorValid()
+        );
     }
 }

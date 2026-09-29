@@ -548,7 +548,8 @@
                         type="date"
                         name="tanggal"
                         value="{{ date('Y-m-d') }}"
-                        readonly
+                        required
+                        onchange="muatJam()"
                         class="w-full
                                h-11
                                px-3
@@ -557,7 +558,7 @@
                                rounded-xl
                                text-sm
                                text-[#7A6A60]
-                               cursor-not-allowed"
+                               focus:outline-none focus:ring-2 focus:ring-[#D7B899]"
                     >
 
 
@@ -1018,13 +1019,22 @@
             const idKelas = document.getElementById('id_kelas').value;
             const tanggal = document.querySelector('[name="tanggal"]').value;
             resetJam('Memuat jam...');
-            const response = await fetch(`/dispen/opsi-jam?id_kelas=${encodeURIComponent(idKelas)}&tanggal=${encodeURIComponent(tanggal)}`, {headers:{'Accept':'application/json'}});
-            const data = await response.json();
-            daftarJam = data.jam || [];
+            if (!idKelas || !tanggal) return;
+            let data;
+            try {
+                const response = await fetch(`/dispen/opsi-jam?id_kelas=${encodeURIComponent(idKelas)}&tanggal=${encodeURIComponent(tanggal)}`, {headers:{'Accept':'application/json'}});
+                if (!response.ok) throw new Error('Jam pelajaran tidak dapat dimuat. Muat ulang halaman atau hubungi admin.');
+                data = await response.json();
+                daftarJam = data.jam || [];
+            } catch (error) {
+                resetJam(error.message || 'Gagal memuat jam');
+                return;
+            }
             const mulai = document.getElementById('jam_ke_mulai');
             mulai.innerHTML = '<option value="">Pilih jam mulai</option>';
             daftarJam.forEach(item => mulai.add(new Option(`Jam ke-${item.jam_ke} · ${item.jam_mulai.slice(0,5)}–${item.jam_selesai.slice(0,5)}`, item.jam_ke)));
             mulai.disabled = daftarJam.length === 0;
+            if (!daftarJam.length) mulai.options[0].textContent = data.pesan || 'Jadwal jam tidak tersedia';
             document.getElementById('jam_ke_selesai').innerHTML = '<option value="">Pilih jam mulai dahulu</option>';
         }
 

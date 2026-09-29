@@ -1,35 +1,32 @@
 <?php
 
-use App\Http\Controllers\DispenController;
-use App\Http\Controllers\PiketRekapController;
-use App\Http\Controllers\RiwayatJurnalController;
-use App\Http\Controllers\ProfilGuruController;
-use App\Http\Controllers\UploadTugasController;
-use App\Http\Controllers\SuratSiswaController;
-use App\Http\Controllers\AdminJadwalPiketController;
 use App\Http\Controllers\AdminAccountController;
-use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminJadwalPiketController;
 use App\Http\Controllers\AdminMonitoringController;
+use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AdminRekapController;
+use App\Http\Controllers\DispenController;
+use App\Http\Controllers\GuruDashboardController;
+use App\Http\Controllers\GuruPiketController;
 use App\Http\Controllers\JadwalPelajaranController;
 use App\Http\Controllers\JamPelajaranController;
 use App\Http\Controllers\JurnalController;
-use App\Http\Controllers\GuruPiketController;
-use App\Http\Controllers\PengaturanJurnalSusulanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\MapelController;
 use App\Http\Controllers\MasterKelasController;
+use App\Http\Controllers\PengaturanJurnalSusulanController;
+use App\Http\Controllers\PengaturanQrController;
+use App\Http\Controllers\PiketRekapController;
+use App\Http\Controllers\ProfilGuruController;
 use App\Http\Controllers\QrSesiController;
+use App\Http\Controllers\RiwayatJurnalController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\SuratSiswaController;
+use App\Http\Controllers\UploadTugasController;
 use App\Http\Controllers\UserController;
-use App\Models\PengaturanJurnalSusulan;
-use App\Models\JadwalPelajaran;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Support\Waktu;
 use Illuminate\Support\Facades\Route;
 
 // Profil guru menggunakan kolom no_telepon yang sama seperti panel admin.
@@ -60,6 +57,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/jurnal', [JurnalController::class, 'adminIndex'])->name('jurnal');
     Route::get('/aturan-jurnal-susulan', [PengaturanJurnalSusulanController::class, 'edit'])->name('aturan-jurnal-susulan.edit');
     Route::put('/aturan-jurnal-susulan', [PengaturanJurnalSusulanController::class, 'update'])->name('aturan-jurnal-susulan.update');
+    Route::get('/aturan-qr', [PengaturanQrController::class, 'edit'])->name('aturan-qr.edit');
+    Route::put('/aturan-qr', [PengaturanQrController::class, 'update'])->name('aturan-qr.update');
     Route::get('/kehadiran-guru', [AdminMonitoringController::class, 'kehadiran'])->name('kehadiran');
     Route::get('/kehadiran-guru/export', [AdminMonitoringController::class, 'exportKehadiran'])->name('kehadiran.export');
     Route::get('/verifikasi', [AdminMonitoringController::class, 'verifikasi'])->name('verifikasi');
@@ -70,7 +69,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/tambah/admin', [AdminAccountController::class, 'index'])->name('tambah.admin');
     Route::post('/tambah/admin', [AdminAccountController::class, 'store'])->name('tambah.admin.store');
     Route::delete('/tambah/admin/{user}', [AdminAccountController::class, 'destroy'])->name('tambah.admin.destroy');
-
 
     Route::get('/tambah/piket', [AdminJadwalPiketController::class, 'index'])
         ->name('tambah.piket');
@@ -84,7 +82,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         ->name('tambah.piket.store');
     Route::post('/tambah/piket/import', [AdminJadwalPiketController::class, 'import'])
         ->name('tambah.piket.import');
-
 
     Route::get('/tambah/siswa', fn () => redirect()->route('admin.siswa.index'))
         ->name('tambah.siswa');
@@ -117,7 +114,7 @@ Route::get('/dashboard-kelas', fn () => redirect()->route('kelas.beranda'))
     ->middleware(['auth']);
 
 // Route ke Dashboard Guru
-Route::get('/dashboard-guru', [\App\Http\Controllers\GuruDashboardController::class, 'index'])
+Route::get('/dashboard-guru', [GuruDashboardController::class, 'index'])
     ->middleware(['auth', 'role:guru,guru_piket,wali_kelas'])->name('dashboard-guru');
 
 // Beranda memakai kelas yang benar-benar terhubung ke akun login.
@@ -142,7 +139,6 @@ Route::middleware(['auth', 'role:kelas'])->prefix('kelas')->name('kelas.')->grou
     Route::put('/profile', [KelasController::class, 'updateProfile'])->name('profile.update');
 });
 
-
 // ============================================================
 // HOME BERDASARKAN ROLE
 // ============================================================
@@ -155,29 +151,26 @@ Route::middleware(['auth'])->group(function () {
         if ($role_user == 'admin') {
             return redirect()->route('admin.dashboard');
 
-        // GURU
+            // GURU
         } elseif ($role_user == 'guru') {
             return redirect()->route('dashboard-guru');
 
-        // GURU PIKET (akun lama)
+            // GURU PIKET (akun lama)
         } elseif ($role_user == 'guru_piket') {
             return redirect()->route('dashboard-guru-piket');
-
         } elseif ($role_user == 'wali_kelas') {
             return Auth::user()->sedangPiket()
                 ? redirect()->route('dashboard-guru-piket')
                 : redirect()->route('dashboard-guru');
 
-        // KELAS
+            // KELAS
         } elseif ($role_user == 'kelas') {
             return redirect()->route('kelas.beranda');
-
         } else {
             return redirect('/');
         }
     })->name('home');
 });
-
 
 // ============================================================
 // ROUTE ADMIN - BACKEND
@@ -201,7 +194,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         [SiswaController::class, 'import']
     )->name('admin.siswa.import');
 
-
     Route::get(
         'admin/jadwal/get-jam',
         [JadwalPelajaranController::class, 'getJamByKelasHari']
@@ -214,7 +206,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::resource('admin/jadwal', JadwalPelajaranController::class)
         ->names('jadwal');
-
 
     Route::post('admin/mapel/import', [MapelController::class, 'import'])
         ->name('mapel.import');
@@ -231,7 +222,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('admin/jam-pelajaran', JamPelajaranController::class)
         ->names('jam-pelajaran');
 
-
     Route::post(
         'admin/jam-pelajaran/generate',
         [JamPelajaranController::class, 'generate']
@@ -245,7 +235,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
         [JadwalPelajaranController::class, 'import']
     )->name('jadwal.import');
 });
-
 
 // ============================================================
 // ROUTE JAM PELAJARAN
@@ -269,7 +258,6 @@ Route::middleware(['auth', 'role:guru,guru_piket,wali_kelas'])->group(function (
     )->name('qr.status-guru');
 });
 
-
 // ============================================================
 // ROUTE QR KELAS
 // ============================================================
@@ -285,7 +273,6 @@ Route::middleware(['auth', 'role:kelas'])->group(function () {
     )->name('qr.scan-guru');
 });
 
-
 // ============================================================
 // ROUTE SESI VERIFIKASI GURU
 // ============================================================
@@ -293,7 +280,6 @@ Route::middleware(['auth', 'role:kelas'])->group(function () {
 Route::get('/sesi-verifikasi-guru', function () {
     return view('guru.sesi_terverifikasi');
 });
-
 
 // ============================================================
 // ROUTE JURNAL GURU
@@ -312,14 +298,12 @@ Route::middleware(['auth', 'role:guru,guru_piket,wali_kelas'])->group(function (
     )->name('jurnal.store');
 });
 
-
 // ============================================================
 // RIWAYAT & DETAIL JURNAL
 // ============================================================
 
 Route::get('/riwayat-jurnal', [RiwayatJurnalController::class, 'index'])->middleware(['auth', 'role:guru,guru_piket,wali_kelas'])->name('riwayat-jurnal');
 Route::get('/detail-jurnal/{jurnal}', [RiwayatJurnalController::class, 'show'])->middleware(['auth', 'role:guru,guru_piket,wali_kelas'])->name('riwayat-jurnal.detail');
-
 
 // ============================================================
 // ROUTE GURU PIKET & DISPEN
@@ -352,7 +336,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/upload-tugas', [UploadTugasController::class, 'store'])
             ->name('upload-tugas.store');
         Route::get('/upload-tugas/{id}/lampiran', [UploadTugasController::class, 'unduhLampiran'])->whereNumber('id')->name('upload-tugas.download');
-
     });
 
     // Rekap hanya baca, sehingga bisa dibuka di luar jam piket.
@@ -360,7 +343,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/rekap', [PiketRekapController::class, 'index'])->name('rekap');
         Route::get('/rekap/export', [PiketRekapController::class, 'export'])->name('rekap.export');
     });
-
 
     Route::get(
         '/dispen',
@@ -382,7 +364,6 @@ Route::middleware(['auth'])->group(function () {
         [DispenController::class, 'opsiJam']
     )->middleware(['role:guru,guru_piket,wali_kelas', 'piket.aktif'])->name('dispen.opsi-jam');
 });
-
 
 // ============================================================
 // APPROVAL DISPEN

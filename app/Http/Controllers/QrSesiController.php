@@ -6,6 +6,7 @@ use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
 use App\Models\QrSesi;
 use App\Services\VerifikasiSesiService;
+use App\Support\Waktu;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\SvgWriter;
 use Illuminate\Http\JsonResponse;
@@ -29,7 +30,7 @@ class QrSesiController extends Controller
     {
         $jurnal->load('jadwal');
         abort_unless((int) $jurnal->jadwal->id_guru === (int) Auth::id(), 403);
-        abort_unless($jurnal->tanggal?->toDateString() === \App\Support\Waktu::sekarang()->toDateString(), 404);
+        abort_unless($jurnal->tanggal?->toDateString() === Waktu::sekarang()->toDateString(), 404);
         abort_if($jurnal->status_verifikasi === 'terverifikasi', 404);
 
         return view('guru.guru_scan_qr', compact('jurnal'));
@@ -82,7 +83,7 @@ class QrSesiController extends Controller
     {
         $jurnal->load('jadwal.kelas', 'jadwal.mapel');
         abort_unless((int) $jurnal->jadwal->id_guru === (int) Auth::id(), 403);
-        abort_unless($jurnal->tanggal?->toDateString() === \App\Support\Waktu::sekarang()->toDateString(), 404);
+        abort_unless($jurnal->tanggal?->toDateString() === Waktu::sekarang()->toDateString(), 404);
         abort_unless((int) $this->sesi->jurnalSesi($jurnal->jadwal)?->id_jurnal === (int) $jurnal->id_jurnal, 404);
 
         $qrSesi = $this->qrAktif($jurnal->jadwal, 'guru');
@@ -115,7 +116,7 @@ class QrSesiController extends Controller
         $jadwal = $this->sesi->jadwalBerlangsung(idKelas: $idKelas);
         if (! $jadwal && app()->isLocal()) {
             $jurnalDemo = Jurnal::with('jadwal.kelas', 'jadwal.mapel', 'jadwal.guru', 'jadwal.jamPelajaran')
-                ->whereDate('tanggal', \App\Support\Waktu::sekarang()->toDateString())
+                ->whereDate('tanggal', Waktu::sekarang()->toDateString())
                 ->where('status_verifikasi', 'belum_verifikasi')
                 ->whereHas('jadwal', fn ($q) => $q->where('id_kelas', $idKelas))
                 ->latest('id_jurnal')
@@ -155,7 +156,7 @@ class QrSesiController extends Controller
         // walaupun jadwal dummy bukan pada hari/jam saat ini.
         if (! $jadwal && app()->isLocal()) {
             $jurnalDemo = Jurnal::with('jadwal.kelas', 'jadwal.mapel')
-                ->whereDate('tanggal', \App\Support\Waktu::sekarang()->toDateString())
+                ->whereDate('tanggal', Waktu::sekarang()->toDateString())
                 ->where('status_verifikasi', 'belum_verifikasi')
                 ->whereHas('jadwal', fn ($q) => $q->where('id_kelas', $idKelas))
                 ->latest('id_jurnal')
@@ -251,7 +252,7 @@ class QrSesiController extends Controller
             // scan guru terhadap QR kelas sudah terpakai
             QrSesi::where('tipe', 'kelas')
                 ->where('id_jadwal', $berlangsung->id_jadwal)
-                ->whereDate('tanggal', \App\Support\Waktu::sekarang()->toDateString())
+                ->whereDate('tanggal', Waktu::sekarang()->toDateString())
                 ->where('dipindai_oleh', $berlangsung->id_guru)
                 ->where('dipindai_at', '>=', now()->subMinutes(self::BATAS_SALING_SCAN_MENIT))
                 ->where('status', 'aktif')
@@ -351,7 +352,7 @@ class QrSesiController extends Controller
     {
         return QrSesi::where('tipe', 'kelas')
             ->where('id_jadwal', $jadwal->id_jadwal)
-            ->whereDate('tanggal', \App\Support\Waktu::sekarang()->toDateString())
+            ->whereDate('tanggal', Waktu::sekarang()->toDateString())
             ->where('status', 'aktif')
             ->where('dipindai_oleh', $jadwal->id_guru)
             ->where('dipindai_at', '>=', now()->subMinutes(self::BATAS_SALING_SCAN_MENIT))
@@ -364,7 +365,7 @@ class QrSesiController extends Controller
     /** QR yang masih cukup lama umurnya dipakai ulang; kalau tidak, dibuat baru. */
     private function qrAktif(JadwalPelajaran $jadwal, string $tipe): QrSesi
     {
-        $tanggal = \App\Support\Waktu::sekarang()->toDateString();
+        $tanggal = Waktu::sekarang()->toDateString();
         $qr = QrSesi::where('id_jadwal', $jadwal->id_jadwal)
             ->whereDate('tanggal', $tanggal)
             ->where('tipe', $tipe)

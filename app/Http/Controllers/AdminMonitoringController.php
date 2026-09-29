@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dispen;
 use App\Exports\KehadiranGuruExport;
-use Maatwebsite\Excel\Facades\Excel;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\Models\Dispen;
 use App\Models\JadwalPelajaran;
 use App\Models\JadwalPiketBulanan;
 use App\Models\JamPelajaran;
@@ -13,9 +11,11 @@ use App\Models\Jurnal;
 use App\Support\Waktu;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminMonitoringController extends Controller
 {
@@ -40,12 +40,15 @@ class AdminMonitoringController extends Controller
             $item->jurnalHariIni = $jurnal->get($item->id_jadwal)?->sortByDesc('id_jurnal')->first();
             $item->tugasPiketHariIni = $tugas->get($item->id_jadwal);
             $item->statusTampilan = $this->statusKehadiranTampilan($item, $item->jurnalHariIni, $item->tugasPiketHariIni, $tanggal);
+
             return $item;
         });
         $ringkasan = ['semua' => $barisKehadiran->count(), 'hadir' => 0, 'izin' => 0, 'sakit' => 0, 'tidak-hadir' => 0, 'belum' => 0];
         foreach ($barisKehadiran as $item) {
             $key = $item->statusTampilan;
-            if (array_key_exists($key, $ringkasan)) $ringkasan[$key]++;
+            if (array_key_exists($key, $ringkasan)) {
+                $ringkasan[$key]++;
+            }
         }
 
         return view('admin.kehadiran-guru', compact('tanggal', 'barisKehadiran', 'ringkasan'));
@@ -68,8 +71,10 @@ class AdminMonitoringController extends Controller
             $labelStatus = match ($status) {
                 'hadir' => 'Hadir', 'izin' => 'Izin', 'sakit' => 'Sakit', 'tidak-hadir' => 'Tidak Hadir', default => 'Belum ada jurnal',
             };
-            return [$item->guru->name, $item->mapel->nama_mapel ?? '', $labelStatus, $jurnal?->materi ?: $jurnal?->keterangan ?: '', $item->kelas->nama_kelas, $item->jamPelajaran->jam_ke, substr($item->jamPelajaran->jam_mulai,0,5).'-'.substr($item->jamPelajaran->jam_selesai,0,5)];
+
+            return [$item->guru->name, $item->mapel->nama_mapel ?? '', $labelStatus, $jurnal?->materi ?: $jurnal?->keterangan ?: '', $item->kelas->nama_kelas, $item->jamPelajaran->jam_ke, substr($item->jamPelajaran->jam_mulai, 0, 5).'-'.substr($item->jamPelajaran->jam_selesai, 0, 5)];
         })->all();
+
         return Excel::download(new KehadiranGuruExport($rows), 'kehadiran-guru-'.$tanggal->format('Y-m-d').'.xlsx');
     }
 
@@ -151,6 +156,7 @@ class AdminMonitoringController extends Controller
                     : ($item->sesi === 'waka'
                         ? 'Bertugas'
                         : ($jamSekarang < $mulai ? 'Belum mulai' : ($jamSekarang <= $selesai ? 'Bertugas' : 'Selesai')));
+
                 return $item;
             });
         $dispensasi = Dispen::with(['siswa', 'kelas', 'guruPiket'])

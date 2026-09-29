@@ -1,42 +1,22 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Verifikasi Kehadiran Guru</title>
 
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            poppins: ['Poppins', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#F9F6F0',
-              100: '#EFE6DD',
-              200: '#E2C7B0',
-              300: '#D7B899',
-              600: '#7A6A60',
-              700: '#6D5C52',
-              800: '#5C4033',
-              900: '#3E2B22',
-            }
-          }
-        }
-      }
+  @vite('resources/css/app.css')
+  <style>
+    #qr-reader video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
     }
-  </script>
-
+  </style>
   <style>
     /* Animasi Laser Scanner */
     @keyframes scanAnimation {
@@ -61,6 +41,7 @@
     .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
   </style>
 </head>
+
 <body class="bg-brand-50 font-sans min-h-screen flex text-[#3E3028]">
 
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
@@ -70,7 +51,7 @@
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
         <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
+        <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
       </div>
 
       <!-- Navigation Links -->
@@ -109,7 +90,6 @@
           <span>Profil</span>
         </a>
       </nav>
-
     </div>
   </aside>
 
@@ -303,4 +283,5 @@
   </script>
 
 </body>
+
 </html>

@@ -43,12 +43,14 @@ return new class extends Migration
             ->when($idsValid !== [], fn ($query) => $query->whereNotIn('id_waka', $idsValid))
             ->update(['id_waka' => null]);
 
-        Schema::table('dispens', function (Blueprint $table) use ($foreign) {
-            $table->dropForeign($foreign['name']);
-        });
+        if (DB::getDriverName() !== 'sqlite') {
+            Schema::table('dispens', function (Blueprint $table) {
+                $table->dropForeign(['id_waka']);
+            });
 
-        Schema::table('dispens', function (Blueprint $table) use ($ke) {
-            $table->foreign('id_waka')->references('id')->on($ke)->nullOnDelete();
-        });
+            Schema::table('dispens', function (Blueprint $table) use ($ke) {
+                $table->foreign('id_waka')->references('id')->on($ke)->nullOnDelete();
+            });
+        }
     }
 };

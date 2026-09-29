@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
 use App\Models\QrSesi;
-use App\Models\User;
 use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 

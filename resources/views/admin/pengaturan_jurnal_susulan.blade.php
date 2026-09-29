@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Izin Jurnal Susulan - Admin</title>
+    <title>Aturan Jurnal Susulan - Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}</style>
+    <style>html{scrollbar-width:none}html::-webkit-scrollbar{display:none}:root{--tinggi-item:2.75rem}@media(max-width:640px){:root{--tinggi-item:3rem}}</style>
 </head>
 <body class="min-h-screen overflow-x-hidden bg-[#F5EFE8] font-['Inter'] text-[#3E3028]">
     <div id="sidebarOverlay" class="fixed inset-0 z-40 hidden bg-black/40 md:hidden" onclick="closeSidebar()"></div>
     @include('admin.partials.tambah_sidebar')
     <main class="min-h-screen md:ml-[280px]">
         <header class="sticky top-0 z-30 bg-[#5C4033] px-4 py-5 text-white shadow-sm sm:px-6 md:px-7">
-            <div class="flex items-center justify-between gap-3"><div><p class="text-xs font-medium text-[#D7B899]">Pengaturan Jurnal</p><h1 class="font-['Poppins'] text-xl font-bold md:text-2xl">Izin Jurnal Susulan</h1></div><button type="button" onclick="openSidebar()" class="rounded-lg px-3 py-2 text-white hover:bg-white/10 md:hidden" aria-label="Buka sidebar">☰</button></div>
+            <div class="flex items-center justify-between gap-3"><div><p class="text-xs font-medium text-[#D7B899]">Pengaturan Jurnal</p><h1 class="font-['Poppins'] text-xl font-bold md:text-2xl">Aturan Jurnal Susulan</h1></div><button type="button" onclick="openSidebar()" class="rounded-lg px-3 py-2 text-white hover:bg-white/10 md:hidden" aria-label="Buka sidebar">☰</button></div>
         </header>
         <section class="flex flex-col gap-4 p-4 sm:p-6 md:p-7">
             @if (session('success'))<div class="rounded-xl border border-[#B7DDBB] bg-[#E8F5E9] px-4 py-3 text-sm font-semibold text-[#2E7D32]">{{ session('success') }}</div>@endif
             @if ($errors->any())<div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-800">{{ $errors->first() }}</div>@endif
-            <article class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white shadow-sm">
-                <div class="flex items-center justify-between gap-3 border-b border-[#E5D8CC] bg-[#FFFCF9] px-4 py-3">
+            <article class="overflow-visible rounded-xl border border-[#E5D8CC] bg-white shadow-sm">
+                <div class="flex items-center justify-between gap-3 rounded-t-xl border-b border-[#E5D8CC] bg-[#FFFCF9] px-4 py-3">
                     <div><h2 class="font-['Poppins'] text-base font-bold">Atur Izin Jurnal Guru</h2><p class="mt-0.5 text-xs text-[#7A6A60]">Ketik nama guru untuk menampilkan hasil pencarian.</p></div>
                     <a href="{{ route('admin.jurnal') }}" class="shrink-0 rounded-lg border border-[#D8C9BC] bg-white px-3 py-2 text-xs font-semibold text-[#5C4033] hover:bg-[#F5EFE8]">Lihat Jurnal</a>
                 </div>
                 <div class="relative border-b border-[#E5D8CC] px-4 py-3">
                     <div class="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4"><label for="cari-guru" class="shrink-0 text-sm font-semibold">Cari Nama Guru</label><input id="cari-guru" type="search" autocomplete="off" placeholder="Ketik nama guru di sini..." class="h-10 w-full rounded-lg border border-[#D8C9BC] bg-white px-3.5 text-sm outline-none focus:border-[#5C4033] focus:ring-2 focus:ring-[#5C4033]/10"></div>
-                    <div id="hasil-guru" class="absolute left-4 right-4 top-[calc(100%-0.75rem)] z-20 hidden max-h-56 overflow-y-auto rounded-lg border border-[#E5D8CC] bg-white p-1 shadow-lg">
+                    <div id="hasil-guru" class="absolute left-4 right-4 top-[calc(100%-0.75rem)] z-50 hidden box-border max-h-[calc(5*var(--tinggi-item))] overflow-y-auto [overscroll-behavior:contain] [-webkit-overflow-scrolling:touch] rounded-lg border border-[#E5D8CC] bg-white p-0 shadow-lg">
                         @forelse($guruList as $guru)
-                            <a href="{{ route('admin.aturan-jurnal-susulan.edit', ['id_guru' => $guru->id]) }}" data-nama="{{ strtolower($guru->name) }}" class="hasil-guru block rounded-md px-3 py-2 text-sm hover:bg-[#F5EFE8]"><span class="font-semibold">{{ $guru->name }}</span>@if($guru->role === 'guru_piket')<span class="ml-2 text-xs text-[#7A6A60]">Guru Piket</span>@endif</a>
+                            <a href="{{ route('admin.aturan-jurnal-susulan.edit', ['id_guru' => $guru->id]) }}" data-nama="{{ strtolower($guru->name) }}" class="hasil-guru flex h-[var(--tinggi-item)] min-h-[44px] min-w-0 items-center gap-2 rounded-md px-3 text-sm leading-5 hover:bg-[#F5EFE8]"><span class="min-w-0 flex-1 truncate font-semibold">{{ $guru->name }}</span>@if($guru->role === 'guru_piket')<span class="shrink-0 text-xs text-[#7A6A60]">Guru Piket</span>@endif</a>
                         @empty
                             <p class="px-3 py-2 text-sm text-[#7A6A60]">Belum ada akun guru.</p>
                         @endforelse

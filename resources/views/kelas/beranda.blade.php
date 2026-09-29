@@ -15,6 +15,27 @@
 
 <body class="bg-[#F5EFE8] font-['Inter'] text-[#3E3028] min-h-screen [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 
+
+
+
+    @if (session('notif_sukses'))
+    <div id="toast-notif"
+        class="fixed top-4 left-1/2 -translate-x-1/2 z-[999] bg-[#E8F5E9] border border-[#258A3E] text-[#258A3E]
+            text-xs sm:text-sm font-semibold px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-[90%]
+            transition-opacity duration-500">
+        <span class="w-5 h-5 rounded-full bg-[#258A3E] text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+        {{ session('notif_sukses') }}
+    </div>
+    <script>
+        setTimeout(() => {
+            const toast = document.getElementById('toast-notif');
+            if (toast) {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }
+        }, 4000);
+    </script>
+    @endif
     <div class="md:flex">
 
         {{-- SIDEBAR (desktop) --}}
@@ -28,15 +49,16 @@
 
             <nav class="flex flex-col gap-1">
                 <a href="{{ route('kelas.beranda') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md font-semibold bg-[#F5EFE8] text-[#5C4033]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/>
+                        <path d="M3 12l9-9 9 9" />
+                        <path d="M5 10v10h14V10" />
                     </svg>
                     Beranda
                 </a>
 
                 <a href="{{ route('kelas.scan') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"/>
                         <rect x="14" y="3" width="7" height="7"/>
@@ -46,7 +68,7 @@
                 </a>
 
                 <a href="{{ route('kelas.kirim-jurnal') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 2L11 13"/>
                         <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
@@ -55,7 +77,7 @@
                 </a>
 
                 <a href="{{ route('kelas.profile') }}"
-                   class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-md text-[#7A6A60] hover:bg-[#F5EFE8]">
                     <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="8" r="4"/>
                         <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
@@ -237,4 +259,5 @@
     </script>
 
 </body>
+
 </html>
