@@ -83,7 +83,7 @@
                                             <div class="grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
                                                 @for($slot=0;$slot<3;$slot++)
                                                     @php($guruTerpilih=old("jadwal.$sesi.$slot", $guruTersimpan->get($slot)?->id_guru))
-                                                    <label class="flex min-w-0 flex-col gap-1"><span class="text-[11px] text-[#7A6A60]">Guru {{ $slot+1 }}</span><input type="search" list="daftarGuruPiket" data-pilih-guru placeholder="Cari atau pilih guru..." autocomplete="off" required disabled value="{{ $guru->firstWhere('id', $guruTerpilih)?->name }}" class="h-10 w-full min-w-0 rounded-lg border border-[#D8C9BC] bg-white px-2 text-xs outline-none focus:border-[#5C4033]"><select name="jadwal[{{ $sesi }}][]" data-id-guru required disabled class="hidden"><option value="">Pilih guru</option>@foreach($guru as $orang)<option value="{{ $orang->id }}" @selected($guruTerpilih==$orang->id)>{{ $orang->name }}</option>@endforeach</select></label>
+                                                    <label class="relative flex min-w-0 flex-col gap-1"><span class="text-[11px] text-[#7A6A60]">Guru {{ $slot+1 }}</span><input type="search" data-pilih-guru placeholder="Cari atau pilih guru..." autocomplete="off" required disabled value="{{ $guru->firstWhere('id', $guruTerpilih)?->name }}" class="h-10 w-full min-w-0 rounded-lg border border-[#D8C9BC] bg-white px-2 text-xs text-[#3E3028] outline-none focus:border-[#5C4033]"><select name="jadwal[{{ $sesi }}][]" data-id-guru required disabled class="hidden"><option value="">Pilih guru</option>@foreach($guru as $orang)<option value="{{ $orang->id }}" @selected($guruTerpilih==$orang->id)>{{ $orang->name }}</option>@endforeach</select><div data-hasil-guru class="absolute left-0 right-0 top-full z-20 hidden max-h-40 overflow-y-auto rounded-lg border border-[#D8C9BC] bg-white text-[#3E3028] shadow-lg"></div></label>
                                                 @endfor
                                             </div>
                                         </div>
@@ -163,14 +163,32 @@
         }
         document.querySelectorAll('[data-pilih-guru]').forEach(input => {
             const select = input.nextElementSibling;
+            const hasil = input.parentElement.querySelector('[data-hasil-guru]');
+            const opsiGuru = [...select.options].filter(option => option.value);
+            const tutupHasil = () => hasil.classList.add('hidden');
+            const tampilkanHasil = () => {
+                const kata = input.value.trim().toLocaleLowerCase();
+                const cocok = kata ? opsiGuru.filter(option => option.textContent.trim().toLocaleLowerCase().includes(kata)) : opsiGuru;
+                hasil.replaceChildren();
+                cocok.slice(0, 12).forEach(option => {
+                    const tombol = document.createElement('button'); tombol.type = 'button'; tombol.textContent = option.textContent.trim();
+                    tombol.className = 'block w-full px-3 py-2 text-left text-xs text-[#3E3028] hover:bg-[#F5EFE8]';
+                    tombol.addEventListener('click', () => { input.value = option.textContent.trim(); select.value = option.value; input.setCustomValidity(''); tutupHasil(); });
+                    hasil.appendChild(tombol);
+                });
+                if (kata && !cocok.length) { const kosong = document.createElement('p'); kosong.textContent = 'Nama guru tidak ditemukan'; kosong.className = 'px-3 py-2 text-xs text-[#7A6A60]'; hasil.appendChild(kosong); }
+                hasil.classList.toggle('hidden', input.disabled);
+            };
             const sinkronkanGuru = () => {
                 const nama = input.value.trim().toLocaleLowerCase();
-                const opsi = [...select.options].find(option => option.value && option.textContent.trim().toLocaleLowerCase() === nama);
+                const opsi = opsiGuru.find(option => option.textContent.trim().toLocaleLowerCase() === nama);
                 select.value = opsi?.value ?? '';
-                input.setCustomValidity(opsi || !input.value ? '' : 'Pilih nama guru dari daftar.');
+                input.setCustomValidity(opsi || !input.value ? '' : 'Pilih nama guru dari daftar hasil.');
             };
-            input.addEventListener('input', sinkronkanGuru);
+            input.addEventListener('focus', tampilkanHasil);
+            input.addEventListener('input', () => { sinkronkanGuru(); tampilkanHasil(); });
             input.addEventListener('change', sinkronkanGuru);
+            input.addEventListener('blur', () => setTimeout(tutupHasil, 150));
         });
         piketButtons.forEach(button => button.addEventListener('click', () => pilihTanggalPiket(button.dataset.piketTanggal)));
         document.querySelectorAll('[data-mode-24]').forEach(toggle => toggle.addEventListener('change', () => {

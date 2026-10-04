@@ -500,7 +500,6 @@
                         placeholder="Ketik nama atau NISN siswa..."
                         oninput="cariSiswa()"
                         autocomplete="off"
-                        required
                         class="w-full
                                h-11
                                px-3
@@ -515,7 +514,10 @@
                                focus:ring-[#D7B899]"
                     >
                     <div id="hasilSiswa" class="hidden max-h-56 overflow-y-auto rounded-xl border border-[#E5D8CC] bg-white shadow-sm"></div>
+                    <div id="siswaTerpilih" class="flex flex-wrap gap-2"></div>
                     <input type="hidden" name="id_siswa" id="id_siswa">
+                    <div id="inputSiswaTambahan"></div>
+                    <p class="text-xs text-[#9E8E83]">Pilih beberapa siswa; semua nama harus berasal dari kelas yang sama.</p>
 
                 </div>
 
@@ -971,14 +973,14 @@
 
         let timerCariSiswa;
         let daftarJam = [];
+        let siswaDipilih = [];
+        let idKelasDipilih = null;
 
         function cariSiswa() {
             clearTimeout(timerCariSiswa);
             const q = document.getElementById('nama_siswa').value.trim();
             const hasil = document.getElementById('hasilSiswa');
             document.getElementById('id_siswa').value = '';
-            document.getElementById('id_kelas').value = '';
-            document.getElementById('kelasSearch').value = '';
             resetJam('Pilih siswa dahulu');
             if (q.length < 2) { hasil.innerHTML = ''; hasil.classList.add('hidden'); return; }
             timerCariSiswa = setTimeout(async () => {
@@ -987,7 +989,8 @@
                 hasil.innerHTML = '';
                 hasil.classList.remove('hidden');
                 if (!siswa.length) { hasil.innerHTML = '<p class="px-4 py-3 text-sm text-[#8C7B70]">Siswa tidak ditemukan.</p>'; return; }
-                siswa.forEach(item => {
+                siswa.filter(item => !siswaDipilih.some(p => Number(p.id_siswa) === Number(item.id_siswa))).forEach(item => {
+                    if (idKelasDipilih && Number(idKelasDipilih) !== Number(item.id_kelas)) return;
                     const button = document.createElement('button');
                     button.type = 'button';
                     button.className = 'block w-full border-b border-[#EFE6DD] px-4 py-3 text-left text-sm hover:bg-[#F9F6F0]';
@@ -999,12 +1002,33 @@
         }
 
         function pilihSiswa(item) {
-            document.getElementById('nama_siswa').value = item.nama;
-            document.getElementById('id_siswa').value = item.id_siswa;
-            document.getElementById('id_kelas').value = item.id_kelas;
+            if (idKelasDipilih && Number(idKelasDipilih) !== Number(item.id_kelas)) return;
+            idKelasDipilih = Number(item.id_kelas);
+            siswaDipilih.push(item);
+            document.getElementById('nama_siswa').value = '';
+            document.getElementById('id_siswa').value = siswaDipilih[0]?.id_siswa || '';
+            document.getElementById('id_kelas').value = idKelasDipilih;
             document.getElementById('kelasSearch').value = item.label_kelas;
             document.getElementById('hasilSiswa').classList.add('hidden');
+            gambarSiswaTerpilih();
             muatJam();
+        }
+
+        function gambarSiswaTerpilih() {
+            const list = document.getElementById('siswaTerpilih');
+            const tambahan = document.getElementById('inputSiswaTambahan');
+            list.replaceChildren();
+            tambahan.replaceChildren();
+            siswaDipilih.forEach((item, index) => {
+                const tag = document.createElement('span');
+                tag.className = 'inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-800';
+                tag.textContent = item.nama;
+                const hapus = document.createElement('button');
+                hapus.type = 'button'; hapus.textContent = '×'; hapus.setAttribute('aria-label', `Hapus ${item.nama}`);
+                hapus.onclick = () => { siswaDipilih.splice(index, 1); idKelasDipilih = siswaDipilih[0]?.id_kelas || null; document.getElementById('id_kelas').value = idKelasDipilih || ''; if (!idKelasDipilih) { document.getElementById('kelasSearch').value = ''; resetJam('Pilih siswa dahulu'); } gambarSiswaTerpilih(); };
+                tag.appendChild(hapus); list.appendChild(tag);
+                const input = document.createElement('input'); input.type = 'hidden'; input.name = 'id_siswa_list[]'; input.value = item.id_siswa; tambahan.appendChild(input);
+            });
         }
 
         function resetJam(teks) {
@@ -1085,14 +1109,15 @@
 
                 if (result.link_wa) {
                     if (tabWa) tabWa.location.replace(result.link_wa);
-                    else {
-                        window.location.assign(result.link_wa);
-                        return;
-                    }
-                } else {
-                    tabWa?.close();
+                    else window.location.assign(result.link_wa);
+                    return;
                 }
-                window.location.assign(result.redirect || window.location.pathname);
+
+                tabWa?.close();
+                statusAjukanDispen.textContent = result.warning || 'Pengajuan tersimpan, tetapi tautan WhatsApp Waka belum tersedia.';
+                statusAjukanDispen.className = 'rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900';
+                tombol.disabled = false;
+                tombol.classList.remove('opacity-60');
             } catch (error) {
                 tabWa?.close();
                 statusAjukanDispen.textContent = 'Koneksi gagal saat mengirim dispensasi. Periksa internet, lalu coba lagi.';

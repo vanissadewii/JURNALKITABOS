@@ -101,9 +101,7 @@
 
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
-        <a href="{{ route('dashboard-guru') }}" class="inline-flex items-center gap-1.5 text-sm font-medium text-white/90 hover:text-white">
-          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12.5 4.5L7 10l5.5 5.5"/></svg><span class="hidden sm:inline">Beranda</span>
-        </a>
+        <div class="w-16" aria-hidden="true"></div>
         <h1 class="font-poppins font-bold text-base sm:text-lg text-white">{{ $isSusulan ? 'Isi Jurnal Kemarin' : (($isPulangCepat ?? false) ? 'Kirim Jurnal Pulang Cepat' : 'Lengkapi Jurnal Mengajar') }}</h1>
         <div class="w-16"></div>
       </div>
@@ -196,7 +194,7 @@
           @if ($jurnal->status_verifikasi === 'terverifikasi')
             Jurnal sudah terverifikasi. Anda masih bisa memperbarui isinya selama sesi berlangsung, selama akun kelas belum mengirim rekap ke Jurnal Mengajar dan jurnal belum disetujui guru piket.
           @else
-            Jurnal sesi ini sudah tersimpan tetapi belum terverifikasi. Anda masih bisa memperbaruinya selama jam pelajaran berlangsung.
+            Data jurnal sudah tersimpan. Kehadiran guru belum terverifikasi; setelah menyimpan, pindai QR akun kelas untuk melanjutkan verifikasi.
           @endif
         </div>
       @endif
@@ -380,7 +378,8 @@
         const isDispen = siswa.status === 'Dispen';
         const isAlpha = siswa.status === 'Alpha';
 
-        const itemHTML = `
+        const item = document.createElement('div');
+        item.innerHTML = `
           <div class="flex min-w-0 items-center justify-between gap-2 p-2.5 bg-brand-50/60 border border-brand-100 rounded-xl text-xs sm:text-sm">
             <div class="flex min-w-0 flex-1 items-center gap-2.5 overflow-hidden">
               <span class="w-6 h-6 rounded-full bg-brand-100 text-brand-800 font-bold text-xs flex items-center justify-center shrink-0">
@@ -390,32 +389,20 @@
             </div>
             ${siswa.alasan ? `<span class="min-w-0 max-w-full truncate text-[11px] text-violet-800 sm:ml-2">${escapeHtml(siswa.alasan)}</span>` : ''}
 
-            <!-- Tombol Pilihan S I A Langsung -->
+            <!-- Tombol pilihan status kehadiran -->
             <div class="flex items-center gap-1 shrink-0">
               <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Sakit')"
-                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isSakit ? 'bg-amber-500 text-white shadow-xs scale-105' : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-50'}">
-                S
-              </button>
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isSakit ? 'bg-amber-500 text-white shadow-xs scale-105' : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-50'}">S</button>
               <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Izin')"
-                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isIzin ? 'bg-blue-500 text-white shadow-xs scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'}">
-                I
-              </button>
-              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Dispen')" class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isDispen ? 'bg-violet-500 text-white shadow-xs scale-105' : 'bg-white text-violet-700 border border-violet-200 hover:bg-violet-50'}">D</button>
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isIzin ? 'bg-blue-500 text-white shadow-xs scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'}">I</button>
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Dispen')"
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isDispen ? 'bg-violet-500 text-white shadow-xs scale-105' : 'bg-white text-violet-700 border border-violet-200 hover:bg-violet-50'}">D</button>
               <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Alpha')"
-                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isAlpha ? 'bg-rose-500 text-white shadow-xs scale-105' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}">
-                A
-              </button>
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isAlpha ? 'bg-rose-500 text-white shadow-xs scale-105' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}">A</button>
             </div>
-          </div>
-        `;
+          </div>`;
 
-        // nama diisi lewat textContent supaya aman dari tanda kutip / karakter khusus
-        row.querySelector('.nama-siswa').textContent = siswa.nama;
-        row.querySelectorAll('button[data-status]').forEach(btn => {
-          btn.addEventListener('click', () => setStatusSiswa(siswa.key, btn.dataset.status));
-        });
-
-        container.appendChild(row);
+        container.appendChild(item.firstElementChild);
       });
     }
 
@@ -428,17 +415,17 @@
 
     // Input tersembunyi yang dibaca controller: siswa_absen[i][nama] & siswa_absen[i][status]
     function renderHiddenInputs() {
-      const box = document.getElementById('hidden-inputs-container');
-      box.innerHTML = '';
+      const hiddenContainer = document.getElementById('hidden-inputs-container');
+      hiddenContainer.innerHTML = '';
 
       const tidakHadir = daftarSiswa.filter(s => s.status !== 'Hadir');
       tidakHadir.forEach((item, index) => {
-        hiddenContainer.innerHTML += `
+        hiddenContainer.insertAdjacentHTML('beforeend', `
           <input type="hidden" name="siswa_absen[${index}][key]" value="${item.key}">
           <input type="hidden" name="siswa_absen[${index}][id_siswa]" value="${item.id_siswa}">
           <input type="hidden" name="siswa_absen[${index}][nama]" value="${item.nama}">
           <input type="hidden" name="siswa_absen[${index}][status]" value="${item.status}">
-        `;
+        `);
       });
     }
 

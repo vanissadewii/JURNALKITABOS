@@ -257,7 +257,7 @@
 
       if (result.verified) {
         clearInterval(statusInterval);
-        window.location.href = homeUrl;
+        window.location.href = homeUrl + '?kehadiran_terverifikasi=1';
       }
     }, 2000);
   </script>

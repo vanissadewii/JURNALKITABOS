@@ -8,6 +8,7 @@ use App\Models\PengaturanJurnalSusulan;
 use App\Models\User;
 use App\Support\RentangJam;
 use App\Support\Waktu;
+use App\Support\KegiatanTanggal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -21,14 +22,18 @@ class GuruDashboardController extends Controller
     {
         /** @var User $guru */
         $guru = Auth::user();
+        if (request()->boolean('kehadiran_terverifikasi')) {
+            session()->flash('success', 'Kehadiran Anda sudah terverifikasi oleh akun kelas.');
+        }
         $sekarang = Waktu::sekarang();
         $hari = $this->namaHari[$sekarang->copy()->setTimezone(config('app.timezone', 'Asia/Jakarta'))->dayOfWeekIso] ?? null;
         $pengaturan = $hari
             ? DB::table('pengaturan_kegiatan_harian')->where('hari', $hari)->value('kegiatan_ditiadakan')
             : false;
+        $kegiatanKhusus = KegiatanTanggal::nama($sekarang);
         $kegiatanDitiadakan = (bool) $pengaturan;
 
-        $jadwal = $hari
+        $jadwal = $hari && ! $kegiatanKhusus
             ? JadwalPelajaran::with(['kelas', 'mapel', 'jamPelajaran'])
                 ->where('id_guru', $guru->id)
                 ->whereHas('jamPelajaran', fn ($q) => $q
@@ -38,7 +43,7 @@ class GuruDashboardController extends Controller
                 ->filter(fn ($j) => $j->jamPelajaran !== null)
             : collect();
 
-        $slotPerHari = $hari
+        $slotPerHari = $hari && ! $kegiatanKhusus
             ? JamPelajaran::where('hari', $hari)
                 ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
                 ->get()
@@ -126,7 +131,7 @@ class GuruDashboardController extends Controller
 
         return view('guru.dashboard_guru', compact(
             'guru', 'hari', 'sesi', 'sesiSaatIni', 'sesiBerikutnya',
-            'izinJurnalSusulan', 'adaJadwalKemarin', 'kegiatanDitiadakan'
+            'izinJurnalSusulan', 'adaJadwalKemarin', 'kegiatanDitiadakan', 'kegiatanKhusus'
         ));
     }
 }

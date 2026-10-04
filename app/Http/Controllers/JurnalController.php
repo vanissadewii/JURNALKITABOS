@@ -11,6 +11,7 @@ use App\Models\Siswa;
 use App\Services\SesiKelasService;
 use App\Services\VerifikasiSesiService;
 use App\Support\Waktu;
+use App\Support\KegiatanTanggal;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,12 +31,19 @@ class JurnalController extends Controller
         $hariIni = $hariMap[$tanggalJurnal->dayOfWeekIso] ?? null;
         $jadwalPilihan = collect();
 
+        if (! $isSusulan && KegiatanTanggal::jadwalDitiadakan($tanggalJurnal)) {
+            return redirect()->route('dashboard-guru')->with('error', 'Tidak perlu mengisi jurnal karena jadwal pelajaran ditiadakan untuk kegiatan sekolah: '.KegiatanTanggal::nama($tanggalJurnal).'.');
+        }
+
         if ($isSusulan) {
             if (! PengaturanJurnalSusulan::forGuru((int) Auth::id())->aktif) {
                 return redirect()->route('dashboard-guru')->with('error', 'Pengisian jurnal susulan sedang ditutup oleh admin.');
             }
 
             $tanggalJurnal->subDay();
+            if (KegiatanTanggal::jadwalDitiadakan($tanggalJurnal)) {
+                return redirect()->route('dashboard-guru')->with('error', 'Jurnal susulan tidak diperlukan karena jadwal ditiadakan untuk kegiatan sekolah: '.KegiatanTanggal::nama($tanggalJurnal).'.');
+            }
             $namaHari = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'];
             $hariTarget = $namaHari[$tanggalJurnal->dayOfWeekIso] ?? null;
 
@@ -85,7 +93,7 @@ class JurnalController extends Controller
         $jurnal = $sesi->jurnalSesi($jadwalAktif, $tanggalString);
 
         if ($jurnal && ! $this->jurnalBisaDiperbarui($jurnal, (int) $jadwalAktif->id_kelas, $tanggalString)) {
-            return redirect('/dashboard-guru')->with('error', 'Jurnal tidak bisa diubah karena rekap kelas sudah dikirim ke Jurnal Mengajar atau jurnal sudah disetujui guru piket.');
+            return redirect('/dashboard-guru')->with('error', 'Jurnal tidak bisa diubah karena guru piket sudah menyetujuinya.');
         }
 
         $daftarSiswa = Siswa::where('id_kelas', $jadwalAktif->id_kelas)->orderBy('no_absen')->orderBy('nama')->get();
@@ -148,6 +156,9 @@ class JurnalController extends Controller
         }
         $namaHari = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'];
         $hariTarget = $namaHari[$tanggalJurnal->dayOfWeekIso] ?? null;
+        if (KegiatanTanggal::jadwalDitiadakan($tanggalJurnal->toDateString())) {
+            return redirect()->route('dashboard-guru')->with('error', 'Jurnal tidak perlu dikirim karena jadwal pelajaran ditiadakan untuk kegiatan sekolah pada tanggal ini.');
+        }
 
         $jadwalQuery = JadwalPelajaran::with(['jamPelajaran.semester'])
             ->where('id_jadwal', $validated['id_jadwal'])
@@ -179,7 +190,7 @@ class JurnalController extends Controller
         $jurnalAda = $sesi->jurnalSesi($jadwal, $tanggalJurnal->toDateString());
         if ($jurnalAda && ! $this->jurnalBisaDiperbarui($jurnalAda, (int) $jadwal->id_kelas, $tanggalJurnal->toDateString())) {
             return redirect()->route('dashboard-guru')
-                ->with('error', 'Jurnal tidak bisa diubah karena rekap kelas sudah dikirim ke Jurnal Mengajar atau jurnal sudah disetujui guru piket.');
+                ->with('error', 'Jurnal tidak bisa diubah karena guru piket sudah menyetujuinya.');
         }
         $sudahTerverifikasi = $jurnalAda?->status_verifikasi === 'terverifikasi';
 
@@ -236,7 +247,10 @@ class JurnalController extends Controller
         $jurnalHariIni = Jurnal::with(['jadwal.kelas', 'jadwal.mapel', 'jadwal.guru', 'jadwal.jamPelajaran', 'absenSiswa'])
             ->whereDate('tanggal', Waktu::sekarang()->toDateString())
             ->whereNotNull('waktu_submit')
-            ->where('status_verifikasi', 'terverifikasi')
+            ->where(function ($query) {
+                $query->where('status_verifikasi', 'terverifikasi')
+                    ->orWhere('status_kehadiran_guru', 'tidak_hadir');
+            })
             ->get()
             ->filter(fn ($j) => $j->jadwal && $j->jadwal->jamPelajaran)
             ->sortBy(fn ($j) => [$j->jadwal->kelas->tingkat, $j->jadwal->kelas->jurusan, $j->jadwal->kelas->rombel, $j->jadwal->jamPelajaran->jam_ke])
@@ -245,7 +259,12 @@ class JurnalController extends Controller
         $tugasPerJadwal = DB::table('upload_tugas')->whereDate('tanggal', Waktu::sekarang()->toDateString())
             ->get()->keyBy('id_jadwal');
 
-        $daftarJurnal = $jurnalHariIni->map(function ($j) use ($tugasPerJadwal) {
+        $jurnalTerbaruPerJadwal = $jurnalHariIni
+            ->groupBy(fn ($jurnal) => $jurnal->jadwal->id_kelas.'|'.$jurnal->jadwal->id_guru.'|'.$jurnal->jadwal->id_mapel.'|'.$jurnal->jadwal->jamPelajaran->jam_ke)
+            ->map(fn ($jurnals) => $jurnals->sortByDesc(fn ($jurnal) => [$jurnal->waktu_submit?->timestamp ?? 0, $jurnal->id_jurnal])->first())
+            ->values();
+
+        $daftarJurnal = $jurnalTerbaruPerJadwal->map(function ($j) use ($tugasPerJadwal) {
             $kelas = $j->jadwal->kelas;
             $tugas = $tugasPerJadwal->get($j->id_jadwal);
             $romawi = [10 => 'X', 11 => 'XI', 12 => 'XII'];
@@ -289,7 +308,6 @@ class JurnalController extends Controller
         $jurnalTerkirimPerJadwal = Jurnal::whereDate('tanggal', $sekarang->toDateString())->whereNotNull('waktu_submit')->get()->keyBy('id_jadwal');
         $pengirimanKelas = PengirimanJurnalKelas::with('kelas')
             ->whereDate('tanggal', $sekarang->toDateString())
-            ->orderByRaw("FIELD(status, 'menunggu', 'ditolak', 'disetujui')")
             ->orderByDesc('dikirim_at')->get();
         $pengirimanKelas->each(function ($pengiriman) use ($jadwalPerKelas, $tugasPerJadwal, $jurnalTerkirimPerJadwal) {
             $jadwalKelas = $jadwalPerKelas->get($pengiriman->id_kelas, collect());
@@ -298,66 +316,61 @@ class JurnalController extends Controller
             $pengiriman->jumlah_lengkap = $lengkap;
             $pengiriman->jumlah_kurang = max(0, $pengiriman->jumlah_sesi - $lengkap);
         });
+        $jadwalTerkirimIds = $pengirimanKelas->flatMap(fn ($kiriman) => $jadwalPerKelas->get($kiriman->id_kelas, collect())->pluck('id_jadwal'))->unique();
+        $jurnalBelumScan = Jurnal::with(['jadwal.kelas', 'jadwal.mapel', 'jadwal.guru', 'jadwal.jamPelajaran', 'absenSiswa'])
+            ->whereDate('tanggal', $sekarang->toDateString())
+            ->whereIn('id_jadwal', $jadwalTerkirimIds)
+            ->whereNotNull('waktu_submit')
+            ->where('status_verifikasi', '!=', 'terverifikasi')
+            ->where('status_kehadiran_guru', '!=', 'tidak_hadir')
+            ->get()
+            ->filter(fn ($jurnal) => $jurnal->jadwal && $jurnal->jadwal->jamPelajaran)
+            ->groupBy(fn ($jurnal) => $jurnal->jadwal->id_kelas.'|'.$jurnal->jadwal->id_guru.'|'.$jurnal->jadwal->id_mapel.'|'.$jurnal->jadwal->jamPelajaran->jam_ke)
+            ->map(fn ($jurnals) => $jurnals->sortByDesc(fn ($jurnal) => [$jurnal->waktu_submit?->timestamp ?? 0, $jurnal->id_jurnal])->first())
+            ->values()
+            ->map(function ($jurnal) use ($tugasPerJadwal) {
+                $kelas = $jurnal->jadwal->kelas;
+                $jam = $jurnal->jadwal->jamPelajaran;
+                $tugas = $tugasPerJadwal->get($jurnal->id_jadwal);
+                $romawi = [10 => 'X', 11 => 'XI', 12 => 'XII'];
+
+                return [
+                    'id' => $jurnal->id_jurnal,
+                    'kelas' => $kelas->nama_kelas,
+                    'tingkat' => $romawi[(int) $kelas->tingkat] ?? (string) $kelas->tingkat,
+                    'waktu_kirim' => $jurnal->waktu_submit?->format('H:i') ?? '—',
+                    'status' => 'terkirim',
+                    'alasan_tolak' => null,
+                    'sesi' => [[
+                        'jam' => (string) $jam->jam_ke,
+                        'mapel' => $jurnal->jadwal->mapel->nama_mapel ?? '—',
+                        'guru' => $jurnal->jadwal->guru->name ?? '—',
+                        'guru_id' => (int) $jurnal->jadwal->id_guru,
+                        'hadir_guru' => false,
+                        'ada_tugas' => $tugas !== null,
+                        'tugas' => $tugas?->tugas,
+                        'status_guru' => $tugas?->status_guru,
+                        'id_upload_tugas' => $tugas?->id_upload_tugas,
+                        'file_path' => $tugas?->file_path,
+                        'materi' => $tugas?->materi ?? $jurnal->materi,
+                        'jumlah_hadir' => $jurnal->jumlah_hadir,
+                        'siswa' => $jurnal->absenSiswa->map(fn ($absen) => ['nama' => $absen->nama, 'ket' => match ($absen->status) { 'Sakit' => 'S', 'Izin' => 'I', 'Dispen' => 'D', default => 'A' }])->all(),
+                    ]],
+                ];
+            });
+        $kunciJurnalTerbaru = $jurnalBelumScan->mapWithKeys(fn ($item) => [
+            $item['kelas'].'|'.($item['sesi'][0]['guru'] ?? '').'|'.($item['sesi'][0]['mapel'] ?? '').'|'.($item['sesi'][0]['jam'] ?? '') => $item,
+        ]);
+        $daftarJurnal = collect($daftarJurnal)
+            ->reject(fn ($item) => isset($kunciJurnalTerbaru[$item['kelas'].'|'.($item['sesi'][0]['guru'] ?? '').'|'.($item['sesi'][0]['mapel'] ?? '').'|'.($item['sesi'][0]['jam'] ?? '')]))
+            ->merge($jurnalBelumScan)
+            ->values()
+            ->all();
+
         $isPiketHariIni = $guru->sedangPiket($sekarang);
         $guruPiketId = (int) $guru->id;
 
         return view('guru.jurnal-mengajar', compact('daftarJurnal', 'daftarTingkat', 'isPiketHariIni', 'guruPiketId', 'pengirimanKelas'));
-    }
-
-    public function approvePengirimanKelas(Request $request, PengirimanJurnalKelas $pengiriman): RedirectResponse
-    {
-        abort_unless(Auth::user()->sedangPiket(Waktu::sekarang()), 403, 'Anda tidak sedang bertugas piket.');
-        abort_if($pengiriman->status !== 'menunggu', 409, 'Kiriman kelas ini sudah diproses.');
-        $pengiriman->update([
-            'status' => 'disetujui',
-            'alasan_tolak' => null,
-            'id_diperiksa_oleh' => Auth::id(),
-            'diperiksa_at' => now(),
-        ]);
-
-        return back()->with('success', 'Rekap jurnal kelas berhasil disetujui.');
-    }
-
-    public function rejectPengirimanKelas(Request $request, PengirimanJurnalKelas $pengiriman): RedirectResponse
-    {
-        $data = $request->validate(['alasan' => ['required', 'string', 'max:2000']]);
-        abort_unless(Auth::user()->sedangPiket(Waktu::sekarang()), 403, 'Anda tidak sedang bertugas piket.');
-        abort_if($pengiriman->status !== 'menunggu', 409, 'Kiriman kelas ini sudah diproses.');
-        $pengiriman->update([
-            'status' => 'ditolak',
-            'alasan_tolak' => $data['alasan'],
-            'id_diperiksa_oleh' => Auth::id(),
-            'diperiksa_at' => now(),
-        ]);
-
-        return back()->with('success', 'Rekap jurnal kelas ditolak. Kelas dapat memperbaiki dan mengirim ulang.');
-    }
-
-    public function approve(Request $request, Jurnal $jurnal): RedirectResponse
-    {
-        $this->pastikanPiketBukanPengajar($jurnal);
-        abort_if($jurnal->status_kehadiran_guru === 'tidak_hadir', 409, 'Catatan ketidakhadiran otomatis tidak dapat disetujui sebagai jurnal.');
-        abort_if($jurnal->status_piket !== 'menunggu', 409, 'Jurnal ini sudah diproses.');
-        $jurnal->update(['status_piket' => 'disetujui', 'id_diperiksa_oleh' => Auth::id(), 'diperiksa_at' => now(), 'alasan_tolak' => null]);
-
-        return back()->with('success', 'Jurnal berhasil disetujui.');
-    }
-
-    public function reject(Request $request, Jurnal $jurnal): RedirectResponse
-    {
-        $data = $request->validate(['alasan' => ['required', 'string', 'max:2000']]);
-        $this->pastikanPiketBukanPengajar($jurnal);
-        abort_if($jurnal->status_kehadiran_guru === 'tidak_hadir', 409, 'Catatan ketidakhadiran otomatis tidak dapat ditolak sebagai jurnal.');
-        abort_if($jurnal->status_piket !== 'menunggu', 409, 'Jurnal ini sudah diproses.');
-        $jurnal->update(['status_piket' => 'ditolak', 'alasan_tolak' => $data['alasan'], 'id_diperiksa_oleh' => Auth::id(), 'diperiksa_at' => now()]);
-
-        return back()->with('success', 'Jurnal ditolak dan alasannya tersimpan.');
-    }
-
-    private function pastikanPiketBukanPengajar(Jurnal $jurnal): void
-    {
-        abort_unless(Auth::user()->sedangPiket(Waktu::sekarang()), 403, 'Anda tidak sedang bertugas piket.');
-        abort_if((int) $jurnal->jadwal()->value('id_guru') === (int) Auth::id(), 403, 'Guru tidak dapat memproses jurnalnya sendiri.');
     }
 
     private function jurnalBisaDiperbarui(Jurnal $jurnal, int $idKelas, string $tanggal): bool
@@ -370,17 +383,26 @@ class JurnalController extends Controller
             return false;
         }
 
-        return ! PengirimanJurnalKelas::where('id_kelas', $idKelas)
-            ->whereDate('tanggal', $tanggal)
-            ->whereIn('status', ['menunggu', 'disetujui'])
-            ->exists();
+        return true;
     }
 
-    public function adminIndex(SesiKelasService $service): View
+    public function adminIndex(Request $request, SesiKelasService $service): View
     {
-        $pengirimanDisetujui = PengirimanJurnalKelas::with(['kelas', 'pemeriksa'])
-            ->where('status', 'disetujui')
-            ->latest('tanggal')->latest('dikirim_at')->get();
+        $filters = $request->validate([
+            'tanggal_dari' => ['nullable', 'date'],
+            'tanggal_sampai' => ['nullable', 'date', 'after_or_equal:tanggal_dari'],
+        ]);
+        $tanggalDari = $filters['tanggal_dari'] ?? '';
+        $tanggalSampai = $filters['tanggal_sampai'] ?? '';
+
+        $queryPengiriman = PengirimanJurnalKelas::with('kelas');
+        if ($tanggalDari !== '') {
+            $queryPengiriman->whereDate('tanggal', '>=', $tanggalDari);
+        }
+        if ($tanggalSampai !== '') {
+            $queryPengiriman->whereDate('tanggal', '<=', $tanggalSampai);
+        }
+        $pengirimanDisetujui = $queryPengiriman->latest('tanggal')->latest('dikirim_at')->get();
 
         $tanggalList = $pengirimanDisetujui->pluck('tanggal')->map(fn ($tanggal) => $tanggal->toDateString())->unique()->values();
         $kelasIds = $pengirimanDisetujui->pluck('id_kelas')->unique()->values();
@@ -418,7 +440,7 @@ class JurnalController extends Controller
             return sprintf('%02d-%s-%s', $urutanTingkat[(string) $kelas?->tingkat] ?? 99, $kelas?->jurusan ?? 'ZZZ', $kelas?->rombel ?? 'ZZZ');
         });
 
-        return view('admin.jurnal', compact('pengirimanPerKelas'));
+        return view('admin.jurnal', compact('pengirimanPerKelas', 'tanggalDari', 'tanggalSampai'));
     }
 
     public function verifikasiSukses(Request $request, Jurnal $jurnal): View

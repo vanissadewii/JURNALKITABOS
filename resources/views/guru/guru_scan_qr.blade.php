@@ -9,7 +9,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-  @vite('resources/css/app.css')
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'], poppins: ['Poppins', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#F9F6F0', 100: '#EFE6DD', 200: '#E2C7B0', 300: '#D7B899',
+              600: '#7A6A60', 700: '#6D5C52', 800: '#5C4033', 900: '#3E2B22'
+            }
+          }
+        }
+      }
+    };
+  </script>
   <style>
     #qr-reader video {
       width: 100% !important;
@@ -94,46 +109,46 @@
   </aside>
 
   <!-- MAIN CONTENT AREA -->
-  <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8">
+  <div class="w-full min-w-0 md:flex-1 md:ml-64 flex flex-col min-h-screen pb-8">
 
     <!-- Top Header Bar -->
-    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-3 sm:px-5 md:px-10 h-14 sm:h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
         <a href="{{ url('/form-jurnal') }}" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all active:scale-95" aria-label="Kembali">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M15 18l-6-6 6-6"/>
           </svg>
         </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Verifikasi Kehadiran Guru</h1>
+        <h1 class="font-poppins font-bold text-sm sm:text-lg text-white text-center">Verifikasi Kehadiran Guru</h1>
         <div class="w-9"></div>
       </div>
     </header>
 
     <!-- Main Content Container -->
-    <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-7 sm:py-10 flex-1 flex flex-col gap-6">
+    <main class="w-full max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 flex-1 flex flex-col gap-4 sm:gap-6">
 
-      <section class="rounded-3xl bg-white border border-brand-100 shadow-sm overflow-hidden">
-        <div class="bg-gradient-to-r from-[#5C4033] to-[#795846] px-5 py-6 sm:px-8 sm:py-7 text-white">
+      <section class="w-full rounded-2xl sm:rounded-3xl bg-white border border-brand-100 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-[#5C4033] to-[#795846] px-4 py-4 sm:px-8 sm:py-7 text-white">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
             <div>
-              <p class="text-xs uppercase tracking-[0.18em] text-white/70 font-semibold">Jurnal berhasil disimpan</p>
+              <p class="text-[11px] sm:text-xs uppercase tracking-[0.12em] sm:tracking-[0.18em] text-white/70 font-semibold">Data jurnal tersimpan · kehadiran menunggu verifikasi</p>
               <h2 class="mt-2 font-poppins font-bold text-xl sm:text-2xl">{{ $jurnal->jadwal->mapel->nama_mapel ?? 'Mata Pelajaran' }}</h2>
               <p class="mt-1 text-sm text-white/80">{{ $jurnal->jadwal->kelas->nama_kelas ?? 'Kelas' }}</p>
             </div>
             <span class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 px-4 py-2 text-xs font-semibold w-fit">
               <span class="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
-              Menunggu scan QR kelas
+              Scan QR kelas satu kali
             </span>
           </div>
         </div>
 
-        <div class="p-5 sm:p-8 flex flex-col items-center gap-5 text-center">
+        <div class="p-4 sm:p-8 flex flex-col items-center gap-4 sm:gap-5 text-center">
           <div class="max-w-xl">
-            <h3 class="font-poppins font-bold text-lg sm:text-xl">Pindai QR yang tampil di layar kelas</h3>
-            <p class="mt-2 text-sm text-brand-600">Izinkan akses kamera, lalu arahkan kamera ke kode QR kelas. Setelah terbaca, halaman QR guru akan terbuka otomatis.</p>
+            <h3 class="font-poppins font-bold text-base sm:text-xl">Pindai QR yang tampil di layar kelas</h3>
+            <p class="mt-2 text-sm text-brand-600">Izinkan akses kamera, lalu pindai QR kelas yang sedang ditampilkan akun kelas. Setelah berhasil, kehadiran langsung terverifikasi dan Anda kembali ke beranda.</p>
           </div>
 
-          <div class="w-full max-w-lg aspect-[4/3] bg-[#171411] rounded-3xl relative overflow-hidden flex items-center justify-center shadow-lg border-[6px] border-brand-100">
+          <div class="w-full max-w-lg aspect-[4/3] max-h-[46vh] sm:max-h-none bg-[#171411] rounded-2xl sm:rounded-3xl relative overflow-hidden flex items-center justify-center shadow-lg border-4 sm:border-[6px] border-brand-100">
             <div id="webcam-preview" class="absolute inset-0 w-full h-full"></div>
             <div class="absolute inset-[12%] rounded-2xl border border-white/30 pointer-events-none">
               <div class="absolute -top-px -left-px w-8 h-8 border-t-4 border-l-4 border-amber-400 rounded-tl-xl"></div>
@@ -151,52 +166,15 @@
           <div id="scan-status" role="status" aria-live="polite" class="w-full max-w-lg rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 text-sm text-brand-700">
             Menunggu kamera siap...
           </div>
-          <form id="manual-qr-form" class="w-full max-w-lg rounded-xl border border-brand-100 bg-white p-4 text-left">
+          <form id="manual-qr-form" class="w-full max-w-lg rounded-xl border border-brand-100 bg-white p-3 sm:p-4 text-left">
             <label for="manual-qr-code" class="block text-sm font-semibold text-[#5C4033]">Atau masukkan 6 angka dari QR kelas</label>
-            <div class="mt-2 flex gap-2"><input id="manual-qr-code" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="off" placeholder="Masukkan 6 angka di layar kelas" class="min-w-0 flex-1 rounded-lg border border-brand-200 px-3 py-2 text-sm"><button type="button" onclick="kirimKodeManualGuru()" class="shrink-0 rounded-lg bg-brand-800 px-4 py-2 text-sm font-semibold text-white">Periksa kode</button></div>
+            <div class="mt-2 flex flex-col gap-2 min-[420px]:flex-row"><input id="manual-qr-code" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="off" placeholder="Masukkan 6 angka di layar kelas" class="min-w-0 w-full flex-1 rounded-lg border border-brand-200 px-3 py-2.5 text-sm"><button type="button" onclick="kirimKodeManualGuru()" class="w-full shrink-0 rounded-lg bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white min-[420px]:w-auto">Periksa kode</button></div>
           </form>
         </div>
       </section>
     </main>
 
   </div>
-
-  <!-- Bottom Navigation Bar (Mobile) -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
-    <div class="flex justify-between items-center">
-      <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
-        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
-        </svg>
-        <span>Beranda</span>
-      </a>
-
-      <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
-        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
-          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
-          <path d="M7 3v14"/>
-        </svg>
-        <span>Isi Jurnal</span>
-      </a>
-
-      <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
-        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M3 4h14M3 8h14M3 12h10M3 16h6"/>
-        </svg>
-        <span>Riwayat</span>
-      </a>
-
-      <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
-
-      <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
-        <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17"/>
-          <circle cx="10" cy="6.5" r="3.5"/>
-        </svg>
-        <span>Profil</span>
-      </a>
-    </div>
-  </nav>
 
   <!-- Script Penanganan Hasil Scan QR Kamera -->
   <script>
@@ -229,7 +207,7 @@
         });
         const result = await response.json();
         if (response.ok && result.success && result.redirect) {
-          tampilkanStatus('Kode benar. Membuka QR guru...');
+          tampilkanStatus(result.message || 'Berhasil. Kembali ke beranda...');
           window.location.assign(result.redirect);
           return;
         }

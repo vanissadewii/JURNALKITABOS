@@ -134,9 +134,8 @@
                         @endif
                         @if ($sesi->tugas)
                             <div class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-900">
-                                <div class="flex flex-wrap items-center justify-between gap-2"><p class="font-semibold">Guru {{ $sesi->tugas->status_guru }} · {{ $sesi->tugas->mapel }}</p><span class="rounded-full bg-rose-100 px-2.5 py-1 text-xs font-bold">Guru Tidak Hadir</span></div>
+                                <div class="flex flex-wrap items-center justify-between gap-2"><p class="font-semibold">{{ $sesi->tugas->materi ?? $sesi->jurnal?->materi ?? 'Materi' }}</p></div>
                                 @if(\Carbon\Carbon::parse($sesi->tugas->created_at)->gte(\App\Support\Waktu::sekarang()->copy()->subMinutes(30)))<p role="status" class="mt-2 font-semibold">Tugas pengganti baru dikirim guru piket.</p>@endif
-                                @if($sesi->tugas->alasan_izin)<p class="mt-2">{{ $sesi->tugas->alasan_izin }}</p>@endif
                                 <p class="mt-2"><span class="font-semibold">Materi:</span> {{ $sesi->tugas->materi ?? $sesi->jurnal?->materi ?? '—' }}</p>
                                 <p class="mt-1 whitespace-pre-line"><span class="font-semibold">Tugas:</span> {{ $sesi->tugas->tugas }}</p>
                                 @if($sesi->tugas->file_path)<a class="mt-3 inline-flex rounded-lg bg-[#5C4033] px-4 py-2 text-xs font-semibold text-white" href="{{ route('kelas.tugas.download', $sesi->tugas->id_upload_tugas) }}">Buka lampiran</a>@endif
@@ -146,21 +145,21 @@
                         @else
                             <p class="rounded-xl bg-[#F5EFE8] p-3 text-xs text-[#7A6A60]">Jurnal sesi ini belum tersedia atau masih menunggu verifikasi guru.</p>
                         @endif
-                        @if($sesi->jurnal && $sesi->jurnal->dispensasi->isNotEmpty())
+                        @if($sesi->dispensasi->isNotEmpty())
                             <details class="overflow-hidden rounded-xl border border-amber-200 bg-amber-50 text-sm text-amber-950">
-                                <summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Dispensasi ({{ $sesi->jurnal->dispensasi->count() }})</span><span class="transition-transform details-chevron">⌄</span></summary>
+                                <summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Dispensasi ({{ $sesi->dispensasi->count() }})</span><span class="transition-transform details-chevron">⌄</span></summary>
                                 <div class="border-t border-amber-200 px-3">
-                                    @foreach($sesi->jurnal->dispensasi as $item)
+                                    @foreach($sesi->dispensasi as $item)
                                         <div class="border-b border-amber-100 py-2 last:border-0"><div class="flex justify-between gap-2"><p class="font-semibold">{{ $item->siswa->nama ?? 'Siswa' }}</p><p class="shrink-0 text-[10px]">Jam ke-{{ $item->jam_ke_mulai }}@if($item->jam_ke_selesai) s/d {{ $item->jam_ke_selesai }}@endif</p></div><p class="mt-1 text-xs">Ket: {{ $item->alasan }}</p><p class="mt-1 text-xs">Disetujui oleh Waka: <strong>{{ $item->waka->nama ?? '—' }}</strong></p><p class="mt-1 text-xs">Diinput oleh Guru Piket: <strong>{{ $item->guruPiket->name ?? '—' }}</strong></p></div>
                                     @endforeach
                                 </div>
                             </details>
                         @endif
-                        @php($siswaTidakHadir = $sesi->jurnal?->absenSiswa?->where('status', '!=', 'Dispen') ?? collect())
+                        @php($siswaTidakHadir = $sesi->siswaTidakHadir)
                         @if($siswaTidakHadir->isNotEmpty())
                             <details class="overflow-hidden rounded-xl border border-rose-200 bg-rose-50 text-sm text-rose-950">
                                 <summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Tidak Hadir ({{ $siswaTidakHadir->count() }})</span><span class="transition-transform details-chevron">⌄</span></summary>
-                                <div class="border-t border-rose-200 px-3">@foreach($siswaTidakHadir as $absen)<div class="flex justify-between gap-2 border-b border-rose-100 py-2 last:border-0"><span>{{ $absen->nama }}</span><span class="rounded bg-rose-100 px-2 py-0.5 text-xs font-bold">{{ $absen->status }}</span></div>@endforeach</div>
+                                <div class="border-t border-rose-200 px-3">@foreach($siswaTidakHadir as $absen)<div class="flex justify-between gap-2 border-b border-rose-100 py-2 last:border-0"><span>{{ $absen->nama }}</span><span class="rounded px-2 py-0.5 text-xs font-bold {{ $absen->status === 'Sakit' ? 'bg-blue-100 text-blue-800' : ($absen->status === 'Izin' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800') }}">{{ $absen->status }}</span></div>@endforeach</div>
                             </details>
                         @endif
                     </article>
@@ -173,30 +172,30 @@
                     @foreach ($sesiSelesai as $sesi)
                         <article class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E5D8CC] bg-white p-4">
                             <div><h2 class="font-semibold text-[#3E3028]">{{ $sesi->mapel }}</h2><p class="mt-1 text-sm text-[#7A6A60]">{{ $sesi->guru }} · Jam ke-{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai)–{{ $sesi->jam_ke_sampai }}@endif</p></div>
-                            <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $sesi->tugas ? 'bg-sky-100 text-sky-800' : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' ? 'bg-rose-100 text-rose-800' : 'bg-[#F5EFE8] text-[#5C4033]') }}">{{ $sesi->tugas ? $sesi->tugas->status_guru.' (Disetujui)' : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' ? 'Tidak Hadir' : 'Selesai') }}</span>
-                            @if($sesi->jurnal?->status_kehadiran_guru === 'hadir')
+                            <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $sesi->tugas ? 'bg-sky-100 text-sky-800' : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' ? 'bg-rose-100 text-rose-800' : 'bg-[#F5EFE8] text-[#5C4033]') }}">{{ $sesi->jurnal?->status_kehadiran_guru === 'hadir' ? 'Hadir' : ($sesi->tugas ? $sesi->tugas->status_guru : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' || !$sesi->jurnal ? 'Tidak Hadir' : ($sesi->jurnal?->status_kehadiran_guru === 'sakit' ? 'Sakit' : ($sesi->jurnal?->status_kehadiran_guru === 'izin' ? 'Izin' : 'Selesai')))) }}</span>
+                            @if($sesi->tugas && $sesi->jurnal?->status_kehadiran_guru !== 'hadir')
+                                <p class="w-full flex items-center gap-2 text-sm font-semibold text-red-700"><span class="grid h-5 w-5 place-items-center rounded bg-red-600 text-white">×</span> Guru tidak hadir</p>
+                            @elseif($sesi->jurnal?->status_kehadiran_guru === 'hadir')
                                 <p class="w-full flex items-center gap-2 text-sm font-semibold text-green-700"><span class="grid h-5 w-5 place-items-center rounded bg-green-600 text-white">✓</span> Kehadiran terverifikasi</p>
-                            @elseif($sesi->tugas || $sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir')
+                            @elseif($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' || !$sesi->jurnal)
                                 <p class="w-full flex items-center gap-2 text-sm font-semibold text-red-700"><span class="grid h-5 w-5 place-items-center rounded bg-red-600 text-white">×</span> Guru tidak hadir</p>
                             @endif
                             @if($sesi->tugas)
                                 <div class="w-full rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-900">
-                                    <p class="font-semibold">Guru {{ $sesi->tugas->status_guru }} · {{ $sesi->tugas->mapel }} · Jam ke-{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai)–{{ $sesi->jam_ke_sampai }}@endif</p>
-                                    @if($sesi->tugas->alasan_izin)<p class="mt-1">{{ $sesi->tugas->alasan_izin }}</p>@endif
-                                    <p class="mt-1"><span class="font-semibold">Materi:</span> {{ $sesi->tugas->materi ?? '—' }}</p>
+                                    <p class="font-semibold">Materi: {{ $sesi->tugas->materi ?? '—' }}</p>
                                     <p class="mt-1 whitespace-pre-line"><span class="font-semibold">Tugas:</span> {{ $sesi->tugas->tugas }}</p>
                                     @if($sesi->tugas->file_path)<a class="mt-2 inline-flex rounded-lg bg-[#5C4033] px-4 py-2 text-xs font-semibold text-white" href="{{ route('kelas.tugas.download', $sesi->tugas->id_upload_tugas) }}">Buka lampiran</a>@endif
                                 </div>
                             @endif
-                            @if($sesi->jurnal && $sesi->jurnal->dispensasi->isNotEmpty())
+                            @if($sesi->dispensasi->isNotEmpty())
                                 <details class="w-full overflow-hidden rounded-xl border border-amber-200 bg-amber-50 text-sm text-amber-950">
-                                    <summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Dispensasi ({{ $sesi->jurnal->dispensasi->count() }})</span><span>⌄</span></summary>
-                                    <div class="border-t border-amber-200 px-3">@foreach($sesi->jurnal->dispensasi as $item)<div class="border-b border-amber-100 py-2 last:border-0"><div class="flex justify-between gap-2"><p class="font-semibold">{{ $item->siswa->nama ?? 'Siswa' }}</p><p class="shrink-0 text-[10px]">Jam ke-{{ $item->jam_ke_mulai }}@if($item->jam_ke_selesai) s/d {{ $item->jam_ke_selesai }}@endif</p></div><p class="mt-1 text-xs">Ket: {{ $item->alasan }}</p><p class="mt-1 text-xs">Disetujui oleh Waka: <strong>{{ $item->waka->nama ?? '—' }}</strong></p><p class="mt-1 text-xs">Diinput oleh Guru Piket: <strong>{{ $item->guruPiket->name ?? '—' }}</strong></p></div>@endforeach</div>
+                                    <summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Dispensasi ({{ $sesi->dispensasi->count() }})</span><span>⌄</span></summary>
+                                    <div class="border-t border-amber-200 px-3">@foreach($sesi->dispensasi as $item)<div class="border-b border-amber-100 py-2 last:border-0"><div class="flex justify-between gap-2"><p class="font-semibold">{{ $item->siswa->nama ?? 'Siswa' }}</p><p class="shrink-0 text-[10px]">Jam ke-{{ $item->jam_ke_mulai }}@if($item->jam_ke_selesai) s/d {{ $item->jam_ke_selesai }}@endif</p></div><p class="mt-1 text-xs">Ket: {{ $item->alasan }}</p><p class="mt-1 text-xs">Disetujui oleh Waka: <strong>{{ $item->waka->nama ?? '—' }}</strong></p><p class="mt-1 text-xs">Diinput oleh Guru Piket: <strong>{{ $item->guruPiket->name ?? '—' }}</strong></p></div>@endforeach</div>
                                 </details>
                             @endif
-                            @php($siswaTidakHadir = $sesi->jurnal?->absenSiswa?->where('status', '!=', 'Dispen') ?? collect())
+                            @php($siswaTidakHadir = $sesi->siswaTidakHadir)
                             @if($siswaTidakHadir->isNotEmpty())
-                                <details class="w-full overflow-hidden rounded-xl border border-rose-200 bg-rose-50 text-sm text-rose-950"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Tidak Hadir ({{ $siswaTidakHadir->count() }})</span><span>⌄</span></summary><div class="border-t border-rose-200 px-3">@foreach($siswaTidakHadir as $absen)<div class="flex justify-between gap-2 border-b border-rose-100 py-2 last:border-0"><span>{{ $absen->nama }}</span><span class="rounded bg-rose-100 px-2 py-0.5 text-xs font-bold">{{ $absen->status }}</span></div>@endforeach</div></details>
+                                <details class="w-full overflow-hidden rounded-xl border border-rose-200 bg-rose-50 text-sm text-rose-950"><summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Tidak Hadir ({{ $siswaTidakHadir->count() }})</span><span>⌄</span></summary><div class="border-t border-rose-200 px-3">@foreach($siswaTidakHadir as $absen)<div class="flex justify-between gap-2 border-b border-rose-100 py-2 last:border-0"><span>{{ $absen->nama }}</span><span class="rounded px-2 py-0.5 text-xs font-bold {{ $absen->status === 'Sakit' ? 'bg-blue-100 text-blue-800' : ($absen->status === 'Izin' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800') }}">{{ $absen->status }}</span></div>@endforeach</div></details>
                             @endif
                         </article>
                     @endforeach

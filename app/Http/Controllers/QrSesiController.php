@@ -22,16 +22,17 @@ class QrSesiController extends Controller
 
     private const SISA_MINIMAL_DETIK = 15;     // sisa umur kurang dari ini: dibuatkan QR baru
 
-    private const BATAS_SALING_SCAN_MENIT = 5; // kelas harus scan balik dalam lima menit
-
     public function __construct(private VerifikasiSesiService $sesi) {}
 
     public function scanKelas(Jurnal $jurnal): View
     {
         $jurnal->load('jadwal');
         abort_unless((int) $jurnal->jadwal->id_guru === (int) Auth::id(), 403);
+        if ($jurnal->status_verifikasi === 'terverifikasi') {
+            return redirect()->route('dashboard-guru')->with('success', 'Kehadiran sesi ini sudah terverifikasi.');
+        }
+
         abort_unless($jurnal->tanggal?->toDateString() === Waktu::sekarang()->toDateString(), 404);
-        abort_if($jurnal->status_verifikasi === 'terverifikasi', 404);
 
         return view('guru.guru_scan_qr', compact('jurnal'));
     }
@@ -41,6 +42,15 @@ class QrSesiController extends Controller
         $request->validate(['kode_qr' => 'required|string']);
         $jurnal->load('jadwal');
         abort_unless((int) $jurnal->jadwal->id_guru === (int) Auth::id(), 403);
+
+        if ($jurnal->status_verifikasi === 'terverifikasi') {
+            return response()->json([
+                'success' => true,
+                'verified' => true,
+                'message' => 'Kehadiran Anda sudah terverifikasi.',
+                'redirect' => route('dashboard-guru', [], false),
+            ]);
+        }
 
         $qr = QrSesi::where('kode_qr', $request->kode_qr)
             ->where('tipe', 'kelas')
@@ -54,10 +64,6 @@ class QrSesiController extends Controller
             return $this->gagal('QR kelas kedaluwarsa atau berasal dari tanggal lain. Minta kelas menampilkan QR terbaru.', 410);
         }
 
-        if ($qr->sudahDipindai()) {
-            return $this->gagal('QR kelas ini sudah pernah dipindai.', 409);
-        }
-
         if (! app()->isLocal() && ! $this->sesi->masihBerjalan($jurnal->jadwal)) {
             return $this->gagal('Sesi mengajar ini sudah selesai atau belum dimulai.', 422);
         }
@@ -67,15 +73,33 @@ class QrSesiController extends Controller
             return $this->gagal('Jurnal untuk sesi ini belum tersimpan. Simpan jurnal terlebih dahulu.', 422);
         }
 
-        $qr->update([
-            'dipindai_at' => now(),
-            'dipindai_oleh' => Auth::id(),
-            'id_jurnal' => $jurnal->id_jurnal,
-        ]);
+        $idAkunKelas = DB::table('users')
+            ->where('role', 'kelas')
+            ->where('id_kelas', $jurnal->jadwal->id_kelas)
+            ->value('id');
+
+        DB::transaction(function () use ($qr, $jurnal, $idAkunKelas) {
+            $jurnal->update([
+                'status_verifikasi' => 'terverifikasi',
+                'status_kehadiran_guru' => 'hadir',
+                'id_diperiksa_oleh' => $idAkunKelas,
+                'diperiksa_at' => now(),
+            ]);
+
+            $qr->update([
+                'dipindai_at' => now(),
+                'dipindai_oleh' => Auth::id(),
+                'id_jurnal' => $jurnal->id_jurnal,
+            ]);
+        });
+
+        session()->flash('notif_sukses', 'Verifikasi berhasil! Kehadiran Anda sudah tercatat.');
 
         return response()->json([
             'success' => true,
-            'redirect' => route('qr.tampilkan-guru', $jurnal, false),
+            'verified' => true,
+            'message' => 'QR kelas berhasil dipindai. Kehadiran Anda sudah terverifikasi.',
+            'redirect' => route('dashboard-guru', [], false),
         ]);
     }
 
@@ -98,16 +122,15 @@ class QrSesiController extends Controller
 
         $terverifikasi = $jurnal->status_verifikasi === 'terverifikasi';
 
-        if ($terverifikasi) {
-            session()->flash('success', 'Guru dan perwakilan kelas berhasil saling scan. Jurnal sudah tercatat di riwayat.');
-        }
-
-        return response()->json(['verified' => $terverifikasi]);
+        return response()->json([
+            'verified' => $terverifikasi,
+            'message' => $terverifikasi ? 'Kehadiran terverifikasi.' : null,
+        ]);
     }
 
     // ================= KELAS =================
 
-    /** Halaman pemindai kelas hanya dibuka setelah guru memindai QR kelas. */
+    /** Halaman ini menampilkan QR kelas untuk dipindai guru setelah mengirim jurnal. */
     public function halamanVerifikasiGuru(): View|RedirectResponse
     {
         $idKelas = (int) Auth::user()->id_kelas;
@@ -124,8 +147,8 @@ class QrSesiController extends Controller
             $jadwal = $jurnalDemo?->jadwal;
         }
 
-        if (! $jadwal || ! $this->guruSudahScan($jadwal)) {
-            return redirect()->route('kelas.scan')->with('error', 'Guru perlu memindai QR kelas terlebih dahulu.');
+        if (! $jadwal) {
+            return redirect()->route('kelas.scan')->with('error', 'Tidak ada sesi pelajaran yang sedang berlangsung.');
         }
 
         $jurnal = $this->sesi->jurnalSesi($jadwal);
@@ -157,7 +180,6 @@ class QrSesiController extends Controller
         if (! $jadwal && app()->isLocal()) {
             $jurnalDemo = Jurnal::with('jadwal.kelas', 'jadwal.mapel')
                 ->whereDate('tanggal', Waktu::sekarang()->toDateString())
-                ->where('status_verifikasi', 'belum_verifikasi')
                 ->whereHas('jadwal', fn ($q) => $q->where('id_kelas', $idKelas))
                 ->latest('id_jurnal')
                 ->first();
@@ -165,6 +187,23 @@ class QrSesiController extends Controller
         }
 
         if (! $jadwal) {
+            $jurnalSelesai = Jurnal::with('jadwal')
+                ->whereDate('tanggal', Waktu::sekarang()->toDateString())
+                ->where('status_verifikasi', 'terverifikasi')
+                ->whereHas('jadwal', fn ($query) => $query->where('id_kelas', $idKelas))
+                ->latest('diperiksa_at')->latest('id_jurnal')
+                ->first();
+
+            if ($jurnalSelesai) {
+                session()->flash('notif_sukses', 'Kehadiran guru berhasil terverifikasi.');
+
+                return response()->json([
+                    'tahap' => 'selesai',
+                    'pesan' => 'Kehadiran guru berhasil terverifikasi.',
+                    'redirect' => route('kelas.beranda', [], false),
+                ]);
+            }
+
             return $this->pesan('Tidak ada sesi pelajaran yang sedang berlangsung.');
         }
 
@@ -174,100 +213,22 @@ class QrSesiController extends Controller
         }
 
         if ($jurnal && $jurnal->status_verifikasi === 'terverifikasi') {
-            return $this->pesan('Kehadiran guru pada sesi ini sudah terverifikasi.');
-        }
+            session()->flash('notif_sukses', 'Kehadiran guru pada sesi ini berhasil terverifikasi.');
 
-        if ($this->guruSudahScan($jadwal)) {
-            return response()->json(['tahap' => 'scan', 'sesi' => $this->detailSesi($jadwal)]);
+            return response()->json([
+                'tahap' => 'selesai',
+                'pesan' => 'Kehadiran guru berhasil terverifikasi.',
+                'redirect' => route('kelas.beranda', [], false),
+            ]);
         }
 
         return $this->tampilQr($this->qrAktif($jadwal, 'kelas'), $jadwal);
     }
 
-    /** Kelas memindai QR guru. Jurnal harus sudah diisi & dikirim guru lebih dulu. */
+    /** Kompatibilitas endpoint lama; scan QR guru tidak lagi menjadi bagian verifikasi. */
     public function scanGuruQr(Request $request): JsonResponse
     {
-        $request->validate(['kode_qr' => 'required|string']);
-
-        $user = Auth::user();
-
-        if (! $user->id_kelas) {
-            return $this->gagal('Akun ini belum terhubung ke kelas.', 403);
-        }
-
-        $qr = QrSesi::with('jadwal')
-            ->where('kode_qr', $request->kode_qr)
-            ->where('tipe', 'guru')
-            ->first();
-
-        if (! $qr) {
-            return $this->gagal('QR tidak dikenali.', 404);
-        }
-
-        if (! $qr->tanggalSesuaiHariIni() || $qr->sudahExpired()) {
-            return $this->gagal('QR guru kedaluwarsa atau berasal dari tanggal lain. Tunggu QR terbaru di layar guru.', 410);
-        }
-
-        if ($qr->sudahDipindai()) {
-            return $this->gagal('QR ini sudah pernah dipindai.', 409);
-        }
-
-        if ((int) $user->id_kelas !== (int) $qr->jadwal->id_kelas) {
-            return $this->gagal('QR ini bukan untuk kelas Anda.', 403);
-        }
-
-        $berlangsung = $this->sesi->masihBerjalan($qr->jadwal) ? $qr->jadwal : null;
-        if (! $berlangsung && app()->isLocal() && $this->sesi->jurnalSesi($qr->jadwal)) {
-            $berlangsung = $qr->jadwal;
-        }
-
-        if (! $berlangsung || (int) $berlangsung->id_kelas !== (int) $user->id_kelas) {
-            return $this->gagal('Sesi pelajaran ini sudah selesai atau belum dimulai.', 422);
-        }
-
-        if (! $this->guruSudahScan($berlangsung)) {
-            return $this->gagal('Guru belum memindai QR kelas. Minta guru memindai QR di layar kelas lebih dulu.', 422);
-        }
-
-        $jurnal = $this->sesi->jurnalSesi($berlangsung);
-
-        if (! $jurnal) {
-            return $this->gagal('Guru belum mengisi dan mengirim jurnal untuk sesi ini.', 422);
-        }
-
-        DB::transaction(function () use ($berlangsung, $qr, $jurnal, $user) {
-            $jurnal->update([
-                'status_verifikasi' => 'terverifikasi',
-                'status_kehadiran_guru' => 'hadir',
-                'id_diperiksa_oleh' => $user->id,
-                'diperiksa_at' => now(),
-            ]);
-
-            $qr->update([
-                'dipindai_at' => now(),
-                'dipindai_oleh' => $user->id,
-                'id_jurnal' => $jurnal->id_jurnal,
-            ]);
-
-            // scan guru terhadap QR kelas sudah terpakai
-            QrSesi::where('tipe', 'kelas')
-                ->where('id_jadwal', $berlangsung->id_jadwal)
-                ->whereDate('tanggal', Waktu::sekarang()->toDateString())
-                ->where('dipindai_oleh', $berlangsung->id_guru)
-                ->where('dipindai_at', '>=', now()->subMinutes(self::BATAS_SALING_SCAN_MENIT))
-                ->where('status', 'aktif')
-                ->whereHas('jadwal', fn ($q) => $q
-                    ->where('id_kelas', $berlangsung->id_kelas)
-                    ->where('id_mapel', $berlangsung->id_mapel))
-                ->update(['status' => 'expired']);
-        });
-
-        session()->flash('notif_sukses', 'Verifikasi berhasil! Kehadiran guru tercatat.');
-
-        return response()->json([
-            'success' => true,
-            'redirect' => route('kelas.beranda', [], false), // ⚠️ cek: ini nama route dashboard kelas kamu?
-        ]);
+        return $this->gagal('Verifikasi dilakukan oleh guru dengan memindai QR kelas.', 410);
     }
 
     // ================= GURU =================
@@ -299,14 +260,10 @@ class QrSesiController extends Controller
             ]);
         }
 
-        if ($this->guruSudahScan($jadwal)) {
-            return $this->tampilQr($this->qrAktif($jadwal, 'guru'));
-        }
-
-        return response()->json(['tahap' => 'scan']);
+        return $this->tampilQr($this->qrAktif($jadwal, 'kelas'), $jadwal);
     }
 
-    /** Guru memindai QR kelas (langkah pertama proses verifikasi). */
+    /** Guru memindai QR kelas sekali untuk menyelesaikan verifikasi. */
     public function guruScanKelas(Request $request): JsonResponse
     {
         $request->validate(['kode_qr' => 'required|string']);
@@ -337,30 +294,41 @@ class QrSesiController extends Controller
             return $this->gagal('QR ini bukan untuk jadwal aktif yang sedang Anda ajar.', 403);
         }
 
-        if (! $this->sesi->jurnalSesi($berlangsung)) {
+        $jurnal = $this->sesi->jurnalSesi($berlangsung);
+        if (! $jurnal) {
             return $this->gagal('Isi dan kirim jurnal terlebih dahulu sebelum verifikasi.', 422);
         }
 
-        $qr->update(['dipindai_at' => now(), 'dipindai_oleh' => Auth::id()]);
+        $idAkunKelas = DB::table('users')
+            ->where('role', 'kelas')
+            ->where('id_kelas', $berlangsung->id_kelas)
+            ->value('id');
 
-        return response()->json(['success' => true]);
+        DB::transaction(function () use ($qr, $jurnal, $idAkunKelas) {
+            $jurnal->update([
+                'status_verifikasi' => 'terverifikasi',
+                'status_kehadiran_guru' => 'hadir',
+                'id_diperiksa_oleh' => $idAkunKelas,
+                'diperiksa_at' => now(),
+            ]);
+            $qr->update([
+                'dipindai_at' => now(),
+                'dipindai_oleh' => Auth::id(),
+                'id_jurnal' => $jurnal->id_jurnal,
+            ]);
+        });
+
+        session()->flash('notif_sukses', 'Verifikasi berhasil! Kehadiran Anda sudah tercatat.');
+
+        return response()->json([
+            'success' => true,
+            'verified' => true,
+            'message' => 'QR kelas berhasil dipindai. Kehadiran Anda sudah terverifikasi.',
+            'redirect' => route('dashboard-guru', [], false),
+        ]);
     }
 
     // ================= BANTUAN =================
-
-    private function guruSudahScan(JadwalPelajaran $jadwal): bool
-    {
-        return QrSesi::where('tipe', 'kelas')
-            ->where('id_jadwal', $jadwal->id_jadwal)
-            ->whereDate('tanggal', Waktu::sekarang()->toDateString())
-            ->where('status', 'aktif')
-            ->where('dipindai_oleh', $jadwal->id_guru)
-            ->where('dipindai_at', '>=', now()->subMinutes(self::BATAS_SALING_SCAN_MENIT))
-            ->whereHas('jadwal', fn ($q) => $q
-                ->where('id_kelas', $jadwal->id_kelas)
-                ->where('id_mapel', $jadwal->id_mapel))
-            ->exists();
-    }
 
     /** QR yang masih cukup lama umurnya dipakai ulang; kalau tidak, dibuat baru. */
     private function qrAktif(JadwalPelajaran $jadwal, string $tipe): QrSesi

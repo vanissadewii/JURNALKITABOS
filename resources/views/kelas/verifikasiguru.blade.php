@@ -92,20 +92,20 @@
             <div class="w-full max-w-[500px] mx-auto px-4 py-6">
 
                 <h2 class="text-center font-['Poppins'] text-lg sm:text-xl font-semibold text-[#3E3028] m-0 mb-2">
-                    Scan QR Guru
+                    Status Verifikasi Guru
                 </h2>
 
                 <p class="text-center text-xs leading-relaxed text-[#7A6A60] max-w-[330px] mx-auto mb-5">
-                    Arahkan kamera ke QR Code yang ditampilkan
-                    oleh guru Anda untuk memverifikasi sesi mengajar.
+                    Guru memindai QR kelas setelah mengirim jurnal. Halaman ini tidak memerlukan scan dari akun kelas.
                 </p>
 
-                {{-- SCANNER --}}
-                <div id="qr-reader" class="mx-auto mb-4"></div>
-<p id="scan-status" class="text-center text-[#3E3028] text-xs leading-relaxed mb-5">Arahkan kamera ke QR Code guru</p>
-<form id="manual-guru-qr-form" class="mb-5 rounded-xl border border-[#E5D8CC] bg-white p-4 text-left">
-    <label for="manual-guru-qr-code" class="block text-sm font-semibold text-[#5C4033]">Atau masukkan 6 angka dari QR guru</label>
-    <div class="mt-2 flex gap-2"><input id="manual-guru-qr-code" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="off" placeholder="Masukkan 6 angka di layar guru" class="min-w-0 flex-1 rounded-lg border border-[#D8C9BC] px-3 py-2 text-sm"><button type="button" onclick="kirimKodeManualKelas()" class="shrink-0 rounded-lg bg-[#5C4033] px-4 py-2 text-sm font-semibold text-white">Verifikasi</button></div>
+                {{-- QR kelas tampil di halaman Scan akun kelas; guru yang memindainya. --}}
+                <div id="qr-reader" class="hidden"></div>
+<p id="scan-status" role="status" class="text-center text-[#3E3028] text-xs leading-relaxed mb-5">Akun kelas menampilkan QR di menu Scan. Guru memindai QR tersebut setelah mengirim jurnal.</p>
+<div class="mb-5 rounded-xl border border-[#E5D8CC] bg-white p-4 text-center text-sm text-[#5C4033]">Tidak perlu memindai QR dari akun kelas.</div>
+<form id="manual-guru-qr-form" class="hidden">
+    <label for="manual-guru-qr-code" class="block text-sm font-semibold text-[#5C4033]">Verifikasi dilakukan dari akun guru</label>
+    <div class="mt-2 flex gap-2"><input id="manual-guru-qr-code" type="text" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" autocomplete="off" placeholder="Tidak perlu scan dari akun kelas" class="min-w-0 flex-1 rounded-lg border border-[#D8C9BC] px-3 py-2 text-sm"></div>
 </form>
 
                 {{-- DETAIL SESI --}}
@@ -193,117 +193,8 @@
     </nav>
 
     <script>
-        const scanner = new Html5Qrcode("qr-reader");
-        const statusEl = document.getElementById('scan-status');
-
-        function tampilkanPesan(teks, error = false) {
-            statusEl.textContent = teks;
-            statusEl.classList.toggle('text-red-600', error);
-            statusEl.classList.toggle('font-bold', error);
-        }
-
-        scanner.start({
-                facingMode: "environment"
-            }, {
-                fps: 10,
-                qrbox: 220
-            },
-            (decodedText) => {
-                scanner.pause();
-                tampilkanPesan("Memverifikasi...");
-
-                fetch("{{ route('kelas.qr.scan-guru') }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        },
-                        body: JSON.stringify({
-                            kode_qr: decodedText
-                        }),
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = data.redirect;
-                        } else {
-                            tampilkanPesan(data.message ?? 'Verifikasi gagal.', true);
-                            setTimeout(() => scanner.resume(), 2000);
-                        }
-                    })
-                    .catch(() => {
-                        tampilkanPesan('Terjadi kesalahan, coba lagi.', true);
-                        setTimeout(() => scanner.resume(), 2000);
-                    });
-            },
-            () => {
-                /* dipanggil tiap frame tanpa QR, diabaikan */ }
-        ).catch(err => tampilkanPesan("Gagal akses kamera: " + err, true));
+        // Verifikasi kehadiran dilakukan satu kali oleh guru melalui QR kelas.
     </script>
-
-    <script>
-    const statusEl = document.getElementById('scan-status');
-    function kirimKodeManualKelas() {
-        const kode = document.getElementById('manual-guru-qr-code').value.trim();
-        if (!/^\d{6}$/.test(kode)) { statusEl.textContent = 'Masukkan 6 angka yang tampil di layar guru.'; return; }
-        statusEl.textContent = 'Kode dimasukkan. Sedang diperiksa ke server...';
-        kirimKodeGuru(kode);
-    }
-
-    async function kirimKodeGuru(decodedText) {
-        statusEl.textContent = 'Memverifikasi...';
-        try {
-            const response = await fetch("{{ route('qr.scan-guru', [], false) }}", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                body: JSON.stringify({ kode_qr: decodedText }),
-            });
-            const result = await response.json();
-            if (response.ok && result.success) {
-                window.location.assign(result.redirect || "{{ route('kelas.beranda', [], false) }}");
-                return;
-            }
-            statusEl.textContent = result.message || 'QR tidak dapat diverifikasi. Pastikan kode berasal dari sesi kelas ini.';
-            statusEl.classList.add('text-red-600', 'font-bold');
-        } catch (error) {
-            statusEl.textContent = 'Koneksi gagal saat memverifikasi kode. Periksa jaringan lalu coba lagi.';
-            statusEl.classList.add('text-red-600', 'font-bold');
-        }
-    }
-
-    if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
-        statusEl.textContent = 'Browser HP memblokir kamera pada alamat HTTP jaringan lokal. Buka aplikasi melalui HTTPS (misalnya tunnel HTTPS) atau localhost untuk mengaktifkan kamera.';
-        statusEl.classList.add('text-red-600', 'font-bold');
-    } else if (typeof Html5Qrcode === 'undefined') {
-        statusEl.textContent = 'Pemindai QR gagal dimuat. Periksa koneksi internet lalu muat ulang.';
-    } else {
-    const scanner = new Html5Qrcode("qr-reader", { formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE], verbose: false });
-
-    scanner.start(
-        { facingMode: "environment" },
-        { fps: 10, aspectRatio: 1, qrbox: (viewfinderWidth, viewfinderHeight) => {
-            const size = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.72);
-            return { width: size, height: size };
-        } },
-        (decodedText) => {
-            scanner.pause();
-            statusEl.textContent = "Memverifikasi...";
-
-            kirimKodeGuru(decodedText).finally(() => {
-                setTimeout(() => scanner.resume(), 2000);
-            });
-        },
-        (errorMessage) => { /* diabaikan, ini dipanggil terus tiap frame tanpa QR terbaca */ }
-    ).then(() => {
-        const video = document.querySelector('#qr-reader video');
-        if (video) { video.style.width = '100%'; video.style.height = '100%'; video.style.objectFit = 'cover'; }
-    }).catch(err => {
-        statusEl.textContent = 'Kamera gagal dibuka. Izinkan akses kamera pada browser, pastikan tidak sedang dipakai aplikasi lain, lalu muat ulang. ' + err;
-        statusEl.classList.add('text-red-600', 'font-bold');
-    });
-    }
-</script>
 
 </body>
 

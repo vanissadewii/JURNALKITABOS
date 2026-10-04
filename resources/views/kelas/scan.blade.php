@@ -85,11 +85,11 @@
                             bg-white border border-[#E5D8CC] rounded-2xl flex items-center justify-center
                             p-[18px] shadow-[0_4px_15px_rgba(62,48,40,0.06)]">
                     <img id="qr-kelas-image" src="{{ $qrImage ?? '' }}" alt="QR kelas {{ $kelas?->nama_kelas }}" class="w-full h-full object-contain {{ $qrImage ? '' : 'hidden' }}">
-                    <p id="qr-kelas-status" class="text-center text-xs text-[#7A6A60]">{{ session('error', 'Memeriksa sesi mengajar...') }}</p>
+                    <p id="qr-kelas-status" class="text-center text-xs text-[#7A6A60] {{ $qrImage ? 'hidden' : '' }}">{{ $pesanQr ?? 'Memeriksa sesi mengajar...' }}</p>
                 </div>
                 <div class="mt-3 w-full max-w-[300px] rounded-xl border border-dashed border-[#D8C9BC] bg-white px-3 py-2 text-center">
                     <span class="block text-[10px] font-semibold text-[#7A6A60]">Kode 6 angka untuk guru</span>
-                    <code id="qr-kelas-code" class="break-all text-xs font-mono text-[#3E3028]">Menyiapkan kode...</code>
+                    <code id="qr-kelas-code" class="break-all text-xs font-mono text-[#3E3028]">{{ $kodeQr ?? 'Kode muncul saat sesi tersedia' }}</code>
                 </div>
 
                 {{-- INFO SESI --}}
@@ -102,12 +102,12 @@
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Guru Pengajar</span>
-                        <span id="sesi-guru" class="text-[#3E3028] font-semibold text-right">—</span>
+                        <span id="sesi-guru" class="text-[#3E3028] font-semibold text-right">{{ $sesiQr['guru'] ?? '—' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Mata Pelajaran</span>
-                        <span id="sesi-mapel" class="text-[#3E3028] font-semibold text-right">—</span>
+                        <span id="sesi-mapel" class="text-[#3E3028] font-semibold text-right">{{ $sesiQr['mapel'] ?? '—' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
@@ -117,12 +117,12 @@
 
                     <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Jam</span>
-                        <span id="sesi-jam" class="text-[#3E3028] font-semibold text-right">—</span>
+                        <span id="sesi-jam" class="text-[#3E3028] font-semibold text-right">{{ $sesiQr['jam'] ?? '—' }}</span>
                     </div>
 
                     <div class="flex justify-between gap-4 pt-2.5 text-[13px] sm:text-xs">
                         <span class="text-[#7A6A60]">Status</span>
-                        <span id="sesi-status" class="text-[#3E3028] font-semibold text-right">—</span>
+                        <span id="sesi-status" class="text-[#3E3028] font-semibold text-right">{{ $sesiQr['status'] ?? '—' }}</span>
                     </div>
 
                 </div>
@@ -174,10 +174,19 @@
         }
 
         async function perbaruiStatusQrKelas() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
+
             try {
                 const response = await fetch("{{ route('qr.status-kelas', [], false) }}", {
                     headers: { 'Accept': 'application/json' },
+                    credentials: 'same-origin',
+                    cache: 'no-store',
+                    signal: controller.signal,
                 });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
                 const data = await response.json();
 
                 perbaruiDetailSesi(data.sesi);
@@ -186,8 +195,8 @@
                     qrCode.textContent = data.kode || 'Kode belum tersedia';
                     qrImage.classList.remove('hidden');
                     qrStatus.classList.add('hidden');
-                } else if (data.tahap === 'scan') {
-                    window.location.assign("{{ route('kelas.verifikasiguru', [], false) }}");
+                } else if (data.tahap === 'selesai' && data.redirect) {
+                    window.location.assign(data.redirect);
                     return;
                 } else {
                     qrImage.classList.add('hidden');
@@ -196,9 +205,19 @@
                     qrStatus.textContent = data.pesan || 'Belum ada sesi mengajar aktif.';
                 }
             } catch (error) {
-                qrImage.classList.add('hidden');
-                qrStatus.classList.remove('hidden');
-                qrStatus.textContent = 'Status QR belum dapat dimuat. Coba muat ulang halaman.';
+                if (!qrImage.getAttribute('src')) {
+                    qrImage.classList.add('hidden');
+                }
+                if (qrImage.getAttribute('src')) {
+                    qrStatus.classList.add('hidden');
+                } else {
+                    qrStatus.classList.remove('hidden');
+                }
+                qrStatus.textContent = error.name === 'AbortError'
+                    ? 'Server terlalu lama merespons. Periksa koneksi lalu coba lagi.'
+                    : 'Status QR gagal dimuat. Muat ulang halaman dan masuk kembali jika diminta.';
+            } finally {
+                clearTimeout(timeout);
             }
         }
 

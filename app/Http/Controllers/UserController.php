@@ -104,7 +104,10 @@ class UserController extends Controller
 
         if ($validated['role'] === 'wali_kelas' && ! empty($validated['id_kelas'])) {
             $kelasWali = Kelas::find($validated['id_kelas']);
-            $validated['name'] = NamaWaliKelas::untukKelas($kelasWali->tingkat, $kelasWali->jurusan, $kelasWali->rombel) ?? $validated['name'];
+            $namaWaliOtomatis = NamaWaliKelas::untukKelas($kelasWali->tingkat, $kelasWali->jurusan, $kelasWali->rombel);
+            if ($user->role !== 'wali_kelas' || (string) $user->id_kelas !== (string) $validated['id_kelas']) {
+                $validated['name'] = $namaWaliOtomatis ?? $validated['name'];
+            }
         }
 
         if (empty($validated['password'])) {

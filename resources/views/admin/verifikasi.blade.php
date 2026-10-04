@@ -91,6 +91,23 @@
                     @if($dispensasi->isNotEmpty())<div id="emptyDispensasi" class="hidden p-8 text-center text-sm text-[#7A6A60]">Tidak ada dispensasi yang cocok dengan filter.</div>@endif
                 </div>
             </section>
+
+            <section class="overflow-hidden rounded-lg border border-[#E5D8CC] bg-white">
+                <div class="border-b border-[#E5D8CC] bg-[#F5EFE8] px-4 py-3">
+                    <h2 class="font-['Poppins'] text-sm font-bold uppercase">Input Surat Siswa</h2>
+                    <p class="mt-1 text-xs text-[#7A6A60]">Surat sakit dan izin yang dicatat guru piket pada {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}.</p>
+                </div>
+                <div class="overflow-x-auto"><table class="w-full min-w-[560px] text-left text-sm">
+                    <thead class="text-[11px] uppercase text-[#7A6A60]"><tr><th class="p-3">Siswa</th><th class="p-3">Kelas</th><th class="p-3">Status</th><th class="p-3">Diinput oleh</th></tr></thead>
+                    <tbody class="divide-y divide-[#E5D8CC]">
+                        @forelse($suratSiswa as $surat)
+                            <tr><td class="p-3 font-semibold">{{ $surat->nama_siswa }}</td><td class="p-3">{{ $tingkat[(string)$surat->tingkat] ?? $surat->tingkat }} {{ $surat->jurusan }} {{ $surat->rombel }}</td><td class="p-3">{{ $surat->status }}</td><td class="p-3">{{ $surat->guru_piket ?? '—' }}</td></tr>
+                        @empty
+                            <tr><td colspan="4" class="p-8 text-center text-sm text-[#7A6A60]">Belum ada input surat pada tanggal ini.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table></div>
+            </section>
         </div>
     </div>
 

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\JadwalPelajaran;
+use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\User;
 use App\Support\Waktu;
+use App\Support\KegiatanTanggal;
 use Illuminate\View\View;
 
 class AdminDashboardController extends Controller
@@ -28,8 +30,44 @@ class AdminDashboardController extends Controller
                 ->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')))
             ->get()
             ->filter(fn ($jadwal) => $jadwal->kelas && $jadwal->jamPelajaran)
-            ->sortBy(fn ($jadwal) => $jadwal->jamPelajaran->jam_mulai)
+            ->sortBy(fn ($jadwal) => [$jadwal->id_kelas, $jadwal->jamPelajaran->jam_ke])
             ->values();
+
+        $kegiatanDitiadakan = in_array($hariIni, ['Senin', 'Jumat'], true)
+            && (bool) \Illuminate\Support\Facades\DB::table('pengaturan_kegiatan_harian')->where('hari', $hariIni)->value('kegiatan_ditiadakan');
+        $slotJam = JamPelajaran::where('hari', $hariIni)->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
+            ->get()->keyBy(fn ($jam) => $jam->tingkat.'|'.$jam->jam_ke);
+        foreach ($jadwalHariIni as $jadwal) {
+            $nomor = (int) $jadwal->jamPelajaran->jam_ke - ($kegiatanDitiadakan ? 1 : 0);
+            if ($kegiatanDitiadakan && $nomor > 0 && ($slot = $slotJam->get($jadwal->kelas->tingkat.'|'.$nomor))) {
+                $tampilan = clone $jadwal->jamPelajaran;
+                $tampilan->jam_ke = $nomor;
+                $tampilan->jam_mulai = $slot->jam_mulai;
+                $tampilan->jam_selesai = $slot->jam_selesai;
+                $jadwal->setRelation('jamPelajaran', $tampilan);
+            }
+        }
+        $gabungan = collect();
+        foreach ($jadwalHariIni as $jadwal) {
+            $last = $gabungan->last();
+            if ($last && (int) $last->id_kelas === (int) $jadwal->id_kelas && (int) $last->id_mapel === (int) $jadwal->id_mapel && (int) $last->id_guru === (int) $jadwal->id_guru
+                && (int) $last->jam_ke_sampai + 1 === (int) $jadwal->jamPelajaran->jam_ke) {
+                $last->jam_ke_sampai = (int) $jadwal->jamPelajaran->jam_ke;
+                $last->jam_selesai = $jadwal->jamPelajaran->jam_selesai;
+                $last->jadwals->push($jadwal);
+                continue;
+            }
+            $gabungan->push((object) [
+                'id_kelas' => $jadwal->id_kelas, 'id_mapel' => $jadwal->id_mapel, 'id_guru' => $jadwal->id_guru,
+                'kelas' => $jadwal->kelas, 'mapel' => $jadwal->mapel, 'guru' => $jadwal->guru,
+                'jam_ke_mulai' => (int) $jadwal->jamPelajaran->jam_ke,
+                'jam_ke_sampai' => (int) $jadwal->jamPelajaran->jam_ke,
+                'jam_mulai' => $jadwal->jamPelajaran->jam_mulai,
+                'jam_selesai' => $jadwal->jamPelajaran->jam_selesai,
+                'jadwals' => collect([$jadwal]),
+            ]);
+        }
+        $jadwalHariIni = $gabungan->sortBy('jam_mulai')->values();
 
         $jurnalHariIni = Jurnal::query()
             ->with(['jadwal', 'jadwal.guru'])
@@ -41,7 +79,10 @@ class AdminDashboardController extends Controller
             ->map(fn ($items) => $items->first());
 
         $jadwalHariIni->each(function ($jadwal) use ($jurnalHariIni) {
-            $jadwal->jurnalHariIni = $jurnalHariIni->get($jadwal->id_jadwal);
+            $jadwal->jurnalHariIni = $jadwal->jadwals->map(fn ($slot) => $jurnalHariIni->get($slot->id_jadwal))->filter()->sortByDesc('id_jurnal')->first();
+            if ($jadwal->guru && $jadwal->mapel) {
+                $jadwal->mapel->setAttribute('nama_guru_dashboard', $jadwal->guru->name);
+            }
         });
 
         $kelas = Kelas::query()->orderBy('tingkat')->orderBy('jurusan')->orderBy('rombel')->get();

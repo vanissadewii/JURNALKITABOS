@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class JamPelajaranController extends Controller
@@ -28,33 +29,33 @@ class JamPelajaranController extends Controller
         $urutanHari = ['Senin' => 1, 'Selasa' => 2, 'Rabu' => 3, 'Kamis' => 4, 'Jumat' => 5, 'Sabtu' => 6, 'Minggu' => 7];
 
         $jamGrup = $jamPelajaran
-            ->groupBy(fn ($j) => "{$j->tingkat}|{$j->jam_ke}|{$j->jam_mulai}|{$j->jam_selesai}")
+            ->groupBy(fn ($j) => "{$j->hari}|{$j->jam_ke}|{$j->jam_mulai}|{$j->jam_selesai}")
             ->map(function ($items) use ($urutanHari) {
                 $first = $items->first();
                 $nomor = $items->pluck('hari')->map(fn ($h) => $urutanHari[$h])->sort()->values();
-
-                $berurutan = $nomor->count() > 1
-                    && $nomor->last() - $nomor->first() === $nomor->count() - 1;
-                $namaHari = $nomor->map(fn ($n) => array_search($n, $urutanHari));
+                                $tingkat = $items->pluck('tingkat')->map(fn ($nilai) => (string) $nilai)->unique()->sort()->values();
 
                 return (object) [
                     'semester' => $first->semester,
-                    'tingkat' => $first->tingkat,
+                    'tingkat' => $tingkat->implode(' & '),
+                    'tingkat_cari' => $tingkat->implode(' '),
                     'jam_ke' => $first->jam_ke,
                     'jam_mulai' => substr($first->jam_mulai, 0, 5),
                     'jam_selesai' => substr($first->jam_selesai, 0, 5),
-                    'hari' => $berurutan
-                        ? $namaHari->first().' - '.$namaHari->last()
-                        : $namaHari->implode(', '),
+                    'hari' => $first->hari,
+                    'id_jam' => $first->id_jam,
                     'urutan' => $nomor->first(),
                 ];
             })
-            ->sortBy([['tingkat', 'asc'], ['urutan', 'asc'], ['jam_ke', 'asc']])
+            ->sortBy([['urutan', 'asc'], ['jam_ke', 'asc']])
             ->values();
 
         $pengaturanKegiatan = DB::table('pengaturan_kegiatan_harian')->pluck('kegiatan_ditiadakan', 'hari')->all();
+        $kegiatanTanggal = Schema::hasTable('pengaturan_kegiatan_tanggal')
+            ? DB::table('pengaturan_kegiatan_tanggal')->orderByDesc('tanggal')->get()
+            : collect();
 
-        return view('admin.tambah_jam_pelajaran', compact('jamPelajaran', 'jamGrup', 'semesterAktif', 'pengaturanKegiatan'));
+        return view('admin.tambah_jam_pelajaran', compact('jamPelajaran', 'jamGrup', 'semesterAktif', 'pengaturanKegiatan', 'kegiatanTanggal'));
     }
 
     public function create(): View
@@ -62,8 +63,11 @@ class JamPelajaranController extends Controller
         $semesterAktif = Semester::where('status', 'aktif')->first();
 
         $pengaturanKegiatan = DB::table('pengaturan_kegiatan_harian')->pluck('kegiatan_ditiadakan', 'hari')->all();
+        $kegiatanTanggal = Schema::hasTable('pengaturan_kegiatan_tanggal')
+            ? DB::table('pengaturan_kegiatan_tanggal')->orderByDesc('tanggal')->get()
+            : collect();
 
-        return view('admin.tambah_jam_pelajaran', compact('semesterAktif', 'pengaturanKegiatan'));
+        return view('admin.tambah_jam_pelajaran', compact('semesterAktif', 'pengaturanKegiatan', 'kegiatanTanggal'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -115,25 +119,69 @@ class JamPelajaranController extends Controller
         $validated = $request->validate([
             'hari' => ['required', 'in:Senin,Jumat'],
             'kegiatan_ditiadakan' => ['required', 'boolean'],
+            'gabungan' => ['nullable', 'boolean'],
         ]);
-
-        $pengaturan = DB::table('pengaturan_kegiatan_harian')->where('hari', $validated['hari']);
-        if ($pengaturan->exists()) {
-            $pengaturan->update(['kegiatan_ditiadakan' => (bool) $validated['kegiatan_ditiadakan'], 'updated_at' => now()]);
-        } else {
-            DB::table('pengaturan_kegiatan_harian')->insert([
-                'hari' => $validated['hari'],
-                'kegiatan_ditiadakan' => (bool) $validated['kegiatan_ditiadakan'],
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $hariYangDiubah = ($validated['gabungan'] ?? false) ? ['Senin', 'Jumat'] : [$validated['hari']];
+        foreach ($hariYangDiubah as $hari) {
+            $pengaturan = DB::table('pengaturan_kegiatan_harian')->where('hari', $hari);
+            if ($pengaturan->exists()) {
+                $pengaturan->update(['kegiatan_ditiadakan' => (bool) $validated['kegiatan_ditiadakan'], 'updated_at' => now()]);
+            } else {
+                DB::table('pengaturan_kegiatan_harian')->insert([
+                    'hari' => $hari,
+                    'kegiatan_ditiadakan' => (bool) $validated['kegiatan_ditiadakan'],
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
 
-        $pesan = $validated['kegiatan_ditiadakan']
-            ? "Kegiatan {$validated['hari']} ditandai ditiadakan. Jadwal guru hari itu dimajukan satu jam."
-            : "Kegiatan {$validated['hari']} diaktifkan kembali. Jadwal guru kembali normal.";
+        $pesan = ($validated['gabungan'] ?? false)
+            ? ((bool) $validated['kegiatan_ditiadakan'] ? 'Jam pelajaran maju diaktifkan untuk Senin dan Jumat.' : 'Jam pelajaran maju dinonaktifkan untuk Senin dan Jumat.')
+            : ((bool) $validated['kegiatan_ditiadakan'] ? "Kegiatan {$validated['hari']} ditandai ditiadakan. Jadwal guru hari itu dimajukan satu jam." : "Kegiatan {$validated['hari']} diaktifkan kembali. Jadwal guru kembali normal.");
 
         return redirect()->route('jam-pelajaran.index')->with('success', $pesan);
+    }
+
+    public function storeKegiatanTanggal(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'tanggal' => ['required', 'date_format:Y-m-d', 'unique:pengaturan_kegiatan_tanggal,tanggal'],
+            'nama_kegiatan' => ['required', 'string', 'max:120'],
+        ], [
+            'tanggal.unique' => 'Tanggal tersebut sudah terdaftar. Gunakan tombol ON/OFF pada daftar kegiatan.',
+        ]);
+
+        DB::table('pengaturan_kegiatan_tanggal')->insert([
+            ...$validated,
+            'kegiatan_ditiadakan' => true,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('jam-pelajaran.index')->with('success', "Jadwal pelajaran tanggal ".Carbon::parse($validated['tanggal'])->format('d/m/Y')." dimatikan untuk kegiatan {$validated['nama_kegiatan']}.");
+    }
+
+    public function toggleKegiatanTanggal(int $id): RedirectResponse
+    {
+        $kegiatan = DB::table('pengaturan_kegiatan_tanggal')->where('id', $id)->firstOrFail();
+        $aktif = ! (bool) $kegiatan->kegiatan_ditiadakan;
+
+        DB::table('pengaturan_kegiatan_tanggal')->where('id', $id)->update([
+            'kegiatan_ditiadakan' => $aktif,
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('jam-pelajaran.index')->with('success', $aktif
+            ? "Jadwal tanggal ".Carbon::parse($kegiatan->tanggal)->format('d/m/Y')." dimatikan untuk {$kegiatan->nama_kegiatan}."
+            : "Jadwal tanggal ".Carbon::parse($kegiatan->tanggal)->format('d/m/Y')." diaktifkan kembali.");
+    }
+
+    public function destroyKegiatanTanggal(int $id): RedirectResponse
+    {
+        DB::table('pengaturan_kegiatan_tanggal')->where('id', $id)->delete();
+
+        return redirect()->route('jam-pelajaran.index')->with('success', 'Pengaturan kegiatan tanggal berhasil dihapus.');
     }
 
     public function generate(Request $request): RedirectResponse

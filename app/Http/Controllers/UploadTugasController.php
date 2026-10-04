@@ -91,11 +91,19 @@ class UploadTugasController extends Controller
 
         $tanggal = Waktu::sekarang()->toDateString();
         $statusGuru = $data['status'];
-        $jurnal = Jurnal::where('id_jadwal', $jadwal->id_jadwal)
+        $jurnal = Jurnal::whereHas('jadwal', fn ($query) => $query
+                ->where('id_kelas', $jadwal->id_kelas)
+                ->where('id_guru', $jadwal->id_guru)
+                ->where('id_mapel', $jadwal->id_mapel))
             ->whereDate('tanggal', $tanggal)
-            ->first();
-        if ($jurnal && $jurnal->status_verifikasi === 'terverifikasi' && $jurnal->status_kehadiran_guru === 'hadir') {
-            return back()->withErrors(['id_jadwal' => 'Sesi ini sudah terverifikasi hadir sehingga tidak bisa diubah menjadi izin atau sakit.'])->withInput();
+            ->latest('id_jurnal')->first();
+
+
+        if ($jurnal && strtolower((string) $jurnal->status_kehadiran_guru) === 'hadir') {
+            return back()->withErrors(['id_jadwal' => 'Guru pada sesi ini sudah tercatat hadir. Tugas piket hanya dapat diunggah untuk guru yang sakit atau izin.'])->withInput();
+        }
+        if ($jurnal && in_array(strtolower((string) $jurnal->status_kehadiran_guru), ['sakit', 'izin'], true) && $jurnal->status_verifikasi === 'terverifikasi') {
+            return back()->withErrors(['id_jadwal' => 'Status guru pada sesi ini sudah tercatat sakit/izin. Gunakan catatan tugas yang sudah ada.'])->withInput();
         }
         $filePath = $request->hasFile('file') ? $request->file('file')->store('tugas-piket', 'public') : null;
 

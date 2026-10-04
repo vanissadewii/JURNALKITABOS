@@ -9,6 +9,7 @@ use App\Models\JadwalPiketBulanan;
 use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Support\Waktu;
+use App\Support\KegiatanTanggal;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -26,6 +27,7 @@ class AdminMonitoringController extends Controller
         $data = $request->validate(['tanggal' => ['nullable', 'date_format:Y-m-d']]);
         $tanggal = Carbon::parse($data['tanggal'] ?? Waktu::sekarang()->toDateString());
         $hari = self::NAMA_HARI[$tanggal->dayOfWeekIso];
+        $namaKegiatan = KegiatanTanggal::nama($tanggal);
 
         $jadwal = JadwalPelajaran::with(['kelas', 'mapel', 'guru', 'jamPelajaran'])
             ->whereHas('jamPelajaran', fn ($q) => $q->where('hari', $hari)
@@ -33,9 +35,14 @@ class AdminMonitoringController extends Controller
             ->get()
             ->filter(fn ($item) => $item->jamPelajaran && $item->kelas && $item->guru)
             ->values();
+        if ($namaKegiatan) {
+            $jadwal = collect();
+        }
         $jadwal = $this->terapkanJamMaju($jadwal, $hari)->sortBy(fn ($item) => $item->jamPelajaran->jam_mulai)->values();
-        $jurnal = Jurnal::with('absenSiswa')->whereDate('tanggal', $tanggal->toDateString())->get()->groupBy('id_jadwal');
-        $tugas = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->get()->keyBy('id_jadwal');
+        $jurnal = Jurnal::with('absenSiswa')->whereDate('tanggal', $tanggal->toDateString())
+            ->whereNotNull('waktu_submit')->where('status_verifikasi', 'terverifikasi')
+            ->orderByDesc('id_jurnal')->get()->groupBy('id_jadwal');
+        $tugas = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->orderByDesc('created_at')->get()->unique('id_jadwal')->keyBy('id_jadwal');
         $barisKehadiran = $jadwal->map(function ($item) use ($jurnal, $tugas, $tanggal) {
             $item->jurnalHariIni = $jurnal->get($item->id_jadwal)?->sortByDesc('id_jurnal')->first();
             $item->tugasPiketHariIni = $tugas->get($item->id_jadwal);
@@ -51,7 +58,7 @@ class AdminMonitoringController extends Controller
             }
         }
 
-        return view('admin.kehadiran-guru', compact('tanggal', 'barisKehadiran', 'ringkasan'));
+        return view('admin.kehadiran-guru', compact('tanggal', 'barisKehadiran', 'ringkasan', 'namaKegiatan'));
     }
 
     public function exportKehadiran(Request $request): BinaryFileResponse
@@ -59,12 +66,17 @@ class AdminMonitoringController extends Controller
         $data = $request->validate(['tanggal' => ['nullable', 'date_format:Y-m-d']]);
         $tanggal = Carbon::parse($data['tanggal'] ?? Waktu::sekarang()->toDateString());
         $hari = self::NAMA_HARI[$tanggal->dayOfWeekIso];
+        $namaKegiatan = KegiatanTanggal::nama($tanggal);
         $jadwal = JadwalPelajaran::with(['kelas', 'mapel', 'guru', 'jamPelajaran'])
             ->whereHas('jamPelajaran', fn ($q) => $q->where('hari', $hari)->whereHas('semester', fn ($sem) => $sem->where('status', 'aktif')))
             ->get()->filter(fn ($item) => $item->jamPelajaran && $item->kelas && $item->guru)->values();
+        if ($namaKegiatan) {
+            $jadwal = collect();
+        }
         $jadwal = $this->terapkanJamMaju($jadwal, $hari)->sortBy(fn ($item) => $item->jamPelajaran->jam_mulai)->values();
-        $jurnals = Jurnal::whereDate('tanggal', $tanggal->toDateString())->whereNotNull('waktu_submit')->latest('id_jurnal')->get()->groupBy('id_jadwal');
-        $tugas = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->get()->keyBy('id_jadwal');
+        $jurnals = Jurnal::whereDate('tanggal', $tanggal->toDateString())->whereNotNull('waktu_submit')
+            ->where('status_verifikasi', 'terverifikasi')->latest('id_jurnal')->get()->groupBy('id_jadwal');
+        $tugas = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->orderByDesc('created_at')->get()->unique('id_jadwal')->keyBy('id_jadwal');
         $rows = $jadwal->map(function ($item) use ($jurnals, $tugas, $tanggal) {
             $jurnal = $jurnals->get($item->id_jadwal)?->first();
             $status = $this->statusKehadiranTampilan($item, $jurnal, $tugas->get($item->id_jadwal), $tanggal);
@@ -160,9 +172,17 @@ class AdminMonitoringController extends Controller
                 return $item;
             });
         $dispensasi = Dispen::with(['siswa', 'kelas', 'guruPiket'])
-            ->whereDate('tanggal', $tanggal)->orderBy('created_at')->get();
+            ->whereDate('tanggal', $tanggal)->whereNotNull('id_waka_piket')->orderByDesc('created_at')->orderByDesc('id_dispen')->get()
+            ->unique(fn (Dispen $item) => mb_strtolower(trim(($item->siswa?->nama ?? '').'|'.($item->kelas?->id_kelas ?? ''))))->values();
+        $suratSiswa = DB::table('surat_siswa as ss')
+            ->join('siswa as s', 's.id_siswa', '=', 'ss.id_siswa')
+            ->join('kelas as k', 'k.id_kelas', '=', 'ss.id_kelas')
+            ->leftJoin('users as u', 'u.id', '=', 'ss.id_guru_piket')
+            ->whereDate('ss.tanggal', $tanggal)->orderByDesc('ss.updated_at')->orderByDesc('ss.id')
+            ->get(['ss.tanggal', 'ss.status', 's.nama as nama_siswa', 'ss.id_kelas', 'k.tingkat', 'k.jurusan', 'k.rombel', 'u.name as guru_piket'])
+            ->unique(fn ($item) => mb_strtolower(trim($item->nama_siswa.'|'.$item->id_kelas)))->values();
         $tingkat = ['10' => 'X', '11' => 'XI', '12' => 'XII'];
 
-        return view('admin.verifikasi', compact('tanggal', 'piketHariIni', 'dispensasi', 'tingkat'));
+        return view('admin.verifikasi', compact('tanggal', 'piketHariIni', 'dispensasi', 'suratSiswa', 'tingkat'));
     }
 }

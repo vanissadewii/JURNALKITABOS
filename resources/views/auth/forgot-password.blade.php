@@ -43,7 +43,7 @@
             </form>
 
             <p class="mt-4 text-sm">
-                <a href="{{ route('login') }}">Kembali ke halaman login</a>
+                <a href="{{ route('login', [], false) }}">Kembali ke halaman login</a>
             </p>
 
         </div>

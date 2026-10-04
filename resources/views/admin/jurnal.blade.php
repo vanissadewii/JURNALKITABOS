@@ -33,12 +33,26 @@
         <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-4">
             <section class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white">
                 <div class="border-b border-[#E5D8CC] p-4 sm:p-5">
-                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h2 class="font-['Poppins'] text-sm font-bold">Jurnal Kelas Disetujui</h2>
-                            <p class="mt-1 text-xs text-[#7A6A60]">Hanya rekap yang sudah dikirim akun kelas dan disetujui guru piket ditampilkan di sini.</p>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h2 class="font-['Poppins'] text-sm font-bold">Kiriman Jurnal Kelas</h2>
+                                <p class="mt-1 text-xs text-[#7A6A60]">Semua rekap yang dikirim akun kelas ditampilkan di sini tanpa menunggu pemeriksaan guru piket.</p>
+                            </div>
+                            <input id="cariJurnalAdmin" oninput="filterJurnalAdmin()" type="search" placeholder="Cari nama kelas..." class="w-full rounded-lg border border-[#D8C9BC] px-3 py-2.5 text-sm sm:max-w-xs">
                         </div>
-                        <input id="cariJurnalAdmin" oninput="filterJurnalAdmin()" type="search" placeholder="Cari nama kelas..." class="w-full rounded-lg border border-[#D8C9BC] px-3 py-2.5 text-sm sm:max-w-xs">
+                        <form method="GET" action="{{ route('admin.jurnal') }}" class="flex flex-col gap-2 rounded-lg bg-[#FFFCF9] p-3 sm:flex-row sm:items-end">
+                            <label class="flex flex-col gap-1 text-xs font-semibold text-[#5C4033]">Dari tanggal
+                                <input type="date" name="tanggal_dari" value="{{ $tanggalDari }}" class="rounded-lg border border-[#D8C9BC] bg-white px-3 py-2 text-sm font-normal text-[#3E3028]">
+                            </label>
+                            <label class="flex flex-col gap-1 text-xs font-semibold text-[#5C4033]">Sampai tanggal
+                                <input type="date" name="tanggal_sampai" value="{{ $tanggalSampai }}" min="{{ $tanggalDari }}" class="rounded-lg border border-[#D8C9BC] bg-white px-3 py-2 text-sm font-normal text-[#3E3028]">
+                            </label>
+                            <button type="submit" class="rounded-lg bg-[#5C4033] px-4 py-2 text-sm font-semibold text-white hover:bg-[#4A332A]">Terapkan</button>
+                            @if($tanggalDari || $tanggalSampai)
+                                <a href="{{ route('admin.jurnal') }}" class="rounded-lg border border-[#D8C9BC] px-4 py-2 text-center text-sm font-semibold text-[#5C4033] hover:bg-white">Reset</a>
+                            @endif
+                        </form>
                     </div>
                     <div class="mt-4 flex flex-wrap gap-2" role="group" aria-label="Pilih tingkat kelas">
                         <button type="button" onclick="pilihTingkatJurnal('semua', this)" class="filter-tingkat-jurnal rounded-lg bg-[#5C4033] px-4 py-2 text-xs font-semibold text-white">Semua</button>
@@ -58,7 +72,7 @@
                             <summary class="flex cursor-pointer list-none items-center justify-between gap-3 bg-[#FFFCF9] px-4 py-3.5 hover:bg-[#F5EFE8] [&::-webkit-details-marker]:hidden">
                                 <span class="flex min-w-0 items-center gap-3">
                                     <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#F5EFE8] font-['Poppins'] text-xs font-bold text-[#5C4033]">{{ $tingkatKelas }}</span>
-                                    <span class="min-w-0"><span class="block truncate font-['Poppins'] text-sm font-bold text-[#3E3028]">{{ $namaKelasJurnal }}</span><span class="mt-0.5 block text-xs text-[#7A6A60]">{{ $kirimanKelas->count() }} kiriman disetujui</span></span>
+                                    <span class="min-w-0"><span class="block truncate font-['Poppins'] text-sm font-bold text-[#3E3028]">{{ $namaKelasJurnal }}</span><span class="mt-0.5 block text-xs text-[#7A6A60]">{{ $kirimanKelas->count() }} kiriman</span></span>
                                 </span>
                                 <svg class="h-5 w-5 shrink-0 text-[#7A6A60] transition-transform group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
                             </summary>
@@ -67,7 +81,7 @@
                                     <details class="overflow-hidden rounded-lg border border-[#E5D8CC]" {{ $loop->first ? 'open' : '' }}>
                                         <summary class="flex cursor-pointer list-none flex-wrap items-center justify-between gap-2 bg-[#FFFCF9] px-4 py-3 hover:bg-[#F5EFE8] [&::-webkit-details-marker]:hidden">
                                             <span class="font-semibold text-sm text-[#3E3028]">Rekap {{ $kiriman->tanggal?->translatedFormat('l, d F Y') }}</span>
-                                            <span class="text-xs text-[#7A6A60]">Dikirim {{ $kiriman->dikirim_at?->format('H:i') ?? '—' }} · Disetujui {{ $kiriman->diperiksa_at?->format('H:i') ?? '—' }} oleh {{ $kiriman->pemeriksa?->name ?? 'guru piket' }}</span>
+                                            <span class="text-xs text-[#7A6A60]">Dikirim {{ $kiriman->dikirim_at?->format('H:i') ?? '—' }}</span>
                                         </summary>
                                         <div class="overflow-x-auto border-t border-[#E5D8CC]">
                                             <table class="min-w-[1180px] w-full border-collapse text-left text-sm">
@@ -117,7 +131,7 @@
                             </div>
                         </details>
                     @empty
-                        <div class="px-4 py-10 text-center text-sm text-[#7A6A60]">Belum ada kiriman jurnal kelas yang disetujui guru piket.</div>
+                        <div class="px-4 py-10 text-center text-sm text-[#7A6A60]">Belum ada kiriman jurnal kelas.</div>
                     @endforelse
                     <p id="hasilFilterJurnalAdmin" class="hidden px-4 py-8 text-center text-sm text-[#7A6A60]">Tidak ada kelas yang cocok dengan pencarian.</p>
                 </div>

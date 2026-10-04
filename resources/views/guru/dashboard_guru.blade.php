@@ -197,7 +197,6 @@
                 <span class="rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-medium text-brand-700">Jam ke-{{ $sesiUtama->jam_ke_mulai }}@if($sesiUtama->jam_ke_sampai !== $sesiUtama->jam_ke_mulai)–{{ $sesiUtama->jam_ke_sampai }}@endif · {{ $sesiUtama->jam_mulai }}–{{ $sesiUtama->jam_selesai }}</span>
                 @if ($sesiSaatIni)
                   <a href="{{ route('jurnal.create', ['jadwal' => $sesiUtama->id_jadwal]) }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#5C4033] px-6 text-sm font-semibold text-white shadow-md hover:bg-[#3E2B22]">Mulai Sesi Mengajar</a>
-                  <a href="{{ route('jurnal.create', ['jadwal' => $sesiUtama->id_jadwal, 'pulang_cepat' => 1]) }}" class="inline-flex h-12 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 px-5 text-sm font-semibold text-amber-900 hover:bg-amber-100">Pulang cepat · Kirim ke piket</a>
                 @else
                   <span aria-disabled="true" class="inline-flex h-12 cursor-not-allowed items-center justify-center rounded-xl bg-[#E5D8CC] px-6 text-sm font-semibold text-[#7A6A60]">Menunggu sesi dimulai</span>
                 @endif
@@ -206,7 +205,9 @@
           </article>
         @else
           <div class="rounded-2xl border border-dashed border-brand-200 bg-white p-8 text-center text-sm text-[#7A6A60]">
-            @if ($hari)
+            @if ($kegiatanKhusus)
+              Jadwal pelajaran ditiadakan hari ini untuk kegiatan {{ $kegiatanKhusus }}.
+            @elseif ($hari)
               Belum ada jadwal mengajar untuk hari ini.
             @else
               Tidak ada jadwal mengajar pada akhir pekan.
@@ -238,7 +239,6 @@
                     @if ($item->status === 'Berlangsung')
                       <a href="{{ route('jurnal.create', ['jadwal' => $item->id_jadwal]) }}" class="font-poppins font-semibold text-brand-800 underline underline-offset-2">Isi Jurnal</a>
                     @endif
-                    <a href="{{ route('jurnal.create', ['jadwal' => $item->id_jadwal, 'pulang_cepat' => 1]) }}" class="font-poppins font-semibold text-amber-800 underline underline-offset-2">Pulang cepat</a>
                   </div>
                 </div>
               </article>

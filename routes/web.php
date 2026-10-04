@@ -230,6 +230,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::patch('admin/jam-pelajaran/pengaturan/kegiatan', [JamPelajaranController::class, 'updateKegiatan'])
         ->name('jam-pelajaran.kegiatan.update');
 
+    Route::post('admin/jam-pelajaran/kegiatan-tanggal', [JamPelajaranController::class, 'storeKegiatanTanggal'])
+        ->name('jam-pelajaran.kegiatan-tanggal.store');
+    Route::patch('admin/jam-pelajaran/kegiatan-tanggal/{id}/toggle', [JamPelajaranController::class, 'toggleKegiatanTanggal'])
+        ->name('jam-pelajaran.kegiatan-tanggal.toggle');
+    Route::delete('admin/jam-pelajaran/kegiatan-tanggal/{id}', [JamPelajaranController::class, 'destroyKegiatanTanggal'])
+        ->name('jam-pelajaran.kegiatan-tanggal.destroy');
+
     Route::post(
         'admin/jadwal/import',
         [JadwalPelajaranController::class, 'import']
@@ -317,13 +324,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('piket')->name('piket.')->middleware(['role:guru,guru_piket,wali_kelas', 'piket.aktif'])->group(function () {
         Route::get('/jurnal-mengajar', [JurnalController::class, 'piketIndex'])->name('jurnal');
-
-        Route::post('/jurnal-mengajar/{jurnal}/approve', [JurnalController::class, 'approve'])->name('jurnal.approve');
-
-        Route::post('/jurnal-mengajar/{jurnal}/tolak', [JurnalController::class, 'reject'])->name('jurnal.reject');
-
-        Route::post('/kirim-jurnal-kelas/{pengiriman}/approve', [JurnalController::class, 'approvePengirimanKelas'])->name('kirim-jurnal-kelas.approve');
-        Route::post('/kirim-jurnal-kelas/{pengiriman}/tolak', [JurnalController::class, 'rejectPengirimanKelas'])->name('kirim-jurnal-kelas.reject');
 
         Route::get('/dispensasi-siswa', [DispenController::class, 'index'])
             ->name('dispen');

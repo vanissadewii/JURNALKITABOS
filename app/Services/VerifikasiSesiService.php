@@ -7,6 +7,7 @@ use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Support\RentangJam;
 use App\Support\Waktu;
+use App\Support\KegiatanTanggal;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +23,10 @@ class VerifikasiSesiService
         $hari = self::NAMA_HARI[$sekarang->dayOfWeekIso] ?? null;
 
         if (! $hari) {
+            return null;
+        }
+
+        if (KegiatanTanggal::jadwalDitiadakan($sekarang)) {
             return null;
         }
 

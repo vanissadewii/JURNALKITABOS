@@ -156,26 +156,35 @@
                             <h3 class="font-['Poppins'] text-base font-bold text-[#3E3028]">Pengaturan Kegiatan Pagi</h3>
                             <p class="mt-1 text-xs leading-5 text-[#7A6A60]">Aktifkan saat kegiatan ditiadakan. Jadwal guru di hari itu otomatis maju satu jam.</p>
                         </div>
-                        <div class="grid gap-3 p-5 sm:grid-cols-2 sm:p-6">
-                            @foreach ([
-                                'Senin' => ['nama' => 'Upacara / apel', 'key' => 'Senin'],
-                                'Jumat' => ['nama' => 'Pembiasaan Jumat', 'key' => 'Jumat'],
-                            ] as $hariKegiatan => $infoKegiatan)
-                                @php($ditiadakan = (bool) ($pengaturanKegiatan[$hariKegiatan] ?? false))
-                                <form method="POST" action="{{ route('jam-pelajaran.kegiatan.update') }}" class="flex items-center justify-between gap-4 rounded-xl border border-[#E5D8CC] bg-[#FFFCF9] p-4">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="hari" value="{{ $hariKegiatan }}">
-                                    <input type="hidden" name="kegiatan_ditiadakan" value="{{ $ditiadakan ? 0 : 1 }}">
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-bold text-[#3E3028]">{{ $hariKegiatan }} · {{ $infoKegiatan['nama'] }}</p>
-                                        <p class="mt-1 text-xs {{ $ditiadakan ? 'font-semibold text-[#A16207]' : 'text-[#7A6A60]' }}">{{ $ditiadakan ? 'Kegiatan ditiadakan · jam pelajaran maju' : 'Kegiatan berlangsung · jadwal normal' }}</p>
-                                    </div>
-                                    <button type="submit" role="switch" aria-checked="{{ $ditiadakan ? 'true' : 'false' }}" aria-label="{{ $ditiadakan ? 'Aktifkan kembali kegiatan' : 'Tandai kegiatan ditiadakan' }}" class="relative h-7 w-12 shrink-0 rounded-full transition {{ $ditiadakan ? 'bg-[#A16207]' : 'bg-[#C9BDB4]' }}">
-                                        <span class="absolute top-1 h-5 w-5 rounded-full bg-white shadow transition {{ $ditiadakan ? 'left-6' : 'left-1' }}"></span>
-                                    </button>
+                        @php($seninMaju = (bool) ($pengaturanKegiatan['Senin'] ?? false))
+                        @php($jumatMaju = (bool) ($pengaturanKegiatan['Jumat'] ?? false))
+                        <div class="grid gap-4 p-5 lg:grid-cols-[minmax(0,1fr)_minmax(280px,.8fr)] sm:p-6">
+                            <form method="POST" action="{{ route('jam-pelajaran.kegiatan.update') }}" class="flex items-center justify-between gap-4 rounded-xl border border-[#E5D8CC] bg-[#FFFCF9] p-4">
+                                @csrf @method('PATCH')
+                                <input type="hidden" name="hari" value="Senin">
+                                <input type="hidden" name="gabungan" value="1">
+                                <input type="hidden" name="kegiatan_ditiadakan" value="{{ ($seninMaju && $jumatMaju) ? 0 : 1 }}">
+                                <div class="min-w-0"><p class="text-sm font-bold text-[#3E3028]">Jam pelajaran maju · Senin dan Jumat</p><p class="mt-1 text-xs text-[#7A6A60]">{{ $seninMaju && $jumatMaju ? 'ON · jam ke-2 dimulai pada waktu jam ke-1' : 'OFF · jam mengikuti jadwal normal' }}</p><p class="mt-1 text-[11px] text-[#8C7B70]">ON menggeser jadwal satu slot lebih awal ketika apel Senin atau kegiatan Jumat ditiadakan.</p></div>
+                                <button type="submit" role="switch" aria-checked="{{ $seninMaju && $jumatMaju ? 'true' : 'false' }}" class="relative h-7 w-12 shrink-0 rounded-full transition {{ $seninMaju && $jumatMaju ? 'bg-[#A16207]' : 'bg-[#C9BDB4]' }}"><span class="absolute top-1 h-5 w-5 rounded-full bg-white shadow transition {{ $seninMaju && $jumatMaju ? 'left-6' : 'left-1' }}"></span></button>
+                            </form>
+                            <div id="kegiatanTanggal" class="rounded-xl border border-[#E5D8CC] bg-white p-4"><h4 class="text-sm font-bold text-[#3E3028]">Kegiatan khusus</h4><p class="mt-1 text-xs leading-5 text-[#7A6A60]">Atur tanggal tertentu yang tidak ada pelajaran. Saat ON, jadwal pelajaran pada tanggal itu dimatikan.</p>
+                                <form method="POST" action="{{ route('jam-pelajaran.kegiatan-tanggal.store') }}" class="mt-3 grid gap-2 sm:grid-cols-[1fr_1fr_auto] sm:items-end">@csrf
+                                    <label class="flex min-w-0 flex-col gap-1 text-[11px] font-semibold text-[#7A6A60]">Nama kegiatan<input name="nama_kegiatan" required maxlength="120" value="{{ old('nama_kegiatan') }}" placeholder="Contoh: Maulid Nabi" class="h-9 rounded-lg border border-[#E5D8CC] px-2.5 text-xs text-[#3E3028]"></label>
+                                    <label class="flex min-w-0 flex-col gap-1 text-[11px] font-semibold text-[#7A6A60]">Tanggal<input type="date" name="tanggal" required value="{{ old('tanggal') }}" class="h-9 rounded-lg border border-[#E5D8CC] px-2.5 text-xs text-[#3E3028]"></label>
+                                    <button class="h-9 rounded-lg bg-[#5C4033] px-3 text-xs font-semibold text-white">Tambah · ON</button>
                                 </form>
-                            @endforeach
+                                @error('tanggal')<p class="mt-2 text-xs font-medium text-red-700">{{ $message }}</p>@enderror
+                                @error('nama_kegiatan')<p class="mt-2 text-xs font-medium text-red-700">{{ $message }}</p>@enderror
+                                <div class="mt-3 max-h-56 divide-y divide-[#E5D8CC] overflow-y-auto rounded-lg border border-[#E5D8CC]">
+                                    @forelse(($kegiatanTanggal ?? collect()) as $kegiatan)
+                                        @php($ditiadakan = (bool) $kegiatan->kegiatan_ditiadakan)
+                                        <div class="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between"><div class="min-w-0"><p class="truncate text-xs font-bold text-[#3E3028]">{{ $kegiatan->nama_kegiatan }}</p><p class="mt-1 text-[11px] text-[#7A6A60]">{{ \Carbon\Carbon::parse($kegiatan->tanggal)->format('d/m/Y') }} · {{ $ditiadakan ? 'Jadwal dimatikan' : 'Jadwal normal' }}</p></div>
+                                            <div class="flex shrink-0 items-center gap-2"><form method="POST" action="{{ route('jam-pelajaran.kegiatan-tanggal.toggle', $kegiatan->id) }}">@csrf @method('PATCH')<button role="switch" aria-checked="{{ $ditiadakan ? 'true' : 'false' }}" class="relative h-6 w-10 rounded-full transition {{ $ditiadakan ? 'bg-[#A16207]' : 'bg-[#C9BDB4]' }}"><span class="absolute top-1 h-4 w-4 rounded-full bg-white shadow {{ $ditiadakan ? 'left-5' : 'left-1' }}"></span></button><span class="ml-1 text-[11px] font-semibold">{{ $ditiadakan ? 'ON' : 'OFF' }}</span></form>
+                                                <form method="POST" action="{{ route('jam-pelajaran.kegiatan-tanggal.destroy', $kegiatan->id) }}" onsubmit="return confirm('Hapus pengaturan kegiatan ini?')">@csrf @method('DELETE')<button class="rounded-lg border border-[#E5D8CC] px-2.5 py-1.5 text-[11px] font-semibold text-[#7A6A60]">Hapus</button></form></div>
+                                        </div>
+                                    @empty<p class="p-3 text-xs text-[#7A6A60]">Belum ada event yang diatur.</p>@endforelse
+                                </div>
+                            </div>
                         </div>
                     </article>
 
@@ -580,8 +589,8 @@
                                 </tr>
                             </thead>
                             <tbody id="jamPelajaranTableBody">
-                                @forelse ($jamPelajaran ?? [] as $i => $j)
-                                    <tr class="jam-pelajaran-row transition hover:bg-[#FFFCF9]" data-cari="{{ strtolower('semester '.($j->semester->nama ?? '-').' tingkat '.$j->tingkat.' hari '.$j->hari.' jam ke '.$j->jam_ke.' mulai '.$j->jam_mulai.' selesai '.$j->jam_selesai) }}">
+                                @forelse ($jamGrup ?? [] as $i => $j)
+                                    <tr class="jam-pelajaran-row transition hover:bg-[#FFFCF9]" data-cari="{{ strtolower('semester '.($j->semester->nama ?? '-').' tingkat '.$j->tingkat_cari.' hari '.$j->hari.' jam ke '.$j->jam_ke.' mulai '.$j->jam_mulai.' selesai '.$j->jam_selesai) }}">
                                         <td class="border-b border-r border-[#E5D8CC] px-4 py-3 text-[#7A6A60]">{{ $i + 1 }}</td>
                                         <td class="border-b border-r border-[#E5D8CC] px-4 py-3 font-medium text-[#3E3028]">{{ $j->semester->nama ?? '-' }}</td>
                                         <td class="border-b border-r border-[#E5D8CC] px-4 py-3">{{ $j->tingkat }}</td>

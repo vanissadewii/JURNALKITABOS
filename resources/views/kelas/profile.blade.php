@@ -342,7 +342,7 @@
             if (!nomorAdmin) { alert('Nomor telepon admin belum diatur.'); return; }
             if (nomorAdmin.startsWith('0')) nomorAdmin = `62${nomorAdmin.slice(1)}`;
             else if (!nomorAdmin.startsWith('62')) nomorAdmin = `62${nomorAdmin}`;
-            const pesan = `Halo admin, saya dari kelas {{ $kelas->nama_kelas }}.\nKendala:`;
+            const pesan = `Halo Admin!\nSaya dari kelas {{ $kelas->nama_kelas }}.\nSaya mengalami kendala:`;
             window.open(`https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesan)}`, '_blank');
         }
 

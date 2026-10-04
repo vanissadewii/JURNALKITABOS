@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dispen;
 use App\Models\Jurnal;
 use App\Models\PengirimanJurnalKelas;
 use App\Models\Siswa;
@@ -34,16 +35,35 @@ class KelasController extends Controller
         $sesi = $service->sesiHariIni($kelas, $sekarang);
         $tugasPiket = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
             ->whereDate('tanggal', $sekarang->toDateString())->latest('id_upload_tugas')->get();
+        $suratSiswaHariIni = DB::table('surat_siswa as ss')
+            ->join('siswa as s', 's.id_siswa', '=', 'ss.id_siswa')
+            ->where('ss.id_kelas', $kelas->id_kelas)->whereDate('ss.tanggal', $sekarang->toDateString())
+            ->orderBy('s.no_absen')->orderBy('s.nama')
+            ->get(['s.id_siswa', 's.nama', 's.no_absen', 'ss.status']);
 
-        $jurnalHariIni = Jurnal::with(['absenSiswa', 'dispensasi.siswa', 'dispensasi.waka', 'dispensasi.guruPiket'])
+        $jurnalHariIni = Jurnal::with(['absenSiswa'])
             ->whereIn('id_jadwal', $sesi->pluck('ids')->flatten()->all())
             ->whereDate('tanggal', $sekarang->toDateString())
             ->where('status_verifikasi', 'terverifikasi')
             ->get();
+        $dispensasiHariIni = Dispen::with(['siswa', 'waka', 'guruPiket'])
+            ->where('id_kelas', $kelas->id_kelas)->whereDate('tanggal', $sekarang->toDateString())
+            ->where('status', 'disetujui')->orderBy('jam_ke_mulai')->get();
 
-        $sesi = $sesi->map(function ($s) use ($jurnalHariIni, $tugasPiket) {
-            $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->last();
+        $sesi = $sesi->map(function ($s) use ($jurnalHariIni, $tugasPiket, $dispensasiHariIni, $suratSiswaHariIni) {
+            $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->first();
             $s->tugas = $tugasPiket->first(fn ($tugas) => $tugas->id_jadwal && in_array((int) $tugas->id_jadwal, $s->ids));
+            $s->dispensasi = $dispensasiHariIni->filter(fn ($dispen) =>
+                (int) $dispen->jam_ke_mulai <= (int) $s->jam_ke_sampai
+                && (int) ($dispen->jam_ke_selesai ?? 13) >= (int) $s->jam_ke_mulai
+            )->values();
+            $s->siswaTidakHadir = ($s->jurnal?->absenSiswa ?? collect())
+                ->where('status', '!=', 'Dispen')->keyBy('id_siswa');
+            foreach ($suratSiswaHariIni as $surat) {
+                if (! $s->dispensasi->contains('id_siswa', $surat->id_siswa)) {
+                    $s->siswaTidakHadir->put($surat->id_siswa, $surat);
+                }
+            }
 
             return $s;
         });
@@ -54,11 +74,21 @@ class KelasController extends Controller
         return view('kelas.beranda', compact('kelas', 'sesiAktif', 'sesiSelesai', 'tugasPiket'));
     }
 
-    public function scan(Request $request): View
+    public function scan(Request $request, QrSesiController $qrController): View|RedirectResponse
     {
+        $kelas = $request->user()->kelas;
+        $statusQr = $qrController->kelasStatus()->getData(true);
+
+        if (($statusQr['tahap'] ?? null) === 'selesai' && ! empty($statusQr['redirect'])) {
+            return redirect($statusQr['redirect']);
+        }
+
         return view('kelas.scan', [
-            'kelas' => $request->user()->kelas,
-            'qrImage' => null,
+            'kelas' => $kelas,
+            'qrImage' => $statusQr['qr'] ?? null,
+            'kodeQr' => $statusQr['kode'] ?? null,
+            'sesiQr' => $statusQr['sesi'] ?? null,
+            'pesanQr' => $statusQr['pesan'] ?? 'Tidak ada sesi pelajaran yang sedang berlangsung.',
         ]);
     }
 
@@ -77,15 +107,15 @@ class KelasController extends Controller
             ->whereDate('tanggal', $sekarang->toDateString())
             ->whereNotNull('waktu_submit')
             ->where('status_verifikasi', 'terverifikasi')
-            ->orderBy('id_jurnal')
+            ->orderByDesc('id_jurnal')
             ->get();
         $tugasHariIni = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
             ->whereDate('tanggal', $sekarang->toDateString())
-            ->orderByDesc('created_at')
+            ->orderByDesc('created_at')->orderByDesc('id_upload_tugas')
             ->get();
 
         $rekap = $sesi->map(function ($s) use ($jurnalHariIni, $tugasHariIni) {
-            $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->last();
+            $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->first();
             $s->tugas = $tugasHariIni->first(fn ($tugas) => $tugas->id_jadwal && in_array((int) $tugas->id_jadwal, $s->ids));
 
             return $s;
@@ -95,7 +125,7 @@ class KelasController extends Controller
         $pengiriman = PengirimanJurnalKelas::where('id_kelas', $kelas->id_kelas)
             ->whereDate('tanggal', $sekarang->toDateString())
             ->first();
-        $bisaKirim = $rekap->isNotEmpty() && (! $pengiriman || $pengiriman->status === 'ditolak');
+        $bisaKirim = $rekap->isNotEmpty();
 
         return view('kelas.kirim-jurnal', compact('kelas', 'rekap', 'bisaKirim', 'pengiriman', 'totalSiswa'));
     }
@@ -117,20 +147,16 @@ class KelasController extends Controller
             'id_kelas' => $kelas->id_kelas,
             'tanggal' => $sekarang->toDateString(),
         ]);
-        if ($pengiriman->exists && $pengiriman->status !== 'ditolak') {
-            return back()->with('error', 'Rekap jurnal hari ini sudah dikirim dan sedang menunggu atau sudah selesai diperiksa.');
-        }
-
         $pengiriman->fill([
             'dikirim_oleh' => $request->user()->id,
             'dikirim_at' => now(),
-            'status' => 'menunggu',
+            'status' => 'terkirim',
             'alasan_tolak' => null,
             'id_diperiksa_oleh' => null,
             'diperiksa_at' => null,
         ])->save();
 
-        return redirect()->route('kelas.kirim-jurnal')->with('success', 'Rekap jurnal hari ini berhasil dikirim untuk diperiksa guru piket.');
+        return redirect()->route('kelas.kirim-jurnal')->with('success', 'Rekap jurnal hari ini berhasil dikirim dan tersimpan.');
     }
 
     public function unduhTugas(Request $request, int $id): Response

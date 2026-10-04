@@ -7,6 +7,7 @@ use App\Models\JamPelajaran;
 use App\Models\Kelas;
 use App\Support\RentangJam;
 use Carbon\CarbonInterface;
+use App\Support\KegiatanTanggal;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +26,7 @@ class SesiKelasService
     {
         $hari = self::NAMA_HARI[$sekarang->dayOfWeekIso] ?? null; // null di luar hari pada jadwal
 
-        if (! $hari) {
+        if (! $hari || KegiatanTanggal::jadwalDitiadakan($sekarang)) {
             return collect();
         }
 

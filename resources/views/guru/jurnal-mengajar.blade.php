@@ -43,25 +43,8 @@
   </script>
 
   <style>
-    html {
-      scrollbar-width: none;
-    }
-
-    html::-webkit-scrollbar {
-      display: none;
-    }
-
-    details > summary {
-      list-style: none;
-    }
-
-    details > summary::-webkit-details-marker {
-      display: none;
-    }
-
-    details[open] > summary .chev {
-      transform: rotate(180deg);
-    }
+    html, body, dialog { scrollbar-width: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar, dialog::-webkit-scrollbar { display: none; }
 
     dialog::backdrop {
       background: rgba(62,43,34,0.35);
@@ -354,68 +337,19 @@
 
       @else
 
-        @if($pengirimanKelas->isNotEmpty())
-          <section class="rounded-2xl border border-brand-100 bg-white p-5 shadow-sm">
-            <div class="mb-4">
-              <h2 class="font-poppins text-lg font-bold">Rekap Jurnal dari Akun Kelas</h2>
-              <p class="mt-1 text-sm text-[#7A6A60]">Kiriman parsial boleh masuk. Periksa sesi yang belum memiliki jurnal atau tugas, lalu setujui atau tolak kiriman.</p>
-            </div>
-            <div class="grid gap-3">
-              @foreach($pengirimanKelas as $kiriman)
-                @php
-                  $statusKiriman = $kiriman->status ?? 'menunggu';
-                @endphp
-                <article class="rounded-xl border border-[#E5D8CC] bg-[#FFFCF9] p-4">
-                  <div class="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <h3 class="font-bold">{{ $kiriman->kelas?->nama_kelas ?? 'Kelas' }}</h3>
-                      <p class="mt-1 text-xs text-[#7A6A60]">Dikirim {{ $kiriman->dikirim_at?->format('H:i') ?? '—' }} · {{ $kiriman->jumlah_lengkap }}/{{ $kiriman->jumlah_sesi }} sesi tercatat · {{ $kiriman->jumlah_kurang }} sesi belum ada jurnal/tugas</p>
-                      <p class="mt-1 text-xs font-semibold {{ $statusKiriman === 'menunggu' ? 'text-amber-700' : ($statusKiriman === 'ditolak' ? 'text-rose-700' : 'text-emerald-700') }}">{{ ucfirst($statusKiriman) }}</p>
-                      @if($statusKiriman === 'ditolak' && $kiriman->alasan_tolak)<p class="mt-2 text-sm text-rose-700">Alasan: {{ $kiriman->alasan_tolak }}</p>@endif
-                    </div>
-                    @if($statusKiriman === 'menunggu')
-                      <div class="flex flex-wrap items-end gap-2">
-                        <form method="POST" action="{{ route('piket.kirim-jurnal-kelas.approve', $kiriman) }}" onsubmit="return confirm('Setujui rekap {{ addslashes($kiriman->kelas?->nama_kelas ?? 'kelas') }}?')">
-                          @csrf
-                          <button class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Setujui</button>
-                        </form>
-                        <form method="POST" action="{{ route('piket.kirim-jurnal-kelas.reject', $kiriman) }}" class="flex flex-wrap items-end gap-2">
-                          @csrf
-                          <label class="sr-only" for="alasan-kiriman-{{ $kiriman->id_pengiriman }}">Alasan penolakan</label>
-                          <input id="alasan-kiriman-{{ $kiriman->id_pengiriman }}" name="alasan" required maxlength="2000" placeholder="Alasan penolakan" class="min-w-48 rounded-lg border border-rose-200 px-3 py-2 text-sm">
-                          <button class="rounded-lg border border-rose-300 px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50">Tolak</button>
-                        </form>
-                      </div>
-                    @endif
-                  </div>
-                </article>
-              @endforeach
-            </div>
-          </section>
-        @endif
-
         <!-- FILTER TINGKAT KELAS -->
 
         <div
           id="filterBar"
-          class="sticky z-20
-                 -mx-6 px-6
-                 md:-mx-10 md:px-10
-                 bg-brand-50/95 backdrop-blur-sm
-                 py-3 border-b border-brand-100
-                 flex items-center gap-2
-                 overflow-x-auto">
+          class="z-20 -mx-6 px-6 md:-mx-10 md:px-10 bg-brand-50/95 py-3 border-b border-brand-100 grid grid-cols-3 gap-2">
 
-          @foreach($daftarTingkat as $t)
+          @foreach(['X', 'XI', 'XII'] as $t)
 
             <button
               type="button"
               data-tingkat="{{ $t }}"
               onclick="filterTingkat('{{ $t }}')"
-              class="filter-btn px-5 py-2 rounded-full
-                     text-sm font-semibold
-                     bg-white border border-brand-100
-                     text-[#7A6A60] whitespace-nowrap">
+              class="filter-btn rounded-full px-3 py-2 text-xs sm:text-sm font-semibold {{ $t === ($daftarTingkat[0] ?? 'X') ? 'bg-brand-800 text-white' : 'bg-white border border-brand-100 text-[#7A6A60]' }}">
 
               Kelas {{ $t }}
 
@@ -428,59 +362,36 @@
 
         <!-- DAFTAR KELAS -->
 
-        <div
-          class="flex flex-col gap-4"
-          id="daftarKelas">
+        @php
+          $pengirimanPerNamaKelas = $pengirimanKelas->keyBy(fn ($kiriman) => $kiriman->kelas?->nama_kelas);
+          $jurnalPerKelas = collect($daftarJurnal)->groupBy('kelas')->map(function ($items) use ($pengirimanPerNamaKelas) {
+            $utama = $items->first();
+            $utama['ids'] = $items->pluck('id')->all();
+            $utama['sesi'] = $items->flatMap(fn ($item) => $item['sesi'])->values()->all();
+            $utama['waktu_kirim'] = $items->pluck('waktu_kirim')->filter()->unique()->implode(', ');
+            $utama['status'] = $items->contains(fn ($item) => $item['status'] === 'terkirim') ? 'terkirim' : $utama['status'];
+            $utama['kiriman_kelas'] = $pengirimanPerNamaKelas->get($utama['kelas']);
+            return $utama;
+          })->values();
+        @endphp
 
-          @forelse($daftarJurnal as $j)
-
+        <div class="flex flex-col gap-4" id="daftarKelas">
+          @forelse($jurnalPerKelas as $j)
             @php
-
-              $isMilikSendiri = in_array(
-                $guruPiketId,
-                array_column($j['sesi'], 'guru_id')
-              );
-
-              $badge = match($j['status']) {
-
-                'menunggu' => [
-                  'bg-amber-50 border-amber-200 text-amber-800',
-                  'Menunggu Persetujuan'
-                ],
-
-                'disetujui' => [
-                  'bg-emerald-50 border-emerald-200 text-emerald-800',
-                  'Disetujui'
-                ],
-
-                'ditolak' => [
-                  'bg-rose-50 border-rose-200 text-rose-800',
-                  'Ditolak'
-                ],
-                'tidak_hadir' => [
-                  'bg-rose-50 border-rose-200 text-rose-800',
-                  'Guru Tidak Hadir'
-                ],
-
+              $badge = match ($j['status']) {
+                'tidak_hadir' => ['bg-rose-50 border-rose-200 text-rose-800', 'Guru Tidak Hadir'],
+                'terkirim' => ['bg-sky-50 border-sky-200 text-sky-800', 'Terkirim'],
+                default => ['bg-emerald-50 border-emerald-200 text-emerald-800', 'Terverifikasi'],
               };
-
             @endphp
 
 
-            <div
+            <article
               class="kelas-card bg-white border border-brand-100
-                     rounded-2xl overflow-hidden"
+                     rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4"
               data-tingkat="{{ $j['tingkat'] }}"
               data-status="{{ $j['status'] }}"
-              data-id="{{ $j['id'] }}">
-
-              <details {{ $j['status'] === 'menunggu' ? 'open' : '' }}>
-
-                <summary
-                  class="cursor-pointer p-5
-                         flex flex-col md:flex-row
-                         md:items-center
-                         gap-3 md:gap-6">
+              data-id="{{ implode(',', $j['ids']) }}">
 
                   <div
                     class="flex items-center gap-3
@@ -510,6 +421,9 @@
                       <span class="text-xs text-[#8C7B70]">
                         {{ count($j['sesi']) }} sesi • kirim {{ $j['waktu_kirim'] }}
                       </span>
+                      @if($j['kiriman_kelas'])
+                        <span class="mt-1 text-xs font-semibold text-brand-600">Rekap kelas terkirim {{ $j['kiriman_kelas']->dikirim_at?->format('H:i') ?? '—' }}</span>
+                      @endif
 
                     </div>
 
@@ -534,559 +448,10 @@
                   </div>
 
 
-                  <svg
-                    class="chev w-4 h-4 text-[#8C7B70]
-                           shrink-0 transition-transform"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2">
+                <button type="button" onclick="bukaDetailJurnal(@js($j))" class="shrink-0 rounded-lg bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900">Lihat detail</button>
 
-                    <path d="M5 7l5 5 5-5"/>
+            </article>
 
-                  </svg>
-
-                </summary>
-
-
-                <div
-                  class="px-5 pb-5 pt-1
-                         border-t border-brand-50
-                         flex flex-col gap-4">
-
-
-                  <!-- TABEL REKAP JURNAL -->
-
-                  <div
-                    class="w-full max-w-full bg-white
-                           border border-[#E5D8CC]
-                           rounded-[10px]
-                           shadow-[0_4px_12px_rgba(62,48,40,0.03)]
-                           overflow-x-auto">
-
-                    <table
-                      class="min-w-[1150px] w-full
-                             text-left border-collapse">
-
-                      <thead>
-
-                        <tr class="bg-[#F5EFE8]">
-
-                          <th
-                            rowspan="2"
-                            class="px-4 py-3 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   whitespace-nowrap
-                                   border-b border-r border-[#E5D8CC]
-                                   align-middle">
-
-                            Jam Ke-
-
-                          </th>
-
-                          <th
-                            rowspan="2"
-                            class="px-4 py-3 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   whitespace-nowrap
-                                   border-b border-r border-[#E5D8CC]
-                                   align-middle">
-
-                            Nama Pengajar
-
-                          </th>
-
-                          <th
-                            rowspan="2"
-                            class="px-4 py-3 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   whitespace-nowrap
-                                   border-b border-r border-[#E5D8CC]
-                                   align-middle">
-
-                            Mata Pelajaran
-
-                          </th>
-
-                          <th
-                            rowspan="2"
-                            class="px-4 py-3 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   whitespace-nowrap
-                                   border-b border-r border-[#E5D8CC]
-                                   text-center align-middle">
-
-                            Hadir
-
-                          </th>
-
-                          <th
-                            rowspan="2"
-                            class="px-4 py-3 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   whitespace-nowrap
-                                   border-b border-r border-[#E5D8CC]
-                                   text-center align-middle">
-
-                            Tidak Hadir
-                            <br>
-                            <span class="normal-case font-medium">
-                              (Tugas)
-                            </span>
-
-                          </th>
-
-                          <th
-                            rowspan="2"
-                            class="px-4 py-3 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   border-b border-r border-[#E5D8CC]
-                                   min-w-[220px] align-middle">
-
-                            Materi
-
-                          </th>
-
-                          <th
-                            colspan="6"
-                            class="px-4 py-2 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   text-center
-                                   border-b border-r border-[#E5D8CC]">
-
-                            Keadaan Siswa
-
-                          </th>
-
-                        </tr>
-
-
-                        <tr class="bg-[#F5EFE8]">
-
-                          <th
-                            class="px-3 py-2.5 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   whitespace-nowrap
-                                   border-b border-r border-[#E5D8CC]
-                                   text-center">
-
-                            Jumlah Hadir
-
-                          </th>
-
-                          <th
-                            class="px-3 py-2.5 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   whitespace-nowrap
-                                   border-b border-r border-[#E5D8CC]
-                                   min-w-[150px]">
-
-                            Nama Siswa
-
-                          </th>
-
-                          <th
-                            class="px-2 py-2.5 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   border-b border-r border-[#E5D8CC]
-                                   text-center w-9">
-
-                            S
-
-                          </th>
-
-                          <th
-                            class="px-2 py-2.5 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   border-b border-r border-[#E5D8CC]
-                                   text-center w-9">
-
-                            I
-
-                          </th>
-
-                          <th
-                            class="px-2 py-2.5 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   border-b border-r border-[#E5D8CC]
-                                   text-center w-9">
-
-                            A
-
-                          </th>
-
-                          <th
-                            class="px-2 py-2.5 text-[11px]
-                                   font-semibold uppercase
-                                   text-[#5C4033]
-                                   border-b border-[#E5D8CC]
-                                   text-center w-9">
-
-                            D
-
-                          </th>
-
-                        </tr>
-
-                      </thead>
-
-
-                      <tbody>
-
-                        @foreach($j['sesi'] as $s)
-
-                          @php
-                            $jumlahBaris = count($s['siswa']) > 0
-                              ? count($s['siswa'])
-                              : 1;
-                          @endphp
-
-                          @for($i = 0; $i < $jumlahBaris; $i++)
-
-                            <tr
-                              class="border-b border-[#E5D8CC]
-                                     align-top
-                                     {{ $s['guru_id'] === $guruPiketId
-                                        ? 'bg-amber-50/50'
-                                        : '' }}">
-
-                              @if($i === 0)
-
-                                <td
-                                  rowspan="{{ $jumlahBaris }}"
-                                  class="px-4 py-3 text-[13px]
-                                         text-[#3E3028]
-                                         whitespace-nowrap
-                                         border-r border-[#E5D8CC]
-                                         align-top">
-
-                                  {{ $s['jam'] }}
-
-                                </td>
-
-
-                                <td
-                                  rowspan="{{ $jumlahBaris }}"
-                                  class="px-4 py-3 text-[13px]
-                                         text-[#3E3028]
-                                         whitespace-nowrap
-                                         border-r border-[#E5D8CC]
-                                         align-top">
-
-                                  {{ $s['guru'] }}
-
-                                  @if($s['guru_id'] === $guruPiketId)
-
-                                    <span
-                                      class="block text-[10px]
-                                             font-semibold text-amber-700">
-
-                                      (Anda)
-
-                                    </span>
-
-                                  @endif
-
-                                </td>
-
-
-                                <td
-                                  rowspan="{{ $jumlahBaris }}"
-                                  class="px-4 py-3 text-[13px]
-                                         text-[#3E3028]
-                                         whitespace-nowrap
-                                         border-r border-[#E5D8CC]
-                                         align-top">
-
-                                  {{ $s['mapel'] }}
-
-                                </td>
-
-
-                                <td
-                                  rowspan="{{ $jumlahBaris }}"
-                                  class="px-4 py-3 text-center
-                                         border-r border-[#E5D8CC]
-                                         align-top">
-
-                                  <span
-                                    class="{{ $s['hadir_guru']
-                                      ? 'text-[#2E7D32]'
-                                      : 'text-[#C62828]' }}
-                                      font-bold">
-
-                                    {{ $s['hadir_guru'] ? '✓' : '✕' }}
-
-                                  </span>
-
-                                </td>
-
-
-                                <td
-                                  rowspan="{{ $jumlahBaris }}"
-                                  class="px-4 py-3 text-center
-                                         border-r border-[#E5D8CC]
-                                         align-top">
-
-                                  @if($s['hadir_guru'])
-
-                                    <span class="text-[#C62828] font-bold">
-                                      ✕
-                                    </span>
-
-                                  @else
-
-                                    <span
-                                      class="{{ $s['ada_tugas']
-                                        ? 'text-[#2E7D32]'
-                                        : 'text-[#7A6A60]' }}
-                                        font-bold">
-
-                                      {{ $s['ada_tugas'] ? '✓' : '-' }}
-
-                                    </span>
-
-                                  @endif
-
-                                </td>
-
-
-                                <td
-                                  rowspan="{{ $jumlahBaris }}"
-                                  class="px-4 py-3 text-[13px]
-                                         text-[#3E3028]
-                                         whitespace-normal
-                                         break-words
-                                         min-w-[220px]
-                                         border-r border-[#E5D8CC]
-                                         align-top">
-
-                                  {{ $s['materi'] ?? '-' }}
-                                  @if(!empty($s['tugas']))<p class="mt-1 text-xs font-semibold">{{ $s['status_guru'] ?? 'Tugas pengganti' }}</p><p class="mt-1 whitespace-pre-line text-xs">Tugas: {{ $s['tugas'] }}</p>@endif
-                                  @if(!empty($s['file_path']))<a class="mt-1 inline-block text-xs font-semibold text-blue-700 underline" href="{{ route('piket.upload-tugas.download', $s['id_upload_tugas']) }}">Buka lampiran</a>@endif
-
-                                </td>
-
-
-                                <td
-                                  rowspan="{{ $jumlahBaris }}"
-                                  class="px-4 py-3 text-[13px]
-                                         text-[#3E3028]
-                                         text-center
-                                         whitespace-nowrap
-                                         border-r border-[#E5D8CC]
-                                         align-top">
-
-                                  {{ $s['jumlah_hadir'] ?? '-' }}
-
-                                </td>
-
-                              @endif
-
-
-                              @if(count($s['siswa']))
-
-                                <td
-                                  class="px-4 py-2.5 text-[13px]
-                                         text-[#3E3028]
-                                         border-r border-[#E5D8CC]">
-
-                                  {{ $s['siswa'][$i]['nama'] }}
-
-                                </td>
-
-                                <td
-                                  class="px-2 py-2.5 text-center
-                                         border-r border-[#E5D8CC]">
-
-                                  {{ $s['siswa'][$i]['ket'] === 'S' ? '✓' : '' }}
-
-                                </td>
-
-                                <td
-                                  class="px-2 py-2.5 text-center
-                                         border-r border-[#E5D8CC]">
-
-                                  {{ $s['siswa'][$i]['ket'] === 'I' ? '✓' : '' }}
-
-                                </td>
-
-                                <td
-                                  class="px-2 py-2.5 text-center
-                                         border-r border-[#E5D8CC]">
-
-                                  {{ $s['siswa'][$i]['ket'] === 'A' ? '✓' : '' }}
-
-                                </td>
-
-                                <td class="px-2 py-2.5 text-center">
-
-                                  {{ $s['siswa'][$i]['ket'] === 'D' ? '✓' : '' }}
-
-                                </td>
-
-                              @else
-
-                                <td
-                                  class="px-4 py-2.5 text-[13px]
-                                         text-[#7A6A60]
-                                         border-r border-[#E5D8CC]">
-
-                                  -
-
-                                </td>
-
-                                <td
-                                  class="px-2 py-2.5
-                                         border-r border-[#E5D8CC]">
-                                </td>
-
-                                <td
-                                  class="px-2 py-2.5
-                                         border-r border-[#E5D8CC]">
-                                </td>
-
-                                <td
-                                  class="px-2 py-2.5
-                                         border-r border-[#E5D8CC]">
-                                </td>
-
-                                <td class="px-2 py-2.5">
-                                </td>
-
-                              @endif
-
-                            </tr>
-
-                          @endfor
-
-                        @endforeach
-
-                      </tbody>
-
-                    </table>
-
-                  </div>
-
-
-                  @if($j['status'] === 'ditolak' && $j['alasan_tolak'])
-
-                    <div
-                      class="bg-rose-50 border border-rose-200
-                             rounded-xl p-3 text-sm text-rose-800">
-
-                      <span class="font-semibold">
-                        Alasan penolakan:
-                      </span>
-
-                      {{ $j['alasan_tolak'] }}
-
-                    </div>
-
-                  @endif
-
-
-                  @if($j['status'] === 'menunggu')
-
-                    @if($isMilikSendiri)
-
-                      <div
-                        class="bg-brand-50 border border-brand-100
-                               rounded-xl p-3 text-sm
-                               text-[#7A6A60]
-                               flex items-center gap-2">
-
-                        <svg
-                          class="w-4 h-4 shrink-0"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2">
-
-                          <circle cx="10" cy="10" r="7"/>
-                          <path d="M10 6v4M10 14h.01"/>
-
-                        </svg>
-
-                        Ada jam mengajar Anda di kelas ini — tidak bisa disetujui/ditolak oleh diri sendiri. Menunggu guru piket lain.
-
-                      </div>
-
-                    @else
-
-                      <div class="flex items-center gap-3">
-
-                        <button
-                          type="button"
-                          onclick="setujuiKelas({{ $j['id'] }})"
-                          class="px-5 h-10 rounded-lg
-                                 bg-emerald-600 hover:bg-emerald-700
-                                 text-white text-sm font-semibold
-                                 flex items-center gap-2">
-
-                          <svg
-                            class="w-4 h-4"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5">
-
-                            <path d="M4 10l4 4 8-8"/>
-
-                          </svg>
-
-                          Setujui Jurnal Kelas Ini
-
-                        </button>
-
-
-                        <button
-                          type="button"
-                          onclick="bukaTolak({{ $j['id'] }})"
-                          class="px-5 h-10 rounded-lg
-                                 bg-white border border-rose-300
-                                 hover:bg-rose-50
-                                 text-rose-700 text-sm font-semibold
-                                 flex items-center gap-2">
-
-                          <svg
-                            class="w-4 h-4"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5">
-
-                            <path d="M6 6l8 8M14 6l-8 8"/>
-
-                          </svg>
-
-                          Tolak
-
-                        </button>
-
-                      </div>
-
-                    @endif
-
-                  @endif
-
-                </div>
-
-              </details>
-
-            </div>
 
           @empty
 
@@ -1121,68 +486,13 @@
   </div>
 
 
-  <!-- ========================================================= -->
-  <!-- DIALOG ALASAN TOLAK -->
-  <!-- ========================================================= -->
-
-  <dialog
-    id="dialogTolak"
-    class="rounded-2xl p-0 w-full max-w-md
-           border border-brand-100">
-
-    <form
-      id="formTolak"
-      class="flex flex-col gap-4 p-6"
-      onsubmit="return kirimTolak(event)">
-
-      <h3 class="font-poppins font-bold text-lg text-[#3E3028]">
-        Tolak Jurnal Kelas
-      </h3>
-
-      <p class="text-sm text-[#8C7B70]">
-        Tuliskan alasan penolakan agar kelas bisa memperbaiki jurnalnya.
-      </p>
-
-      <textarea
-        id="alasanTolak"
-        name="alasan"
-        required
-        rows="3"
-        placeholder="Contoh: Jumlah hadir tidak sesuai presensi kelas"
-        class="w-full border border-brand-100
-               rounded-xl p-3 text-sm
-               focus:outline-none focus:ring-2
-               focus:ring-brand-300"></textarea>
-
-      <div class="flex justify-end gap-3 mt-1">
-
-        <button
-          type="button"
-          onclick="document.getElementById('dialogTolak').close()"
-          class="px-4 h-10 rounded-lg text-sm
-                 font-semibold text-[#7A6A60]
-                 hover:bg-brand-50">
-
-          Batal
-
-        </button>
-
-        <button
-          type="submit"
-          class="px-5 h-10 rounded-lg
-                 bg-rose-600 hover:bg-rose-700
-                 text-white text-sm font-semibold">
-
-          Kirim Penolakan
-
-        </button>
-
-      </div>
-
-    </form>
-
+  <dialog id="dialogDetailJurnal" class="w-[calc(100%-1.5rem)] max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border border-brand-100 p-0 shadow-xl">
+    <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-brand-100 bg-white px-4 py-4 sm:px-6">
+      <div><p class="text-xs font-semibold uppercase tracking-wide text-brand-600">Detail jurnal kelas</p><h2 id="judulDetailJurnal" class="mt-1 font-poppins text-lg font-bold"></h2></div>
+      <button type="button" onclick="tutupDialog('dialogDetailJurnal')" class="rounded-lg border border-brand-100 px-3 py-2 text-sm font-semibold">Tutup</button>
+    </div>
+    <div id="isiDetailJurnal" class="space-y-3 p-4 sm:p-6"></div>
   </dialog>
-
 
   <!-- ========================================================= -->
   <!-- BOTTOM NAV MOBILE -->
@@ -1310,27 +620,8 @@
 
   <script>
 
-    let tingkatAktif = @js($daftarTingkat[0] ?? '');
+    let tingkatAktif = 'X';
 
-    let idYangDitolak = null;
-
-
-    function posisikanFilterBar() {
-
-      const header = document.querySelector('header');
-
-      const bar = document.getElementById('filterBar');
-
-      if (header && bar) {
-        bar.style.top = header.offsetHeight + 'px';
-      }
-
-    }
-
-
-    window.addEventListener('load', posisikanFilterBar);
-
-    window.addEventListener('resize', posisikanFilterBar);
 
 
     function filterTingkat(t) {
@@ -1342,7 +633,7 @@
         const active = btn.dataset.tingkat === t;
 
         btn.className =
-          'filter-btn px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap ' +
+          'filter-btn rounded-full px-3 py-2 text-xs sm:text-sm font-semibold ' +
           (
             active
               ? 'bg-brand-800 text-white'
@@ -1384,63 +675,37 @@
     }
 
 
-    async function kirimAksiJurnal(id, aksi, data = {}) {
-      const url = `{{ url('/piket/jurnal-mengajar') }}/${encodeURIComponent(id)}/${aksi}`;
-      const body = new URLSearchParams(data);
-      body.set('_token', document.querySelector('meta[name=csrf-token]').content);
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
-        body,
-      });
-      if (!response.ok) {
-        let message = 'Aksi tidak dapat diproses.';
-        try { message = (await response.json()).message || message; } catch (_) {}
-        throw new Error(message);
-      }
+    const dataJurnal = @js($jurnalPerKelas->keyBy('kelas')->map(function ($jurnal) { $kiriman = $jurnal['kiriman_kelas']; $jurnal['ringkasan_kiriman'] = $kiriman ? ['waktu' => $kiriman->dikirim_at?->format('d/m/Y H:i') ?? '—', 'status' => 'Terkirim', 'jumlah_sesi' => $kiriman->jumlah_sesi, 'jumlah_lengkap' => $kiriman->jumlah_lengkap, 'jumlah_kurang' => $kiriman->jumlah_kurang, 'alasan' => null] : null; return $jurnal; }));
+
+
+    function teks(value) {
+      const el = document.createElement('span');
+      el.textContent = value ?? '—';
+      return el.innerHTML;
     }
 
-    async function setujuiKelas(id) {
-      try {
-        await kirimAksiJurnal(id, 'approve');
-        window.location.reload();
-      } catch (error) {
-        alert(error.message);
-      }
-    }
+    function tutupDialog(id) { document.getElementById(id).close(); }
 
-
-    function bukaTolak(id) {
-
-      idYangDitolak = id;
-
-      document.getElementById('alasanTolak').value = '';
-
-      document
-        .getElementById('dialogTolak')
-        .showModal();
-
+    function bukaDetailJurnal(jurnal) {
+      if (!jurnal) return;
+      document.getElementById('judulDetailJurnal').textContent = `${jurnal.kelas} · Kelas ${jurnal.tingkat}`;
+      const sesi = (jurnal.sesi || []).map(item => `
+        <article class="rounded-xl border border-brand-100 bg-[#FFFCF9] p-4">
+          <div class="flex flex-wrap items-start justify-between gap-2"><div><p class="text-xs text-brand-600">Jam ke-${teks(item.jam)} · ${teks(item.mapel)}</p><h3 class="mt-1 font-bold">${teks(item.guru)}</h3></div><span class="rounded-full px-2.5 py-1 text-xs font-semibold ${item.hadir_guru ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}">${item.hadir_guru ? 'Guru hadir' : 'Guru tidak hadir'}</span></div>
+          <dl class="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2"><div><dt class="text-xs text-brand-600">Jumlah hadir</dt><dd class="font-semibold">${teks(item.jumlah_hadir)}</dd></div><div class="sm:col-span-2"><dt class="text-xs text-brand-600">Materi</dt><dd class="break-words">${teks(item.materi)}</dd></div></dl>
+          ${item.tugas ? `<p class="mt-3 whitespace-pre-line rounded-lg bg-white p-3 text-sm"><strong>${teks(item.status_guru || 'Tugas')}</strong><br>${teks(item.tugas)}</p>` : ''}
+          ${item.file_path ? `<a class="mt-3 inline-block text-sm font-semibold text-blue-700 underline" href="/piket/upload-tugas/${encodeURIComponent(item.id_upload_tugas)}/lampiran">Buka lampiran</a>` : ''}
+          ${(item.siswa || []).length ? `<div class="mt-4"><h4 class="text-sm font-bold">Siswa tidak hadir (${item.siswa.length})</h4><ul class="mt-2 grid gap-2 sm:grid-cols-2">${item.siswa.map(s => `<li class="rounded-lg bg-white px-3 py-2 text-sm">${teks(s.nama)} <span class="ml-1 font-bold text-brand-600">${teks(s.ket)}</span></li>`).join('')}</ul></div>` : '<p class="mt-3 text-sm text-brand-600">Tidak ada catatan siswa tidak hadir.</p>'}
+        </article>`).join('');
+      const kiriman = jurnal.ringkasan_kiriman;
+      const ringkasanKiriman = kiriman ? `<section class="rounded-xl border border-brand-100 bg-brand-50 p-4"><h3 class="font-bold">Rekap dari akun kelas</h3><dl class="mt-3 grid grid-cols-2 gap-3 text-sm"><div><dt class="text-xs text-brand-600">Dikirim</dt><dd>${teks(kiriman.waktu)}</dd></div><div><dt class="text-xs text-brand-600">Status</dt><dd>${teks(kiriman.status)}</dd></div><div><dt class="text-xs text-brand-600">Sesi tercatat</dt><dd>${teks(kiriman.jumlah_lengkap)} dari ${teks(kiriman.jumlah_sesi)}</dd></div><div><dt class="text-xs text-brand-600">Sesi belum tercatat</dt><dd>${teks(kiriman.jumlah_kurang)}</dd></div></dl>${kiriman.alasan ? `<p class="mt-3 text-sm text-rose-700">Catatan: ${teks(kiriman.alasan)}</p>` : ''}</section>` : '';
+      document.getElementById('isiDetailJurnal').innerHTML = ringkasanKiriman + `<p class="mb-3 text-xs text-brand-600">Jurnal terakhir per sesi · dikirim pukul ${teks(jurnal.waktu_kirim)}</p>${sesi}`;
+      document.getElementById('dialogDetailJurnal').showModal();
     }
 
 
-    async function kirimTolak(e) {
-      e.preventDefault();
-      const alasan = document.getElementById('alasanTolak').value.trim();
-      if (!alasan || idYangDitolak === null) return false;
-      try {
-        await kirimAksiJurnal(idYangDitolak, 'tolak', {alasan});
-        window.location.reload();
-      } catch (error) {
-        alert(error.message);
-      }
-      return false;
-    }
 
-
-    document.addEventListener(
-      'DOMContentLoaded',
-      () => filterTingkat(@js($daftarTingkat[0] ?? ''))
-    );
+    document.addEventListener('DOMContentLoaded', () => filterTingkat(tingkatAktif));
 
   </script>
 

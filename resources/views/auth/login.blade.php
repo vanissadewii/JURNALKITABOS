@@ -53,7 +53,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('login') }}" class="flex flex-col gap-4">
+                <form method="POST" action="{{ route('login.store', [], false) }}" class="flex flex-col gap-4">
                     @csrf
 
                     {{-- Username --}}
