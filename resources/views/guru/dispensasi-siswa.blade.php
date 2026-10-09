@@ -382,7 +382,7 @@
                 <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
                     <p class="font-semibold">WhatsApp Waka belum tersedia. Tautan persetujuan:</p>
                     <div class="mt-2 flex flex-col gap-2 sm:flex-row">
-                        <input readonly value="{{ session('link_approval') }}" onclick="this.select()" class="min-h-11 min-w-0 flex-1 rounded-lg border border-amber-200 bg-white px-3 text-xs sm:text-sm">
+                        <textarea readonly rows="{{ min(6, max(2, substr_count(session('link_approval'), "\n") + 1)) }}" onclick="this.select()" class="min-h-11 min-w-0 flex-1 rounded-lg border border-amber-200 bg-white px-3 py-2 text-xs sm:text-sm">{{ session('link_approval') }}</textarea>
                         <button type="button" onclick="salinTautan(this.dataset.tautan, this)" data-tautan="{{ session('link_approval') }}" class="min-h-11 rounded-lg border border-amber-500 px-4 text-sm font-semibold text-amber-900 hover:bg-amber-100">Salin Tautan</button>
                     </div>
                 </div>
@@ -402,30 +402,6 @@
             >
 
                 @csrf
-
-
-                <!-- JUDUL FORM -->
-
-                <div>
-
-                    <h2
-                        class="font-poppins
-                               font-bold
-                               text-lg
-                               text-[#3E3028]"
-                    >
-                        Form Dispensasi Siswa
-                    </h2>
-
-                    <p
-                        class="text-sm
-                               text-[#7A6A60]
-                               mt-1"
-                    >
-                        Lengkapi data siswa dan alasan dispensasi.
-                    </p>
-
-                </div>
 
 
                 @if($errors->any())
@@ -497,7 +473,7 @@
                     <input
                         type="text"
                         id="nama_siswa"
-                        placeholder="Ketik nama atau NISN siswa..."
+                        placeholder="Ketik nama siswa..."
                         oninput="cariSiswa()"
                         autocomplete="off"
                         class="w-full
@@ -517,7 +493,7 @@
                     <div id="siswaTerpilih" class="flex flex-wrap gap-2"></div>
                     <input type="hidden" name="id_siswa" id="id_siswa">
                     <div id="inputSiswaTambahan"></div>
-                    <p class="text-xs text-[#9E8E83]">Pilih beberapa siswa; semua nama harus berasal dari kelas yang sama.</p>
+                    <p class="text-xs text-[#9E8E83]">Pilih banyak siswa dari satu kelas atau beberapa kelas.</p>
 
                 </div>
 
@@ -526,8 +502,9 @@
                 <!-- KELAS SISWA TERPILIH -->
                 <div class="flex flex-col gap-2">
                     <label for="kelasSearch" class="text-sm font-semibold text-[#3E3028]">Kelas Tujuan</label>
-                    <input type="text" id="kelasSearch" placeholder="Pilih siswa terlebih dahulu" readonly class="w-full h-11 px-3 bg-[#F5F2EE] border border-[#E5D8CC] rounded-xl text-sm text-[#7A6A60]">
+                    <input type="text" id="kelasSearch" placeholder="Kelas terisi otomatis dari siswa yang dipilih" readonly class="w-full h-11 px-3 bg-[#F5F2EE] border border-[#E5D8CC] rounded-xl text-sm text-[#7A6A60]">
                     <input type="hidden" name="id_kelas" id="id_kelas">
+                    <div id="kelasPilihanInputs"></div>
                 </div>
 
 
@@ -972,43 +949,52 @@
 
 
         let timerCariSiswa;
+        let nomorPencarianSiswa = 0;
         let daftarJam = [];
         let siswaDipilih = [];
         let idKelasDipilih = null;
 
         function cariSiswa() {
             clearTimeout(timerCariSiswa);
+            const nomorPencarian = ++nomorPencarianSiswa;
             const q = document.getElementById('nama_siswa').value.trim();
             const hasil = document.getElementById('hasilSiswa');
             document.getElementById('id_siswa').value = '';
-            resetJam('Pilih siswa dahulu');
-            if (q.length < 2) { hasil.innerHTML = ''; hasil.classList.add('hidden'); return; }
+            if (!siswaDipilih.length) resetJam('Pilih siswa dahulu');
+            if (q.length < 1) { hasil.innerHTML = ''; hasil.classList.add('hidden'); return; }
             timerCariSiswa = setTimeout(async () => {
-                const response = await fetch(`/dispen/cari-siswa?q=${encodeURIComponent(q)}`, {headers:{'Accept':'application/json'}});
-                const siswa = await response.json();
-                hasil.innerHTML = '';
-                hasil.classList.remove('hidden');
-                if (!siswa.length) { hasil.innerHTML = '<p class="px-4 py-3 text-sm text-[#8C7B70]">Siswa tidak ditemukan.</p>'; return; }
-                siswa.filter(item => !siswaDipilih.some(p => Number(p.id_siswa) === Number(item.id_siswa))).forEach(item => {
-                    if (idKelasDipilih && Number(idKelasDipilih) !== Number(item.id_kelas)) return;
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.className = 'block w-full border-b border-[#EFE6DD] px-4 py-3 text-left text-sm hover:bg-[#F9F6F0]';
-                    button.textContent = `${item.nama} · ${item.label_kelas} · NISN ${item.nisn || '-'}`;
-                    button.addEventListener('click', () => pilihSiswa(item));
-                    hasil.appendChild(button);
-                });
+                try {
+                    const response = await fetch(`/dispen/cari-siswa?q=${encodeURIComponent(q)}`, {headers:{'Accept':'application/json'}, cache:'no-store'});
+                    if (!response.ok) throw new Error('Pencarian siswa gagal dimuat.');
+                    const siswa = await response.json();
+                    if (nomorPencarian !== nomorPencarianSiswa || q !== document.getElementById('nama_siswa').value.trim()) return;
+                    hasil.innerHTML = '';
+                    hasil.classList.remove('hidden');
+                    const tersedia = siswa.filter(item => !siswaDipilih.some(p => Number(p.id_siswa) === Number(item.id_siswa)));
+                    if (!tersedia.length) { hasil.innerHTML = '<p class="px-4 py-3 text-sm text-[#8C7B70]">Siswa tidak ditemukan.</p>'; return; }
+                    tersedia.forEach(item => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'block w-full border-b border-[#EFE6DD] px-4 py-3 text-left text-sm hover:bg-[#F9F6F0]';
+                        button.textContent = `${item.nama} · ${item.label_kelas} · NISN ${item.nisn || '-'}`;
+                        button.addEventListener('click', () => pilihSiswa(item));
+                        hasil.appendChild(button);
+                    });
+                } catch (error) {
+                    if (nomorPencarian !== nomorPencarianSiswa) return;
+                    hasil.innerHTML = `<p class="px-4 py-3 text-sm text-rose-700">${error.message}</p>`;
+                    hasil.classList.remove('hidden');
+                }
             }, 250);
         }
 
         function pilihSiswa(item) {
-            if (idKelasDipilih && Number(idKelasDipilih) !== Number(item.id_kelas)) return;
             idKelasDipilih = Number(item.id_kelas);
             siswaDipilih.push(item);
             document.getElementById('nama_siswa').value = '';
             document.getElementById('id_siswa').value = siswaDipilih[0]?.id_siswa || '';
             document.getElementById('id_kelas').value = idKelasDipilih;
-            document.getElementById('kelasSearch').value = item.label_kelas;
+            document.getElementById('kelasSearch').value = [...new Set(siswaDipilih.map(s => s.label_kelas))].join(', ');
             document.getElementById('hasilSiswa').classList.add('hidden');
             gambarSiswaTerpilih();
             muatJam();
@@ -1017,15 +1003,18 @@
         function gambarSiswaTerpilih() {
             const list = document.getElementById('siswaTerpilih');
             const tambahan = document.getElementById('inputSiswaTambahan');
+            const kelasInput = document.getElementById('kelasPilihanInputs');
             list.replaceChildren();
             tambahan.replaceChildren();
+            kelasInput.replaceChildren();
+            [...new Set(siswaDipilih.map(item => Number(item.id_kelas)))].forEach(id => { const input=document.createElement('input'); input.type='hidden'; input.name='id_kelas_list[]'; input.value=id; kelasInput.appendChild(input); });
             siswaDipilih.forEach((item, index) => {
                 const tag = document.createElement('span');
                 tag.className = 'inline-flex items-center gap-2 rounded-full bg-brand-50 px-3 py-1.5 text-sm font-medium text-brand-800';
                 tag.textContent = item.nama;
                 const hapus = document.createElement('button');
                 hapus.type = 'button'; hapus.textContent = '×'; hapus.setAttribute('aria-label', `Hapus ${item.nama}`);
-                hapus.onclick = () => { siswaDipilih.splice(index, 1); idKelasDipilih = siswaDipilih[0]?.id_kelas || null; document.getElementById('id_kelas').value = idKelasDipilih || ''; if (!idKelasDipilih) { document.getElementById('kelasSearch').value = ''; resetJam('Pilih siswa dahulu'); } gambarSiswaTerpilih(); };
+                hapus.onclick = () => { siswaDipilih.splice(index, 1); idKelasDipilih = siswaDipilih[0]?.id_kelas || null; document.getElementById('id_kelas').value = idKelasDipilih || ''; document.getElementById('kelasSearch').value = [...new Set(siswaDipilih.map(s => s.label_kelas))].join(', '); if (!idKelasDipilih) resetJam('Pilih siswa dahulu'); else muatJam(); gambarSiswaTerpilih(); };
                 tag.appendChild(hapus); list.appendChild(tag);
                 const input = document.createElement('input'); input.type = 'hidden'; input.name = 'id_siswa_list[]'; input.value = item.id_siswa; tambahan.appendChild(input);
             });
@@ -1041,15 +1030,19 @@
 
         async function muatJam() {
             const idKelas = document.getElementById('id_kelas').value;
+            const kelasIds = [...new Set(siswaDipilih.map(item => Number(item.id_kelas)))];
             const tanggal = document.querySelector('[name="tanggal"]').value;
             resetJam('Memuat jam...');
             if (!idKelas || !tanggal) return;
             let data;
             try {
-                const response = await fetch(`/dispen/opsi-jam?id_kelas=${encodeURIComponent(idKelas)}&tanggal=${encodeURIComponent(tanggal)}`, {headers:{'Accept':'application/json'}});
-                if (!response.ok) throw new Error('Jam pelajaran tidak dapat dimuat. Muat ulang halaman atau hubungi admin.');
-                data = await response.json();
-                daftarJam = data.jam || [];
+                const hasil = await Promise.all(kelasIds.map(async id => {
+                    const response = await fetch(`/dispen/opsi-jam?id_kelas=${encodeURIComponent(id)}&tanggal=${encodeURIComponent(tanggal)}`, {headers:{'Accept':'application/json'}});
+                    if (!response.ok) throw new Error('Jam pelajaran tidak dapat dimuat.');
+                    return response.json();
+                }));
+                daftarJam = (hasil[0]?.jam || []).filter(jam => hasil.every(data => (data.jam || []).some(item => Number(item.jam_ke) === Number(jam.jam_ke))));
+                data = hasil[0] || {pesan:'Jadwal jam tidak tersedia'};
             } catch (error) {
                 resetJam(error.message || 'Gagal memuat jam');
                 return;

@@ -17,13 +17,13 @@
             @if(session('success'))<div class="rounded-xl border border-[#B7DDBB] bg-[#E8F5E9] px-4 py-3 text-sm font-semibold text-[#2E7D32]">{{ session('success') }}</div>@endif
             @if($errors->any())<div class="rounded-xl border border-[#F0B8B8] bg-[#FFEBEE] px-4 py-3 text-sm text-[#C62828]"><p class="font-semibold">Periksa kembali data piket:</p><ul class="mt-2 list-inside list-disc space-y-1">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>@endif
 
-            <article class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white">
+            <article class="overflow-visible rounded-xl border border-[#E5D8CC] bg-white">
                 <div class="border-b border-[#E5D8CC] bg-[#FFFCF9] px-5 py-4 sm:px-6"><h3 class="font-['Poppins'] text-base font-bold">Tambah Waka</h3><p class="mt-1 text-xs text-[#7A6A60]">Masukkan nama dan nomor WhatsApp. Kirim nama Waka yang sudah terdaftar untuk memperbarui nomornya.</p></div>
                 <form method="POST" action="{{ route('admin.tambah.piket.waka') }}" class="flex flex-col gap-3 p-5 sm:flex-row sm:items-end sm:p-6">@csrf<label class="flex flex-1 flex-col gap-2"><span class="text-sm font-semibold">Nama Waka</span><input name="nama" maxlength="100" value="{{ old('nama') }}" placeholder="Masukkan nama Waka" required class="h-11 rounded-lg border border-[#D8C9BC] bg-[#FFFCF9] px-3.5 text-sm outline-none focus:border-[#5C4033] focus:ring-2 focus:ring-[#5C4033]/10"></label><label class="flex flex-1 flex-col gap-2"><span class="text-sm font-semibold">Nomor HP / WhatsApp</span><input name="no_hp" type="tel" maxlength="25" value="{{ old('no_hp') }}" placeholder="08xxxxxxxxxx" required class="h-11 rounded-lg border border-[#D8C9BC] bg-[#FFFCF9] px-3.5 text-sm outline-none focus:border-[#5C4033] focus:ring-2 focus:ring-[#5C4033]/10"></label><button type="submit" class="h-11 rounded-lg bg-[#5C4033] px-5 text-sm font-semibold text-white hover:bg-[#452F26]">Tambah Waka</button></form>
                 @if($wakas->isNotEmpty())<details class="border-t border-[#E5D8CC]"><summary class="cursor-pointer px-5 py-3 text-sm font-semibold text-[#5C4033] sm:px-6">Waka terdaftar ({{ $wakas->count() }}) <span class="float-right">⌄</span></summary><div class="space-y-3 px-5 pb-5 sm:px-6">@foreach($wakas as $waka)<form method="POST" action="{{ route('admin.tambah.piket.waka.update', $waka) }}" class="grid grid-cols-1 gap-2 rounded-lg border border-[#E5D8CC] bg-[#FFFCF9] p-3 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">@csrf @method('PUT')<label class="flex flex-col gap-1 text-xs font-semibold">Nama Waka<input name="nama" value="{{ $waka->nama }}" required maxlength="100" class="h-10 rounded-lg border border-[#D8C9BC] bg-white px-3 text-sm font-normal"></label><label class="flex flex-col gap-1 text-xs font-semibold">Nomor HP / WhatsApp<input name="no_hp" value="{{ $waka->no_hp }}" required maxlength="25" class="h-10 rounded-lg border border-[#D8C9BC] bg-white px-3 text-sm font-normal"></label><button class="h-10 rounded-lg bg-[#5C4033] px-4 text-sm font-semibold text-white">Simpan</button><button type="submit" form="hapus-waka-{{ $waka->id }}" class="h-10 rounded-lg border border-red-200 px-4 text-sm font-semibold text-red-700">Hapus</button></form><form id="hapus-waka-{{ $waka->id }}" method="POST" action="{{ route('admin.tambah.piket.waka.destroy', $waka) }}" onsubmit="return confirm('Hapus Waka {{ addslashes($waka->nama) }}?')">@csrf @method('DELETE')</form>@endforeach</div></details>@endif
             </article>
 
-            <article class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white">
+            <article class="overflow-visible rounded-xl border border-[#E5D8CC] bg-white">
                 <div class="border-b border-[#E5D8CC] bg-[#FFFCF9] px-5 py-4 sm:px-6">
                     <h3 class="font-['Poppins'] text-base font-bold">Jadwal Petugas Piket KBM</h3>
                 </div>
@@ -39,12 +39,12 @@
                         $jumlahHari = $awalKalender->daysInMonth;
                         $offsetKalender = $awalKalender->dayOfWeek;
                     @endphp
-                    <section class="rounded-xl border border-[#E5D8CC] bg-[#FFFCF9] p-4 sm:p-5">
+                    <section class="relative z-10 rounded-xl border border-[#E5D8CC] bg-[#FFFCF9] p-4 sm:p-5">
                         <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                             <div><h4 class="font-['Poppins'] text-sm font-bold">Pilih tanggal piket</h4><p class="mt-1 text-xs text-[#7A6A60]">Klik tanggal apa pun, termasuk Sabtu dan Minggu, untuk mengatur petugasnya.</p></div>
                             <div class="flex gap-3 text-[11px] text-[#7A6A60]"><span><i class="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-[#5C4033]"></i>Sudah diatur</span><span><i class="mr-1 inline-block h-2.5 w-2.5 rounded-full border border-[#D8C9BC] bg-white"></i>Belum diatur</span></div>
                         </div>
-                        <div class="grid grid-cols-7 gap-1.5 sm:gap-2">
+                <div class="relative z-10 grid grid-cols-7 gap-1.5 sm:gap-2">
                             @foreach(['Min','Sen','Sel','Rab','Kam','Jum','Sab'] as $namaHari)
                                 <div class="py-1 text-center text-xs font-semibold text-[#7A6A60]">{{ $namaHari }}</div>
                             @endforeach
@@ -70,10 +70,10 @@
                                 $petugasTanggal = $jadwalPerTanggal->get($tanggalKey, collect());
                                 $wakaTersimpan = $petugasTanggal->firstWhere('sesi', 'waka')?->id_waka;
                             @endphp
-                            <section id="piketPanel-{{ $tanggalKey }}" data-piket-panel="{{ $tanggalKey }}" class="hidden overflow-hidden rounded-xl border border-[#E5D8CC] bg-[#FFFCF9]">
+                    <section id="piketPanel-{{ $tanggalKey }}" data-piket-panel="{{ $tanggalKey }}" class="relative z-20 hidden overflow-visible rounded-xl border border-[#E5D8CC] bg-[#FFFCF9]">
                                 @php($tanggalUji24Jam = $petugasTanggal->whereIn('sesi', ['pagi', 'siang'])->isNotEmpty() && $petugasTanggal->whereIn('sesi', ['pagi', 'siang'])->every(fn($petugas) => $petugas->jam_mulai === '00:00:00' && $petugas->jam_selesai === '00:00:00'))
                                 <h4 class="border-b border-[#E5D8CC] bg-white px-4 py-3 font-['Poppins'] text-sm font-bold">Petugas {{ $tanggal->locale('id')->translatedFormat('l, d F Y') }}</h4>
-                                <div class="grid grid-cols-1 gap-4 p-4 xl:grid-cols-3">
+                <div class="grid grid-cols-1 gap-4 p-4 xl:grid-cols-3">
                                     <label class="flex items-center gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900 xl:col-span-3"><input type="checkbox" name="mode_24_jam" value="1" data-mode-24 data-default24="{{ $tanggalUji24Jam ? '1' : '0' }}" @checked($tanggalUji24Jam) disabled class="h-4 w-4 accent-[#5C4033]">Mode testing 24 jam (00.00–24.00) untuk sesi pagi dan siang</label>
                                     @foreach(['pagi'=>'Pagi','siang'=>'Siang'] as $sesi=>$namaSesi)
                                         @php($label=$tanggalUji24Jam ? $namaSesi.' • 24 jam (00.00–24.00)' : ($namaSesi.' • '.($sesi === 'pagi' ? '07.00–11.00' : '11.00–15.00')))
@@ -83,7 +83,7 @@
                                             <div class="grid grid-cols-1 gap-2 sm:grid-cols-3 xl:grid-cols-1 2xl:grid-cols-3">
                                                 @for($slot=0;$slot<3;$slot++)
                                                     @php($guruTerpilih=old("jadwal.$sesi.$slot", $guruTersimpan->get($slot)?->id_guru))
-                                                    <label class="relative flex min-w-0 flex-col gap-1"><span class="text-[11px] text-[#7A6A60]">Guru {{ $slot+1 }}</span><input type="search" data-pilih-guru placeholder="Cari atau pilih guru..." autocomplete="off" required disabled value="{{ $guru->firstWhere('id', $guruTerpilih)?->name }}" class="h-10 w-full min-w-0 rounded-lg border border-[#D8C9BC] bg-white px-2 text-xs text-[#3E3028] outline-none focus:border-[#5C4033]"><select name="jadwal[{{ $sesi }}][]" data-id-guru required disabled class="hidden"><option value="">Pilih guru</option>@foreach($guru as $orang)<option value="{{ $orang->id }}" @selected($guruTerpilih==$orang->id)>{{ $orang->name }}</option>@endforeach</select><div data-hasil-guru class="absolute left-0 right-0 top-full z-20 hidden max-h-40 overflow-y-auto rounded-lg border border-[#D8C9BC] bg-white text-[#3E3028] shadow-lg"></div></label>
+                                                    <label class="relative z-20 flex min-w-0 flex-col gap-1"><span class="text-[11px] text-[#7A6A60]">Guru {{ $slot+1 }}</span><input type="search" data-pilih-guru placeholder="Ketik awalan nama guru..." autocomplete="off" required disabled value="{{ $guru->firstWhere('id', $guruTerpilih)?->name }}" class="h-10 w-full min-w-0 rounded-lg border border-[#D8C9BC] bg-white px-2 text-xs text-[#3E3028] outline-none focus:border-[#5C4033]"><select name="jadwal[{{ $sesi }}][]" data-id-guru required disabled class="hidden"><option value="">Pilih guru</option>@foreach($guru as $orang)<option value="{{ $orang->id }}" @selected($guruTerpilih==$orang->id)>{{ $orang->name }}</option>@endforeach</select><div data-hasil-guru role="listbox" class="fixed z-[9999] hidden max-h-52 overflow-y-auto rounded-lg border border-[#D8C9BC] bg-white text-[#3E3028] shadow-xl" style="background-color:#fff;opacity:1"></div></label>
                                                 @endfor
                                             </div>
                                         </div>
@@ -146,7 +146,7 @@
             piketPanels.forEach(panel => {
                 const aktif = panel.dataset.piketPanel === tanggal;
                 panel.classList.toggle('hidden', !aktif);
-                panel.querySelectorAll('select, [data-pilih-guru], [data-mode-24]').forEach(control => control.disabled = !aktif);
+            panel.querySelectorAll('select, [data-pilih-guru], [data-mode-24]').forEach(control => control.disabled = !aktif);
                 if (aktif) {
                     const mode24 = panel.querySelector('[data-mode-24]');
                     mode24.checked = mode24.dataset.default24 === '1';
@@ -162,22 +162,35 @@
             });
         }
         document.querySelectorAll('[data-pilih-guru]').forEach(input => {
-            const select = input.nextElementSibling;
+            const select = input.parentElement.querySelector('[data-id-guru]');
             const hasil = input.parentElement.querySelector('[data-hasil-guru]');
             const opsiGuru = [...select.options].filter(option => option.value);
             const tutupHasil = () => hasil.classList.add('hidden');
+            const posisiHasil = () => {
+                const rect = input.getBoundingClientRect();
+                hasil.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - rect.width - 8))}px`;
+                hasil.style.top = `${Math.min(rect.bottom, window.innerHeight - 220)}px`;
+                hasil.style.width = `${rect.width}px`;
+            };
             const tampilkanHasil = () => {
                 const kata = input.value.trim().toLocaleLowerCase();
                 const cocok = kata ? opsiGuru.filter(option => option.textContent.trim().toLocaleLowerCase().includes(kata)) : opsiGuru;
                 hasil.replaceChildren();
                 cocok.slice(0, 12).forEach(option => {
                     const tombol = document.createElement('button'); tombol.type = 'button'; tombol.textContent = option.textContent.trim();
-                    tombol.className = 'block w-full px-3 py-2 text-left text-xs text-[#3E3028] hover:bg-[#F5EFE8]';
-                    tombol.addEventListener('click', () => { input.value = option.textContent.trim(); select.value = option.value; input.setCustomValidity(''); tutupHasil(); });
+                    tombol.className = 'block w-full cursor-pointer bg-white px-3 py-2 text-left text-xs font-medium text-[#3E3028] hover:bg-[#F5EFE8]';
+                    tombol.setAttribute('role', 'option');
+                    tombol.setAttribute('aria-selected', 'false');
+                    tombol.addEventListener('pointerdown', event => event.preventDefault());
+                    tombol.addEventListener('click', event => { event.preventDefault(); input.value = option.textContent.trim(); select.value = option.value; input.setCustomValidity(''); input.dispatchEvent(new Event('change', { bubbles: true })); input.dispatchEvent(new Event('input', { bubbles: true })); tutupHasil(); });
                     hasil.appendChild(tombol);
                 });
                 if (kata && !cocok.length) { const kosong = document.createElement('p'); kosong.textContent = 'Nama guru tidak ditemukan'; kosong.className = 'px-3 py-2 text-xs text-[#7A6A60]'; hasil.appendChild(kosong); }
-                hasil.classList.toggle('hidden', input.disabled);
+                hasil.classList.toggle('hidden', input.disabled || !input.isConnected || !input.closest('[data-piket-panel]:not(.hidden)'));
+                if (!hasil.classList.contains('hidden')) {
+                    if (hasil.parentElement !== document.body) document.body.appendChild(hasil);
+                    posisiHasil();
+                }
             };
             const sinkronkanGuru = () => {
                 const nama = input.value.trim().toLocaleLowerCase();
@@ -189,6 +202,8 @@
             input.addEventListener('input', () => { sinkronkanGuru(); tampilkanHasil(); });
             input.addEventListener('change', sinkronkanGuru);
             input.addEventListener('blur', () => setTimeout(tutupHasil, 150));
+            window.addEventListener('resize', () => { if (!hasil.classList.contains('hidden')) posisiHasil(); });
+            window.addEventListener('scroll', () => { if (!hasil.classList.contains('hidden')) posisiHasil(); }, true);
         });
         piketButtons.forEach(button => button.addEventListener('click', () => pilihTanggalPiket(button.dataset.piketTanggal)));
         document.querySelectorAll('[data-mode-24]').forEach(toggle => toggle.addEventListener('change', () => {

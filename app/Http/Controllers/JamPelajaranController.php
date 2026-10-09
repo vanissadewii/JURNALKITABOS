@@ -51,11 +51,12 @@ class JamPelajaranController extends Controller
             ->values();
 
         $pengaturanKegiatan = DB::table('pengaturan_kegiatan_harian')->pluck('kegiatan_ditiadakan', 'hari')->all();
+        $pengaturanPulangCepat = Schema::hasTable('pengaturan_pulang_cepat') ? DB::table('pengaturan_pulang_cepat')->get()->keyBy('hari') : collect();
         $kegiatanTanggal = Schema::hasTable('pengaturan_kegiatan_tanggal')
             ? DB::table('pengaturan_kegiatan_tanggal')->orderByDesc('tanggal')->get()
             : collect();
 
-        return view('admin.tambah_jam_pelajaran', compact('jamPelajaran', 'jamGrup', 'semesterAktif', 'pengaturanKegiatan', 'kegiatanTanggal'));
+        return view('admin.tambah_jam_pelajaran', compact('jamPelajaran', 'jamGrup', 'semesterAktif', 'pengaturanKegiatan', 'kegiatanTanggal', 'pengaturanPulangCepat'));
     }
 
     public function create(): View
@@ -141,6 +142,21 @@ class JamPelajaranController extends Controller
             : ((bool) $validated['kegiatan_ditiadakan'] ? "Kegiatan {$validated['hari']} ditandai ditiadakan. Jadwal guru hari itu dimajukan satu jam." : "Kegiatan {$validated['hari']} diaktifkan kembali. Jadwal guru kembali normal.");
 
         return redirect()->route('jam-pelajaran.index')->with('success', $pesan);
+    }
+
+    public function updatePulangCepat(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'hari' => ['required', 'in:Senin,Selasa,Rabu,Kamis,Jumat'],
+            'aktif' => ['required', 'boolean'],
+            'jam_ke' => ['required', 'integer', 'between:1,13'],
+        ]);
+        DB::table('pengaturan_pulang_cepat')->updateOrInsert(
+            ['hari' => $data['hari']],
+            ['aktif' => (bool) $data['aktif'], 'jam_ke' => (int) $data['jam_ke'], 'updated_at' => now(), 'created_at' => now()],
+        );
+
+        return redirect()->route('jam-pelajaran.index')->with('success', 'Pengaturan pulang cepat hari '.$data['hari'].' berhasil disimpan.');
     }
 
     public function storeKegiatanTanggal(Request $request): RedirectResponse

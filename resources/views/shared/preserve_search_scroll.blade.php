@@ -67,7 +67,11 @@
             return;
         }
 
+        // Only preserve scroll for forms that return to this exact URL. Pagination
+        // links navigate to a different query string and must not consume this state.
         if (form.method.toLowerCase() !== 'get') {
+            const target = new URL(form.action || window.location.href, window.location.href);
+            if (target.pathname !== window.location.pathname || target.search !== window.location.search) return;
             rememberScroll(new URL(window.location.href));
         }
     }, true);

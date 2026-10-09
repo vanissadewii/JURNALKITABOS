@@ -156,7 +156,7 @@
     </header>
 
     <!-- Main Content Container (Penuh Lebar Layar) -->
-    <main class="w-full px-6 md:px-10 py-8 flex flex-col gap-8 flex-1">
+    <main class="w-full px-4 sm:px-6 md:px-10 py-6 md:py-8 flex flex-col gap-6 md:gap-8 flex-1">
       @if (session('success'))
         <div class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-800">{{ session('success') }}</div>
       @endif
@@ -166,6 +166,25 @@
       @if (session('notif_sukses'))
         <div role="status" class="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-800">{{ session('notif_sukses') }}</div>
       @endif
+
+      <a href="{{ route('guru.unggah-tugas') }}" class="group flex flex-col gap-4 rounded-2xl border border-brand-100 bg-white p-5 transition-all hover:border-brand-300 hover:shadow-md sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div class="flex items-start gap-3.5">
+          <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 text-amber-800">
+            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13V3m0 0L6.5 6.5M10 3l3.5 3.5"/>
+              <path d="M3.5 13v2.5A1.5 1.5 0 005 17h10a1.5 1.5 0 001.5-1.5V13"/>
+            </svg>
+          </span>
+          <div>
+            <h3 class="font-poppins text-base font-bold text-[#3E3028]">Unggah Tugas saat Izin / Sakit</h3>
+            <p class="mt-1 text-sm leading-relaxed text-[#8C7B70]">Pilih kelas tujuan, lalu kirim tugas untuk disetujui guru piket.</p>
+          </div>
+        </div>
+        <span class="inline-flex shrink-0 items-center gap-1.5 text-sm font-poppins font-semibold text-brand-800 group-hover:text-brand-900">
+          Buka Menu
+          <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4l6 6-6 6"/></svg>
+        </span>
+      </a>
 
       @if (($izinJurnalSusulan ?? false) && ($adaJadwalKemarin ?? false))
         <section class="flex flex-col gap-3 rounded-2xl border border-amber-200 bg-[#FFFCF4] p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">

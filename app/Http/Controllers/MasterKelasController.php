@@ -78,7 +78,7 @@ class MasterKelasController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'tingkat' => ['required', 'integer', Rule::in([10, 11, 12])],
             'jurusan' => ['required', 'string', 'max:50'],
             'rombel' => [
@@ -90,11 +90,7 @@ class MasterKelasController extends Controller
             ],
         ]);
 
-        Kelas::create([
-            'tingkat' => $request->tingkat,
-            'jurusan' => $request->jurusan,
-            'rombel' => $request->rombel,
-        ]);
+        Kelas::create($validated);
 
         return redirect()->route('admin.kelas.index')->with('success', 'Kelas berhasil ditambahkan!');
     }

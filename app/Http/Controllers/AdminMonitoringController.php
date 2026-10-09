@@ -10,10 +10,12 @@ use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Support\KegiatanTanggal;
 use App\Support\Waktu;
+use App\Support\PulangCepat;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -24,17 +26,20 @@ class AdminMonitoringController extends Controller
 
     public function kehadiran(Request $request): View
     {
-        $data = $request->validate(['tanggal' => ['nullable', 'date_format:Y-m-d']]);
+        $data = $request->validate(['hari' => ['nullable', 'in:Senin,Selasa,Rabu,Kamis,Jumat'], 'guru' => ['nullable', 'string', 'max:255'], 'tanggal' => ['nullable', 'date_format:Y-m-d']]);
         $tanggal = Carbon::parse($data['tanggal'] ?? Waktu::sekarang()->toDateString());
-        $hari = self::NAMA_HARI[$tanggal->dayOfWeekIso];
-        $namaKegiatan = KegiatanTanggal::nama($tanggal);
+        $hari = $data['hari'] ?? (self::NAMA_HARI[$tanggal->dayOfWeekIso] ?? 'Senin');
+        $namaKegiatan = (self::NAMA_HARI[$tanggal->dayOfWeekIso] ?? null) === $hari ? KegiatanTanggal::nama($tanggal) : null;
 
-        $jadwal = JadwalPelajaran::with(['kelas', 'mapel', 'guru', 'jamPelajaran'])
-            ->whereHas('jamPelajaran', fn ($q) => $q->where('hari', $hari)
-                ->whereHas('semester', fn ($s) => $s->where('status', 'aktif')))
-            ->get()
-            ->filter(fn ($item) => $item->jamPelajaran && $item->kelas && $item->guru)
-            ->values();
+        $jadwalSemua = JadwalPelajaran::with(['kelas', 'mapel', 'guru', 'jamPelajaran'])
+            ->whereHas('jamPelajaran', fn ($q) => $q->whereIn('hari', ['Senin','Selasa','Rabu','Kamis','Jumat'])->whereHas('semester', fn ($s) => $s->where('status', 'aktif')))
+            ->get()->filter(fn ($item) => $item->jamPelajaran && $item->kelas && $item->guru)->values();
+        $namaGuru = $jadwalSemua->pluck('guru.name')->filter()->unique()->sort()->values();
+        $jadwalSemua = $jadwalSemua->filter(fn ($item) => $item->jamPelajaran->hari === $hari && (empty($data['guru']) || mb_stripos($item->guru->name, $data['guru']) !== false));
+        $totalJamGuru = $jadwalSemua->groupBy(fn ($item) => $item->guru->id)->map(fn ($items) => $items->count());
+        $mapelGuru = $jadwalSemua->groupBy(fn ($item) => $item->guru->id)->map(fn ($items) => $items->pluck('mapel.nama_mapel')->filter()->unique()->values());
+
+        $jadwal = $jadwalSemua;
         if ($namaKegiatan) {
             $jadwal = collect();
         }
@@ -42,7 +47,11 @@ class AdminMonitoringController extends Controller
         $jurnal = Jurnal::with('absenSiswa')->whereDate('tanggal', $tanggal->toDateString())
             ->whereNotNull('waktu_submit')->where('status_verifikasi', 'terverifikasi')
             ->orderByDesc('id_jurnal')->get()->groupBy('id_jadwal');
-        $tugas = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->orderByDesc('created_at')->get()->unique('id_jadwal')->keyBy('id_jadwal');
+        $tugasQuery = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->whereNotNull('id_jadwal')->orderByDesc('created_at');
+        if (Schema::hasColumn('upload_tugas', 'status_review')) {
+            $tugasQuery->where('status_review', 'disetujui');
+        }
+        $tugas = $tugasQuery->get()->unique('id_jadwal')->keyBy('id_jadwal');
         $barisKehadiran = $jadwal->map(function ($item) use ($jurnal, $tugas, $tanggal) {
             $item->jurnalHariIni = $jurnal->get($item->id_jadwal)?->sortByDesc('id_jurnal')->first();
             $item->tugasPiketHariIni = $tugas->get($item->id_jadwal);
@@ -50,7 +59,7 @@ class AdminMonitoringController extends Controller
 
             return $item;
         });
-        $ringkasan = ['semua' => $barisKehadiran->count(), 'hadir' => 0, 'izin' => 0, 'sakit' => 0, 'tidak-hadir' => 0, 'belum' => 0];
+        $ringkasan = ['semua' => $barisKehadiran->count(), 'hadir' => 0, 'izin' => 0, 'sakit' => 0, 'tidak-hadir' => 0, 'pulang-cepat' => 0, 'belum' => 0];
         foreach ($barisKehadiran as $item) {
             $key = $item->statusTampilan;
             if (array_key_exists($key, $ringkasan)) {
@@ -58,7 +67,8 @@ class AdminMonitoringController extends Controller
             }
         }
 
-        return view('admin.kehadiran-guru', compact('tanggal', 'barisKehadiran', 'ringkasan', 'namaKegiatan'));
+        $hariPilihan = $hari;
+        return view('admin.kehadiran-guru', compact('tanggal', 'hari', 'hariPilihan', 'namaGuru', 'totalJamGuru', 'mapelGuru', 'barisKehadiran', 'ringkasan', 'namaKegiatan'));
     }
 
     public function exportKehadiran(Request $request): BinaryFileResponse
@@ -76,12 +86,16 @@ class AdminMonitoringController extends Controller
         $jadwal = $this->terapkanJamMaju($jadwal, $hari)->sortBy(fn ($item) => $item->jamPelajaran->jam_mulai)->values();
         $jurnals = Jurnal::whereDate('tanggal', $tanggal->toDateString())->whereNotNull('waktu_submit')
             ->where('status_verifikasi', 'terverifikasi')->latest('id_jurnal')->get()->groupBy('id_jadwal');
-        $tugas = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->orderByDesc('created_at')->get()->unique('id_jadwal')->keyBy('id_jadwal');
+        $tugasQuery = DB::table('upload_tugas')->whereDate('tanggal', $tanggal->toDateString())->whereNotNull('id_jadwal')->orderByDesc('created_at');
+        if (Schema::hasColumn('upload_tugas', 'status_review')) {
+            $tugasQuery->where('status_review', 'disetujui');
+        }
+        $tugas = $tugasQuery->get()->unique('id_jadwal')->keyBy('id_jadwal');
         $rows = $jadwal->map(function ($item) use ($jurnals, $tugas, $tanggal) {
             $jurnal = $jurnals->get($item->id_jadwal)?->first();
             $status = $this->statusKehadiranTampilan($item, $jurnal, $tugas->get($item->id_jadwal), $tanggal);
             $labelStatus = match ($status) {
-                'hadir' => 'Hadir', 'izin' => 'Izin', 'sakit' => 'Sakit', 'tidak-hadir' => 'Tidak Hadir', default => 'Belum ada jurnal',
+                'hadir' => 'Hadir', 'izin' => 'Izin', 'sakit' => 'Sakit', 'tidak-hadir' => 'Tidak Hadir', 'pulang-cepat' => 'Pulang Cepat', default => 'Belum ada jurnal',
             };
 
             return [$item->guru->name, $item->mapel->nama_mapel ?? '', $labelStatus, $jurnal?->materi ?: $jurnal?->keterangan ?: '', $item->kelas->nama_kelas, $item->jamPelajaran->jam_ke, substr($item->jamPelajaran->jam_mulai, 0, 5).'-'.substr($item->jamPelajaran->jam_selesai, 0, 5)];
@@ -123,6 +137,10 @@ class AdminMonitoringController extends Controller
 
     private function statusKehadiranTampilan(JadwalPelajaran $jadwal, ?Jurnal $jurnal, ?object $tugas, Carbon $tanggal): string
     {
+        $hariJadwal = $jadwal->jamPelajaran?->hari;
+        if ($hariJadwal && PulangCepat::berlaku($hariJadwal, (int) $jadwal->jamPelajaran->jam_ke)) {
+            return 'pulang-cepat';
+        }
         $statusTugas = strtolower((string) $tugas?->status_guru);
         if (in_array($statusTugas, ['izin', 'sakit'], true)) {
             return $statusTugas;

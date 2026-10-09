@@ -132,6 +132,15 @@
                 </div>
             </section>
 
+            <section class="rounded-xl border border-[#E5D8CC] bg-white p-4">
+                <h2 class="mb-3 font-['Poppins'] text-[13px] font-bold uppercase">Daftar Guru Mengajar Hari Ini</h2>
+                <div class="overflow-x-auto"><table class="w-full min-w-[620px] text-left text-xs"><thead class="text-[#7A6A60]"><tr><th class="pb-2">Guru</th><th class="pb-2">Total Jam</th><th class="pb-2">Jadwal / Kelas</th></tr></thead><tbody class="divide-y divide-[#F5EFE8]">
+                    @forelse($jadwalPerGuru as $baris)
+                        <tr><td class="py-2 pr-3 font-semibold">{{ $baris->guru?->name ?? 'Guru belum diatur' }}</td><td class="py-2 pr-3">{{ $baris->jumlah_jam }} jam</td><td class="py-2">{{ $baris->jadwal->map(fn($j) => ($j->mapel?->nama_mapel ?? 'Mapel').' · '.($j->kelas?->nama_kelas ?? 'Kelas').' ('.$j->jam_ke_mulai.'-'.$j->jam_ke_sampai.')')->implode('; ') }}</td></tr>
+                    @empty<tr><td colspan="3" class="py-4 text-center text-[#7A6A60]">Belum ada jadwal mengajar hari ini.</td></tr>@endforelse
+                </tbody></table></div>
+            </section>
+
             <section>
                 <div class="mb-2.5 flex items-center justify-between"><h2 class="font-['Poppins'] text-[13px] font-bold uppercase">Jadwal Mengajar Hari Ini · {{ $hariIni }}</h2></div>
                 <div class="mb-3 flex gap-2">

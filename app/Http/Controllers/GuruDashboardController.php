@@ -8,6 +8,7 @@ use App\Models\Jurnal;
 use App\Models\PengaturanJurnalSusulan;
 use App\Models\User;
 use App\Support\KegiatanTanggal;
+use App\Support\PulangCepat;
 use App\Support\RentangJam;
 use App\Support\Waktu;
 use Illuminate\Support\Facades\Auth;
@@ -117,6 +118,9 @@ class GuruDashboardController extends Controller
                 $sudahAdaAkanDatang = true;
             } else {
                 $s->status = 'Belum Dimulai';
+            }
+            if (PulangCepat::berlaku($hari ?? '', (int) $s->jam_ke_mulai)) {
+                $s->status = 'Pulang Cepat';
             }
         }
 

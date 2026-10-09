@@ -87,12 +87,12 @@ class AdminJadwalPiketController extends Controller
 
     public function destroyWaka(Waka $waka): RedirectResponse
     {
-        if ($waka->jadwalPiket()->exists() || DB::table('dispens')->where('id_waka', $waka->id)->exists()) {
-            return back()->withErrors(['waka' => 'Waka ini masih tercatat pada jadwal piket atau dispensasi dan tidak dapat dihapus.']);
-        }
-
         $nama = $waka->nama;
-        $waka->delete();
+        DB::transaction(function () use ($waka) {
+            JadwalPiketBulanan::where('id_waka', $waka->id)->update(['id_waka' => null]);
+            DB::table('dispens')->where('id_waka', $waka->id)->update(['id_waka' => null, 'id_waka_piket' => null]);
+            $waka->delete();
+        });
 
         return back()->with('success', "Waka {$nama} berhasil dihapus.");
     }

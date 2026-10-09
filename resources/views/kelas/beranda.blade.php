@@ -112,6 +112,10 @@
                 </div>
             @endif
 
+            @if(($tugasKelas ?? collect())->isNotEmpty())
+                <section class="mx-4 mt-4 rounded-xl border border-green-200 bg-green-50 p-4 sm:mx-6 md:mx-7"><h2 class="font-bold text-green-900">Tugas dari Guru · Disetujui Piket</h2>@foreach($tugasKelas as $tugas)<article class="mt-3 border-t border-green-200 pt-3 text-sm"><p class="font-semibold">{{ $tugas->mapel }} · {{ $tugas->status_guru }} · {{ $tugas->created_at ? \Carbon\Carbon::parse($tugas->created_at)->format('H:i') : '' }}</p><p class="mt-1">Materi: {{ $tugas->materi }}</p><p class="mt-1 whitespace-pre-line">{{ $tugas->tugas }}</p>@if($tugas->file_path)<a class="mt-2 inline-block font-semibold text-blue-800 underline" href="{{ route('kelas.tugas.download', $tugas->id_upload_tugas) }}">Buka lampiran</a>@endif</article>@endforeach</section>
+            @endif
+
             {{-- ISI --}}
             <div class="px-4 py-5 sm:p-6 md:p-7 flex flex-col gap-3.5">
 
@@ -155,7 +159,9 @@
                                 </div>
                             </details>
                         @endif
-                        @php($siswaTidakHadir = $sesi->siswaTidakHadir)
+                        @php
+                            $siswaTidakHadir = $sesi->siswaTidakHadir;
+                        @endphp
                         @if($siswaTidakHadir->isNotEmpty())
                             <details class="overflow-hidden rounded-xl border border-rose-200 bg-rose-50 text-sm text-rose-950">
                                 <summary class="flex cursor-pointer list-none items-center justify-between gap-2 p-3 font-bold"><span>Siswa Tidak Hadir ({{ $siswaTidakHadir->count() }})</span><span class="transition-transform details-chevron">⌄</span></summary>
@@ -186,12 +192,14 @@
                     @foreach ($sesiSelesai as $sesi)
                         <article class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E5D8CC] bg-white p-4">
                             <div><h2 class="font-semibold text-[#3E3028]">{{ $sesi->mapel }}</h2><p class="mt-1 text-sm text-[#7A6A60]">{{ $sesi->guru }} · Jam ke-{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai)–{{ $sesi->jam_ke_sampai }}@endif</p></div>
-                            <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $sesi->tugas ? 'bg-sky-100 text-sky-800' : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' ? 'bg-rose-100 text-rose-800' : 'bg-[#F5EFE8] text-[#5C4033]') }}">{{ $sesi->jurnal?->status_kehadiran_guru === 'hadir' ? 'Hadir' : ($sesi->tugas ? $sesi->tugas->status_guru : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' || !$sesi->jurnal ? 'Tidak Hadir' : ($sesi->jurnal?->status_kehadiran_guru === 'sakit' ? 'Sakit' : ($sesi->jurnal?->status_kehadiran_guru === 'izin' ? 'Izin' : 'Selesai')))) }}</span>
-                            @if($sesi->tugas && $sesi->jurnal?->status_kehadiran_guru !== 'hadir')
-                                <p class="w-full flex items-center gap-2 text-sm font-semibold text-red-700"><span class="grid h-5 w-5 place-items-center rounded bg-red-600 text-white">×</span> Guru tidak hadir</p>
-                            @elseif($sesi->jurnal?->status_kehadiran_guru === 'hadir')
+                            @php
+                                $guruHadirSelesai = $sesi->jurnal?->status_kehadiran_guru === 'hadir';
+                                $guruTidakHadirSelesai = !$guruHadirSelesai && ($sesi->tugas || $sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' || !$sesi->jurnal);
+                            @endphp
+                            <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $sesi->tugas ? 'bg-sky-100 text-sky-800' : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' ? 'bg-rose-100 text-rose-800' : 'bg-[#F5EFE8] text-[#5C4033]') }}">{{ $guruHadirSelesai ? 'Hadir' : ($sesi->tugas ? $sesi->tugas->status_guru : ($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' || !$sesi->jurnal ? 'Tidak Hadir' : ($sesi->jurnal?->status_kehadiran_guru === 'sakit' ? 'Sakit' : ($sesi->jurnal?->status_kehadiran_guru === 'izin' ? 'Izin' : 'Selesai')))) }}</span>
+                            @if($guruHadirSelesai)
                                 <p class="w-full flex items-center gap-2 text-sm font-semibold text-green-700"><span class="grid h-5 w-5 place-items-center rounded bg-green-600 text-white">✓</span> Kehadiran terverifikasi</p>
-                            @elseif($sesi->jurnal?->status_kehadiran_guru === 'tidak_hadir' || !$sesi->jurnal)
+                            @elseif($guruTidakHadirSelesai)
                                 <p class="w-full flex items-center gap-2 text-sm font-semibold text-red-700"><span class="grid h-5 w-5 place-items-center rounded bg-red-600 text-white">×</span> Guru tidak hadir</p>
                             @endif
                             @if($sesi->tugas)

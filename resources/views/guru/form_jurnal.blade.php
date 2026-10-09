@@ -102,7 +102,7 @@
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
       <div class="w-full flex items-center justify-between">
         <div class="w-16" aria-hidden="true"></div>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">{{ $isSusulan ? 'Isi Jurnal Kemarin' : (($isPulangCepat ?? false) ? 'Kirim Jurnal Pulang Cepat' : 'Lengkapi Jurnal Mengajar') }}</h1>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">{{ $isSusulan ? 'Isi Jurnal Kemarin' : 'Lengkapi Jurnal Mengajar' }}</h1>
         <div class="w-16"></div>
       </div>
     </header>
@@ -203,10 +203,6 @@
         @csrf
         <input type="hidden" name="id_jadwal" value="{{ $jadwalAktif->id_jadwal }}">
         @if ($isSusulan)<input type="hidden" name="susulan" value="1">@endif
-        @if ($isPulangCepat ?? false)
-          <input type="hidden" name="pulang_cepat" value="1">
-          <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">Jurnal akan langsung masuk ke antrean guru piket untuk ditinjau karena sekolah pulang cepat.</div>
-        @endif
 
         <!-- FORM ISIAN UTAMA -->
         <div id="section-form-utama" class="flex flex-col gap-5">
@@ -397,6 +393,8 @@
                 class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isIzin ? 'bg-blue-500 text-white shadow-xs scale-105' : 'bg-white text-blue-700 border border-blue-200 hover:bg-blue-50'}">I</button>
               <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Dispen')"
                 class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isDispen ? 'bg-violet-500 text-white shadow-xs scale-105' : 'bg-white text-violet-700 border border-violet-200 hover:bg-violet-50'}">D</button>
+              <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Terlambat')"
+                class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${siswa.status === 'Terlambat' ? 'bg-orange-500 text-white' : 'bg-white text-orange-700 border border-orange-200 hover:bg-orange-50'}">T</button>
               <button type="button" ${siswa.otomatis ? 'disabled title="Status diisi otomatis"' : ''} onclick="setStatusSiswa('${siswa.key}', 'Alpha')"
                 class="w-7 h-7 rounded-lg font-bold text-xs transition-all ${isAlpha ? 'bg-rose-500 text-white shadow-xs scale-105' : 'bg-white text-rose-700 border border-rose-200 hover:bg-rose-50'}">A</button>
             </div>

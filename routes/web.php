@@ -31,6 +31,8 @@ use Illuminate\Support\Facades\Route;
 
 // Profil guru menggunakan kolom no_telepon yang sama seperti panel admin.
 Route::middleware(['auth', 'role:guru,guru_piket,wali_kelas'])->group(function () {
+    Route::get('/guru/unggah-tugas', [UploadTugasController::class, 'createGuru'])->name('guru.unggah-tugas');
+    Route::post('/guru/unggah-tugas', [UploadTugasController::class, 'storeGuru'])->name('guru.unggah-tugas.store');
     Route::get('/profil-guru', [ProfilGuruController::class, 'show'])->name('profil-guru');
     Route::post('/profil-guru', [ProfilGuruController::class, 'update'])->name('profil-guru.update');
 });
@@ -229,6 +231,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::patch('admin/jam-pelajaran/pengaturan/kegiatan', [JamPelajaranController::class, 'updateKegiatan'])
         ->name('jam-pelajaran.kegiatan.update');
+    Route::patch('admin/jam-pelajaran/pulang-cepat', [JamPelajaranController::class, 'updatePulangCepat'])->name('jam-pelajaran.pulang-cepat.update');
 
     Route::post('admin/jam-pelajaran/kegiatan-tanggal', [JamPelajaranController::class, 'storeKegiatanTanggal'])
         ->name('jam-pelajaran.kegiatan-tanggal.store');
@@ -324,6 +327,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('piket')->name('piket.')->middleware(['role:guru,guru_piket,wali_kelas', 'piket.aktif'])->group(function () {
         Route::get('/jurnal-mengajar', [JurnalController::class, 'piketIndex'])->name('jurnal');
+        Route::get('/setujui-tugas', [UploadTugasController::class, 'reviewIndex'])->name('tugas-review');
+        Route::post('/upload-tugas/{id}/tinjau', [UploadTugasController::class, 'tinjau'])->whereNumber('id')->name('upload-tugas.review');
 
         Route::get('/dispensasi-siswa', [DispenController::class, 'index'])
             ->name('dispen');

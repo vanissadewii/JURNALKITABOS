@@ -136,7 +136,32 @@
                         </tbody>
                     </table>
                 </div>
-                @if ($users->hasPages())<div class="border-t border-[#E5D8CC] px-4 py-4 sm:px-6">{{ $users->links() }}</div>@endif
+                @if ($users->hasPages())
+                    <div class="border-t border-[#E5D8CC] px-4 py-4 sm:px-6">
+                        <nav role="navigation" aria-label="Navigasi halaman user" class="flex flex-wrap items-center justify-between gap-3">
+                            <p class="text-xs text-[#7A6A60]">Menampilkan {{ $users->firstItem() }}–{{ $users->lastItem() }} dari {{ $users->total() }} user</p>
+                            <div class="flex flex-wrap items-center gap-1">
+                                @if ($users->onFirstPage())
+                                    <span class="rounded-lg border border-[#E5D8CC] px-3 py-2 text-xs text-[#A08978]">Sebelumnya</span>
+                                @else
+                                    <a href="{{ $users->previousPageUrl() }}#hasil-user" data-user-page-link class="rounded-lg border border-[#D8C9BC] px-3 py-2 text-xs font-semibold text-[#5C4033] hover:bg-[#F5EFE8]">Sebelumnya</a>
+                                @endif
+                                @foreach ($users->getUrlRange(max(1, $users->currentPage() - 2), min($users->lastPage(), $users->currentPage() + 2)) as $nomorHalaman => $urlHalaman)
+                                    @if ($nomorHalaman === $users->currentPage())
+                                        <span aria-current="page" class="rounded-lg bg-[#5C4033] px-3 py-2 text-xs font-bold text-white">{{ $nomorHalaman }}</span>
+                                    @else
+                                        <a href="{{ $urlHalaman }}#hasil-user" data-user-page-link class="rounded-lg border border-[#D8C9BC] px-3 py-2 text-xs font-semibold text-[#5C4033] hover:bg-[#F5EFE8]">{{ $nomorHalaman }}</a>
+                                    @endif
+                                @endforeach
+                                @if ($users->hasMorePages())
+                                    <a href="{{ $users->nextPageUrl() }}#hasil-user" data-user-page-link class="rounded-lg border border-[#D8C9BC] px-3 py-2 text-xs font-semibold text-[#5C4033] hover:bg-[#F5EFE8]">Berikutnya</a>
+                                @else
+                                    <span class="rounded-lg border border-[#E5D8CC] px-3 py-2 text-xs text-[#A08978]">Berikutnya</span>
+                                @endif
+                            </div>
+                        </nav>
+                    </div>
+                @endif
             </article>
         </section>
     </main>
@@ -173,6 +198,12 @@
         function tutupEditUser(){const modal=document.getElementById('editUserModal');modal.classList.add('hidden');modal.classList.remove('flex');document.body.classList.remove('overflow-hidden');}
         document.addEventListener('keydown',event=>{if(event.key==='Escape')tutupEditUser()});
         document.getElementById('searchUserForm').addEventListener('submit',()=>sessionStorage.setItem('userTableScroll',window.scrollY));
+        document.querySelectorAll('[data-user-page-link]').forEach(link => link.addEventListener('click', event => {
+            event.preventDefault();
+            sessionStorage.removeItem('userTableScroll');
+            sessionStorage.removeItem('pending-search-scroll');
+            window.location.assign(link.href);
+        }));
         const savedUserScroll=sessionStorage.getItem('userTableScroll');if(savedUserScroll!==null){sessionStorage.removeItem('userTableScroll');requestAnimationFrame(()=>window.scrollTo(0,Number(savedUserScroll)));}
         document.querySelectorAll('[data-username-input]').forEach(input => input.addEventListener('input', () => { input.value = input.value.replace(/\s+/g, '_'); }));
         toggleKelas();

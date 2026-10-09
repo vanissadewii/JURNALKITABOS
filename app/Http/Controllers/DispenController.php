@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -49,12 +50,19 @@ class DispenController extends Controller
 
     public function cariSiswa(Request $request): JsonResponse
     {
-        $q = $request->query('q', '');
+        $q = trim((string) $request->query('q', ''));
+
+        if (mb_strlen($q) < 1) {
+            return response()->json([]);
+        }
 
         $siswa = Siswa::with('kelas')
-            ->where('nama', 'like', "%{$q}%")
-            ->orWhere('nisn', 'like', "%{$q}%")
-            ->limit(10)
+            ->where(function ($query) use ($q) {
+                $query->where('nama', 'like', "%{$q}%")
+                    ->orWhere('nisn', 'like', "%{$q}%");
+            })
+            ->orderBy('nama')
+            ->limit(15)
             ->get()
             ->map(function ($s) {
                 return [
@@ -123,28 +131,39 @@ class DispenController extends Controller
             'id_siswa' => 'nullable|exists:siswa,id_siswa',
             'id_siswa_list' => 'nullable|array|min:1',
             'id_siswa_list.*' => 'required|integer|distinct|exists:siswa,id_siswa',
-            'id_kelas' => 'required|exists:kelas,id_kelas',
+            'id_kelas' => 'nullable|exists:kelas,id_kelas',
+            'id_kelas_list' => 'nullable|array|min:1',
+            'id_kelas_list.*' => 'required|integer|distinct|exists:kelas,id_kelas',
             'tanggal' => 'required|date',
             'jam_ke_mulai' => 'required|integer|between:1,13',
             'jam_ke_selesai' => 'required|integer|between:1,13|gte:jam_ke_mulai',
             'alasan' => 'required|string|max:500',
         ]);
 
-        $kelas = Kelas::findOrFail($validated['id_kelas']);
         $idSiswa = collect($validated['id_siswa_list'] ?? (isset($validated['id_siswa']) ? [$validated['id_siswa']] : []))->map(fn ($id) => (int) $id)->unique()->values();
         abort_if($idSiswa->isEmpty(), 422, 'Pilih minimal satu siswa.');
         $siswaTerpilih = Siswa::whereIn('id_siswa', $idSiswa)->get();
-        abort_if($siswaTerpilih->count() !== $idSiswa->count() || $siswaTerpilih->contains(fn ($siswa) => (int) $siswa->id_kelas !== (int) $kelas->id_kelas), 422, 'Semua siswa harus berasal dari kelas yang sama.');
+        $kelasIds = collect($validated['id_kelas_list'] ?? (isset($validated['id_kelas']) ? [$validated['id_kelas']] : []))->flatMap(fn ($id) => str_contains((string) $id, ',') ? explode(',', (string) $id) : [$id])->map(fn ($id) => (int) $id)->unique();
+        $kelasSiswa = $siswaTerpilih->pluck('id_kelas')->map(fn ($id) => (int) $id)->unique();
+        abort_if($kelasIds->isEmpty() || $kelasSiswa->diff($kelasIds)->isNotEmpty(), 422, 'Semua siswa harus berasal dari kelas yang dipilih.');
+        abort_if($siswaTerpilih->count() !== $idSiswa->count() || $siswaTerpilih->contains(fn ($siswa) => ! $kelasIds->contains((int) $siswa->id_kelas)), 422, 'Semua siswa harus berasal dari kelas yang dipilih.');
         $tanggalDispen = Carbon::parse($validated['tanggal']);
         $hari = $this->namaHari[$tanggalDispen->dayOfWeekIso] ?? null;
         abort_if(KegiatanTanggal::jadwalDitiadakan($tanggalDispen), 422, 'Tidak ada jadwal pelajaran pada tanggal kegiatan sekolah: '.KegiatanTanggal::nama($tanggalDispen).'.');
         abort_if(! $hari, 422, 'Dispensasi hanya dapat diajukan pada hari sekolah.');
-        $jamTersedia = JamPelajaran::where('tingkat', $kelas->tingkat)
+        $tingkatTerpilih = Kelas::whereIn('id_kelas', $kelasIds)->pluck('tingkat')->unique();
+        $jamTersedia = JamPelajaran::whereIn('tingkat', $tingkatTerpilih)
             ->where('hari', $hari)
             ->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
             ->whereIn('jam_ke', [$validated['jam_ke_mulai'], $validated['jam_ke_selesai']])
             ->pluck('jam_ke');
         abort_unless($jamTersedia->contains((int) $validated['jam_ke_mulai']) && $jamTersedia->contains((int) $validated['jam_ke_selesai']), 422, 'Rentang jam tidak sesuai dengan jadwal kelas.');
+
+        foreach ($kelasIds as $kelasId) {
+            $tingkat = Kelas::find($kelasId)?->tingkat;
+            $jamKelas = JamPelajaran::where('tingkat', $tingkat)->where('hari', $hari)->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))->whereIn('jam_ke', [$validated['jam_ke_mulai'], $validated['jam_ke_selesai']])->pluck('jam_ke');
+            abort_unless($jamKelas->contains((int) $validated['jam_ke_mulai']) && $jamKelas->contains((int) $validated['jam_ke_selesai']), 422, 'Rentang jam tidak tersedia pada semua kelas yang dipilih.');
+        }
 
         // Kiriman baru hanya dibuat jika Waka tujuan memiliki nomor WhatsApp valid.
         $waka = WakaPiket::bertugas(Carbon::parse($validated['tanggal'])->toDateString());
@@ -157,36 +176,40 @@ class DispenController extends Controller
             return back()->withInput()->withErrors(['waka' => $pesan]);
         }
 
-        $dispen = DB::transaction(function () use ($idSiswa, $validated, $waka) {
-            $suratTerakhir = null;
+        $dispenList = DB::transaction(function () use ($idSiswa, $siswaTerpilih, $validated, $waka) {
+            $suratDibuat = collect();
             foreach ($idSiswa as $id) {
-                $suratTerakhir = Dispen::create([
-                    ...collect($validated)->except(['id_siswa', 'id_siswa_list'])->all(),
+                $siswa = $siswaTerpilih->firstWhere('id_siswa', $id);
+                $suratDibuat->push(Dispen::create([
+                    ...collect($validated)->except(['id_siswa', 'id_siswa_list', 'id_kelas_list'])->all(),
                     'id_siswa' => $id,
+                    'id_kelas' => $siswa->id_kelas,
                     'id_waka_piket' => $waka->id,
                     'nomor_surat' => $this->generateNomorSurat(),
                     'id_guru_piket' => auth()->id(),
                     'id_waka' => $waka->id,
                     'status' => 'menunggu',
                     'token_approval' => Str::random(40),
-                ]);
+                ]));
             }
 
-            return $suratTerakhir;
+            return $suratDibuat;
         });
 
+        $dispen = $dispenList->last();
+        $dispenList->each(fn (Dispen $surat) => $surat->loadMissing(['siswa', 'kelas', 'guruPiket', 'waka']));
         $dispen->loadMissing(['siswa', 'kelas', 'guruPiket', 'waka']);
 
         $redirect = redirect()
             ->route('dispen.index')
-            ->with('success', $idSiswa->count() === 1 ? "Surat dispen {$dispen->nomor_surat} berhasil dibuat." : "{$idSiswa->count()} surat dispen berhasil dibuat untuk kelas {$kelas->nama_kelas}.")
+            ->with('success', $idSiswa->count() === 1 ? "Surat dispen {$dispen->nomor_surat} berhasil dibuat." : "{$idSiswa->count()} surat dispen berhasil dibuat untuk ".$kelasIds->count()." kelas.")
             ->with('waka_dituju', $waka?->nama)
             ->with('nomor_waka', $waka?->nomorTampilan());
 
-        $linkWa = $this->linkWaWaka($dispen, $siswaTerpilih);
+        $linkWa = $this->linkWaWaka($dispenList);
         $pesanBerhasil = $idSiswa->count() === 1
             ? "Surat dispen {$dispen->nomor_surat} berhasil dibuat."
-            : "{$idSiswa->count()} surat dispen berhasil dibuat untuk kelas {$kelas->nama_kelas}.";
+            : "{$idSiswa->count()} surat dispen berhasil dibuat untuk ".$kelasIds->count()." kelas.";
 
         if ($linkWa) {
             if ($request->expectsJson()) {
@@ -209,18 +232,18 @@ class DispenController extends Controller
         if ($request->expectsJson()) {
             session()->flash('success', $pesanBerhasil);
             session()->flash('warning', $pesanPeringatan);
-            session()->flash('link_approval', $this->linkApproval($dispen));
+            session()->flash('link_approval', $this->tautanPersetujuanList($dispenList));
 
             return response()->json([
                 'success' => true,
                 'warning' => $pesanPeringatan,
-                'link_approval' => $this->linkApproval($dispen),
+                'link_approval' => $this->tautanPersetujuanList($dispenList),
                 'redirect' => route('dispen.index', [], false),
             ]);
         }
 
         return $redirect
-            ->with('link_approval', $this->linkApproval($dispen))
+            ->with('link_approval', $this->tautanPersetujuanList($dispenList))
             ->with('warning', $pesanPeringatan);
     }
 
@@ -233,9 +256,10 @@ class DispenController extends Controller
         return $baseUrl.$path;
     }
 
-    private function linkWaWaka(Dispen $dispen, $siswaTerpilih = null): ?string
+    private function linkWaWaka(Collection $dispenList): ?string
     {
-        $dispen->loadMissing(['siswa', 'waka']);
+        $dispen = $dispenList->first();
+        $dispen->loadMissing(['waka', 'guruPiket']);
 
         $nomor = $dispen->waka?->nomorWa();
 
@@ -243,22 +267,46 @@ class DispenController extends Controller
             return null;
         }
 
-        $kelas = $dispen->kelas
-            ? "{$dispen->kelas->tingkat} {$dispen->kelas->jurusan} {$dispen->kelas->rombel}"
-            : '-';
+        $barisSiswa = $dispenList->map(function (Dispen $surat) {
+            $surat->loadMissing(['siswa', 'kelas']);
+            $kelas = $surat->kelas
+                ? "{$surat->kelas->tingkat} {$surat->kelas->jurusan} {$surat->kelas->rombel}"
+                : '-';
+
+            return "- {$surat->siswa?->nama} · {$kelas} · No. surat {$surat->nomor_surat}";
+        })->implode("\n");
+        $tautanPersetujuan = $dispenList->map(function (Dispen $surat) {
+            $surat->loadMissing(['siswa', 'kelas']);
+            $kelas = $surat->kelas
+                ? "{$surat->kelas->tingkat} {$surat->kelas->jurusan} {$surat->kelas->rombel}"
+                : '-';
+
+            return "- {$surat->siswa?->nama} ({$kelas}):\n".$this->linkApproval($surat);
+        })->implode("\n");
 
         $pesan = "Halo Waka {$dispen->waka->nama}!\n"
             ."Saya {$dispen->guruPiket?->name} dari guru piket. Mohon tinjau pengajuan dispensasi berikut.\n\n"
-            ."No. surat: {$dispen->nomor_surat}\n"
-            .'Nama: '.(($siswaTerpilih && $siswaTerpilih->count() > 1) ? $siswaTerpilih->pluck('nama')->implode(', ') : $dispen->siswa->nama)."\n"
-            ."Kelas: {$kelas}\n"
+            ."Daftar siswa dan kelas:\n{$barisSiswa}\n"
             ."Tanggal: {$dispen->tanggal->format('d/m/Y')}\n"
             ."{$dispen->labelJam()}\n"
+            .'Alasan: '.$dispen->alasan."\n"
             ."Pengaju: {$dispen->guruPiket?->name}\n\n"
-            ."Tautan persetujuan (buka tanpa login):\n"
-            .$this->linkApproval($dispen);
+            ."Tautan persetujuan (buka tanpa login; satu tautan untuk tiap siswa):\n"
+            .$tautanPersetujuan;
 
         return 'https://wa.me/'.$nomor.'?text='.urlencode($pesan);
+    }
+
+    private function tautanPersetujuanList(Collection $dispenList): string
+    {
+        return $dispenList->map(function (Dispen $surat) {
+            $surat->loadMissing(['siswa', 'kelas']);
+            $kelas = $surat->kelas
+                ? "{$surat->kelas->tingkat} {$surat->kelas->jurusan} {$surat->kelas->rombel}"
+                : '-';
+
+            return "{$surat->siswa?->nama} ({$kelas}) — {$this->linkApproval($surat)}";
+        })->implode("\n");
     }
 
     /**
