@@ -9,6 +9,7 @@ use App\Models\Kelas;
 use App\Models\Semester;
 use App\Models\User;
 use App\Support\Waktu;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
@@ -42,7 +43,7 @@ class AdminRekapController extends Controller
         ])
             ->whereBetween('tanggal', [$dari, $sampai])
             ->when(
-                !empty($filters['id_kelas']),
+                ! empty($filters['id_kelas']),
                 fn ($q) => $q->whereHas(
                     'jadwal',
                     fn ($j) => $j->where('id_kelas', $filters['id_kelas'])
@@ -142,7 +143,7 @@ class AdminRekapController extends Controller
         }
 
         $jadwalMengajarQuery->when(
-            !empty($filters['id_kelas']),
+            ! empty($filters['id_kelas']),
             fn ($q) => $q->where(
                 'id_kelas',
                 $filters['id_kelas']
@@ -172,21 +173,19 @@ class AdminRekapController extends Controller
         ) {
             // Jurnal guru pada rentang tanggal yang dipilih.
             $items = $jurnals->filter(
-                fn ($jurnal) =>
-                    (int) $jurnal->jadwal?->id_guru === (int) $guru->id
+                fn ($jurnal) => (int) $jurnal->jadwal?->id_guru === (int) $guru->id
             );
 
             // Jadwal guru pada semester aktif.
             $jadwalGuru = $jadwalMengajar->filter(
-                fn ($jadwal) =>
-                    (int) $jadwal->id_guru === (int) $guru->id
+                fn ($jadwal) => (int) $jadwal->id_guru === (int) $guru->id
             );
 
             $totalJam = 0;
             $rincianMengajar = [];
 
-            $tanggalMulai = \Carbon\Carbon::parse($dari);
-            $tanggalSelesai = \Carbon\Carbon::parse($sampai);
+            $tanggalMulai = Carbon::parse($dari);
+            $tanggalSelesai = Carbon::parse($sampai);
 
             for (
                 $tanggal = $tanggalMulai->copy();
@@ -210,7 +209,7 @@ class AdminRekapController extends Controller
                     $namaKelas = $jadwal->kelas?->nama_kelas
                         ?? 'Kelas tidak diketahui';
 
-                    if (!isset($rincianMengajar[$namaKelas])) {
+                    if (! isset($rincianMengajar[$namaKelas])) {
                         $rincianMengajar[$namaKelas] = 0;
                     }
 
@@ -220,8 +219,7 @@ class AdminRekapController extends Controller
 
             $rincianMengajarText = collect($rincianMengajar)
                 ->map(
-                    fn ($jumlahJam, $namaKelas) =>
-                        $namaKelas . ': ' . $jumlahJam . ' jam pelajaran'
+                    fn ($jumlahJam, $namaKelas) => $namaKelas.': '.$jumlahJam.' jam pelajaran'
                 )
                 ->implode('; ');
 
