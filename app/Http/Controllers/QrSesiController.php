@@ -23,7 +23,7 @@ class QrSesiController extends Controller
 
     public function __construct(private VerifikasiSesiService $sesi) {}
 
-    public function scanKelas(Jurnal $jurnal): View
+    public function scanKelas(Jurnal $jurnal): View|RedirectResponse
     {
         $jurnal->load('jadwal');
         abort_unless((int) $jurnal->jadwal->id_guru === (int) Auth::id(), 403);
