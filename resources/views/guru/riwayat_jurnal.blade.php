@@ -641,395 +641,198 @@
 
   <!-- SCRIPT GENERATOR KALENDER -->
   <script>
-
     const monthsName = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember'
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
     ];
 
     let selectedDateString = @js(now()->format('Y-m-d'));
 
-    // Inisialisasi kalender
+    // Mengambil tanggal hari ini tanpa memperhitungkan jam.
+    function getTodayDate() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today;
+    }
+
+    // Memeriksa apakah tanggal yang diberikan sudah lewat.
+    function isPastCalendarDate(dateStr) {
+      if (!dateStr || dateStr === 'all') return false;
+
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const calendarDate = new Date(year, month - 1, day);
+      calendarDate.setHours(0, 0, 0, 0);
+
+      return calendarDate < getTodayDate();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       generateGridCalendar(new Date().getDate());
     });
 
     function generateGridCalendar(targetDay = 21) {
-
-      const month = parseInt(
-        document.getElementById('month-select').value
-      );
-
-      const year = parseInt(
-        document.getElementById('year-select').value
-      );
-
-      const gridContainer =
-        document.getElementById('calendar-grid');
+      const month = parseInt(document.getElementById('month-select').value, 10);
+      const year = parseInt(document.getElementById('year-select').value, 10);
+      const gridContainer = document.getElementById('calendar-grid');
 
       gridContainer.innerHTML = '';
 
-      // Hari pertama bulan yang dipilih
-      const firstDayIndex =
-        new Date(year, month - 1, 1).getDay();
-
-      // Jumlah hari bulan yang dipilih
-      const totalDays =
-        new Date(year, month, 0).getDate();
-
-      // Kumpulan tanggal yang memiliki jurnal
+      const firstDayIndex = new Date(year, month - 1, 1).getDay();
+      const totalDays = new Date(year, month, 0).getDate();
       const existingDates = new Set();
 
       document.querySelectorAll('.jurnal-card').forEach(card => {
-        existingDates.add(
-          card.getAttribute('data-date')
-        );
+        existingDates.add(card.getAttribute('data-date'));
       });
 
-      // =====================================================
-      // TANGGAL BULAN SEBELUMNYA
-      // =====================================================
+      // Tanggal bulan sebelumnya: abu-abu dan tidak dapat diklik.
+      const previousMonth = month === 1 ? 12 : month - 1;
+      const previousYear = month === 1 ? year - 1 : year;
+      const totalDaysPreviousMonth = new Date(previousYear, previousMonth, 0).getDate();
 
-      const previousMonth =
-        month === 1 ? 12 : month - 1;
-
-      const previousYear =
-        month === 1 ? year - 1 : year;
-
-      const totalDaysPreviousMonth =
-        new Date(
-          previousYear,
-          previousMonth,
-          0
-        ).getDate();
-
-      // Tampilkan tanggal bulan sebelumnya
-      // dengan warna abu-abu
-      for (
-        let i = firstDayIndex - 1;
-        i >= 0;
-        i--
-      ) {
-
-        const day =
-          totalDaysPreviousMonth - i;
-
-        const previousBtn =
-          document.createElement('button');
-
-        previousBtn.className =
-          'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
-
-        // Tidak dapat diklik
+      for (let i = firstDayIndex - 1; i >= 0; i--) {
+        const day = totalDaysPreviousMonth - i;
+        const previousBtn = document.createElement('button');
+        previousBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
         previousBtn.disabled = true;
-
-        previousBtn.innerHTML =
-          `<span>${day}</span>`;
-
+        previousBtn.innerHTML = `<span>${day}</span>`;
         gridContainer.appendChild(previousBtn);
       }
 
       let activeBtn = null;
 
-      // =====================================================
-      // TANGGAL BULAN YANG DIPILIH
-      // =====================================================
+      // Tanggal pada bulan dan tahun yang dipilih.
+      for (let day = 1; day <= totalDays; day++) {
+        const formattedMonth = String(month).padStart(2, '0');
+        const formattedDay = String(day).padStart(2, '0');
+        const dateStr = `${year}-${formattedMonth}-${formattedDay}`;
+        const isSelected = day === Math.min(targetDay, totalDays);
+        const isPastDate = isPastCalendarDate(dateStr);
+        const hasSession = existingDates.has(dateStr);
+        const dayBtn = document.createElement('button');
 
-      for (
-        let day = 1;
-        day <= totalDays;
-        day++
-      ) {
+        dayBtn.dataset.date = dateStr;
 
-        const formattedMonth =
-          String(month).padStart(2, '0');
-
-        const formattedDay =
-          String(day).padStart(2, '0');
-
-        const dateStr =
-          `${year}-${formattedMonth}-${formattedDay}`;
-
-        const isSelected =
-          day === targetDay;
-
-        const hasSession =
-          existingDates.has(dateStr);
-
-        const dayBtn =
-          document.createElement('button');
-
-        dayBtn.className =
-          `calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold transition-all ${
-            isSelected
-              ? 'bg-brand-800 text-white shadow-md'
-              : 'bg-brand-50/70 text-[#3E3028] hover:bg-brand-100/70 border border-brand-100'
-          }`;
-
-        dayBtn.onclick =
-          () => filterByDate(dateStr, dayBtn);
-
-        // Angka tanggal
-        let innerHTML =
-          `<span>${day}</span>`;
-
-        // Indikator jurnal
-        if (hasSession) {
-
-          innerHTML +=
-            `<span class="w-1.5 h-1.5 rounded-full ${
-              isSelected
-                ? 'bg-amber-300'
-                : 'bg-amber-500'
-            } absolute bottom-1.5"></span>`;
-
+        if (isPastDate) {
+          // Tanggal lampau selalu abu-abu, termasuk jika dipilih.
+          dayBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
+        } else if (isSelected) {
+          dayBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-brand-800 text-white shadow-md';
+        } else {
+          dayBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold transition-all bg-brand-50/70 text-[#3E3028] hover:bg-brand-100/70 border border-brand-100';
         }
 
-        dayBtn.innerHTML =
-          innerHTML;
+        dayBtn.onclick = () => {
+          selectedDateString = dateStr;
+          filterByDate(dateStr, dayBtn);
+        };
 
+        let innerHTML = `<span>${day}</span>`;
+        if (hasSession) {
+          const dotColor = isSelected && !isPastDate ? 'bg-amber-300' : 'bg-amber-500';
+          innerHTML += `<span class="w-1.5 h-1.5 rounded-full ${dotColor} absolute bottom-1.5"></span>`;
+        }
+
+        dayBtn.innerHTML = innerHTML;
         gridContainer.appendChild(dayBtn);
 
         if (isSelected) {
-
-          activeBtn =
-            dayBtn;
-
-          selectedDateString =
-            dateStr;
-
+          activeBtn = dayBtn;
+          selectedDateString = dateStr;
         }
-
       }
 
-      // =====================================================
-      // TANGGAL BULAN BERIKUTNYA
-      // =====================================================
+      // Tanggal bulan berikutnya: abu-abu dan tidak dapat diklik.
+      const totalCells = firstDayIndex + totalDays;
+      const remainingCells = (7 - (totalCells % 7)) % 7;
 
-      const totalCells =
-        firstDayIndex + totalDays;
-
-      const remainingCells =
-        (7 - (totalCells % 7)) % 7;
-
-      const nextMonth =
-        month === 12 ? 1 : month + 1;
-
-      const nextYear =
-        month === 12 ? year + 1 : year;
-
-      // Tampilkan tanggal bulan berikutnya
-      // dengan warna abu-abu
-      for (
-        let day = 1;
-        day <= remainingCells;
-        day++
-      ) {
-
-        const nextBtn =
-          document.createElement('button');
-
-        nextBtn.className =
-          'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
-
-        // Tidak dapat diklik
+      for (let day = 1; day <= remainingCells; day++) {
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
         nextBtn.disabled = true;
-
-        nextBtn.innerHTML =
-          `<span>${day}</span>`;
-
+        nextBtn.innerHTML = `<span>${day}</span>`;
         gridContainer.appendChild(nextBtn);
-
       }
 
-      // Terapkan filter awal
-      filterByDate(
-        selectedDateString,
-        activeBtn
-      );
+      filterByDate(selectedDateString, activeBtn);
     }
 
     function filterByDate(selectedDate, element) {
-
-      // Reset styling tombol kalender
+      // Kembalikan setiap tanggal ke warna berdasarkan tanggalnya.
       document.querySelectorAll('.calendar-cell').forEach(cell => {
+        cell.classList.remove('bg-brand-800', 'text-white', 'shadow-md');
 
-        cell.classList.remove(
-          'bg-brand-800',
-          'text-white',
-          'shadow-md'
-        );
+        if (cell.disabled) return;
 
-        // Jangan ubah warna tanggal abu-abu
-        if (!cell.disabled) {
+        const isPastDate = isPastCalendarDate(cell.dataset.date);
 
-          cell.classList.add(
-            'bg-brand-50/70',
-            'text-[#3E3028]',
-            'border',
-            'border-brand-100'
-          );
-
+        if (isPastDate) {
+          cell.classList.remove('bg-brand-50/70', 'text-[#3E3028]', 'border-brand-100', 'hover:bg-brand-100/70');
+          cell.classList.add('bg-gray-100', 'text-gray-400', 'border', 'border-gray-200');
+        } else {
+          cell.classList.remove('bg-gray-100', 'text-gray-400', 'border-gray-200');
+          cell.classList.add('bg-brand-50/70', 'text-[#3E3028]', 'border', 'border-brand-100');
         }
 
-        // Warna indikator
-        const dot =
-          cell.querySelector('.rounded-full');
-
-        if (dot && !cell.disabled) {
-
-          dot.classList.remove(
-            'bg-amber-300'
-          );
-
-          dot.classList.add(
-            'bg-amber-500'
-          );
-
+        const dot = cell.querySelector('.rounded-full');
+        if (dot) {
+          dot.classList.remove('bg-amber-300');
+          dot.classList.add('bg-amber-500');
         }
-
       });
 
-      // Aktifkan tanggal yang dipilih
-      if (element && !element.disabled) {
+      // Hanya tanggal hari ini atau mendatang yang diberi warna pilihan.
+      if (element && !element.disabled && !isPastCalendarDate(element.dataset.date)) {
+        element.classList.remove('bg-brand-50/70', 'text-[#3E3028]', 'border', 'border-brand-100');
+        element.classList.add('bg-brand-800', 'text-white', 'shadow-md');
 
-        element.classList.remove(
-          'bg-brand-50/70',
-          'text-[#3E3028]',
-          'border',
-          'border-brand-100'
-        );
-
-        element.classList.add(
-          'bg-brand-800',
-          'text-white',
-          'shadow-md'
-        );
-
-        const dot =
-          element.querySelector('.rounded-full');
-
+        const dot = element.querySelector('.rounded-full');
         if (dot) {
-
-          dot.classList.remove(
-            'bg-amber-500'
-          );
-
-          dot.classList.add(
-            'bg-amber-300'
-          );
-
+          dot.classList.remove('bg-amber-500');
+          dot.classList.add('bg-amber-300');
         }
-
       }
 
-      // Filter kartu jurnal
-      const journalCards =
-        document.querySelectorAll('.jurnal-card');
-
+      // Filter kartu jurnal sesuai tanggal yang dipilih.
+      const journalCards = document.querySelectorAll('.jurnal-card');
       let visibleCount = 0;
 
       journalCards.forEach(card => {
-
-        const cardDate =
-          card.getAttribute('data-date');
-
-        if (
-          selectedDate === 'all' ||
-          cardDate === selectedDate
-        ) {
-
+        const cardDate = card.getAttribute('data-date');
+        if (selectedDate === 'all' || cardDate === selectedDate) {
           card.classList.remove('hidden');
-
           visibleCount++;
-
         } else {
-
           card.classList.add('hidden');
-
         }
-
       });
 
-      // Update badge
-      const badge =
-        document.getElementById(
-          'session-count-badge'
-        );
+      const badge = document.getElementById('session-count-badge');
+      const label = document.getElementById('selected-date-label');
+      const emptyState = document.getElementById('empty-state');
 
-      const label =
-        document.getElementById(
-          'selected-date-label'
-        );
+      badge.innerText = `${visibleCount} Sesi Terverifikasi`;
+      label.innerText = selectedDate === 'all'
+        ? 'Semua Sesi Mengajar'
+        : `Sesi Mengajar — ${formatDateString(selectedDate)}`;
 
-      const emptyState =
-        document.getElementById(
-          'empty-state'
-        );
-
-      badge.innerText =
-        `${visibleCount} Sesi Terverifikasi`;
-
-      if (selectedDate === 'all') {
-
-        label.innerText =
-          'Semua Sesi Mengajar';
-
-      } else {
-
-        label.innerText =
-          `Sesi Mengajar — ${formatDateString(selectedDate)}`;
-
-      }
-
-      // Empty state
       if (visibleCount === 0) {
-
-        emptyState.classList.remove(
-          'hidden'
-        );
-
+        emptyState.classList.remove('hidden');
       } else {
-
-        emptyState.classList.add(
-          'hidden'
-        );
-
+        emptyState.classList.add('hidden');
       }
-
     }
 
     function formatDateString(dateStr) {
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return dateStr;
 
-      const parts =
-        dateStr.split('-');
-
-      if (parts.length !== 3) {
-        return dateStr;
-      }
-
-      const day =
-        parseInt(parts[2], 10);
-
-      const monthIndex =
-        parseInt(parts[1], 10) - 1;
-
-      const year =
-        parts[0];
+      const day = parseInt(parts[2], 10);
+      const monthIndex = parseInt(parts[1], 10) - 1;
+      const year = parts[0];
 
       return `${day} ${monthsName[monthIndex]} ${year}`;
     }
-
   </script>
 
 </body>

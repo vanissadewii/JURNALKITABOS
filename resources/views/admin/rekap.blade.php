@@ -81,6 +81,8 @@
                     <th class="border border-[#E5D8CC] px-4 py-3 text-center">Sakit</th>
                     <th class="border border-[#E5D8CC] px-4 py-3 text-center">Tidak Hadir</th>
                     <th class="border border-[#E5D8CC] px-4 py-3 text-center">Total Sesi</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Total Jam</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Rincian Mengajar</th>
                 </tr>
             </thead>
 
@@ -114,10 +116,18 @@
                         <td class="border border-[#E5D8CC] px-4 py-3 text-center">
                             {{ $baris->jumlah }}
                         </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center font-semibold">
+                            {{ $baris->total_jam }} jam pelajaran
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center font-semibold text-[#2E7D32]">
+                             {{ $baris->rincian_mengajar }}
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-4 py-8 text-center text-sm text-[#7A6A60]">
+                        <td colspan="9" class="px-4 py-8 text-center text-sm text-[#7A6A60]">
                             Belum ada data kehadiran guru pada periode ini.
                         </td>
                     </tr>
