@@ -322,10 +322,8 @@
 
     let selectedDateString = @js(now()->format('Y-m-d'));
 
-    // Inisialisasi kalender saat dokumen siap
-    document.addEventListener('DOMContentLoaded', () => {
-      generateGridCalendar(new Date().getDate());
-    });
+    // Script berada di akhir body, sehingga kalender dapat dirender langsung tanpa menunggu DOMContentLoaded.
+    generateGridCalendar(new Date().getDate());
 
     function generateGridCalendar(targetDay = 21) {
       const month = parseInt(document.getElementById('month-select').value);

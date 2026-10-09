@@ -99,7 +99,7 @@
                             $jurnalSesi = $sesi->jurnal;
                             $tugasSesi = $sesi->tugas;
                             $guruHadir = $jurnalSesi?->status_kehadiran_guru === 'hadir' && $jurnalSesi?->status_verifikasi === 'terverifikasi';
-                            $guruTidakHadir = !$guruHadir && ($tugasSesi !== null || in_array($jurnalSesi?->status_kehadiran_guru, ['sakit', 'izin', 'tidak_hadir'], true) || (!$jurnalSesi && $sesi->status === 'Selesai'));
+                            $guruTidakHadir = !$sesi->pulangCepat && !$guruHadir && ($tugasSesi !== null || in_array($jurnalSesi?->status_kehadiran_guru, ['sakit', 'izin', 'tidak_hadir'], true) || (!$jurnalSesi && $sesi->status === 'Selesai'));
                             $absensiSiswa = $jurnalSesi?->absenSiswa ?? collect();
                             $jumlahHadir = $jurnalSesi?->jumlah_hadir ?? ($tugasSesi && !$guruHadir ? '—' : max(0, $totalSiswa - $absensiSiswa->count()));
                         @endphp
@@ -111,7 +111,7 @@
                                     <p class="text-sm text-[#5C4033]">{{ $sesi->guru }}</p>
                                 </div>
                                 <span class="shrink-0 text-right text-xs font-bold {{ $guruHadir ? 'text-green-700' : ($guruTidakHadir ? 'text-red-700' : 'text-amber-700') }}">
-                                    {{ $guruHadir ? 'Hadir · Terverifikasi' : ($guruTidakHadir ? (($jurnalSesi?->status_kehadiran_guru === 'sakit' || strtolower((string) $tugasSesi?->status_guru) === 'sakit') ? 'Sakit' : (($jurnalSesi?->status_kehadiran_guru === 'izin' || strtolower((string) $tugasSesi?->status_guru) === 'izin') ? 'Izin' : 'Tidak hadir')) : ($sesi->status === 'Selesai' ? 'Selesai' : 'Menunggu scan')) }}
+                                    {{ $sesi->pulangCepat ? 'Pulang Cepat' : ($guruHadir ? 'Hadir · Terverifikasi' : ($guruTidakHadir ? (($jurnalSesi?->status_kehadiran_guru === 'sakit' || strtolower((string) $tugasSesi?->status_guru) === 'sakit') ? 'Sakit' : (($jurnalSesi?->status_kehadiran_guru === 'izin' || strtolower((string) $tugasSesi?->status_guru) === 'izin') ? 'Izin' : 'Tidak hadir')) : ($sesi->status === 'Selesai' ? 'Selesai' : 'Menunggu scan'))) }}
                                 </span>
                             </div>
                             <dl class="mt-3 space-y-2 text-sm">
@@ -168,7 +168,7 @@
                                 $jurnalSesi = $sesi->jurnal;
                                 $tugasSesi = $sesi->tugas;
                                 $guruHadir = $jurnalSesi?->status_kehadiran_guru === 'hadir' && $jurnalSesi?->status_verifikasi === 'terverifikasi';
-                                $guruTidakHadir = !$guruHadir && ($tugasSesi !== null || in_array($jurnalSesi?->status_kehadiran_guru, ['sakit', 'izin', 'tidak_hadir'], true) || (!$jurnalSesi && $sesi->status === 'Selesai'));
+                                $guruTidakHadir = !$sesi->pulangCepat && !$guruHadir && ($tugasSesi !== null || in_array($jurnalSesi?->status_kehadiran_guru, ['sakit', 'izin', 'tidak_hadir'], true) || (!$jurnalSesi && $sesi->status === 'Selesai'));
                                 $absensiSiswa = $jurnalSesi?->absenSiswa ?? collect();
                                 $barisSiswa = max(1, $absensiSiswa->count());
                                 $jumlahHadir = $jurnalSesi?->jumlah_hadir ?? ($tugasSesi && !$guruHadir ? '—' : max(0, $totalSiswa - $absensiSiswa->count()));
@@ -180,7 +180,7 @@
                                         <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 text-center sm:px-2 sm:py-3">{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai)–{{ $sesi->jam_ke_sampai }}@endif</td>
                                         <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 sm:px-2 sm:py-3">{{ $sesi->guru }}</td>
                                         <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 sm:px-2 sm:py-3">{{ $sesi->mapel }}</td>
-                                        <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 text-center font-bold sm:px-2 sm:py-3 {{ $guruHadir ? 'text-green-700' : ($guruTidakHadir ? 'text-red-700' : 'text-amber-700') }}">{{ $guruHadir ? '✓' : ($guruTidakHadir ? '✕' : ($sesi->status === 'Selesai' ? 'Selesai' : 'Menunggu scan')) }}</td>
+                                        <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 text-center font-bold sm:px-2 sm:py-3 {{ $sesi->pulangCepat ? 'text-amber-700' : ($guruHadir ? 'text-green-700' : ($guruTidakHadir ? 'text-red-700' : 'text-amber-700')) }}">{{ $sesi->pulangCepat ? 'Pulang Cepat' : ($guruHadir ? '✓' : ($guruTidakHadir ? '✕' : ($sesi->status === 'Selesai' ? 'Selesai' : 'Menunggu scan'))) }}</td>
                                         <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 text-center font-bold sm:px-2 sm:py-3 {{ $tugasSesi ? 'text-green-700' : 'text-red-700' }}">{{ $tugasSesi && !$guruHadir ? '✓' : '—' }}@if($tugasSesi && !$guruHadir)<span class="block text-[10px] font-medium">{{ $tugasSesi->status_guru }}</span>@endif</td>
                                         <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 sm:px-2 sm:py-3">{{ $tugasSesi->materi ?? $jurnalSesi?->materi ?? '—' }}@if($tugasSesi)<p class="mt-1 whitespace-pre-line text-xs text-[#7A6A60]">Tugas: {{ $tugasSesi->tugas }}</p>@if($tugasSesi->file_path)<a class="mt-1 inline-block text-xs font-semibold text-blue-700 underline" href="{{ route('kelas.tugas.download', $tugasSesi->id_upload_tugas) }}">Buka lampiran</a>@endif@endif</td>
                                         <td rowspan="{{ $barisSiswa }}" class="break-words border border-[#E5D8CC] px-1.5 py-2 text-center sm:px-2 sm:py-3">{{ $jumlahHadir }}</td>

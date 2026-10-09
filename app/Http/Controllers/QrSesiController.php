@@ -338,7 +338,8 @@ class QrSesiController extends Controller
             ->whereDate('tanggal', $tanggal)
             ->where('tipe', $tipe)
             ->whereNull('dipindai_at')
-            ->where('waktu_expired', '>', now()->addSeconds(self::SISA_MINIMAL_DETIK))
+            ->where('waktu_expired', '>', Waktu::sekarang())
+            ->where('waktu_generate', '>', Waktu::sekarang()->subSeconds(PengaturanQr::durasi()))
             ->latest('id_qr')
             ->first();
 

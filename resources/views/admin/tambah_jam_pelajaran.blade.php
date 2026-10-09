@@ -188,6 +188,16 @@
                         </div>
                     </article>
 
+                    <article class="mt-4 overflow-hidden rounded-xl border border-[#E5D8CC] bg-white">
+                        <div class="border-b border-[#E5D8CC] bg-[#FFFCF9] px-5 py-4 sm:px-6"><h3 class="font-['Poppins'] text-base font-bold">Pengaturan Pulang Cepat</h3><p class="mt-1 text-xs leading-5 text-[#7A6A60]">Pilih jam mulai pulang cepat. Sesi pada jam tersebut dan setelahnya akan ditandai pulang cepat di akun guru dan kelas.</p></div>
+                        <div class="divide-y divide-[#F0E7DF]">
+                            @foreach(['Senin','Selasa','Rabu','Kamis','Jumat'] as $hariPulangCepat)
+                                @php($aturanPc = $pengaturanPulangCepat[$hariPulangCepat] ?? null)
+                                <form method="POST" action="{{ route('jam-pelajaran.pulang-cepat.update') }}" class="flex flex-wrap items-center justify-between gap-3 px-5 py-3 sm:px-6">@csrf @method('PATCH')<input type="hidden" name="hari" value="{{ $hariPulangCepat }}"><input type="hidden" name="aktif" value="0"><label class="flex items-center gap-3"><input type="checkbox" name="aktif" value="1" @checked($aturanPc?->aktif) class="h-5 w-5 accent-[#A16207]"><span class="text-sm font-bold">{{ $hariPulangCepat }} · Pulang cepat aktif</span></label><label class="flex items-center gap-2 text-xs font-semibold text-[#7A6A60]">Mulai jam ke<select name="jam_ke" class="rounded-lg border border-[#D8C9BC] bg-white px-3 py-2 text-sm text-[#3E3028]">@for($nomor=1;$nomor<=13;$nomor++)<option value="{{ $nomor }}" @selected((int)($aturanPc?->jam_ke ?? 1) === $nomor)>{{ $nomor }}</option>@endfor</select></label><button class="rounded-lg bg-[#5C4033] px-4 py-2 text-xs font-semibold text-white">Simpan</button></form>
+                            @endforeach
+                        </div>
+                    </article>
+
                     {{-- ================================================= --}}
                     {{-- GENERATE OTOMATIS --}}
                     {{-- ================================================= --}}

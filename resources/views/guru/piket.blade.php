@@ -105,35 +105,33 @@
   <div class="flex-1 md:ml-64 flex flex-col min-h-screen pb-24 md:pb-8 w-full min-w-0">
 
      <!-- Top Header Bar -->
-    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between">
-      <div class="w-full flex items-center justify-between">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          </svg>
-        </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Piket</h1>
-        <div class="w-9"></div>
+    <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-4 sm:px-6 md:px-10 h-16 flex items-center justify-between">
+      <div class="w-full flex items-center justify-between gap-3">
+        <div class="w-9 shrink-0"></div>
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white truncate">Piket</h1>
+        <div class="w-9 shrink-0"></div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="w-full px-6 md:px-10 py-8 flex flex-col gap-8 flex-1">
+    <main class="w-full px-4 sm:px-6 md:px-10 py-6 md:py-8 flex flex-col gap-8 flex-1">
 
       <div class="flex flex-col gap-4 w-full">
         <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600">
           Pilih Menu Piket
         </h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 w-full">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 w-full items-stretch">
 
           <!-- MENU 1: Jurnal Mengajar (Terima Jurnal dari Kelas) -->
-          <a href="{{ route('piket.jurnal') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+          <a href="{{ route('piket.jurnal') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 min-h-[220px] flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
             <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
                 <path d="M7 7h6M7 10h6M7 13h3"/>
               </svg>
             </div>
-            <div class="flex flex-col gap-1.5">
+            <div class="flex flex-col gap-1.5 flex-1">
               <h3 class="font-poppins font-bold text-lg text-[#3E3028]">Jurnal Mengajar</h3>
               <p class="text-sm text-[#8C7B70] leading-relaxed">Terima dan pantau jurnal mengajar yang dikirim oleh setiap kelas hari ini.</p>
             </div>
@@ -143,16 +141,34 @@
             </span>
           </a>
 
-          <!-- MENU 2: Dispensasi Siswa -->
-          <a href="{{ route('dispen.index') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="w-12 h-12 rounded-xl bg-brand-100 text-brand-800 flex items-center justify-center shrink-0">
+          <!-- MENU 2: Setujui Tugas Guru (Tugas guru izin / sakit) -->
+          <a href="{{ route('piket.tugas-review') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 min-h-[220px] flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-xl bg-sky-50 border border-sky-200 text-sky-800 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3.5 19 6v5.2c0 4.4-2.9 7.6-7 9.3-4.1-1.7-7-4.9-7-9.3V6l7-2.5z"/>
+                <path d="m8.8 12 2.1 2.1 4.4-4.5"/>
+              </svg>
+            </div>
+            <div class="flex flex-col gap-1.5 flex-1">
+              <h3 class="font-poppins font-bold text-lg text-[#3E3028]">Setujui Tugas Guru</h3>
+              <p class="text-sm text-[#8C7B70] leading-relaxed">Tinjau tugas dari guru yang sedang izin atau sakit, termasuk alasan izin dan lampiran.</p>
+            </div>
+            <span class="mt-auto flex items-center gap-1.5 text-sm font-poppins font-semibold text-brand-800 group-hover:text-brand-900">
+              Buka Menu
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4l6 6-6 6"/></svg>
+            </span>
+          </a>
+
+          <!-- MENU 3: Dispensasi Siswa -->
+          <a href="{{ route('dispen.index') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 min-h-[220px] flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-xl bg-brand-100 border border-brand-200 text-brand-800 flex items-center justify-center shrink-0">
               <svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
                 <circle cx="10" cy="6.5" r="3.5"/>
                 <path d="M4 17v-1a5 5 0 015-5h2a5 5 0 015 5v1"/>
                 <path d="M13 9l3-3 1.5 1.5-3 3z"/>
               </svg>
             </div>
-            <div class="flex flex-col gap-1.5">
+            <div class="flex flex-col gap-1.5 flex-1">
               <h3 class="font-poppins font-bold text-lg text-[#3E3028]">Dispensasi Siswa</h3>
               <p class="text-sm text-[#8C7B70] leading-relaxed">Kelola pengajuan dan pencatatan dispensasi siswa yang izin meninggalkan kelas.</p>
             </div>
@@ -162,23 +178,18 @@
             </span>
           </a>
 
-          <a href="{{ route('piket.input-surat') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-center"><span class="text-xl font-bold">S/I</span></div>
-            <div class="flex flex-col gap-1.5"><h3 class="font-poppins font-bold text-lg text-[#3E3028]">Input Surat</h3><p class="text-sm text-[#8C7B70] leading-relaxed">Catat siswa sakit atau izin agar statusnya otomatis terisi di jurnal kelas.</p></div>
-            <span class="mt-auto text-sm font-semibold text-brand-800">Buka Menu →</span>
-          </a>
-
-          <!-- MENU 3: Upload Tugas (Guru Izin/Sakit) -->
-          <a href="{{ url('/piket/upload-tugas') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="w-12 h-12 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 flex items-center justify-center shrink-0">
-              <svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M10 3v9m0 0l-3-3m3 3l3-3"/>
-                <path d="M4 14v2a1 1 0 001 1h10a1 1 0 001-1v-2"/>
+          <!-- MENU 4: Input Surat -->
+          <a href="{{ route('piket.input-surat') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 min-h-[220px] flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 2.5h6.5L15.5 6.5V16a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 16V4A1.5 1.5 0 015 2.5z"/>
+                <path d="M11.5 2.5V6.5H15.5"/>
+                <path d="M6.5 10.5h7M6.5 13.5h4"/>
               </svg>
             </div>
-            <div class="flex flex-col gap-1.5">
-              <h3 class="font-poppins font-bold text-lg text-[#3E3028]">Upload Tugas</h3>
-              <p class="text-sm text-[#8C7B70] leading-relaxed">Unggah tugas pengganti untuk kelas yang gurunya sedang izin atau sakit.</p>
+            <div class="flex flex-col gap-1.5 flex-1">
+              <h3 class="font-poppins font-bold text-lg text-[#3E3028]">Input Surat</h3>
+              <p class="text-sm text-[#8C7B70] leading-relaxed">Catat siswa sakit atau izin agar statusnya otomatis terisi di jurnal kelas.</p>
             </div>
             <span class="mt-auto flex items-center gap-1.5 text-sm font-poppins font-semibold text-brand-800 group-hover:text-brand-900">
               Buka Menu
@@ -186,10 +197,22 @@
             </span>
           </a>
 
-          <a href="{{ route('piket.rekap') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center"><svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M7 3v14M10 7h4M10 10h4M10 13h4"/></svg></div>
-            <div class="flex flex-col gap-1.5"><h3 class="font-poppins font-bold text-lg text-[#3E3028]">Rekap</h3><p class="text-sm text-[#8C7B70] leading-relaxed">Lihat jurnal, dispensasi, surat, dan tugas berdasarkan tanggal, lalu unduh ke Excel.</p></div>
-            <span class="mt-auto text-sm font-semibold text-brand-800">Buka Rekap →</span>
+          <!-- MENU 5: Rekap -->
+          <a href="{{ route('piket.rekap') }}" class="group bg-white border border-brand-100 rounded-2xl p-6 min-h-[220px] flex flex-col gap-5 hover:border-brand-300 hover:shadow-md transition-all">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z"/>
+                <path d="M7 3v14M10 7h4M10 10h4M10 13h4"/>
+              </svg>
+            </div>
+            <div class="flex flex-col gap-1.5 flex-1">
+              <h3 class="font-poppins font-bold text-lg text-[#3E3028]">Rekap</h3>
+              <p class="text-sm text-[#8C7B70] leading-relaxed">Lihat jurnal, dispensasi, surat, dan tugas berdasarkan tanggal, lalu unduh ke Excel.</p>
+            </div>
+            <span class="mt-auto flex items-center gap-1.5 text-sm font-poppins font-semibold text-brand-800 group-hover:text-brand-900">
+              Buka Rekap
+              <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4l6 6-6 6"/></svg>
+            </span>
           </a>
 
         </div>

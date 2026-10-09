@@ -8,10 +8,12 @@ use App\Models\PengirimanJurnalKelas;
 use App\Models\Siswa;
 use App\Services\SesiKelasService;
 use App\Support\Waktu;
+use App\Support\PulangCepat;
 use Carbon\CarbonInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -29,12 +31,25 @@ class KelasController extends Controller
     {
         $kelas = $request->user()->kelas;
 
-        abort_if(! $kelas, 404, 'Akun ini belum terhubung ke kelas.');
+        if (! $kelas) {
+            return view('kelas.akun-belum-terhubung');
+        }
 
         $sekarang = $this->sekarang();
         $sesi = $service->sesiHariIni($kelas, $sekarang);
-        $tugasPiket = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
-            ->whereDate('tanggal', $sekarang->toDateString())->latest('id_upload_tugas')->get();
+        $kolomTugasAda = Schema::hasTable('upload_tugas');
+        $kolomTanggalAda = $kolomTugasAda && Schema::hasColumn('upload_tugas', 'tanggal');
+        $kolomJadwalAda = $kolomTugasAda && Schema::hasColumn('upload_tugas', 'id_jadwal');
+        $tugasPiket = collect();
+        if ($kolomTanggalAda && $kolomJadwalAda) {
+            $tugasQuery = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
+                ->whereDate('tanggal', $sekarang->toDateString());
+            if (Schema::hasColumn('upload_tugas', 'status_review')) {
+                $tugasQuery->where('status_review', 'disetujui');
+            }
+            $tugasPiket = $tugasQuery->latest('id_upload_tugas')->get();
+        }
+        $tugasKelas = $tugasPiket->whereNull('id_jadwal')->values();
         $suratSiswaHariIni = DB::table('surat_siswa as ss')
             ->join('siswa as s', 's.id_siswa', '=', 'ss.id_siswa')
             ->where('ss.id_kelas', $kelas->id_kelas)->whereDate('ss.tanggal', $sekarang->toDateString())
@@ -50,7 +65,11 @@ class KelasController extends Controller
             ->where('id_kelas', $kelas->id_kelas)->whereDate('tanggal', $sekarang->toDateString())
             ->where('status', 'disetujui')->orderBy('jam_ke_mulai')->get();
 
-        $sesi = $sesi->map(function ($s) use ($jurnalHariIni, $tugasPiket, $dispensasiHariIni, $suratSiswaHariIni) {
+        $hariNama = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'][$sekarang->dayOfWeekIso];
+        $sesi = $sesi->map(function ($s) use ($jurnalHariIni, $tugasPiket, $dispensasiHariIni, $suratSiswaHariIni, $hariNama) {
+            if (PulangCepat::berlaku($hariNama, (int) $s->jam_ke_mulai)) {
+                $s->status = 'Pulang Cepat';
+            }
             $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->first();
             $s->tugas = $tugasPiket->first(fn ($tugas) => $tugas->id_jadwal && in_array((int) $tugas->id_jadwal, $s->ids));
             $s->dispensasi = $dispensasiHariIni->filter(fn ($dispen) => (int) $dispen->jam_ke_mulai <= (int) $s->jam_ke_sampai
@@ -109,12 +128,16 @@ class KelasController extends Controller
             ->where('status_verifikasi', 'terverifikasi')
             ->orderByDesc('id_jurnal')
             ->get();
-        $tugasHariIni = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
-            ->whereDate('tanggal', $sekarang->toDateString())
-            ->orderByDesc('created_at')->orderByDesc('id_upload_tugas')
-            ->get();
+        $tugasQuery = DB::table('upload_tugas')->where('id_kelas', $kelas->id_kelas)
+            ->whereDate('tanggal', $sekarang->toDateString());
+        if (Schema::hasColumn('upload_tugas', 'status_review')) {
+            $tugasQuery->where('status_review', 'disetujui');
+        }
+        $tugasHariIni = $tugasQuery->orderByDesc('created_at')->orderByDesc('id_upload_tugas')->get();
 
-        $rekap = $sesi->map(function ($s) use ($jurnalHariIni, $tugasHariIni) {
+        $hariNama = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'][$sekarang->dayOfWeekIso];
+        $rekap = $sesi->map(function ($s) use ($jurnalHariIni, $tugasHariIni, $hariNama) {
+            $s->pulangCepat = PulangCepat::berlaku($hariNama, (int) $s->jam_ke_mulai);
             $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->first();
             $s->tugas = $tugasHariIni->first(fn ($tugas) => $tugas->id_jadwal && in_array((int) $tugas->id_jadwal, $s->ids));
 
@@ -164,6 +187,7 @@ class KelasController extends Controller
         $tugas = DB::table('upload_tugas')->where('id_upload_tugas', $id)
             ->where('id_kelas', $request->user()->id_kelas)
             ->first();
+        abort_if(Schema::hasColumn('upload_tugas', 'status_review') && ($tugas?->status_review !== 'disetujui'), 404);
         abort_if(! $tugas || ! $tugas->file_path, 404);
         abort_unless(Storage::disk('public')->exists($tugas->file_path), 404, 'Lampiran tidak ditemukan.');
 

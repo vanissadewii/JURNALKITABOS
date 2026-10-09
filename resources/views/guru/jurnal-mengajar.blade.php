@@ -293,11 +293,18 @@
 
     </header>
 
+    @if($isPiketHariIni)
+      <div class="sticky top-[104px] z-30 w-full border-b border-brand-100 bg-[#F5EFE8] px-6 py-3 md:top-[112px] md:px-10">
+        <label for="cariJurnalPiket" class="sr-only">Cari kelas, jurnal, atau tugas</label>
+        <input id="cariJurnalPiket" type="search" placeholder="Cari kelas, guru, mata pelajaran, materi, atau tugas..." class="h-11 w-full rounded-xl border border-brand-100 bg-white px-4 text-sm text-[#3E3028] shadow-sm outline-none placeholder:text-[#A08978] focus:border-brand-800 focus:ring-2 focus:ring-brand-100">
+      </div>
+    @endif
+
 
     <!-- MAIN -->
 
     <main
-      class="w-full px-6 md:px-10 py-8
+      class="w-full px-4 sm:px-6 md:px-10 py-5 sm:py-8
              flex flex-col gap-6 flex-1">
 
       @if(!$isPiketHariIni)
@@ -341,7 +348,7 @@
 
         <div
           id="filterBar"
-          class="z-20 -mx-6 px-6 md:-mx-10 md:px-10 bg-brand-50/95 py-3 border-b border-brand-100 grid grid-cols-3 gap-2">
+          class="-mx-4 mb-4 grid grid-cols-3 gap-2 border-b border-brand-100 bg-brand-50/95 px-4 py-3 sm:-mx-6 sm:px-6 md:-mx-10 md:px-10">
 
           @foreach(['X', 'XI', 'XII'] as $t)
 
@@ -349,7 +356,7 @@
               type="button"
               data-tingkat="{{ $t }}"
               onclick="filterTingkat('{{ $t }}')"
-              class="filter-btn rounded-full px-3 py-2 text-xs sm:text-sm font-semibold {{ $t === ($daftarTingkat[0] ?? 'X') ? 'bg-brand-800 text-white' : 'bg-white border border-brand-100 text-[#7A6A60]' }}">
+              class="filter-btn min-w-0 rounded-full px-2 py-2 text-xs sm:px-3 sm:text-sm font-semibold {{ $t === ($daftarTingkat[0] ?? 'X') ? 'bg-brand-800 text-white' : 'bg-white border border-brand-100 text-[#7A6A60]' }}">
 
               Kelas {{ $t }}
 
@@ -358,9 +365,6 @@
           @endforeach
 
         </div>
-
-
-        <!-- DAFTAR KELAS -->
 
         @php
           $pengirimanPerNamaKelas = $pengirimanKelas->keyBy(fn ($kiriman) => $kiriman->kelas?->nama_kelas);
@@ -375,8 +379,9 @@
           })->values();
         @endphp
 
-        <div class="flex flex-col gap-4" id="daftarKelas">
-          @forelse($jurnalPerKelas as $j)
+        <div id="panelKelas" class="w-full min-w-0">
+        <div class="flex w-full min-w-0 flex-col gap-3 sm:gap-4" id="daftarKelas">
+          @foreach($jurnalPerKelas as $j)
             @php
               $badge = match ($j['status']) {
                 'tidak_hadir' => ['bg-rose-50 border-rose-200 text-rose-800', 'Guru Tidak Hadir'],
@@ -388,14 +393,13 @@
 
             <article
               class="kelas-card bg-white border border-brand-100
-                     rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4"
+                     rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
               data-tingkat="{{ $j['tingkat'] }}"
               data-status="{{ $j['status'] }}"
               data-id="{{ implode(',', $j['ids']) }}">
 
                   <div
-                    class="flex items-center gap-3
-                           md:w-44 shrink-0">
+                    class="flex min-w-0 items-center gap-3 sm:w-44 shrink-0">
 
                     <div
                       class="w-11 h-11 rounded-xl
@@ -408,17 +412,17 @@
 
                     </div>
 
-                    <div class="flex flex-col">
+                    <div class="flex min-w-0 flex-col">
 
                       <h4
-                        class="font-poppins font-bold text-base
+                        class="break-words font-poppins font-bold text-base
                                text-[#3E3028] leading-tight">
 
                         {{ $j['kelas'] }}
 
                       </h4>
 
-                      <span class="text-xs text-[#8C7B70]">
+                      <span class="break-words text-xs text-[#8C7B70]">
                         {{ count($j['sesi']) }} sesi • kirim {{ $j['waktu_kirim'] }}
                       </span>
                       @if($j['kiriman_kelas'])
@@ -433,7 +437,7 @@
                   <div class="flex-1"></div>
 
 
-                  <div class="flex items-center gap-2 flex-wrap">
+                  <div class="flex items-center gap-2 flex-wrap sm:ml-auto">
 
                     <span
                       class="px-2.5 py-1 rounded-full
@@ -448,35 +452,23 @@
                   </div>
 
 
-                <button type="button" onclick="bukaDetailJurnal(@js($j))" class="shrink-0 rounded-lg bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900">Lihat detail</button>
+                <button type="button" onclick="bukaDetailJurnal(@js($j))" class="w-full shrink-0 rounded-lg bg-brand-800 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-900 sm:w-auto">Lihat detail</button>
 
             </article>
 
 
-          @empty
-
-            <div
-              class="bg-white border border-brand-100
-                     rounded-2xl p-10 text-center
-                     text-sm text-[#8C7B70]">
-
-              Belum ada kelas yang mengirim jurnal hari ini.
-
-            </div>
-
-          @endforelse
+          @endforeach
 
         </div>
 
-
         <div
           id="kosongMenunggu"
-          class="hidden bg-white border border-brand-100
-                 rounded-2xl p-10 text-center
-                 text-sm text-[#8C7B70]">
+          class="hidden mt-3 w-full rounded-2xl border border-brand-200 bg-white px-5 py-8 text-center text-sm text-[#8C7B70] sm:px-8">
 
-          Semua jurnal pada tingkat ini sudah diproses. 🎉
+          <p id="pesanKosongJurnal" class="font-semibold text-brand-800">Belum ada jurnal untuk ditampilkan.</p>
+          <p id="bantuanKosongJurnal" class="mx-auto mt-1 max-w-md text-xs leading-5">Jurnal dari kelas akan muncul di sini setelah dikirim.</p>
 
+        </div>
         </div>
 
       @endif
@@ -484,7 +476,6 @@
     </main>
 
   </div>
-
 
   <dialog id="dialogDetailJurnal" class="w-[calc(100%-1.5rem)] max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl border border-brand-100 p-0 shadow-xl">
     <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-brand-100 bg-white px-4 py-4 sm:px-6">
@@ -646,15 +637,14 @@
 
     }
 
-
     function terapkanFilter() {
 
       let terlihat = 0;
 
       document.querySelectorAll('.kelas-card').forEach(card => {
 
-        const cocok =
-          card.dataset.tingkat === tingkatAktif;
+        const sedangMencari = Boolean(document.getElementById('cariJurnalPiket')?.value.trim());
+        const cocok = (sedangMencari || card.dataset.tingkat === tingkatAktif) && cocokPencarian(card);
 
         card.classList.toggle(
           'is-hidden',
@@ -667,12 +657,22 @@
 
       });
 
-      document
-        .getElementById('kosongMenunggu')
-        .classList
-        .toggle('hidden', terlihat > 0);
+      const kosong = document.getElementById('kosongMenunggu');
+      const mencari = Boolean(document.getElementById('cariJurnalPiket')?.value.trim());
+      kosong.classList.toggle('hidden', terlihat > 0);
+      document.getElementById('pesanKosongJurnal').textContent = mencari ? 'Tidak ada jurnal yang cocok dengan pencarian.' : 'Belum ada jurnal untuk ditampilkan.';
+      document.getElementById('bantuanKosongJurnal').textContent = mencari
+        ? 'Coba ubah kata kunci pencarian.'
+        : 'Jurnal dari kelas akan muncul di sini setelah dikirim. Pilih tingkat kelas lain untuk melihat jurnal lainnya.';
 
     }
+
+    function cocokPencarian(elemen) {
+      const query = document.getElementById('cariJurnalPiket')?.value.trim().toLocaleLowerCase() || '';
+      return !query || elemen.textContent.toLocaleLowerCase().includes(query);
+    }
+
+    document.getElementById('cariJurnalPiket')?.addEventListener('input', terapkanFilter);
 
 
     const dataJurnal = @js($jurnalPerKelas->keyBy('kelas')->map(function ($jurnal) { $kiriman = $jurnal['kiriman_kelas']; $jurnal['ringkasan_kiriman'] = $kiriman ? ['waktu' => $kiriman->dikirim_at?->format('d/m/Y H:i') ?? '—', 'status' => 'Terkirim', 'jumlah_sesi' => $kiriman->jumlah_sesi, 'jumlah_lengkap' => $kiriman->jumlah_lengkap, 'jumlah_kurang' => $kiriman->jumlah_kurang, 'alasan' => null] : null; return $jurnal; }));
@@ -693,8 +693,6 @@
         <article class="rounded-xl border border-brand-100 bg-[#FFFCF9] p-4">
           <div class="flex flex-wrap items-start justify-between gap-2"><div><p class="text-xs text-brand-600">Jam ke-${teks(item.jam)} · ${teks(item.mapel)}</p><h3 class="mt-1 font-bold">${teks(item.guru)}</h3></div><span class="rounded-full px-2.5 py-1 text-xs font-semibold ${item.hadir_guru ? 'bg-emerald-50 text-emerald-800' : 'bg-rose-50 text-rose-800'}">${item.hadir_guru ? 'Guru hadir' : 'Guru tidak hadir'}</span></div>
           <dl class="mt-4 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2"><div><dt class="text-xs text-brand-600">Jumlah hadir</dt><dd class="font-semibold">${teks(item.jumlah_hadir)}</dd></div><div class="sm:col-span-2"><dt class="text-xs text-brand-600">Materi</dt><dd class="break-words">${teks(item.materi)}</dd></div></dl>
-          ${item.tugas ? `<p class="mt-3 whitespace-pre-line rounded-lg bg-white p-3 text-sm"><strong>${teks(item.status_guru || 'Tugas')}</strong><br>${teks(item.tugas)}</p>` : ''}
-          ${item.file_path ? `<a class="mt-3 inline-block text-sm font-semibold text-blue-700 underline" href="/piket/upload-tugas/${encodeURIComponent(item.id_upload_tugas)}/lampiran">Buka lampiran</a>` : ''}
           ${(item.siswa || []).length ? `<div class="mt-4"><h4 class="text-sm font-bold">Siswa tidak hadir (${item.siswa.length})</h4><ul class="mt-2 grid gap-2 sm:grid-cols-2">${item.siswa.map(s => `<li class="rounded-lg bg-white px-3 py-2 text-sm">${teks(s.nama)} <span class="ml-1 font-bold text-brand-600">${teks(s.ket)}</span></li>`).join('')}</ul></div>` : '<p class="mt-3 text-sm text-brand-600">Tidak ada catatan siswa tidak hadir.</p>'}
         </article>`).join('');
       const kiriman = jurnal.ringkasan_kiriman;

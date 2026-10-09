@@ -17,7 +17,7 @@
             <div class="flex items-center justify-between gap-3">
                 <div>
                     <p class="text-xs font-medium text-[#D7B899]">Pengaturan Keamanan</p>
-                    <h1 class="font-['Poppins'] text-xl font-bold md:text-2xl">Pengaturan QR</h1>
+                    <h1 class="font-['Poppins'] text-xl font-bold md:text-2xl">Pengaturan QR & Jurnal Susulan</h1>
                 </div>
                 <button type="button" onclick="openSidebar()" class="rounded-lg px-3 py-2 text-white hover:bg-white/10 md:hidden" aria-label="Buka sidebar">☰</button>
             </div>
@@ -34,19 +34,27 @@
             <article class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white shadow-sm">
                 <div class="border-b border-[#E5D8CC] bg-[#FFFCF9] px-4 py-3">
                     <h2 class="font-['Poppins'] text-base font-bold">Durasi Masa Berlaku QR</h2>
-                    <p class="mt-0.5 text-xs text-[#7A6A60]">Atur berapa detik QR sesi mengajar berlaku sebelum kedaluwarsa.</p>
                 </div>
 
                 <form method="POST" action="{{ route('admin.aturan-qr.update') }}" class="flex flex-col gap-3 px-4 py-4">
                     @csrf
                     @method('PUT')
-                    <label for="masa_qr_detik" class="text-sm font-semibold">Durasi (detik)</label>
                     <input id="masa_qr_detik" name="masa_qr_detik" type="number" min="5" max="120"
                            value="{{ old('masa_qr_detik', $masaQrDetik) }}"
                            class="h-10 w-full max-w-xs rounded-lg border border-[#D8C9BC] bg-white px-3.5 text-sm outline-none focus:border-[#5C4033] focus:ring-2 focus:ring-[#5C4033]/10">
-                    <p class="text-xs text-[#7A6A60]">Batas 5 sampai 120 detik. Semakin pendek durasi, semakin sulit QR difoto dan dikirim ke orang lain. Perubahan berlaku untuk QR yang dibuat setelah disimpan.</p>
+                    <p class="text-xs text-[#7A6A60]">Batas 5 sampai 120 detik. Perubahan berlaku untuk QR yang dibuat setelah disimpan.</p>
                     <button type="submit" class="w-fit rounded-lg bg-[#5C4033] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#4B3329]">Simpan Pengaturan</button>
                 </form>
+            </article>
+
+            <article class="overflow-hidden rounded-xl border border-[#E5D8CC] bg-white shadow-sm">
+                <div class="border-b border-[#E5D8CC] bg-[#FFFCF9] px-4 py-3"><h2 class="font-['Poppins'] text-base font-bold">Izin Jurnal Susulan</h2></div>
+                <form method="GET" action="{{ route('admin.aturan-qr.edit') }}" class="flex flex-wrap items-end gap-3 px-4 py-4">
+                    <label class="flex min-w-64 flex-col gap-1 text-sm font-semibold">Pilih guru<select name="id_guru" onchange="this.form.submit()" class="h-10 rounded-lg border border-[#D8C9BC] px-3 font-normal"><option value="">Pilih guru</option>@foreach($guruList as $guru)<option value="{{ $guru->id }}" @selected($guruDipilih?->id === $guru->id)>{{ $guru->name }}</option>@endforeach</select></label>
+                </form>
+                @if($guruDipilih)
+                    <form method="POST" action="{{ route('admin.aturan-qr.update') }}" class="flex flex-wrap items-center justify-between gap-3 border-t border-[#F0E7DF] px-4 py-4">@csrf @method('PUT')<input type="hidden" name="id_guru" value="{{ $guruDipilih->id }}"><label class="flex items-center gap-3 text-sm"><input type="hidden" name="aktif" value="0"><input type="checkbox" name="aktif" value="1" @checked($pengaturanSusulan?->aktif) class="h-5 w-5 accent-[#5C4033]">Izinkan {{ $guruDipilih->name }} mengisi jurnal kemarin</label><button class="rounded-lg bg-[#5C4033] px-5 py-2.5 text-sm font-semibold text-white">Simpan</button></form>
+                @else<p class="px-4 pb-4 text-sm text-[#7A6A60]">Pilih guru untuk mengatur izin jurnal susulan.</p>@endif
             </article>
         </section>
     </main>

@@ -91,6 +91,12 @@ class AdminDashboardController extends Controller
             '10' => 'X', '11' => 'XI', '12' => 'XII', default => (string) $item->tingkat,
         });
         $jadwalPerKelas = $jadwalHariIni->groupBy('id_kelas');
+        $jadwalPerGuru = $jadwalHariIni->groupBy(fn ($jadwal) => $jadwal->id_guru)
+            ->map(fn ($daftar) => (object) [
+                'guru' => $daftar->first()->guru,
+                'jumlah_jam' => $daftar->sum(fn ($jadwal) => $jadwal->jam_ke_sampai - $jadwal->jam_ke_mulai + 1),
+                'jadwal' => $daftar->sortBy('jam_mulai')->values(),
+            ])->sortBy(fn ($item) => $item->guru?->name ?? '');
 
         $jurnalTerkirim = Jurnal::whereNotNull('waktu_submit')
             ->where('status_verifikasi', 'terverifikasi')
@@ -117,6 +123,6 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard_admin', compact(
             'hariIni', 'kelasPerTingkat', 'jadwalPerKelas', 'jumlahGuru', 'jumlahSiswa',
             'jumlahKelas', 'jumlahJurnal', 'menungguVerifikasi', 'ringkasanKehadiran'
-        ) + ['kelasList' => $kelas]);
+        ) + ['kelasList' => $kelas, 'jadwalPerGuru' => $jadwalPerGuru]);
     }
 }

@@ -117,7 +117,7 @@
         async function muat() {
             let data;
             try {
-                const res = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });
+                const res = await fetch(statusUrl, { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
                 data = await res.json();
             } catch (e) {
                 return;

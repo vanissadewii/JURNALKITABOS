@@ -268,19 +268,11 @@
                     </a>
 
 
-                    {{-- ATURAN JURNAL SUSULAN --}}
-                    <a
-                        href="{{ route('admin.aturan-jurnal-susulan.edit') }}"
-                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.aturan-jurnal-susulan.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
-                        Aturan Jurnal Susulan
-                    </a>
-
-
                     {{-- PENGATURAN QR --}}
 
                     <a href="{{ route('admin.aturan-qr.edit') }}"
-                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.aturan-qr.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
-                        Pengaturan QR
+                        class="block px-3 py-2 rounded-lg text-[13px] {{ request()->routeIs('admin.aturan-qr.*', 'admin.aturan-jurnal-susulan.*') ? 'bg-[#F5EFE8] font-semibold text-[#5C4033]' : 'text-[#3E3028] hover:bg-[#F5EFE8]' }}">
+                        QR & Jurnal Susulan
                     </a>
 
                     {{-- USER --}}

@@ -10,6 +10,7 @@ use App\Support\Waktu;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,6 +52,78 @@ class UploadTugasController extends Controller
             ])->values(),
             'jadwalOptions' => $jadwalOptions,
         ]);
+    }
+
+    public function reviewIndex(): View
+    {
+        $kolom = Schema::getColumnListing('upload_tugas');
+        $query = DB::table('upload_tugas')
+            ->join('kelas', 'kelas.id_kelas', '=', 'upload_tugas.id_kelas')
+            ->leftJoin('users', 'users.id', '=', 'upload_tugas.'.(in_array('id_pengunggah', $kolom, true) ? 'id_pengunggah' : 'id_guru_piket'));
+
+        if (in_array('id_jadwal', $kolom, true)) {
+            $query->whereNull('upload_tugas.id_jadwal');
+        }
+        if (in_array('status_review', $kolom, true)) {
+            $query->where('upload_tugas.status_review', 'menunggu');
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
+        $pilihan = ['upload_tugas.*', 'kelas.tingkat', 'kelas.jurusan', 'kelas.rombel', 'users.name as nama_guru'];
+        foreach (['tanggal', 'materi', 'file_path', 'alasan_izin'] as $optionalColumn) {
+            if (! in_array($optionalColumn, $kolom, true)) {
+                $pilihan[] = DB::raw("null as {$optionalColumn}");
+            }
+        }
+        $tugasMenunggu = $query->orderByDesc('upload_tugas.created_at')->select($pilihan)->get();
+
+        return view('guru.setujui-tugas', compact('tugasMenunggu'));
+    }
+
+    public function createGuru(): View
+    {
+        $hari = self::NAMA_HARI[Waktu::sekarang()->dayOfWeekIso] ?? null;
+        $mapelPerKelas = $hari
+            ? JadwalPelajaran::with('mapel')
+                ->whereHas('jamPelajaran', fn ($query) => $query->where('hari', $hari)->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')))
+                ->get()->filter(fn ($jadwal) => $jadwal->mapel)
+                ->groupBy('id_kelas')->map(fn ($jadwals) => $jadwals->pluck('mapel.nama_mapel')->unique()->values())
+            : collect();
+
+        return view('guru.unggah-tugas-guru', [
+            'kelasList' => Kelas::orderBy('tingkat')->orderBy('jurusan')->orderBy('rombel')->get(),
+            'mapelPerKelas' => $mapelPerKelas,
+        ]);
+    }
+
+    public function storeGuru(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:izin,sakit'], 'alasan_izin' => ['exclude_unless:status,izin', 'required', 'string', 'max:2000'],
+            'id_kelas' => ['required', 'integer', 'exists:kelas,id_kelas'], 'mapel' => ['required', 'string', 'exists:mapel,nama_mapel'],
+            'materi' => ['required', 'string', 'max:5000'], 'tugas' => ['required', 'string', 'max:10000'],
+            'file' => ['nullable', 'file', 'mimes:pdf,doc,docx,ppt,pptx,xls,xlsx,zip', 'max:20480'],
+        ]);
+        $hari = self::NAMA_HARI[Waktu::sekarang()->dayOfWeekIso] ?? null;
+        $mapelTerjadwal = $hari ? JadwalPelajaran::with('mapel')
+            ->where('id_kelas', $data['id_kelas'])
+            ->whereHas('mapel', fn ($query) => $query->where('nama_mapel', $data['mapel']))
+            ->whereHas('jamPelajaran', fn ($query) => $query->where('hari', $hari)->whereHas('semester', fn ($semester) => $semester->where('status', 'aktif')))
+            ->exists() : false;
+        if (! $mapelTerjadwal) {
+            return back()->withErrors(['mapel' => 'Mata pelajaran tidak terjadwal untuk kelas yang dipilih hari ini.'])->withInput();
+        }
+        $filePath = $request->hasFile('file') ? $request->file('file')->store('tugas-guru', 'public') : null;
+        DB::table('upload_tugas')->insert([
+            'id_kelas' => $data['id_kelas'], 'id_jadwal' => null, 'tanggal' => Waktu::sekarang()->toDateString(), 'file_path' => $filePath,
+            'mapel' => $data['mapel'], 'materi' => $data['materi'], 'status_guru' => ucfirst($data['status']),
+            'alasan_izin' => $data['status'] === 'izin' ? $data['alasan_izin'] : null, 'tugas' => $data['tugas'],
+            'id_guru_piket' => $request->user()->id, 'id_pengunggah' => $request->user()->id, 'status_review' => 'menunggu',
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        return redirect()->route('dashboard-guru')->with('success', 'Tugas terkirim kepada guru piket untuk disetujui.');
     }
 
     public function unduhLampiran(int $id): Response
@@ -118,6 +191,7 @@ class UploadTugasController extends Controller
                 'alasan_izin' => $statusGuru === 'izin' ? $data['alasan_izin'] : null,
                 'tugas' => $data['tugas'],
                 'id_guru_piket' => $request->user()->id,
+                'id_pengunggah' => $jadwal->id_guru,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -134,12 +208,12 @@ class UploadTugasController extends Controller
                 'materi' => $data['materi'],
                 'keterangan' => $keterangan,
                 'jumlah_hadir' => null,
-                'status_kehadiran_guru' => $statusGuru,
-                'status_verifikasi' => 'terverifikasi',
-                'status_piket' => 'disetujui',
+                'status_kehadiran_guru' => 'menunggu_verifikasi',
+                'status_verifikasi' => 'belum_verifikasi',
+                'status_piket' => 'menunggu',
                 'alasan_tolak' => null,
-                'id_diperiksa_oleh' => $request->user()->id,
-                'diperiksa_at' => now(),
+                'id_diperiksa_oleh' => null,
+                'diperiksa_at' => null,
                 'waktu_submit' => now(),
             ];
 
@@ -150,6 +224,33 @@ class UploadTugasController extends Controller
             }
         });
 
-        return redirect()->route('piket.upload-tugas')->with('success', 'Tugas '.$jadwal->mapel->nama_mapel.' untuk '.$jadwal->kelas->nama_kelas.' (jam ke-'.$jadwal->jamPelajaran->jam_ke.') berhasil dikirim.');
+        return redirect()->route('piket.upload-tugas')->with('success', 'Tugas '.$jadwal->mapel->nama_mapel.' untuk '.$jadwal->kelas->nama_kelas.' (jam ke-'.$jadwal->jamPelajaran->jam_ke.') berhasil dikirim untuk ditinjau guru piket.');
+    }
+
+    public function tinjau(Request $request, int $id): RedirectResponse
+    {
+        $data = $request->validate([
+            'keputusan' => ['required', 'in:disetujui,ditolak'],
+            'catatan' => ['required_if:keputusan,ditolak', 'nullable', 'string', 'max:1000'],
+        ], ['catatan.required_if' => 'Catatan penolakan wajib diisi.']);
+        abort_unless(Schema::hasColumn('upload_tugas', 'status_review'), 404, 'Fitur persetujuan tugas belum tersedia. Jalankan migrasi database terlebih dahulu.');
+        $tugas = DB::table('upload_tugas')->where('id_upload_tugas', $id)->lockForUpdate()->first();
+        abort_unless($tugas && ($tugas->status_review ?? 'menunggu') === 'menunggu', 404);
+        abort_unless($tugas->id_jadwal === null, 404);
+
+        DB::transaction(function () use ($data, $tugas, $request) {
+            DB::table('upload_tugas')->where('id_upload_tugas', $tugas->id_upload_tugas)->update([
+                'status_review' => $data['keputusan'], 'catatan_piket' => $data['catatan'] ?? null,
+                'ditinjau_at' => now(), 'updated_at' => now(),
+            ]);
+            if ($tugas->id_jadwal) Jurnal::where('id_jadwal', $tugas->id_jadwal)->whereDate('tanggal', $tugas->tanggal)->update([
+                'status_kehadiran_guru' => $data['keputusan'] === 'disetujui' ? strtolower($tugas->status_guru) : 'menunggu_verifikasi',
+                'status_verifikasi' => $data['keputusan'] === 'disetujui' ? 'terverifikasi' : 'belum_verifikasi',
+                'status_piket' => $data['keputusan'], 'alasan_tolak' => $data['keputusan'] === 'ditolak' ? ($data['catatan'] ?? 'Tugas ditolak guru piket.') : null,
+                'id_diperiksa_oleh' => $request->user()->id, 'diperiksa_at' => now(), 'updated_at' => now(),
+            ]);
+        });
+
+        return redirect()->route('piket.tugas-review')->with('success', 'Tinjauan tugas berhasil disimpan.');
     }
 }
