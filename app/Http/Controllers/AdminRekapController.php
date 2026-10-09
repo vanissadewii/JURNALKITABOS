@@ -55,26 +55,40 @@ class AdminRekapController extends Controller
                 'tidak_hadir' => $items->where('status_kehadiran_guru', 'tidak_hadir')->count(),
             ];
         })->values();
-        $byTeacher = User::whereIn('role', ['guru', 'wali_kelas'])->get()->keyBy('id')->map(function ($guru) use ($jurnals, $tidakHadirPerGuru) {
-            $items = $jurnals->filter(fn ($j) => (int) $j->jadwal?->id_guru === (int) $guru->id);
+        $guruList = User::whereIn('role', ['guru', 'wali_kelas'])->get();
 
-            return (object) [
-                'guru' => $guru,
-                'hadir' => $items->where('status_kehadiran_guru', 'hadir')->count(),
-                'izin' => $items->where('status_kehadiran_guru', 'izin')->count(),
-                'sakit' => $items->where('status_kehadiran_guru', 'sakit')->count(),
-                'tidak_hadir' => (int) $tidakHadirPerGuru->get($guru->id, 0),
-                'jumlah' => $items->count() + (int) $tidakHadirPerGuru->get($guru->id, 0),
-            ];
-        })->sortBy(fn ($row) => $row->guru->name)->values();
+$mapelPerGuru = JadwalPelajaran::with('mapel')
+    ->whereIn('id_guru', $guruList->pluck('id'))
+    ->get()
+    ->groupBy('id_guru')
+    ->map(function ($jadwals) {
+        return $jadwals->pluck('mapel.nama_mapel')
+            ->filter()
+            ->unique()
+            ->sort()
+            ->values();
+    });
+
+$byTeacher = $guruList->keyBy('id')->map(function ($guru) use ($jurnals, $tidakHadirPerGuru, $mapelPerGuru) {
+    $items = $jurnals->filter(fn ($j) => (int) $j->jadwal?->id_guru === (int) $guru->id);
+
+    return (object) [
+        'guru' => $guru,
+        'mapel' => $mapelPerGuru->get($guru->id, collect()),
+        'hadir' => $items->where('status_kehadiran_guru', 'hadir')->count(),
+        'izin' => $items->where('status_kehadiran_guru', 'izin')->count(),
+        'sakit' => $items->where('status_kehadiran_guru', 'sakit')->count(),
+        'tidak_hadir' => (int) $tidakHadirPerGuru->get($guru->id, 0),
+        'jumlah' => $items->count() + (int) $tidakHadirPerGuru->get($guru->id, 0),
+   ];     
+       })->sortBy(fn ($row) => $row->guru->name)->values();;
         $kelas = Kelas::orderBy('tingkat')->orderBy('jurusan')->orderBy('rombel')->get();
 
         return compact('filters', 'dari', 'sampai', 'jurnals', 'byClass', 'byTeacher', 'kelas', 'jumlahTidakHadirPerJadwalTanggal');
     }
 
     public function index(Request $request): View
-    {
-        return view('admin.rekap', $this->data($request));
+    {        return view('admin.rekap', $this->data($request));
     }
 
     public function export(Request $request): BinaryFileResponse
