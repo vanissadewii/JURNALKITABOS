@@ -9,8 +9,8 @@ use App\Models\JamPelajaran;
 use App\Models\Jurnal;
 use App\Models\Kelas;
 use App\Models\Siswa;
-use App\Support\WakaPiket;
 use App\Support\KegiatanTanggal;
+use App\Support\WakaPiket;
 use App\Support\Waktu;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -158,20 +158,21 @@ class DispenController extends Controller
         }
 
         $dispen = DB::transaction(function () use ($idSiswa, $validated, $waka) {
-        $suratTerakhir = null;
-        foreach ($idSiswa as $id) {
-            $suratTerakhir = Dispen::create([
-                ...collect($validated)->except(['id_siswa', 'id_siswa_list'])->all(),
-                'id_siswa' => $id,
-                'id_waka_piket' => $waka->id,
-                'nomor_surat' => $this->generateNomorSurat(),
-                'id_guru_piket' => auth()->id(),
-                'id_waka' => $waka->id,
-                'status' => 'menunggu',
-                'token_approval' => Str::random(40),
-            ]);
-        }
-        return $suratTerakhir;
+            $suratTerakhir = null;
+            foreach ($idSiswa as $id) {
+                $suratTerakhir = Dispen::create([
+                    ...collect($validated)->except(['id_siswa', 'id_siswa_list'])->all(),
+                    'id_siswa' => $id,
+                    'id_waka_piket' => $waka->id,
+                    'nomor_surat' => $this->generateNomorSurat(),
+                    'id_guru_piket' => auth()->id(),
+                    'id_waka' => $waka->id,
+                    'status' => 'menunggu',
+                    'token_approval' => Str::random(40),
+                ]);
+            }
+
+            return $suratTerakhir;
         });
 
         $dispen->loadMissing(['siswa', 'kelas', 'guruPiket', 'waka']);
@@ -249,7 +250,7 @@ class DispenController extends Controller
         $pesan = "Halo Waka {$dispen->waka->nama}!\n"
             ."Saya {$dispen->guruPiket?->name} dari guru piket. Mohon tinjau pengajuan dispensasi berikut.\n\n"
             ."No. surat: {$dispen->nomor_surat}\n"
-            ."Nama: ".(($siswaTerpilih && $siswaTerpilih->count() > 1) ? $siswaTerpilih->pluck('nama')->implode(', ') : $dispen->siswa->nama)."\n"
+            .'Nama: '.(($siswaTerpilih && $siswaTerpilih->count() > 1) ? $siswaTerpilih->pluck('nama')->implode(', ') : $dispen->siswa->nama)."\n"
             ."Kelas: {$kelas}\n"
             ."Tanggal: {$dispen->tanggal->format('d/m/Y')}\n"
             ."{$dispen->labelJam()}\n"

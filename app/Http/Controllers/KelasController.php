@@ -53,8 +53,7 @@ class KelasController extends Controller
         $sesi = $sesi->map(function ($s) use ($jurnalHariIni, $tugasPiket, $dispensasiHariIni, $suratSiswaHariIni) {
             $s->jurnal = $jurnalHariIni->whereIn('id_jadwal', $s->ids)->first();
             $s->tugas = $tugasPiket->first(fn ($tugas) => $tugas->id_jadwal && in_array((int) $tugas->id_jadwal, $s->ids));
-            $s->dispensasi = $dispensasiHariIni->filter(fn ($dispen) =>
-                (int) $dispen->jam_ke_mulai <= (int) $s->jam_ke_sampai
+            $s->dispensasi = $dispensasiHariIni->filter(fn ($dispen) => (int) $dispen->jam_ke_mulai <= (int) $s->jam_ke_sampai
                 && (int) ($dispen->jam_ke_selesai ?? 13) >= (int) $s->jam_ke_mulai
             )->values();
             $s->siswaTidakHadir = ($s->jurnal?->absenSiswa ?? collect())

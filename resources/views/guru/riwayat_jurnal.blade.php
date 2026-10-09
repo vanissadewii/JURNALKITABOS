@@ -37,25 +37,101 @@
       }
     }
   </script>
+
   <style>
-    html { scrollbar-width: none; }
-    html::-webkit-scrollbar { display: none; }
-    .guru-sidebar-nav a { gap: .75rem !important; padding: .625rem .75rem !important; border-radius: .5rem !important; font-size: 1rem !important; color: #7A6A60 !important; }
-    .guru-sidebar-nav a svg { color: #7A6A60 !important; }
-    .guru-sidebar-nav a.bg-\[\#F5EFE8\] { color: #5C4033 !important; }
-    .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg { color: #3E3028 !important; }
-    .guru-sidebar > div:first-child { padding: 1.5rem 1rem !important; gap: 2rem !important; }
+    html {
+      scrollbar-width: none;
+    }
+
+    html::-webkit-scrollbar {
+      display: none;
+    }
+
+    .guru-sidebar-nav a {
+      gap: .75rem !important;
+      padding: .625rem .75rem !important;
+      border-radius: .5rem !important;
+      font-size: 1rem !important;
+      color: #7A6A60 !important;
+    }
+
+    .guru-sidebar-nav a svg {
+      color: #7A6A60 !important;
+    }
+
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] {
+      color: #5C4033 !important;
+    }
+
+    .guru-sidebar-nav a.bg-\[\#F5EFE8\] svg {
+      color: #3E3028 !important;
+    }
+
+    .guru-sidebar > div:first-child {
+      padding: 1.5rem 1rem !important;
+      gap: 2rem !important;
+    }
+
     @media print {
-      @page { margin: 12mm; }
-      html, body { min-height: 0 !important; height: auto !important; overflow: visible !important; }
-      body { display: block !important; background: #fff !important; }
-      .guru-sidebar, header, body > nav, #filter-kalender { display: none !important; }
-      body > div { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
-      body > div > main { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; }
-      #jurnal-grid { display: block !important; width: 100% !important; }
-      .jurnal-card { display: block !important; width: 100% !important; margin: 0 0 8mm !important; box-shadow: none !important; break-inside: auto; page-break-inside: auto; }
-      .jurnal-card a { display: none !important; }
-      button { display: none !important; }
+      @page {
+        margin: 12mm;
+      }
+
+      html,
+      body {
+        min-height: 0 !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      body {
+        display: block !important;
+        background: #fff !important;
+      }
+
+      .guru-sidebar,
+      header,
+      body > nav,
+      #filter-kalender {
+        display: none !important;
+      }
+
+      body > div {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      body > div > main {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+      }
+
+      #jurnal-grid {
+        display: block !important;
+        width: 100% !important;
+      }
+
+      .jurnal-card {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 0 8mm !important;
+        box-shadow: none !important;
+        break-inside: auto;
+        page-break-inside: auto;
+      }
+
+      .jurnal-card a {
+        display: none !important;
+      }
+
+      button {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -65,52 +141,90 @@
   <!-- SIDEBAR LEFT NAVIGATION (Desktop) -->
   <aside class="guru-sidebar w-64 bg-white border-r border-[#E5D8CC] min-h-screen flex flex-col justify-between shrink-0 fixed left-0 top-0 bottom-0 z-40 hidden md:flex">
     <div class="py-6 px-4 flex flex-col gap-8">
-      
+
       <!-- Brand Logo / Title -->
       <div class="flex flex-col gap-0.5">
-        <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">JURNAL GURU</h2>
-          <span class="text-md font-medium text-[#7A6A60]">Akun Guru</span>
+        <h2 class="font-poppins font-extrabold text-xl text-[#3E3028] tracking-tight">
+          JURNAL GURU
+        </h2>
+        <span class="text-md font-medium text-[#7A6A60]">
+          Akun Guru
+        </span>
       </div>
 
       <!-- Navigation Links -->
       <nav class="guru-sidebar-nav flex flex-col gap-1">
-        
-        <a href="{{ url('/dashboard-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+
+        <a href="{{ url('/dashboard-guru') }}"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
           </svg>
+
           <span>Beranda</span>
         </a>
 
-        <a href="{{ route('jurnal.create') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        <a href="{{ route('jurnal.create') }}"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
             <path d="M7 3v14" />
           </svg>
+
           <span>Isi Jurnal</span>
         </a>
 
-        <a href="{{ url('/riwayat-jurnal') }}" class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
+        <a href="{{ url('/riwayat-jurnal') }}"
+          class="flex items-center gap-3 px-3 py-2.5 bg-[#F5EFE8] rounded-lg font-poppins font-bold text-md text-[#5C4033] transition-all">
+
           <svg class="w-5 h-5 text-[#3E3028]" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
             <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
           </svg>
+
           <span>Riwayat Jurnal</span>
         </a>
 
-        <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
-          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span>
+        <a
+          @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket())
+            href="{{ route('piket.rekap') }}"
+          @elseif(auth()->user()->sedangPiket())
+            href="{{ route('dashboard-guru-piket') }}"
+          @else
+            aria-disabled="true"
+            tabindex="-1"
+            title="Menu tersedia saat jadwal piket Anda aktif"
+          @endif
+
+          @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket())
+            style="pointer-events:none;opacity:.5;cursor:not-allowed"
+          @endif
+
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+
+          <svg class="h-5 w-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z" />
+            <path d="M7 10l2 2 4-4" />
+          </svg>
+
+          <span>
+            {{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}
+          </span>
         </a>
 
-        <a href="{{ url('/profil-guru') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+        <a href="{{ url('/profil-guru') }}"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#7A6A60] hover:bg-[#F5EFE8] hover:text-[#5C4033] transition-all">
+
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
             <circle cx="10" cy="6.5" r="3.5" />
           </svg>
+
           <span>Profil</span>
         </a>
 
       </nav>
-
     </div>
   </aside>
 
@@ -119,13 +233,24 @@
 
     <!-- Top Header Bar -->
     <header class="w-full bg-[#5C4033] shadow-md sticky top-0 z-30 px-6 md:px-10 h-16 flex items-center justify-between print:hidden">
+
       <div class="w-full flex items-center justify-between">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+
+        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">
+          Riwayat Jurnal Mengajar
+        </h1>
+
+        <button
+          onclick="window.print()"
+          class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all"
+          aria-label="Cetak riwayat jurnal"
+          title="Cetak riwayat jurnal">
+
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5h-2" />
+            <rect x="6" y="14" width="12" height="8" />
           </svg>
-        </a>
-        <h1 class="font-poppins font-bold text-base sm:text-lg text-white">Riwayat Jurnal Mengajar</h1>
-        <button onclick="window.print()" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all" aria-label="Cetak riwayat jurnal" title="Cetak riwayat jurnal">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+
         </button>
       </div>
     </header>
@@ -133,26 +258,44 @@
     <!-- Main Content Container -->
     <main class="w-full px-6 md:px-10 py-6 sm:py-8 flex flex-col gap-6 flex-1">
 
-      <!-- KALENDER GRID KOTAK (BULAN 1-12 & HARI 1-30/31) -->
-      <section id="filter-kalender" class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex flex-col gap-4">
+      <!-- KALENDER -->
+      <section id="filter-kalender"
+        class="bg-white border border-brand-100 rounded-2xl p-5 shadow-xs flex flex-col gap-4">
 
-        <!-- Header Pilih Bulan & Tahun + Tombol Tampilkan Semua -->
+        <!-- Header Kalender -->
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-brand-50 pb-3">
+
           <div class="flex items-center gap-2.5">
+
             <div class="w-9 h-9 rounded-xl bg-brand-50 flex items-center justify-center text-brand-800 shrink-0">
+
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
+
             </div>
+
             <div>
-              <h2 class="font-poppins font-bold text-base text-[#3E3028]">Kalender Sesi Mengajar</h2>
-              <p class="text-xs text-brand-600">Klik salah satu tanggal pada kotak untuk melihat jurnal</p>
+              <h2 class="font-poppins font-bold text-base text-[#3E3028]">
+                Kalender Sesi Mengajar
+              </h2>
+
+              <p class="text-xs text-brand-600">
+                Klik salah satu tanggal pada kotak untuk melihat jurnal
+              </p>
             </div>
+
           </div>
 
           <div class="flex items-center gap-2">
-            <!-- Select Bulan (1-12) -->
-            <select id="month-select" onchange="generateGridCalendar(new Date().getDate())" class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
+
+            <!-- Select Bulan -->
+            <select
+              id="month-select"
+              onchange="generateGridCalendar(new Date().getDate())"
+              class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
+
               <option value="1" @selected(now()->month === 1)>Januari</option>
               <option value="2" @selected(now()->month === 2)>Februari</option>
               <option value="3" @selected(now()->month === 3)>Maret</option>
@@ -165,24 +308,40 @@
               <option value="10" @selected(now()->month === 10)>Oktober</option>
               <option value="11" @selected(now()->month === 11)>November</option>
               <option value="12" @selected(now()->month === 12)>Desember</option>
+
             </select>
 
             <!-- Select Tahun -->
-            <select id="year-select" onchange="generateGridCalendar(new Date().getDate())" class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
-@foreach(range(now()->year - 2, now()->year + 2) as $tahunPilihan)
-              <option value="{{ $tahunPilihan }}" @selected(now()->year === $tahunPilihan)>{{ $tahunPilihan }}</option>
-            @endforeach
+            <select
+              id="year-select"
+              onchange="generateGridCalendar(new Date().getDate())"
+              class="bg-brand-50 border border-brand-200 text-[#3E3028] text-xs rounded-xl px-3 py-2 font-semibold focus:ring-2 focus:ring-brand-800 focus:outline-none cursor-pointer">
+
+              @foreach(range(now()->year - 2, now()->year + 2) as $tahunPilihan)
+
+              <option value="{{ $tahunPilihan }}" @selected(now()->year === $tahunPilihan)>
+                {{ $tahunPilihan }}
+              </option>
+
+              @endforeach
+
             </select>
 
-            <!-- Tombol Tampilkan Semua -->
-            <button onclick="filterByDate('all', null)" class="bg-brand-800 text-white text-xs font-semibold px-3 py-2 rounded-xl hover:bg-brand-900 transition-colors shrink-0">
+            <!-- Semua Sesi -->
+            <button
+              onclick="filterByDate('all', null)"
+              class="bg-brand-800 text-white text-xs font-semibold px-3 py-2 rounded-xl hover:bg-brand-900 transition-colors shrink-0">
+
               Semua Sesi
+
             </button>
+
           </div>
         </div>
 
-        <!-- Header Hari Kalender Kotak (Min-Sab) -->
+        <!-- Header Hari -->
         <div class="grid grid-cols-7 text-center font-semibold text-xs text-brand-600 pt-1">
+
           <div class="text-rose-600">Ming</div>
           <div>Sen</div>
           <div>Sel</div>
@@ -190,195 +349,388 @@
           <div>Kam</div>
           <div>Jum</div>
           <div>Sab</div>
+
         </div>
 
-        <!-- Grid Angka Tanggal Kalender Kotak (7 Kolom) -->
+        <!-- Grid Kalender -->
         <div id="calendar-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2">
-          <!-- Diisi otomatis oleh JavaScript -->
         </div>
 
-        <!-- Keterangan Legenda Indikator -->
+        <!-- Legenda -->
         <div class="flex items-center gap-4 text-xs text-brand-600 pt-2 border-t border-brand-50">
+
           <div class="flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
             <span>Ada Sesi Jurnal</span>
           </div>
+
         </div>
 
       </section>
 
       <!-- Section Title -->
       <div class="flex items-center justify-between">
-        <h2 class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600" id="selected-date-label">
+
+        <h2
+          class="font-poppins font-bold text-sm sm:text-base tracking-wider uppercase text-brand-600"
+          id="selected-date-label">
+
           Sesi Mengajar
+
         </h2>
-        <span id="session-count-badge" class="text-xs font-semibold text-brand-700 bg-white border border-brand-100 px-3 py-1 rounded-full shadow-xs">
+
+        <span
+          id="session-count-badge"
+          class="text-xs font-semibold text-brand-700 bg-white border border-brand-100 px-3 py-1 rounded-full shadow-xs">
+
           {{ $semuaJurnal->count() }} Sesi Terverifikasi
+
         </span>
+
       </div>
 
       @php
-      $bulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+      $bulan = [
+        'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
+      ];
+
       $tglIndo = fn ($t) => $t->format('j').' '.$bulan[$t->month - 1].' '.$t->format('Y');
       @endphp
 
       <!-- Container Card Jurnal -->
-      <div id="jurnal-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-        
+      <div id="jurnal-grid"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
+
         @forelse($semuaJurnal as $jurnal)
-          @php
-            $jadwal = $jurnal->jadwal;
-            $jam = $jadwal->jamPelajaran;
-            $absen = $jurnal->absenSiswa;
-          @endphp
-          <div class="jurnal-card bg-white border border-brand-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4" data-date="{{ $jurnal->tanggal->format('Y-m-d') }}">
-            <div class="flex flex-col gap-3">
-              <div class="flex justify-between items-start gap-2">
-                <div class="flex flex-col gap-0.5">
-                  <h3 class="font-poppins font-bold text-base sm:text-lg text-[#3E3028]">{{ $jadwal->kelas->nama_kelas ?? 'Kelas' }}</h3>
-                  <span class="text-xs sm:text-sm font-medium text-brand-600">{{ $jadwal->mapel->nama_mapel ?? 'Mapel' }} · {{ $jurnal->tanggal->locale('id')->translatedFormat('d F Y') }} (Jam ke-{{ $jam->jam_ke ?? '-' }})</span>
-                </div>
-                <span class="px-2.5 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-md font-semibold text-xs shrink-0">Terverifikasi</span>
+
+        @php
+        $jadwal = $jurnal->jadwal;
+        $jam = $jadwal->jamPelajaran;
+        $absen = $jurnal->absenSiswa;
+        @endphp
+
+        <div
+          class="jurnal-card bg-white border border-brand-100 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between gap-4"
+          data-date="{{ $jurnal->tanggal->format('Y-m-d') }}">
+
+          <div class="flex flex-col gap-3">
+
+            <div class="flex justify-between items-start gap-2">
+
+              <div class="flex flex-col gap-0.5">
+
+                <h3 class="font-poppins font-bold text-base sm:text-lg text-[#3E3028]">
+                  {{ $jadwal->kelas->nama_kelas ?? 'Kelas' }}
+                </h3>
+
+                <span class="text-xs sm:text-sm font-medium text-brand-600">
+                  {{ $jadwal->mapel->nama_mapel ?? 'Mapel' }}
+                  ·
+                  {{ $jurnal->tanggal->locale('id')->translatedFormat('d F Y') }}
+                  (Jam ke-{{ $jam->jam_ke ?? '-' }})
+                </span>
+
               </div>
-              <div class="w-full h-px bg-brand-50"></div>
-              <div class="flex flex-col gap-1.5 text-xs sm:text-sm text-brand-600">
-                <p><strong class="font-semibold text-[#3E3028]">Materi:</strong> {{ $jurnal->materi ?: 'Belum dicatat' }}</p>
-                <p><strong class="font-semibold text-[#3E3028]">Kehadiran:</strong> {{ $jurnal->jumlah_hadir ?? '—' }} hadir / {{ $absen->count() }} absen · <span class="text-brand-700 font-medium">{{ substr($jam->jam_mulai ?? '', 0, 5) }} – {{ substr($jam->jam_selesai ?? '', 0, 5) }}</span></p>
-              </div>
-              @if($absen->isNotEmpty())
-                <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-3 flex flex-col gap-1.5 mt-1">
-                  <span class="text-amber-900 font-semibold text-xs">Siswa tidak hadir ({{ $absen->count() }}):</span>
-                  <ul class="text-xs text-amber-900/90 pl-5 list-disc space-y-0.5">
-                    @foreach($absen as $baris)<li>{{ $baris->nama }} <span class="text-amber-700 font-medium">({{ $baris->status }})</span></li>@endforeach
-                  </ul>
-                </div>
-              @endif
+
+              <span class="px-2.5 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-md font-semibold text-xs shrink-0">
+                Terverifikasi
+              </span>
+
             </div>
-            <div class="flex justify-end pt-2 border-t border-brand-50">
-              <a href="{{ route('riwayat-jurnal.detail', $jurnal) }}" class="w-full sm:w-auto text-center px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">Lihat Detail</a>
+
+            <div class="w-full h-px bg-brand-50"></div>
+
+            <div class="flex flex-col gap-1.5 text-xs sm:text-sm text-brand-600">
+
+              <p>
+                <strong class="font-semibold text-[#3E3028]">
+                  Materi:
+                </strong>
+
+                {{ $jurnal->materi ?: 'Belum dicatat' }}
+              </p>
+
+              <p>
+                <strong class="font-semibold text-[#3E3028]">
+                  Kehadiran:
+                </strong>
+
+                {{ $jurnal->jumlah_hadir ?? '—' }} hadir /
+                {{ $absen->count() }} absen ·
+
+                <span class="text-brand-700 font-medium">
+                  {{ substr($jam->jam_mulai ?? '', 0, 5) }}
+                  –
+                  {{ substr($jam->jam_selesai ?? '', 0, 5) }}
+                </span>
+
+              </p>
+
             </div>
+
+            @if($absen->isNotEmpty())
+
+            <div class="bg-amber-50/60 border border-amber-200/60 rounded-xl p-3 flex flex-col gap-1.5 mt-1">
+
+              <span class="text-amber-900 font-semibold text-xs">
+                Siswa tidak hadir ({{ $absen->count() }}):
+              </span>
+
+              <ul class="text-xs text-amber-900/90 pl-5 list-disc space-y-0.5">
+
+                @foreach($absen as $baris)
+
+                <li>
+                  {{ $baris->nama }}
+                  <span class="text-amber-700 font-medium">
+                    ({{ $baris->status }})
+                  </span>
+                </li>
+
+                @endforeach
+
+              </ul>
+
+            </div>
+
+            @endif
+
           </div>
+
+          <div class="flex justify-end pt-2 border-t border-brand-50">
+
+            <a
+              href="{{ route('riwayat-jurnal.detail', $jurnal) }}"
+              class="w-full sm:w-auto text-center px-4 py-2 bg-brand-800 hover:bg-brand-900 text-white font-poppins font-semibold text-xs rounded-lg shadow-xs transition-colors">
+
+              Lihat Detail
+
+            </a>
+
+          </div>
+
+        </div>
+
         @empty
-          <p class="col-span-full rounded-2xl border border-brand-100 bg-white p-8 text-center text-sm text-brand-600">Belum ada jurnal terverifikasi.</p>
+
+        <p class="col-span-full rounded-2xl border border-brand-100 bg-white p-8 text-center text-sm text-brand-600">
+          Belum ada jurnal terverifikasi.
+        </p>
+
         @endforelse
 
       </div>
 
       <!-- EMPTY STATE -->
-      <div id="empty-state" class="hidden bg-white border border-brand-100 rounded-2xl p-10 flex flex-col items-center justify-center text-center gap-3">
+      <div
+        id="empty-state"
+        class="hidden bg-white border border-brand-100 rounded-2xl p-10 flex flex-col items-center justify-center text-center gap-3">
+
         <div class="w-12 h-12 rounded-full bg-brand-50 flex items-center justify-center text-brand-600">
+
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
+
         </div>
-        <h3 class="font-poppins font-bold text-base text-[#3E3028]">Tidak Ada Sesi Mengajar</h3>
-        <p class="text-xs text-brand-600 max-w-sm">Belum ada catatan jurnal mengajar yang diisi atau tersimpan untuk tanggal yang Anda pilih.</p>
+
+        <h3 class="font-poppins font-bold text-base text-[#3E3028]">
+          Tidak Ada Sesi Mengajar
+        </h3>
+
+        <p class="text-xs text-brand-600 max-w-sm">
+          Belum ada catatan jurnal mengajar yang diisi atau tersimpan untuk tanggal yang Anda pilih.
+        </p>
+
       </div>
 
     </main>
 
   </div>
 
-  <!-- Bottom Navigation Bar (Mobile) -->
+  <!-- Bottom Navigation Bar -->
   <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-brand-100 py-3.5 px-6 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.06)]">
+
     <div class="flex justify-between items-center">
-      <a href="{{ url('/dashboard-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+
+      <a href="{{ url('/dashboard-guru') }}"
+        class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
         </svg>
+
         <span>Beranda</span>
       </a>
 
-      <a href="{{ url('/form-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+      <a href="{{ url('/form-jurnal') }}"
+        class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
           <path d="M7 3v14" />
         </svg>
+
         <span>Isi Jurnal</span>
       </a>
 
-      <a href="{{ url('/riwayat-jurnal') }}" class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
+      <a href="{{ url('/riwayat-jurnal') }}"
+        class="flex flex-col items-center gap-1 text-xs font-bold text-brand-800">
+
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="M3 4h14M3 8h14M3 12h10M3 16h6" />
         </svg>
+
         <span>Riwayat</span>
       </a>
 
-      <a @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket()) href="{{ route('piket.rekap') }}" @elseif(auth()->user()->sedangPiket()) href="{{ route('dashboard-guru-piket') }}" @else aria-disabled="true" tabindex="-1" title="Menu tersedia saat jadwal piket Anda aktif" @endif @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket()) style="pointer-events:none;opacity:.5;cursor:not-allowed" @endif class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors"><svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z"/><path d="M7 10l2 2 4-4"/></svg><span>{{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}</span></a>
+      <a
+        @if(auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket())
+          href="{{ route('piket.rekap') }}"
+        @elseif(auth()->user()->sedangPiket())
+          href="{{ route('dashboard-guru-piket') }}"
+        @else
+          aria-disabled="true"
+          tabindex="-1"
+          title="Menu tersedia saat jadwal piket Anda aktif"
+        @endif
 
-      <a href="{{ url('/profil-guru') }}" class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+        @if(auth()->user()->role !== 'wali_kelas' && !auth()->user()->sedangPiket())
+          style="pointer-events:none;opacity:.5;cursor:not-allowed"
+        @endif
+
+        class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+
+        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M10 2.5l6.5 3v4.2c0 4-2.7 6.4-6.5 7.8-3.8-1.4-6.5-3.8-6.5-7.8V5.5L10 2.5z" />
+          <path d="M7 10l2 2 4-4" />
+        </svg>
+
+        <span>
+          {{ auth()->user()->role === 'wali_kelas' && !auth()->user()->sedangPiket() ? 'Rekap Piket' : 'Piket' }}
+        </span>
+
+      </a>
+
+      <a href="{{ url('/profil-guru') }}"
+        class="flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] hover:text-brand-800 transition-colors">
+
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M16 17v-1.5a3.5 3.5 0 00-3.5-3.5h-5A3.5 3.5 0 004 15.5V17" />
           <circle cx="10" cy="6.5" r="3.5" />
         </svg>
+
         <span>Profil</span>
+
       </a>
+
     </div>
   </nav>
 
-  <!-- SCRIPT GENERATOR KALENDER GRID KOTAK DENGAN INDIKATOR -->
+  <!-- SCRIPT GENERATOR KALENDER -->
   <script>
-    const monthsName = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const monthsName = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
 
     let selectedDateString = @js(now()->format('Y-m-d'));
 
-    // Inisialisasi kalender saat dokumen siap
+    // Mengambil tanggal hari ini tanpa memperhitungkan jam.
+    function getTodayDate() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today;
+    }
+
+    // Memeriksa apakah tanggal yang diberikan sudah lewat.
+    function isPastCalendarDate(dateStr) {
+      if (!dateStr || dateStr === 'all') return false;
+
+      const [year, month, day] = dateStr.split('-').map(Number);
+      const calendarDate = new Date(year, month - 1, day);
+      calendarDate.setHours(0, 0, 0, 0);
+
+      return calendarDate < getTodayDate();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       generateGridCalendar(new Date().getDate());
     });
 
     function generateGridCalendar(targetDay = 21) {
-      const month = parseInt(document.getElementById('month-select').value);
-      const year = parseInt(document.getElementById('year-select').value);
-
+      const month = parseInt(document.getElementById('month-select').value, 10);
+      const year = parseInt(document.getElementById('year-select').value, 10);
       const gridContainer = document.getElementById('calendar-grid');
+
       gridContainer.innerHTML = '';
 
-      // Hari pertama dalam bulan ini (0 = Minggu, 1 = Senin, dst.)
       const firstDayIndex = new Date(year, month - 1, 1).getDay();
-
-      // Total jumlah hari dalam bulan terpilih (28, 29, 30, atau 31)
       const totalDays = new Date(year, month, 0).getDate();
-
-      // Kumpulkan daftar tanggal yang memiliki data jurnal dari DOM
       const existingDates = new Set();
+
       document.querySelectorAll('.jurnal-card').forEach(card => {
         existingDates.add(card.getAttribute('data-date'));
       });
 
-      // 1. Tambahkan kotak kosong (padding) untuk hari sebelum tanggal 1
-      for (let i = 0; i < firstDayIndex; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.className = 'h-10 sm:h-12 rounded-xl bg-transparent';
-        gridContainer.appendChild(emptyCell);
+      // Tanggal bulan sebelumnya: abu-abu dan tidak dapat diklik.
+      const previousMonth = month === 1 ? 12 : month - 1;
+      const previousYear = month === 1 ? year - 1 : year;
+      const totalDaysPreviousMonth = new Date(previousYear, previousMonth, 0).getDate();
+
+      for (let i = firstDayIndex - 1; i >= 0; i--) {
+        const day = totalDaysPreviousMonth - i;
+        const previousBtn = document.createElement('button');
+        previousBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
+        previousBtn.disabled = true;
+        previousBtn.innerHTML = `<span>${day}</span>`;
+        gridContainer.appendChild(previousBtn);
       }
 
       let activeBtn = null;
 
-      // 2. Buat Kotak Angka Tanggal (1 sampai totalDays)
+      // Tanggal pada bulan dan tahun yang dipilih.
       for (let day = 1; day <= totalDays; day++) {
         const formattedMonth = String(month).padStart(2, '0');
         const formattedDay = String(day).padStart(2, '0');
         const dateStr = `${year}-${formattedMonth}-${formattedDay}`;
-
-        const isSelected = (day === targetDay);
+        const isSelected = day === Math.min(targetDay, totalDays);
+        const isPastDate = isPastCalendarDate(dateStr);
         const hasSession = existingDates.has(dateStr);
-
         const dayBtn = document.createElement('button');
-        dayBtn.className = `calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold transition-all ${
-          isSelected 
-            ? 'bg-brand-800 text-white shadow-md' 
-            : 'bg-brand-50/70 text-[#3E3028] hover:bg-brand-100/70 border border-brand-100'
-        }`;
 
-        dayBtn.onclick = () => filterByDate(dateStr, dayBtn);
+        dayBtn.dataset.date = dateStr;
 
-        // Render Angka Tanggal
+        if (isPastDate) {
+          // Tanggal lampau selalu abu-abu, termasuk jika dipilih.
+          dayBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
+        } else if (isSelected) {
+          dayBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-brand-800 text-white shadow-md';
+        } else {
+          dayBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold transition-all bg-brand-50/70 text-[#3E3028] hover:bg-brand-100/70 border border-brand-100';
+        }
+
+        dayBtn.onclick = () => {
+          selectedDateString = dateStr;
+          filterByDate(dateStr, dayBtn);
+        };
+
         let innerHTML = `<span>${day}</span>`;
-
-        // Tambahkan Indikator Titik jika tanggal tersebut memiliki catatan jurnal
         if (hasSession) {
-          innerHTML += `<span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-amber-300' : 'bg-amber-500'} absolute bottom-1.5"></span>`;
+          const dotColor = isSelected && !isPastDate ? 'bg-amber-300' : 'bg-amber-500';
+          innerHTML += `<span class="w-1.5 h-1.5 rounded-full ${dotColor} absolute bottom-1.5"></span>`;
         }
 
         dayBtn.innerHTML = innerHTML;
@@ -390,17 +742,38 @@
         }
       }
 
-      // Terapkan filter awal
+      // Tanggal bulan berikutnya: abu-abu dan tidak dapat diklik.
+      const totalCells = firstDayIndex + totalDays;
+      const remainingCells = (7 - (totalCells % 7)) % 7;
+
+      for (let day = 1; day <= remainingCells; day++) {
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'calendar-cell relative flex flex-col items-center justify-center h-10 sm:h-12 rounded-xl text-xs sm:text-sm font-poppins font-bold bg-gray-100 text-gray-400 border border-gray-200';
+        nextBtn.disabled = true;
+        nextBtn.innerHTML = `<span>${day}</span>`;
+        gridContainer.appendChild(nextBtn);
+      }
+
       filterByDate(selectedDateString, activeBtn);
     }
 
     function filterByDate(selectedDate, element) {
-      // Reset styling tombol kotak kalender
+      // Kembalikan setiap tanggal ke warna berdasarkan tanggalnya.
       document.querySelectorAll('.calendar-cell').forEach(cell => {
         cell.classList.remove('bg-brand-800', 'text-white', 'shadow-md');
-        cell.classList.add('bg-brand-50/70', 'text-[#3E3028]', 'border', 'border-brand-100');
 
-        // Sesuaikan warna titik indikator
+        if (cell.disabled) return;
+
+        const isPastDate = isPastCalendarDate(cell.dataset.date);
+
+        if (isPastDate) {
+          cell.classList.remove('bg-brand-50/70', 'text-[#3E3028]', 'border-brand-100', 'hover:bg-brand-100/70');
+          cell.classList.add('bg-gray-100', 'text-gray-400', 'border', 'border-gray-200');
+        } else {
+          cell.classList.remove('bg-gray-100', 'text-gray-400', 'border-gray-200');
+          cell.classList.add('bg-brand-50/70', 'text-[#3E3028]', 'border', 'border-brand-100');
+        }
+
         const dot = cell.querySelector('.rounded-full');
         if (dot) {
           dot.classList.remove('bg-amber-300');
@@ -408,8 +781,8 @@
         }
       });
 
-      // Beri warna aktif jika kotak tertentu diklik
-      if (element) {
+      // Hanya tanggal hari ini atau mendatang yang diberi warna pilihan.
+      if (element && !element.disabled && !isPastCalendarDate(element.dataset.date)) {
         element.classList.remove('bg-brand-50/70', 'text-[#3E3028]', 'border', 'border-brand-100');
         element.classList.add('bg-brand-800', 'text-white', 'shadow-md');
 
@@ -420,7 +793,7 @@
         }
       }
 
-      // Filter kartu riwayat jurnal
+      // Filter kartu jurnal sesuai tanggal yang dipilih.
       const journalCards = document.querySelectorAll('.jurnal-card');
       let visibleCount = 0;
 
@@ -434,20 +807,15 @@
         }
       });
 
-      // Update badge & header
       const badge = document.getElementById('session-count-badge');
       const label = document.getElementById('selected-date-label');
       const emptyState = document.getElementById('empty-state');
 
       badge.innerText = `${visibleCount} Sesi Terverifikasi`;
+      label.innerText = selectedDate === 'all'
+        ? 'Semua Sesi Mengajar'
+        : `Sesi Mengajar — ${formatDateString(selectedDate)}`;
 
-      if (selectedDate === 'all') {
-        label.innerText = 'Semua Sesi Mengajar';
-      } else {
-        label.innerText = `Sesi Mengajar — ${formatDateString(selectedDate)}`;
-      }
-
-      // Tampilkan Empty State bila tidak ada jurnal pada tanggal tersebut
       if (visibleCount === 0) {
         emptyState.classList.remove('hidden');
       } else {
@@ -458,9 +826,11 @@
     function formatDateString(dateStr) {
       const parts = dateStr.split('-');
       if (parts.length !== 3) return dateStr;
+
       const day = parseInt(parts[2], 10);
       const monthIndex = parseInt(parts[1], 10) - 1;
       const year = parts[0];
+
       return `${day} ${monthsName[monthIndex]} ${year}`;
     }
   </script>
