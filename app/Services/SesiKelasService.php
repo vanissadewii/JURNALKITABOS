@@ -5,9 +5,9 @@ namespace App\Services;
 use App\Models\JadwalPelajaran;
 use App\Models\JamPelajaran;
 use App\Models\Kelas;
+use App\Support\KegiatanTanggal;
 use App\Support\RentangJam;
 use Carbon\CarbonInterface;
-use App\Support\KegiatanTanggal;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 

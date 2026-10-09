@@ -33,7 +33,7 @@ class JamPelajaranController extends Controller
             ->map(function ($items) use ($urutanHari) {
                 $first = $items->first();
                 $nomor = $items->pluck('hari')->map(fn ($h) => $urutanHari[$h])->sort()->values();
-                                $tingkat = $items->pluck('tingkat')->map(fn ($nilai) => (string) $nilai)->unique()->sort()->values();
+                $tingkat = $items->pluck('tingkat')->map(fn ($nilai) => (string) $nilai)->unique()->sort()->values();
 
                 return (object) [
                     'semester' => $first->semester,
@@ -159,7 +159,7 @@ class JamPelajaranController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('jam-pelajaran.index')->with('success', "Jadwal pelajaran tanggal ".Carbon::parse($validated['tanggal'])->format('d/m/Y')." dimatikan untuk kegiatan {$validated['nama_kegiatan']}.");
+        return redirect()->route('jam-pelajaran.index')->with('success', 'Jadwal pelajaran tanggal '.Carbon::parse($validated['tanggal'])->format('d/m/Y')." dimatikan untuk kegiatan {$validated['nama_kegiatan']}.");
     }
 
     public function toggleKegiatanTanggal(int $id): RedirectResponse
@@ -173,8 +173,8 @@ class JamPelajaranController extends Controller
         ]);
 
         return redirect()->route('jam-pelajaran.index')->with('success', $aktif
-            ? "Jadwal tanggal ".Carbon::parse($kegiatan->tanggal)->format('d/m/Y')." dimatikan untuk {$kegiatan->nama_kegiatan}."
-            : "Jadwal tanggal ".Carbon::parse($kegiatan->tanggal)->format('d/m/Y')." diaktifkan kembali.");
+            ? 'Jadwal tanggal '.Carbon::parse($kegiatan->tanggal)->format('d/m/Y')." dimatikan untuk {$kegiatan->nama_kegiatan}."
+            : 'Jadwal tanggal '.Carbon::parse($kegiatan->tanggal)->format('d/m/Y').' diaktifkan kembali.');
     }
 
     public function destroyKegiatanTanggal(int $id): RedirectResponse

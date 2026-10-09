@@ -137,7 +137,7 @@
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12 6 12 12 16 14"/>
           </svg>
-          <span>Masa berlaku QR: <strong id="timer-count" class="font-poppins font-bold text-amber-900">01:00</strong></span>
+          <span>Masa berlaku QR: <strong id="timer-count" class="font-poppins font-bold text-amber-900">{{ gmdate('i:s', max(0, $qrSesi->sisaDetik())) }}</strong></span>
         </div>
 
         <!-- Box Gambar QR Code -->
@@ -214,7 +214,7 @@
 
   <!-- Script Timer Hitung Mundur & Redirect Kamera Guru -->
   <script>
-    let durasiDetik = 60; // 1 menit
+    let durasiDetik = {{ $qrSesi->sisaDetik() }}; // sisa masa berlaku QR sesuai pengaturan admin
     let timerInterval;
 
     function startTimer() {

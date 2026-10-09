@@ -97,10 +97,10 @@
         <span aria-disabled="true" title="Isi jurnal tersedia saat sesi mengajar berlangsung" class="pointer-events-none flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium text-md text-[#9E8E83] opacity-50">
         @endif
           <svg class="w-5 h-5 text-brand-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+            <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 011-1V4a1 1 0 011-1z" />
             <path d="M7 3v14" />
           </svg>
-          <span>Isi Jurnal</span>
+          <span>{{ $sesiSaatIni && $sesiSaatIni->jurnal_terverifikasi ? 'Edit Jurnal' : 'Isi Jurnal' }}</span>
         @if ($sesiSaatIni)</a>@else</span>@endif
 
         <!-- MENU LIST/RIWAYAT JURNAL -->
@@ -196,7 +196,11 @@
               <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <span class="rounded-xl border border-brand-100 bg-brand-50 px-4 py-3 text-center text-sm font-medium text-brand-700">Jam ke-{{ $sesiUtama->jam_ke_mulai }}@if($sesiUtama->jam_ke_sampai !== $sesiUtama->jam_ke_mulai)–{{ $sesiUtama->jam_ke_sampai }}@endif · {{ $sesiUtama->jam_mulai }}–{{ $sesiUtama->jam_selesai }}</span>
                 @if ($sesiSaatIni)
-                  <a href="{{ route('jurnal.create', ['jadwal' => $sesiUtama->id_jadwal]) }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#5C4033] px-6 text-sm font-semibold text-white shadow-md hover:bg-[#3E2B22]">Mulai Sesi Mengajar</a>
+                  @if ($sesiSaatIni->jurnal_terverifikasi)
+                    <a href="{{ route('jurnal.create', ['jadwal' => $sesiUtama->id_jadwal]) }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#5C4033] px-6 text-sm font-semibold text-white shadow-md hover:bg-[#3E2B22]">Edit Jurnal</a>
+                  @else
+                    <a href="{{ route('jurnal.create', ['jadwal' => $sesiUtama->id_jadwal]) }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#5C4033] px-6 text-sm font-semibold text-white shadow-md hover:bg-[#3E2B22]">Mulai Sesi Mengajar</a>
+                  @endif
                 @else
                   <span aria-disabled="true" class="inline-flex h-12 cursor-not-allowed items-center justify-center rounded-xl bg-[#E5D8CC] px-6 text-sm font-semibold text-[#7A6A60]">Menunggu sesi dimulai</span>
                 @endif
@@ -235,11 +239,13 @@
                 </div>
                 <div class="flex items-center justify-between gap-2 border-t border-brand-50 pt-3 text-xs">
                   <span class="font-medium text-brand-600">Jam ke-{{ $item->jam_ke_mulai }}@if($item->jam_ke_sampai !== $item->jam_ke_mulai)–{{ $item->jam_ke_sampai }}@endif · {{ $item->jam_mulai }}–{{ $item->jam_selesai }}</span>
-                  <div class="flex shrink-0 items-center gap-3">
-                    @if ($item->status === 'Berlangsung')
-                      <a href="{{ route('jurnal.create', ['jadwal' => $item->id_jadwal]) }}" class="font-poppins font-semibold text-brand-800 underline underline-offset-2">Isi Jurnal</a>
-                    @endif
-                  </div>
+                   <div class="flex shrink-0 items-center gap-3">
+                     @if ($item->jurnal_terverifikasi)
+                       <a href="{{ route('jurnal.create', ['jadwal' => $item->id_jadwal]) }}" class="font-poppins font-semibold text-brand-800 underline underline-offset-2">Edit Jurnal</a>
+                     @elseif ($item->status === 'Berlangsung')
+                       <a href="{{ route('jurnal.create', ['jadwal' => $item->id_jadwal]) }}" class="font-poppins font-semibold text-brand-800 underline underline-offset-2">Isi Jurnal</a>
+                     @endif
+                   </div>
                 </div>
               </article>
             @endforeach
@@ -272,10 +278,10 @@
       <span aria-disabled="true" title="Isi jurnal tersedia saat sesi mengajar berlangsung" class="pointer-events-none flex flex-col items-center gap-1 text-xs font-medium text-[#9E8E83] opacity-50">
       @endif
         <svg class="w-5 h-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1z" />
+          <path d="M4 3h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 011-1V4a1 1 0 011-1z" />
           <path d="M7 3v14" />
         </svg>
-        <span>Isi Jurnal</span>
+        <span>{{ $sesiSaatIni && $sesiSaatIni->jurnal_terverifikasi ? 'Edit Jurnal' : 'Isi Jurnal' }}</span>
       @if ($sesiSaatIni)</a>@else</span>@endif
 
       <!-- LIST RIWAYAT JURNAL MOBILE -->

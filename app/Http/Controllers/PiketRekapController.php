@@ -5,10 +5,9 @@ namespace App\Http\Controllers;
 use App\Exports\PiketRekapExport;
 use App\Models\JadwalPelajaran;
 use App\Models\JamPelajaran;
-use App\Support\Waktu;
 use App\Support\KegiatanTanggal;
+use App\Support\Waktu;
 use Carbon\Carbon;
-use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -189,7 +188,9 @@ class PiketRekapController extends Controller
                 $jurnal->keterangan,
                 $jurnal->jumlah_hadir !== null ? 'Hadir '.$jurnal->jumlah_hadir.' siswa' : null,
             ])));
-            $tingkat = match ((int) $jurnal->tingkat) { 10 => 'X', 11 => 'XI', 12 => 'XII', default => (string) $jurnal->tingkat };
+            $tingkat = match ((int) $jurnal->tingkat) {
+                10 => 'X', 11 => 'XI', 12 => 'XII', default => (string) $jurnal->tingkat
+            };
             $kelas = trim($tingkat.' '.$jurnal->jurusan.' '.$jurnal->rombel);
             $jam = $jamMulai && $jamSelesai ? substr((string) $jamMulai, 0, 5).'-'.substr((string) $jamSelesai, 0, 5) : 'Jam ke-'.$jamKe;
 
