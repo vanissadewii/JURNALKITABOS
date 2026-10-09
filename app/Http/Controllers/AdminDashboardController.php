@@ -9,7 +9,7 @@ use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\User;
 use App\Support\Waktu;
-use App\Support\KegiatanTanggal;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AdminDashboardController extends Controller
@@ -34,7 +34,7 @@ class AdminDashboardController extends Controller
             ->values();
 
         $kegiatanDitiadakan = in_array($hariIni, ['Senin', 'Jumat'], true)
-            && (bool) \Illuminate\Support\Facades\DB::table('pengaturan_kegiatan_harian')->where('hari', $hariIni)->value('kegiatan_ditiadakan');
+            && (bool) DB::table('pengaturan_kegiatan_harian')->where('hari', $hariIni)->value('kegiatan_ditiadakan');
         $slotJam = JamPelajaran::where('hari', $hariIni)->whereHas('semester', fn ($q) => $q->where('status', 'aktif'))
             ->get()->keyBy(fn ($jam) => $jam->tingkat.'|'.$jam->jam_ke);
         foreach ($jadwalHariIni as $jadwal) {
@@ -55,6 +55,7 @@ class AdminDashboardController extends Controller
                 $last->jam_ke_sampai = (int) $jadwal->jamPelajaran->jam_ke;
                 $last->jam_selesai = $jadwal->jamPelajaran->jam_selesai;
                 $last->jadwals->push($jadwal);
+
                 continue;
             }
             $gabungan->push((object) [

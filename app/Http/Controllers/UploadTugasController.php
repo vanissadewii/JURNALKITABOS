@@ -92,12 +92,11 @@ class UploadTugasController extends Controller
         $tanggal = Waktu::sekarang()->toDateString();
         $statusGuru = $data['status'];
         $jurnal = Jurnal::whereHas('jadwal', fn ($query) => $query
-                ->where('id_kelas', $jadwal->id_kelas)
-                ->where('id_guru', $jadwal->id_guru)
-                ->where('id_mapel', $jadwal->id_mapel))
+            ->where('id_kelas', $jadwal->id_kelas)
+            ->where('id_guru', $jadwal->id_guru)
+            ->where('id_mapel', $jadwal->id_mapel))
             ->whereDate('tanggal', $tanggal)
             ->latest('id_jurnal')->first();
-
 
         if ($jurnal && strtolower((string) $jurnal->status_kehadiran_guru) === 'hadir') {
             return back()->withErrors(['id_jadwal' => 'Guru pada sesi ini sudah tercatat hadir. Tugas piket hanya dapat diunggah untuk guru yang sakit atau izin.'])->withInput();
