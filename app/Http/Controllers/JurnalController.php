@@ -10,8 +10,8 @@ use App\Models\PengirimanJurnalKelas;
 use App\Models\Siswa;
 use App\Services\SesiKelasService;
 use App\Services\VerifikasiSesiService;
-use App\Support\Waktu;
 use App\Support\KegiatanTanggal;
+use App\Support\Waktu;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -354,7 +354,9 @@ class JurnalController extends Controller
                         'file_path' => $tugas?->file_path,
                         'materi' => $tugas?->materi ?? $jurnal->materi,
                         'jumlah_hadir' => $jurnal->jumlah_hadir,
-                        'siswa' => $jurnal->absenSiswa->map(fn ($absen) => ['nama' => $absen->nama, 'ket' => match ($absen->status) { 'Sakit' => 'S', 'Izin' => 'I', 'Dispen' => 'D', default => 'A' }])->all(),
+                        'siswa' => $jurnal->absenSiswa->map(fn ($absen) => ['nama' => $absen->nama, 'ket' => match ($absen->status) {
+                            'Sakit' => 'S', 'Izin' => 'I', 'Dispen' => 'D', default => 'A'
+                        }])->all(),
                     ]],
                 ];
             });
