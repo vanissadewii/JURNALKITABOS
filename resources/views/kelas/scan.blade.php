@@ -92,6 +92,17 @@
                     <code id="qr-kelas-code" class="break-all text-xs font-mono text-[#3E3028]">{{ $kodeQr ?? 'Kode muncul saat sesi tersedia' }}</code>
                 </div>
 
+                {{-- Timer masa berlaku QR: muncul begitu QR tampil --}}
+                <div id="qr-timer-wrap" class="hidden mt-3 w-full max-w-[300px]">
+                    <div class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800">
+                        <svg class="h-4 w-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span>Masa berlaku QR: <strong id="qr-timer-count" class="font-['Poppins'] font-bold text-amber-900">--:--</strong></span>
+                    </div>
+                </div>
+
                 {{-- INFO SESI --}}
                 <div class="w-full bg-white border border-[#E5D8CC] rounded-[10px] p-4 sm:p-[14px] mt-6
                             shadow-[0_4px_12px_rgba(62,48,40,0.04)]">
@@ -189,12 +200,13 @@
                 }
                 const data = await response.json();
 
-                perbaruiDetailSesi(data.sesi);
+        perbaruiDetailSesi(data.sesi);
                 if (data.tahap === 'tampil_qr') {
                     qrImage.src = data.qr;
                     qrCode.textContent = data.kode || 'Kode belum tersedia';
                     qrImage.classList.remove('hidden');
                     qrStatus.classList.add('hidden');
+                    mulaiTimerQr(data.detik_sisa ?? 0, data.expired_at);
                 } else if (data.tahap === 'selesai' && data.redirect) {
                     window.location.assign(data.redirect);
                     return;
@@ -203,6 +215,7 @@
                     qrCode.textContent = 'Kode muncul saat sesi tersedia';
                     qrStatus.classList.remove('hidden');
                     qrStatus.textContent = data.pesan || 'Belum ada sesi mengajar aktif.';
+                    sembunyikanTimerQr();
                 }
             } catch (error) {
                 if (!qrImage.getAttribute('src')) {
@@ -223,6 +236,53 @@
 
         perbaruiStatusQrKelas();
         setInterval(perbaruiStatusQrKelas, 5000);
+
+        // ===== TIMER MASA BERLAKU QR (dimulai saat QR tampil) =====
+        let timerQrInterval = null;
+
+        function formatDetikQr(total) {
+            const menit = Math.floor(total / 60);
+            const detik = total % 60;
+            return String(menit).padStart(2, '0') + ':' + String(detik).padStart(2, '0');
+        }
+
+        function mulaiTimerQr(detikSisa, expiredAt) {
+            if (timerQrInterval) {
+                clearInterval(timerQrInterval);
+                timerQrInterval = null;
+            }
+            const wrap = document.getElementById('qr-timer-wrap');
+            const count = document.getElementById('qr-timer-count');
+            if (!wrap || !count) return;
+
+            // Prefer timestamp expired dari server agar tidak melompat saat polling.
+            const batasMs = expiredAt ? new Date(expiredAt).getTime() : null;
+            if (typeof detikSisa !== 'number' && batasMs === null) {
+                wrap.classList.add('hidden');
+                return;
+            }
+            wrap.classList.remove('hidden');
+
+            const hitung = () => {
+                let sisa = 0;
+                if (batasMs !== null && !Number.isNaN(batasMs)) {
+                    sisa = Math.max(0, Math.floor((batasMs - Date.now()) / 1000));
+                } else {
+                    sisa = Math.max(0, Math.floor(detikSisa));
+                }
+                count.textContent = formatDetikQr(sisa);
+            };
+            hitung();
+            timerQrInterval = setInterval(hitung, 1000);
+        }
+
+        function sembunyikanTimerQr() {
+            if (timerQrInterval) {
+                clearInterval(timerQrInterval);
+                timerQrInterval = null;
+            }
+            document.getElementById('qr-timer-wrap')?.classList.add('hidden');
+        }
     </script>
 </body>
 </html>

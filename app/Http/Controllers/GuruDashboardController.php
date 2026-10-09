@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalPelajaran;
 use App\Models\JamPelajaran;
+use App\Models\Jurnal;
 use App\Models\PengaturanJurnalSusulan;
 use App\Models\User;
+use App\Support\KegiatanTanggal;
 use App\Support\RentangJam;
 use App\Support\Waktu;
-use App\Support\KegiatanTanggal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -90,6 +91,7 @@ class GuruDashboardController extends Controller
 
             $sesi->push((object) [
                 'id_jadwal' => $j->id_jadwal,
+                'id_guru' => $j->id_guru,
                 'id_kelas' => $j->id_kelas,
                 'id_mapel' => $j->id_mapel,
                 'kelas' => $j->kelas->nama_kelas ?? '-',
@@ -120,6 +122,19 @@ class GuruDashboardController extends Controller
 
         $sesiSaatIni = $sesi->firstWhere('status', 'Berlangsung');
         $sesiBerikutnya = $sesi->firstWhere('status', 'Akan Datang');
+
+        // Jurnal hari ini yang sudah terverifikasi (hasil scan QR kelas berhasil).
+        $jurnalTerverifikasi = Jurnal::with('jadwal')
+            ->whereDate('tanggal', $sekarang->toDateString())
+            ->whereNotNull('waktu_submit')
+            ->where('status_verifikasi', 'terverifikasi')
+            ->get();
+        foreach ($sesi as $s) {
+            $s->jurnal_terverifikasi = $jurnalTerverifikasi->contains(fn ($jurnal) => $jurnal->jadwal
+                && (int) $jurnal->jadwal->id_kelas === (int) $s->id_kelas
+                && (int) $jurnal->jadwal->id_guru === (int) $s->id_guru
+                && (int) $jurnal->jadwal->id_mapel === (int) $s->id_mapel);
+        }
         $izinJurnalSusulan = PengaturanJurnalSusulan::forGuru((int) $guru->id)->aktif;
         $tanggalKemarin = $sekarang->copy()->subDay();
         $hariKemarin = $this->namaHari[$tanggalKemarin->dayOfWeekIso] ?? null;

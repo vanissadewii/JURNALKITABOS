@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalPelajaran;
 use App\Models\Jurnal;
+use App\Models\PengaturanQr;
 use App\Models\QrSesi;
 use App\Services\VerifikasiSesiService;
 use App\Support\Waktu;
@@ -18,8 +19,6 @@ use Illuminate\View\View;
 
 class QrSesiController extends Controller
 {
-    private const MASA_QR_DETIK = 300;          // QR sesi berlaku lima menit
-
     private const SISA_MINIMAL_DETIK = 15;     // sisa umur kurang dari ini: dibuatkan QR baru
 
     public function __construct(private VerifikasiSesiService $sesi) {}
@@ -160,8 +159,9 @@ class QrSesiController extends Controller
         $rentang = $this->sesi->rentangEfektif($jadwal);
         $jamMulai = $rentang->first()?->jamPelajaran?->jam_mulai;
         $jamSelesai = $rentang->last()?->jamPelajaran?->jam_selesai;
+        $qrSesi = $this->qrAktif($jadwal, 'kelas');
 
-        return view('kelas.verifikasiguru', compact('jadwal', 'jurnal', 'rentang', 'jamMulai', 'jamSelesai'));
+        return view('kelas.verifikasiguru', compact('jadwal', 'jurnal', 'rentang', 'jamMulai', 'jamSelesai', 'qrSesi'));
     }
 
     /** Ditanya terus oleh halaman scan kelas: tampilkan QR, atau pemindai, atau pesan. */
@@ -358,7 +358,7 @@ class QrSesiController extends Controller
             'tipe' => $tipe,
             'kode_qr' => $kodeSingkat,
             'waktu_generate' => now(),
-            'waktu_expired' => now()->addSeconds(self::MASA_QR_DETIK),
+            'waktu_expired' => now()->addSeconds(PengaturanQr::durasi()),
             'status' => 'aktif',
         ]);
     }
@@ -371,6 +371,8 @@ class QrSesiController extends Controller
             'tahap' => 'tampil_qr',
             'qr' => $gambar,
             'kode' => $qr->kode_qr,
+            'detik_sisa' => $qr->sisaDetik(),
+            'expired_at' => $qr->waktu_expired?->toISOString(),
             'sesi' => $jadwal ? $this->detailSesi($jadwal) : null,
         ]);
     }

@@ -56,4 +56,10 @@ class QrSesi extends Model
     {
         return now()->greaterThan($this->waktu_expired);
     }
+
+    /** Sisa masa berlaku QR dalam detik (0 kalau sudah habis). */
+    public function sisaDetik(): int
+    {
+        return max(0, (int) floor($this->waktu_expired->getTimestamp() - now()->getTimestamp()));
+    }
 }

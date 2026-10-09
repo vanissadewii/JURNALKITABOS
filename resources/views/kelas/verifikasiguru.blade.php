@@ -135,6 +135,11 @@
                         <span class="text-[#3E3028] font-medium text-right">{{ $jamMulai && $jamSelesai ? substr($jamMulai, 0, 5).' - '.substr($jamSelesai, 0, 5) : '—' }}</span>
                     </div>
 
+                    <div class="flex justify-between gap-4 py-2.5 border-b border-[#E5D8CC] text-[13px]">
+                        <span class="text-[#7A6A60]">Masa Berlaku QR</span>
+                        <span id="timer-qr-verifikasi" class="text-[#3E3028] font-medium text-right font-mono">{{ gmdate('i:s', max(0, $qrSesi->sisaDetik())) }}</span>
+                    </div>
+
                     <div class="flex justify-between gap-4 pt-2.5 text-[13px]">
                         <span class="text-[#7A6A60]">Status</span>
                         <span class="text-[#3E3028] font-medium text-right">{{ $jurnal->status_verifikasi === 'terverifikasi' ? 'Terverifikasi' : 'Menunggu verifikasi' }}</span>
@@ -194,6 +199,15 @@
 
     <script>
         // Verifikasi kehadiran dilakukan satu kali oleh guru melalui QR kelas.
+        (function () {
+            const el = document.getElementById('timer-qr-verifikasi');
+            const batas = new Date("{{ $qrSesi->waktu_expired?->toISOString() }}").getTime();
+            if (!el || Number.isNaN(batas)) return;
+            const fmt = (s) => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+            const tick = () => { el.textContent = fmt(Math.max(0, Math.floor((batas - Date.now()) / 1000))); };
+            tick();
+            setInterval(tick, 1000);
+        })();
     </script>
 
 </body>

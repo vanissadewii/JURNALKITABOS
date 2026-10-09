@@ -167,6 +167,20 @@
                     <p class="rounded-2xl border border-dashed border-[#D8C9BC] bg-white p-5 text-sm text-[#7A6A60]">Tidak ada jadwal mengajar lagi untuk hari ini.</p>
                 @endforelse
 
+                @if (($sesiAkanDatang ?? collect())->isNotEmpty())
+                    <span class="mt-3 font-['Poppins'] text-md font-bold uppercase text-[#3E3028]">Jadwal Belum Dimulai</span>
+                    @foreach ($sesiAkanDatang as $sesi)
+                        <article class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#E5D8CC] bg-white p-4 shadow-sm sm:p-5">
+                            <div>
+                                <h2 class="font-['Poppins'] text-base font-bold text-[#3E3028]">{{ $sesi->mapel }}</h2>
+                                <p class="mt-1 text-sm text-[#7A6A60]">{{ $sesi->guru }}</p>
+                                <p class="border-t border-[#E5D8CC] mt-3 pt-3 text-sm text-[#7A6A60]">◷ {{ $sesi->jam_mulai }}–{{ $sesi->jam_selesai }} (Jam ke-{{ $sesi->jam_ke_mulai }}@if($sesi->jam_ke_sampai !== $sesi->jam_ke_mulai) sampai ke-{{ $sesi->jam_ke_sampai }}@endif)</p>
+                            </div>
+                            <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-800">Belum Dimulai</span>
+                        </article>
+                    @endforeach
+                @endif
+
                 @if (($sesiSelesai ?? collect())->isNotEmpty())
                     <span class="mt-3 font-['Poppins'] text-md font-bold uppercase text-[#3E3028]">Sesi Mengajar Selesai</span>
                     @foreach ($sesiSelesai as $sesi)
