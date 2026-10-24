@@ -63,13 +63,79 @@
                 </tbody></table></div>
             </section>
 
-            <section class="overflow-hidden rounded-lg border border-[#E5D8CC] bg-white">
-                <div class="border-b border-[#E5D8CC] bg-[#F5EFE8] px-4 py-3"><h2 class="font-['Poppins'] text-sm font-bold uppercase">Rekap Kehadiran Guru</h2></div>
-                <div class="overflow-x-auto"><table class="min-w-[680px] w-full text-left text-[13px]"><thead class="bg-[#FDFBF7] text-[11px] uppercase text-[#5C4033]"><tr><th class="border border-[#E5D8CC] px-4 py-3">Nama Guru</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Hadir</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Izin</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Sakit</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Tidak Hadir</th><th class="border border-[#E5D8CC] px-4 py-3 text-center">Total Sesi</th></tr></thead><tbody>
-                    @forelse($byTeacher as $baris)<tr><td class="border border-[#E5D8CC] px-4 py-3 font-semibold">{{ $baris->guru->name }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#2E7D32]">{{ $baris->hadir }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->izin }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->sakit }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center text-[#C62828]">{{ $baris->tidak_hadir }}</td><td class="border border-[#E5D8CC] px-4 py-3 text-center">{{ $baris->jumlah }}</td></tr>
-                    @empty<tr><td colspan="6" class="px-4 py-8 text-center text-sm text-[#7A6A60]">Belum ada data kehadiran guru pada periode ini.</td></tr>@endforelse
-                </tbody></table></div>
-            </section>
+          <section class="overflow-hidden rounded-lg border border-[#E5D8CC] bg-white">
+    <div class="border-b border-[#E5D8CC] bg-[#F5EFE8] px-4 py-3">
+        <h2 class="font-['Poppins'] text-sm font-bold uppercase">
+            Rekap Kehadiran Guru
+        </h2>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-[900px] w-full text-left text-[13px]">
+            <thead class="bg-[#FDFBF7] text-[11px] uppercase text-[#5C4033]">
+                <tr>
+                    <th class="border border-[#E5D8CC] px-4 py-3">Nama Guru</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3">Mata Pelajaran</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Hadir</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Izin</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Sakit</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Tidak Hadir</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Total Sesi</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Total Jam</th>
+                    <th class="border border-[#E5D8CC] px-4 py-3 text-center">Rincian Mengajar</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @forelse($byTeacher as $baris)
+                    <tr>
+                        <td class="border border-[#E5D8CC] px-4 py-3 font-semibold">
+                            {{ $baris->guru->name }}
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3">
+                            {{ $baris->mapel->implode(', ') ?: '-' }}
+                        </td>
+                        
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center font-semibold text-[#2E7D32]">
+                            {{ $baris->hadir }}
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center">
+                            {{ $baris->izin }}
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center">
+                            {{ $baris->sakit }}
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center font-semibold text-[#C62828]">
+                            {{ $baris->tidak_hadir }}
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center">
+                            {{ $baris->jumlah }}
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center font-semibold">
+                            {{ $baris->total_jam }} jam pelajaran
+                        </td>
+
+                        <td class="border border-[#E5D8CC] px-4 py-3 text-center font-semibold text-[#2E7D32]">
+                             {{ $baris->rincian_mengajar }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="9" class="px-4 py-8 text-center text-sm text-[#7A6A60]">
+                            Belum ada data kehadiran guru pada periode ini.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</section>
         </div>
     </div>
 
